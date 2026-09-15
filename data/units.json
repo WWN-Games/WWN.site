@@ -1,0 +1,166 @@
+{
+  "_comment": "Каталог юнитов WWN. Поля: id, name{ru,en}, faction, type(ground|air|naval|space|support), role, cost, hp, dps, speed, range, buildTime, desc, strongVs[], weakVs[], image, draft.",
+  "units": [
+    {
+      "id": "star-warrior",
+      "name": { "ru": "Звёздный воин", "en": "Star Warrior" },
+      "faction": "proton",
+      "type": "space",
+      "role": { "ru": "Корабль поддержки", "en": "Support ship" },
+      "cost": 1400,
+      "hp": 1150,
+      "dps": 95,
+      "speed": 58,
+      "range": 300,
+      "buildTime": "28 с",
+      "desc": {
+        "ru": "Тяжёлый корабль поддержки с ядерным зарядом на борту. Держит линию и продавливает оборону, но требует прикрытия.",
+        "en": "A heavy support ship carrying a nuclear payload. Holds the line and cracks defenses, but needs an escort."
+      },
+      "strongVs": { "ru": ["Строения", "Тяжёлые корабли"], "en": ["Structures", "Heavy ships"] },
+      "weakVs": { "ru": ["Перехватчики", "ПВО"], "en": ["Interceptors", "AA"] },
+      "image": "assets/img/units/unit-starwarrior.webp",
+      "draft": true
+    },
+    {
+      "id": "fer-scout",
+      "name": { "ru": "Разведчик «Луч»", "en": "Scout \"Beam\"" },
+      "faction": "fenearth",
+      "type": "air",
+      "role": { "ru": "Разведка", "en": "Recon" },
+      "cost": 180,
+      "hp": 140,
+      "dps": 8,
+      "speed": 220,
+      "range": 140,
+      "buildTime": "9 с",
+      "desc": {
+        "ru": "Быстрый и дешёвый разведчик. Раскрывает карту и следит за перемещениями врага.",
+        "en": "Fast and cheap recon craft. Reveals the map and tracks enemy movements."
+      },
+      "strongVs": { "ru": ["Разведка", "Раннее давление"], "en": ["Scouting", "Early pressure"] },
+      "weakVs": { "ru": ["ПВО"], "en": ["AA"] },
+      "draft": true
+    },
+    {
+      "id": "fer-cruiser",
+      "name": { "ru": "Крейсер «Тайфун»", "en": "Cruiser \"Typhoon\"" },
+      "faction": "fenearth",
+      "type": "space",
+      "role": { "ru": "Линейный корабль", "en": "Line ship" },
+      "cost": 950,
+      "hp": 1300,
+      "dps": 70,
+      "speed": 46,
+      "range": 260,
+      "buildTime": "22 с",
+      "desc": {
+        "ru": "Основной боевой корабль флота Фер. Хорошая броня и дальность, слабый разворот.",
+        "en": "Fer's main fleet combat ship. Good armor and range, poor turning."
+      },
+      "strongVs": { "ru": ["Фрегаты", "Строения"], "en": ["Frigates", "Structures"] },
+      "weakVs": { "ru": ["Торпеды", "Рой перехватчиков"], "en": ["Torpedoes", "Interceptor swarms"] },
+      "draft": true
+    },
+    {
+      "id": "gipper-tank",
+      "name": { "ru": "Танк «Молот»", "en": "Tank \"Hammer\"" },
+      "faction": "proton",
+      "type": "ground",
+      "role": { "ru": "Основной танк", "en": "Main battle tank" },
+      "cost": 420,
+      "hp": 900,
+      "dps": 55,
+      "speed": 34,
+      "range": 180,
+      "buildTime": "14 с",
+      "desc": {
+        "ru": "Рабочая лошадка наземных армий: крепкий корпус и приличный урон по земле.",
+        "en": "The workhorse of ground armies: a tough hull and solid ground damage."
+      },
+      "strongVs": { "ru": ["Пехота", "Лёгкая техника"], "en": ["Infantry", "Light vehicles"] },
+      "weakVs": { "ru": ["Авиация", "Противотанковые орудия"], "en": ["Air", "Anti-tank guns"] },
+      "draft": true
+    },
+    {
+      "id": "gipper-artillery",
+      "name": { "ru": "САУ «Гроза»", "en": "SPG \"Thunder\"" },
+      "faction": "proton",
+      "type": "ground",
+      "role": { "ru": "Артиллерия", "en": "Artillery" },
+      "cost": 560,
+      "hp": 380,
+      "dps": 120,
+      "speed": 24,
+      "range": 420,
+      "buildTime": "17 с",
+      "desc": {
+        "ru": "Дальнобойная осадная установка. Ломает укрепления, но беспомощна в ближнем бою.",
+        "en": "Long-range siege gun. Breaks fortifications but is helpless up close."
+      },
+      "strongVs": { "ru": ["Турели", "Базы"], "en": ["Turrets", "Bases"] },
+      "weakVs": { "ru": ["Рейды", "Авиация"], "en": ["Raids", "Air"] },
+      "draft": true
+    },
+    {
+      "id": "ava-raider",
+      "name": { "ru": "Рейдер «Коготь»", "en": "Raider \"Claw\"" },
+      "faction": "proton",
+      "type": "space",
+      "role": { "ru": "Рейдер", "en": "Raider" },
+      "cost": 610,
+      "hp": 460,
+      "dps": 88,
+      "speed": 96,
+      "range": 170,
+      "buildTime": "15 с",
+      "desc": {
+        "ru": "Быстрый корабль для рейдов по тылам: вырезает добытчиков и растягивает оборону противника.",
+        "en": "A fast ship for rear raids: kills harvesters and stretches the enemy defense."
+      },
+      "strongVs": { "ru": ["Экономика", "Одиночные цели"], "en": ["Economy", "Isolated targets"] },
+      "weakVs": { "ru": ["Плотная оборона", "Линкоры"], "en": ["Dense defense", "Battleships"] },
+      "draft": true
+    },
+    {
+      "id": "ava-stealth",
+      "name": { "ru": "Диверсант «Тень»", "en": "Saboteur \"Shade\"" },
+      "faction": "proton",
+      "type": "support",
+      "role": { "ru": "Диверсия", "en": "Sabotage" },
+      "cost": 700,
+      "hp": 300,
+      "dps": 40,
+      "speed": 110,
+      "range": 90,
+      "buildTime": "18 с",
+      "desc": {
+        "ru": "Скрытный юнит для точечных ударов по производству и энергетике врага.",
+        "en": "Stealth unit for surgical strikes on enemy production and power."
+      },
+      "strongVs": { "ru": ["Электростанции", "Заводы"], "en": ["Power plants", "Factories"] },
+      "weakVs": { "ru": ["Радары", "Масс-детект"], "en": ["Radars", "Mass detection"] },
+      "draft": true
+    },
+    {
+      "id": "neutral-harvester",
+      "name": { "ru": "Добытчик", "en": "Harvester" },
+      "faction": "fenearth",
+      "type": "support",
+      "role": { "ru": "Экономика", "en": "Economy" },
+      "cost": 150,
+      "hp": 260,
+      "dps": 0,
+      "speed": 40,
+      "range": 0,
+      "buildTime": "8 с",
+      "desc": {
+        "ru": "Базовая машина добычи ресурсов. Основа любой экономики — и главная цель рейдов.",
+        "en": "Basic resource gathering unit. The backbone of any economy — and the primary raid target."
+      },
+      "strongVs": { "ru": [], "en": [] },
+      "weakVs": { "ru": ["Все боевые юниты"], "en": ["All combat units"] },
+      "draft": true
+    }
+  ]
+}

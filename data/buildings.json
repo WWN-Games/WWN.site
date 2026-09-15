@@ -1,0 +1,138 @@
+{
+  "_comment": "Каталог строений WWN. Поля: id, name{ru,en}, faction, type(economy|defense|structure|support), role, cost, hp, dps, range, buildTime, desc, strongVs[], weakVs[], image, draft.",
+  "buildings": [
+    {
+      "id": "command-center",
+      "name": { "ru": "Командный центр", "en": "Command Center" },
+      "faction": "fenearth",
+      "type": "structure",
+      "role": { "ru": "Штаб", "en": "Headquarters" },
+      "cost": 2000,
+      "hp": 4200,
+      "dps": 0,
+      "range": 0,
+      "buildTime": "60 с",
+      "desc": {
+        "ru": "Главное здание базы. Открывает технологии и определяет, что вы можете строить. Потеря центра — почти гарантированное поражение.",
+        "en": "The main base structure. Unlocks tech and defines what you can build. Losing it almost guarantees defeat."
+      },
+      "strongVs": { "ru": [], "en": [] },
+      "weakVs": { "ru": ["Осадная артиллерия", "Бомбардировка"], "en": ["Siege artillery", "Bombing"] },
+      "draft": true
+    },
+    {
+      "id": "power-plant",
+      "name": { "ru": "Электростанция", "en": "Power Plant" },
+      "faction": "fenearth",
+      "type": "economy",
+      "role": { "ru": "Энергия", "en": "Power" },
+      "cost": 350,
+      "hp": 700,
+      "dps": 0,
+      "range": 0,
+      "buildTime": "12 с",
+      "desc": {
+        "ru": "Даёт энергию для щитов, радаров и тяжёлых заводов. Приоритетная цель диверсантов.",
+        "en": "Provides power for shields, radars and heavy factories. A top target for saboteurs."
+      },
+      "strongVs": { "ru": [], "en": [] },
+      "weakVs": { "ru": ["Диверсанты", "Рейды"], "en": ["Saboteurs", "Raids"] },
+      "draft": true
+    },
+    {
+      "id": "factory",
+      "name": { "ru": "Военный завод", "en": "War Factory" },
+      "faction": "proton",
+      "type": "structure",
+      "role": { "ru": "Производство", "en": "Production" },
+      "cost": 900,
+      "hp": 1800,
+      "dps": 0,
+      "range": 0,
+      "buildTime": "26 с",
+      "desc": {
+        "ru": "Производит наземную технику. Держите несколько заводов — темп армии решает исход матча.",
+        "en": "Produces ground vehicles. Keep several factories — army tempo decides matches."
+      },
+      "strongVs": { "ru": [], "en": [] },
+      "weakVs": { "ru": ["Артиллерия", "Диверсанты"], "en": ["Artillery", "Saboteurs"] },
+      "draft": true
+    },
+    {
+      "id": "orbital-dock",
+      "name": { "ru": "Орбитальный док", "en": "Orbital Dock" },
+      "faction": "proton",
+      "type": "structure",
+      "role": { "ru": "Космическое производство", "en": "Space production" },
+      "cost": 1600,
+      "hp": 2600,
+      "dps": 0,
+      "range": 0,
+      "buildTime": "40 с",
+      "desc": {
+        "ru": "Строит и ремонтирует космические корабли. Ключ к контролю орбиты над вашим сектором.",
+        "en": "Builds and repairs spaceships. Key to orbital control above your sector."
+      },
+      "strongVs": { "ru": [], "en": [] },
+      "weakVs": { "ru": ["Космические рейды"], "en": ["Space raids"] },
+      "draft": true
+    },
+    {
+      "id": "aa-turret",
+      "name": { "ru": "ПВО-турель", "en": "AA Turret" },
+      "faction": "proton",
+      "type": "defense",
+      "role": { "ru": "Противовоздушная оборона", "en": "Anti-air defense" },
+      "cost": 300,
+      "hp": 640,
+      "dps": 65,
+      "range": 280,
+      "buildTime": "10 с",
+      "desc": {
+        "ru": "Зенитная турель. Обязательна в городах и у заводов — иначе авиация сотрёт базу.",
+        "en": "Anti-air turret. Mandatory in cities and near factories — otherwise air power will erase your base."
+      },
+      "strongVs": { "ru": ["Авиация"], "en": ["Air"] },
+      "weakVs": { "ru": ["Артиллерия", "Танки"], "en": ["Artillery", "Tanks"] },
+      "draft": true
+    },
+    {
+      "id": "shield-generator",
+      "name": { "ru": "Генератор щита", "en": "Shield Generator" },
+      "faction": "fenearth",
+      "type": "defense",
+      "role": { "ru": "Защитное поле", "en": "Defense field" },
+      "cost": 1200,
+      "hp": 1100,
+      "dps": 0,
+      "range": 340,
+      "buildTime": "24 с",
+      "desc": {
+        "ru": "Накрывает базу энергощитом, который поглощает урон до отключения питания.",
+        "en": "Covers the base with an energy shield that absorbs damage until power fails."
+      },
+      "strongVs": { "ru": ["Обстрелы на дистанции"], "en": ["Ranged bombardments"] },
+      "weakVs": { "ru": ["Отключение энергии", "Диверсанты"], "en": ["Power loss", "Saboteurs"] },
+      "draft": true
+    },
+    {
+      "id": "radar",
+      "name": { "ru": "Радар", "en": "Radar" },
+      "faction": "proton",
+      "type": "support",
+      "role": { "ru": "Обнаружение", "en": "Detection" },
+      "cost": 450,
+      "hp": 520,
+      "dps": 0,
+      "range": 900,
+      "buildTime": "14 с",
+      "desc": {
+        "ru": "Раскрывает скрытых юнитов и даёт обзор. Без радаров рейды «Авы» останутся незамеченными.",
+        "en": "Reveals stealth units and grants vision. Without radar, Ava raiders stay unseen."
+      },
+      "strongVs": { "ru": ["Скрытность"], "en": ["Stealth"] },
+      "weakVs": { "ru": ["Авиация", "Артиллерия"], "en": ["Air", "Artillery"] },
+      "draft": true
+    }
+  ]
+}

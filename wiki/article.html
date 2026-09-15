@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WWN Wiki</title>
+  <meta name="description" content="A WWN wiki article for Rusted Warfare.">
+  <meta name="theme-color" content="#050b16">
+
+  <link rel="icon" href="../assets/img/brand/favicon.png" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/brand/favicon-32.png">
+  <link rel="apple-touch-icon" href="../assets/img/brand/apple-touch-icon.png">
+  <link rel="manifest" href="../site.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Exo+2:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/wiki.css">
+</head>
+<body class="wiki-body">
+<div class="wiki-progress" id="wikiProgress"></div>
+
+<header class="header" id="header">
+  <div class="header__inner">
+    <a class="brand" href="../index.html" aria-label="WWN">
+      <img src="../assets/img/brand/logo-line.webp" alt="WWN">
+      <span class="brand__sub" data-i18n="brand.sub">A Rusted Warfare mod</span>
+    </a>
+    <nav class="nav" id="mainNav" aria-label="Main">
+      <a href="../index.html#features" data-i18n="nav.features">Features</a>
+      <a href="../index.html#factions" data-i18n="nav.factions">Factions</a>
+      <a href="../index.html#gallery" data-i18n="nav.gallery">Gallery</a>
+      <a href="../index.html#download" data-i18n="nav.download">Download</a>
+      <a href="./" class="is-active" data-i18n="nav.wiki">Wiki</a>
+      <a href="catalog.html" data-i18n="catalog.title">Catalog</a>
+    </nav>
+    <div class="header__side">
+      <button class="icon-btn" id="searchOpen" type="button" data-i18n-aria="wiki.search.placeholder" aria-label="Search the wiki…">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+      </button>
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" data-lang-btn="RU">RU</button>
+        <button type="button" data-lang-btn="EN">EN</button>
+      </div>
+      <button class="icon-btn burger" id="burger" type="button" aria-label="Menu" aria-expanded="false"><span></span></button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-nav" id="mobileNav">
+  <a href="../index.html" data-i18n="nav.home">Home</a>
+  <a href="../index.html#features" data-i18n="nav.features">Features</a>
+  <a href="../index.html#factions" data-i18n="nav.factions">Factions</a>
+  <a href="../index.html#gallery" data-i18n="nav.gallery">Gallery</a>
+  <a href="../index.html#download" data-i18n="nav.download">Download</a>
+  <a href="./" class="is-active" data-i18n="nav.wiki">Wiki</a>
+  <a href="catalog.html" data-i18n="catalog.title">Catalog</a>
+  <div class="lang" role="group" aria-label="Language">
+    <button type="button" data-lang-btn="RU">RU</button>
+    <button type="button" data-lang-btn="EN">EN</button>
+  </div>
+</div>
+
+<div class="wiki-shell">
+  <aside class="wiki-sidebar">
+    <div class="wiki-sidebar__search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+      <input type="search" id="searchInput" data-i18n-placeholder="wiki.search.placeholder" placeholder="Search the wiki…">
+    </div>
+    <nav class="wiki-nav" id="wikiNav"></nav>
+    <div class="wiki-sidebar__cta">
+      <p data-i18n="download.help">Need install help? Check the wiki or ping the community.</p>
+      <a class="btn btn--sm" href="../index.html#download" data-i18n="nav.download">Download</a>
+    </div>
+  </aside>
+
+  <main>
+    <article class="article">
+      <div class="article__head">
+        <div class="article__crumbs" id="crumbs"></div>
+        <h1 class="article__title" id="articleTitle">…</h1>
+        <div class="article__meta" id="articleMeta"></div>
+      </div>
+      <div class="article__body" id="articleBody">
+        <p data-i18n="wiki.subtitle">Mod reference: lore, factions, races, units, structures, mechanics and guides.</p>
+      </div>
+      <div class="article__pager" id="articlePager"></div>
+    </article>
+  </main>
+</div>
+
+<dialog class="search-panel" id="searchPanel">
+  <div class="search-panel__box">
+    <search>
+      <input class="search-panel__input" id="searchPanelInput" type="search" autocomplete="off" data-i18n-placeholder="wiki.search.placeholder" placeholder="Search the wiki…">
+    </search>
+    <p class="search-panel__hint" id="searchHint" data-i18n="wiki.search.hint">Type at least 2 characters</p>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</dialog>
+
+<footer class="footer" style="border-top: 1px solid var(--line)">
+  <div class="wrap footer__bottom" style="border-top: 0">
+    <p><span data-i18n="footer.disclaimer">Official website of the WWN mod for Rusted Warfare. Rusted Warfare © Corroding Games.</span></p>
+    <a class="btn btn--ghost btn--sm" href="./" data-i18n="wiki.back">Back to wiki</a>
+  </div>
+</footer>
+
+<script type="module" src="../assets/js/wiki.js"></script>
+</body>
+</html>

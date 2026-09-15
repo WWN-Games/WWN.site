@@ -1,0 +1,61 @@
+{
+  "_comment": "Фракции WWN. Цвет используется в оформлении карточек. Эмблемы: assets/img/*.png",
+  "factions": [
+    {
+      "id": "fenearth",
+      "name": { "ru": "Фенземская Республика", "en": "Fenearth Republic" },
+      "motto": { "ru": "Наследница Всегалактической Федерации", "en": "Heir of the Galactic Federation" },
+      "color": "#3b9bff",
+      "emblem": "assets/img/factions/faction-fer.webp",
+      "lore": "lore/fenearth",
+      "desc": {
+        "ru": "Федеративная парламентская республика, занимающая ~21% галактики. Унаследовала промышленную базу и технологии Всегалактической Федерации, поэтому её техника — это проверенные машины ВГФ и их модификации.",
+        "en": "A federal parliamentary republic holding ~21% of the galaxy. It inherited the industrial base and technology of the Galactic Federation, so its hardware is proven GF machines and their modifications."
+      },
+      "playstyle": {
+        "ru": "Крепкий мид-гейм, ставка на качество техники и промышленную мощь.",
+        "en": "Solid mid-game, betting on hardware quality and industrial might."
+      },
+      "specialty": {
+        "ru": "Флот и тяжёлая техника ВГФ",
+        "en": "Fleet and heavy GF hardware"
+      },
+      "strengths": {
+        "ru": ["Развитая промышленность", "Технологии ВГФ", "Сильная экономика (2-е место в галактике)"],
+        "en": ["Developed industry", "GF technology", "Strong economy (2nd in the galaxy)"]
+      },
+      "weaknesses": {
+        "ru": ["Растянутые границы", "Зависимость от промышленных миров"],
+        "en": ["Stretched borders", "Reliance on industrial worlds"]
+      }
+    },
+    {
+      "id": "proton",
+      "name": { "ru": "Движение Протон", "en": "Proton Movement" },
+      "motto": { "ru": "PHATHOU — Первый порядок", "en": "PHATHOU — the First Order" },
+      "color": "#ff3b4e",
+      "emblem": "assets/img/factions/faction-proton.webp",
+      "lore": "lore/proton",
+      "desc": {
+        "ru": "Союз кланов Территории Отен, занимающий ~22% галактики. Формально федерация, фактически — жёстко централизованное государство клана Кипфус. Техника простая и неприхотливая, но хрупкая; компенсируется полевым ремонтом и живой силой.",
+        "en": "A union of clans of the Oten Territory holding ~22% of the galaxy. Formally a federation, in practice a tightly centralized state of the Kipfus clan. Its hardware is simple and rugged but fragile — compensated by field repairs and manpower."
+      },
+      "playstyle": {
+        "ru": "Масса, давление и постоянный полевой ремонт.",
+        "en": "Mass, pressure and constant field repairs."
+      },
+      "specialty": {
+        "ru": "Массовая армия и импровизированное оружие",
+        "en": "Mass army and improvised weapons"
+      },
+      "strengths": {
+        "ru": ["Дешёвая и многочисленная армия", "Неприхотливая техника", "Ярость и мобильность васттов"],
+        "en": ["Cheap and numerous army", "Rugged hardware", "Vasst ferocity and mobility"]
+      },
+      "weaknesses": {
+        "ru": ["Хрупкая техника", "Большие потери", "Внутренние конфликты кланов"],
+        "en": ["Fragile hardware", "High casualties", "Clan infighting"]
+      }
+    }
+  ]
+}
