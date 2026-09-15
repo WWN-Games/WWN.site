@@ -3,7 +3,7 @@ title: Установка и обновление
 updated: 2026-09-15
 ---
 
-Мод WWN устанавливается за пару минут. Ниже — все способы: через Steam Workshop и вручную из релизов.
+Мод WWN устанавливается за пару минут. Ниже — все способы: через Steam Workshop и вручную.
 
 ## Способ 1. Steam Workshop (рекомендуется)
 
@@ -17,7 +17,7 @@ updated: 2026-09-15
 
 ## Способ 2. Ручная установка
 
-1. Скачайте архив мода: [Google Drive](https://drive.google.com/file/d/1a3r6f3GG2pORNaqzCVBrsTKvrXs_ctYg/view?usp=sharing) или последний релиз на [GitLab](https://gitlab.com/wwn.games/wwn.mod-rustedwarfare/WWN-Mod/-/releases).
+1. Скачайте архив мода: [Google Drive](https://drive.google.com/file/d/1a3r6f3GG2pORNaqzCVBrsTKvrXs_ctYg/view?usp=sharing).
 2. Распакуйте архив.
 3. Скопируйте файлы в директорию `mods/units` вашей установки Rusted Warfare.
 4. Запустите игру и включите мод в меню модов.
@@ -25,7 +25,6 @@ updated: 2026-09-15
 ## Где искать обновления
 
 - **Steam** — мод обновляется автоматически.
-- **GitLab** — страница [релизов](https://gitlab.com/wwn.games/wwn.mod-rustedwarfare/WWN-Mod/-/releases) с историей версий.
 - **Discord** — анонсы и обсуждение.
 
 ## Частые проблемы
@@ -38,4 +37,4 @@ updated: 2026-09-15
 
 ## Нашли баг?
 
-Сообщите о нём на странице [Issues](https://gitlab.com/wwn.games/wwn.mod-rustedwarfare/WWN-Mod/-/issues) с подробным описанием проблемы и версией мода.
+Сообщите о нём в [Discord](https://discord.gg/sRwKDGrbDy) с подробным описанием проблемы и версией мода.

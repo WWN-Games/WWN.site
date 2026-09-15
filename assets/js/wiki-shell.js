@@ -419,7 +419,9 @@ function initSearch() {
   });
 
   document.addEventListener("keydown", (event) => {
-    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+    if (event.defaultPrevented || panel.open) return;
+    const isK = event.code === "KeyK" || (event.key || "").toLowerCase() === "k";
+    if ((event.ctrlKey || event.metaKey) && isK) {
       event.preventDefault();
       openPanel();
     }

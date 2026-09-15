@@ -338,7 +338,10 @@ async function loadArticle(slug, lang) {
       small.textContent = arrow === "left" ? `← ${label}` : `${label} →`;
       const strong = document.createElement("b");
       strong.textContent = loc(item.title, lang);
-      link.append(small, strong);
+      const category = document.createElement("span");
+      category.className = "article__pager-cat";
+      category.textContent = loc(item.category?.title, lang);
+      link.append(small, strong, category);
       return link;
     };
 

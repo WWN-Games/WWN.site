@@ -309,8 +309,8 @@ function initTagFilter() {
     </div>
     <div class="tag-panel__body"></div>
     <div class="tag-panel__foot">
-      <button type="button" class="btn btn--ghost btn--sm tag-panel__reset"></button>
-      <button type="button" class="btn btn--sm tag-panel__apply"></button>
+      <button type="button" class="btn btn--sm tag-panel__reset"></button>
+      <button type="button" class="btn btn--cyan btn--sm tag-panel__apply"></button>
     </div>`;
   applyTagPanelLabels();
   document.body.append(tagPanel);

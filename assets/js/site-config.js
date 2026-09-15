@@ -22,7 +22,6 @@ export const WWN_CONFIG = {
     youtube: "https://www.youtube.com/@shykinc4860",
     telegram: "",
     vk: "",
-    gitlab: "https://gitlab.com/wwn.games/wwn.mod-rustedwarfare/WWN-Mod",
     github: ""
   },
 
