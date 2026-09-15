@@ -1,17 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="WWN">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="WWN mod emblem">
   <title>WWN</title>
   <defs>
-    <linearGradient id="plate" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#242A32"/>
-      <stop offset=".5" stop-color="#13171C"/>
-      <stop offset="1" stop-color="#090B0E"/>
-    </linearGradient>
-    <radialGradient id="halo" cx=".5" cy=".44" r=".66">
-      <stop offset="0" stop-color="#2f8fe0" stop-opacity=".32"/>
-      <stop offset=".55" stop-color="#1c5fae" stop-opacity=".13"/>
-      <stop offset="1" stop-color="#0b2038" stop-opacity="0"/>
-    </radialGradient>
-<radialGradient id="disc" cx=".38" cy=".3" r="1.05">
+    <radialGradient id="disc" cx=".38" cy=".3" r="1.05">
       <stop offset="0" stop-color="#4FB6F2"/>
       <stop offset=".4" stop-color="#2A86DC"/>
       <stop offset=".72" stop-color="#175FAE"/>
@@ -50,10 +40,7 @@
     </filter>
   </defs>
 
-  <rect width="512" height="512" rx="112" fill="url(#plate)"/>
-  <rect width="512" height="512" rx="112" fill="url(#halo)"/>
-  <g transform="translate(41 41) scale(.84)">
-<g id="emblem">
+  <g id="emblem">
     <g fill="url(#rayG)">
       <use href="#ray"/>
       <use href="#ray" transform="rotate(45 256 256)"/>
@@ -71,7 +58,4 @@
   <use href="#emblem" filter="url(#glow)" opacity=".22"/>
   <use href="#emblem" filter="url(#matte)"/>
   <path d="M256 214 L378 281 L134 281 Z" fill="none" stroke="#010B1A" stroke-width="16" opacity=".38" mask="url(#hole)" filter="url(#innerShadow)"/>
-  </g>
-  <rect x="1.5" y="1.5" width="509" height="509" rx="110.5" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="3"/>
-  <rect x="5" y="5" width="502" height="502" rx="107" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="2"/>
 </svg>
