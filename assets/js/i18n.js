@@ -33,7 +33,6 @@ export const I18N = {
     "stats.units": "юнитов и строений",
     "stats.factions": "фракции",
     "stats.maps": "карт",
-    "stats.races": "расы",
 
     "features.title": "Возможности мода",
     "features.subtitle": "Что WWN добавляет в Rusted Warfare",
@@ -212,7 +211,6 @@ export const I18N = {
     "stats.units": "units & structures",
     "stats.factions": "factions",
     "stats.maps": "maps",
-    "stats.races": "races",
 
     "features.title": "Mod features",
     "features.subtitle": "What WWN adds to Rusted Warfare",

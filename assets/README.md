@@ -4,7 +4,7 @@
 
 | Папка | Что лежит |
 | --- | --- |
-| `img/brand/` | логотип (`logo-line.webp`), favicon (`favicon*.png`), `apple-touch-icon.png`, иконки (`icon-192.png`, `icon-512.png`) |
+| `img/brand/` | логотип (`logo.svg`), favicon (`favicon.svg`), иконки манифеста (`icon-192.png`, `icon-512.png`) |
 | `img/bg/` | фоны: `banner.webp` — первый экран, `space.webp` — раздел вики |
 | `img/factions/` | эмблемы фракций |
 | `img/catalog/` | иконки каталога: имя файла = `<id>` из `data/units.json` / `data/buildings.json` |

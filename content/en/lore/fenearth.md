@@ -7,7 +7,7 @@ The **Fenearth Republic** (FR/Fenearth) is one of the two factions of WWN — an
 
 ![Map of the Fenearth Republic](../assets/img/lore/map-fenearth.webp)
 
-![Emblem of the Fenearth Republic](../assets/img/factions/faction-fer.webp)
+![Emblem of the Fenearth Republic](../assets/img/factions/faction-fer.svg)
 
 ## General Information
 

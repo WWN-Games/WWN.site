@@ -36,7 +36,7 @@ updated: 2026-09-15
 
 ![Карта Движения Протон](../assets/img/lore/map-proton.webp)
 
-![Герб Движения Протон](../assets/img/factions/faction-proton.webp)
+![Герб Движения Протон](../assets/img/factions/faction-proton.svg)
 
 ## Гимн Движения Протон
 

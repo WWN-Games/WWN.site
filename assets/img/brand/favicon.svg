@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="WWN">
+  <title>WWN</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#13263f"/>
+      <stop offset="1" stop-color="#060d18"/>
+    </linearGradient>
+    <radialGradient id="halo" cx=".5" cy=".45" r=".62">
+      <stop offset="0" stop-color="#2f8fe8" stop-opacity="0.45"/>
+      <stop offset=".55" stop-color="#1c5fae" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#0b2038" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="wg" x1="0" y1="95" x2="0" y2="417" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#E6FCFF"/>
+      <stop offset=".25" stop-color="#8CE7FB"/>
+      <stop offset=".55" stop-color="#46AAF1"/>
+      <stop offset="1" stop-color="#2A80D9"/>
+    </linearGradient>
+    <path id="w" fill="url(#wg)" d="M474.05 95L391.97 417L314.4 417L270.66 247.88Q269.3 242.92 267.27 233Q265.25 223.08 262.76 211.35Q260.28 199.63 258.48 189.03Q256.68 178.43 255.77 172.57Q255.32 178.43 253.29 189.03Q251.26 199.63 249.01 211.13Q246.75 222.63 244.5 232.77Q242.25 242.92 240.89 248.33L197.6 417L120.03 417L37.95 95L105.15 95L146.19 270.88Q148.89 281.25 152.05 297.04Q155.21 312.82 157.91 328.61Q160.62 344.39 161.97 355.22Q163.32 343.94 166.03 328.38Q168.74 312.82 171.67 298.17Q174.6 283.51 176.85 275.39L223.75 95L288.25 95L335.15 275.39Q337.4 283.06 340.33 297.94Q343.26 312.82 345.97 328.61Q348.68 344.39 350.03 355.22Q351.38 343.94 354.09 328.38Q356.79 312.82 360.18 297.04Q363.56 281.25 365.81 270.88L406.85 95Z"/>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feMorphology operator="dilate" radius="6" result="t"/>
+      <feGaussianBlur in="t" stdDeviation="14"/>
+    </filter>
+  </defs>
+
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <rect width="512" height="512" rx="112" fill="url(#halo)"/>
+  <rect x="1.5" y="1.5" width="509" height="509" rx="110.5" fill="none" stroke="rgba(130,180,255,.18)" stroke-width="3"/>
+  <use href="#w" filter="url(#glow)" opacity="0.45"/>
+  <use href="#w"/>
+</svg>

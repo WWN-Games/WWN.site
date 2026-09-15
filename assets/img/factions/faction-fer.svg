@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Fenearth Republic">
+  <defs>
+    <linearGradient id="g1" x1="0" y1="39" x2="0" y2="467" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#5b6ee8"/>
+      <stop offset="0.5" stop-color="#6fd0ee"/>
+      <stop offset="1" stop-color="#4fd7e6"/>
+    </linearGradient>
+  </defs>
+
+  <!-- рамка -->
+  <rect x="60" y="60" width="392" height="392" rx="74" fill="none" stroke="url(#g1)" stroke-width="30"/>
+
+  <!-- крыло: кромка, живот и ножка, уходящая в рамку -->
+  <path fill="url(#g1)" d="M 238 100
+    L 302 100
+    C 288 160 252 290 222 372
+    C 210 410 186 430 158 432
+    L 70 432
+    L 70 392
+    L 116 392
+    C 152 390 170 374 180 350
+    C 202 296 214 196 234 100 Z"/>
+
+  <!-- палочки: ровно вправо, одинаковые зазоры, острые концы -->
+  <path fill="url(#g1)" d="M 280 100 L 412 100 L 390 140 L 284 140 Z"/>
+  <path fill="url(#g1)" d="M 262 158 L 412 158 L 390 198 L 266 198 Z"/>
+  <path fill="url(#g1)" d="M 244 216 L 412 216 L 390 256 L 248 256 Z"/>
+  <path fill="url(#g1)" d="M 226 274 L 412 274 L 390 314 L 230 314 Z"/>
+  <path fill="url(#g1)" d="M 208 332 L 412 332 L 390 372 L 212 372 Z"/>
+</svg>

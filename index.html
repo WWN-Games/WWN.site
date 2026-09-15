@@ -16,11 +16,7 @@
   <meta name="twitter:description" content="Space fleets, ground battles and a universe of its own. Download WWN for free.">
   <meta name="twitter:image" content="assets/img/bg/banner.webp">
 
-  <link rel="icon" href="assets/img/brand/favicon.png" sizes="any">
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/brand/favicon-32.png">
-  <link rel="icon" type="image/png" sizes="48x48" href="assets/img/brand/favicon-48.png">
-  <link rel="icon" type="image/png" sizes="64x64" href="assets/img/brand/favicon-64.png">
-  <link rel="apple-touch-icon" href="assets/img/brand/apple-touch-icon.png">
+  <link rel="icon" type="image/svg+xml" href="assets/img/brand/favicon.svg">
   <link rel="manifest" href="site.webmanifest">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -41,7 +37,7 @@
 <header class="header" id="header">
   <div class="header__inner">
     <a class="brand" href="#top" aria-label="WWN">
-      <img src="assets/img/brand/logo-line.webp" alt="WWN">
+      <img src="assets/img/brand/logo.svg" alt="WWN">
       <span class="brand__sub" data-i18n="brand.sub">A Rusted Warfare mod</span>
     </a>
 
@@ -127,6 +123,21 @@
       </div>
     </div>
 
+    <div class="hero__stats" data-reveal>
+      <div class="stat">
+        <div class="stat__num">0</div>
+        <div class="stat__label" data-i18n="stats.units">units &amp; structures</div>
+      </div>
+      <div class="stat">
+        <div class="stat__num">0</div>
+        <div class="stat__label" data-i18n="stats.factions">factions</div>
+      </div>
+      <div class="stat">
+        <div class="stat__num">0</div>
+        <div class="stat__label" data-i18n="stats.maps">maps</div>
+      </div>
+    </div>
+
     <div class="hero__dock">
       <a href="wiki/" data-i18n="nav.wiki">Wiki</a>
       <span class="sep"></span>
@@ -135,30 +146,6 @@
       <a href="#" data-link="discord">Discord</a>
       <span class="sep"></span>
       <a href="#" data-link="steam">Steam Workshop</a>
-    </div>
-  </section>
-
-  <!-- =========================================================== STATS -->
-  <section class="section section--tight">
-    <div class="wrap">
-      <div class="stats__grid" data-reveal>
-        <div class="stat">
-          <div class="stat__num">0</div>
-          <div class="stat__label" data-i18n="stats.units">units &amp; structures</div>
-        </div>
-        <div class="stat">
-          <div class="stat__num">0</div>
-          <div class="stat__label" data-i18n="stats.factions">factions</div>
-        </div>
-        <div class="stat">
-          <div class="stat__num">0</div>
-          <div class="stat__label" data-i18n="stats.maps">maps</div>
-        </div>
-        <div class="stat">
-          <div class="stat__num">0</div>
-          <div class="stat__label" data-i18n="stats.races">races</div>
-        </div>
-      </div>
     </div>
   </section>
 
@@ -234,7 +221,7 @@
       <div class="factions-showcase">
         <article class="fac" style="--faction-color:#3b9bff" data-reveal>
           <div class="fac__top">
-            <div class="fac__emblem"><img src="assets/img/factions/faction-fer.webp" alt="Fenearth Republic" loading="lazy"></div>
+            <div class="fac__emblem"><img src="assets/img/factions/faction-fer.svg" alt="Fenearth Republic" loading="lazy"></div>
             <div>
               <div class="fac__name" data-i18n="facsec.fenearth.name">Fenearth Republic</div>
               <div class="fac__motto" data-i18n="facsec.fenearth.motto">Heir of the Galactic Federation</div>
@@ -251,7 +238,7 @@
 
         <article class="fac" style="--faction-color:#ff4157" data-reveal data-reveal-delay="1">
           <div class="fac__top">
-            <div class="fac__emblem"><img src="assets/img/factions/faction-proton.webp" alt="Proton Movement" loading="lazy"></div>
+            <div class="fac__emblem"><img src="assets/img/factions/faction-proton.svg" alt="Proton Movement" loading="lazy"></div>
             <div>
               <div class="fac__name" data-i18n="facsec.proton.name">Proton Movement</div>
               <div class="fac__motto" data-i18n="facsec.proton.motto">PHATHOU — the First Order</div>
@@ -401,7 +388,7 @@
   <div class="wrap">
     <div class="footer__top">
       <div class="footer__brand">
-        <img src="assets/img/brand/logo-line.webp" alt="WWN">
+        <img src="assets/img/brand/logo.svg" alt="WWN">
         <p data-i18n="siteTagline">The WWN mod for Rusted Warfare. Space fleets, ground battles and a living players' league.</p>
         <div class="footer__social">
           <a class="icon-btn" href="#" data-link="discord" aria-label="Discord">

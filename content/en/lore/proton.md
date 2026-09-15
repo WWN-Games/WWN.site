@@ -7,7 +7,7 @@ The **Proton Movement** (Unified Oten PHATHOU) is one of the two factions of WWN
 
 ![Map of the Proton Movement](../assets/img/lore/map-proton.webp)
 
-![Emblem of the Proton Movement](../assets/img/factions/faction-proton.webp)
+![Emblem of the Proton Movement](../assets/img/factions/faction-proton.svg)
 
 ## General Information
 

@@ -6,7 +6,7 @@
       "name": { "ru": "Фенземская Республика", "en": "Fenearth Republic" },
       "motto": { "ru": "Наследница Всегалактической Федерации", "en": "Heir of the Galactic Federation" },
       "color": "#3b9bff",
-      "emblem": "assets/img/factions/faction-fer.webp",
+      "emblem": "assets/img/factions/faction-fer.svg",
       "lore": "lore/fenearth",
       "desc": {
         "ru": "Федеративная парламентская республика, занимающая ~21% галактики. Унаследовала промышленную базу и технологии Всегалактической Федерации, поэтому её техника — это проверенные машины ВГФ и их модификации.",
@@ -34,7 +34,7 @@
       "name": { "ru": "Движение Протон", "en": "Proton Movement" },
       "motto": { "ru": "PHATHOU — Первый порядок", "en": "PHATHOU — the First Order" },
       "color": "#ff3b4e",
-      "emblem": "assets/img/factions/faction-proton.webp",
+      "emblem": "assets/img/factions/faction-proton.svg",
       "lore": "lore/proton",
       "desc": {
         "ru": "Союз кланов Территории Отен, занимающий ~22% галактики. Формально федерация, фактически — жёстко централизованное государство клана Кипфус. Техника простая и неприхотливая, но хрупкая; компенсируется полевым ремонтом и живой силой.",

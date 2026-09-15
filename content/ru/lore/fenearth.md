@@ -47,7 +47,7 @@ updated: 2026-09-15
 
 ![Карта Фенземской Республики](../assets/img/lore/map-fenearth.webp)
 
-![Герб Фенземской Республики](../assets/img/factions/faction-fer.webp)
+![Герб Фенземской Республики](../assets/img/factions/faction-fer.svg)
 
 ## Гимн Фенземской Республики
 

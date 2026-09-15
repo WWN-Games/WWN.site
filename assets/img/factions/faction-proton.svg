@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Proton Movement">
+  <defs>
+    <linearGradient id="pro-ring" x1="70" y1="60" x2="450" y2="460" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f0394d"/>
+      <stop offset=".5" stop-color="#d21f33"/>
+      <stop offset="1" stop-color="#a30d20"/>
+    </linearGradient>
+    <linearGradient id="pro-star" x1="160" y1="110" x2="350" y2="340" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f2334a"/>
+      <stop offset=".55" stop-color="#cd1c31"/>
+      <stop offset="1" stop-color="#9c0c1e"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="60" y="60" width="392" height="392" rx="74" fill="none" stroke="url(#pro-ring)" stroke-width="30"/>
+
+  <!-- лучи: 3 на сторону -->
+  <g fill="#d0202f" opacity=".55">
+    <path d="M 136 108 Q 108.2 194.0 99 284 Q 126.8 198.0 136 108 Z"/>
+    <path d="M 376 108 Q 385.2 198.0 413 284 Q 403.8 194.0 376 108 Z"/>
+    <path d="M 150 250 Q 127.5 287.2 120 330 Q 142.5 292.8 150 250 Z"/>
+    <path d="M 362 250 Q 369.5 292.8 392 330 Q 384.5 287.2 362 250 Z"/>
+    <path d="M 150 358 Q 128.8 382.4 122 414 Q 143.2 389.6 150 358 Z"/>
+    <path d="M 362 358 Q 368.8 389.6 390 414 Q 383.2 382.4 362 358 Z"/>
+  </g>
+
+  <!-- шевроны под звездой: два, направлены вверх -->
+  <g fill="#d0202f" opacity=".55">
+    <path d="M 198 350 L 256 318 L 314 350 L 314 366 L 256 334 L 198 366 Z"/>
+    <path d="M 188 408 L 256 370 L 324 408 L 324 424 L 256 386 L 188 424 Z"/>
+  </g>
+
+  <!-- звезда -->
+  <path d="M 256 114 L 284.8 194.4 L 370.1 196.9 L 302.6 249.1 L 326.5 331.1 L 256 283 L 185.5 331.1 L 209.4 249.1 L 141.9 196.9 L 227.2 194.4 Z"
+        fill="#7d0a1a" opacity=".55" transform="translate(4 5)"/>
+  <path d="M 256 114 L 284.8 194.4 L 370.1 196.9 L 302.6 249.1 L 326.5 331.1 L 256 283 L 185.5 331.1 L 209.4 249.1 L 141.9 196.9 L 227.2 194.4 Z"
+        fill="url(#pro-star)"/>
+</svg>
