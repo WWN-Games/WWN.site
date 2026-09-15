@@ -20,10 +20,21 @@ export function initHeader() {
       burger.classList.toggle("is-open", open);
       burger.setAttribute("aria-expanded", String(open));
       mobileNav.inert = !open;
+      document.body.classList.toggle("is-locked", open);
     };
     setOpen(false);
     burger.addEventListener("click", () => setOpen(!mobileNav.classList.contains("is-open")));
     $$("a", mobileNav).forEach((link) => link.addEventListener("click", () => setOpen(false)));
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && mobileNav.classList.contains("is-open")) {
+        setOpen(false);
+        burger.focus();
+      }
+    });
+    // при переходе на десктопную ширину меню принудительно закрывается
+    window.matchMedia("(min-width: 901px)").addEventListener?.("change", (event) => {
+      if (event.matches) setOpen(false);
+    });
   }
 
   // подсветка активного пункта меню при скролле

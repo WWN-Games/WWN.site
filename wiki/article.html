@@ -2,16 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>WWN Wiki</title>
   <meta name="description" content="WWN wiki article: lore, factions, units, structures, mechanics and guides for Rusted Warfare.">
   <meta property="og:type" content="article">
+  <meta property="og:url" content="https://wwn-games.github.io/WWN.site/wiki/article.html">
   <meta property="og:title" content="WWN Wiki">
   <meta property="og:description" content="Lore, factions, units, structures, mechanics and guides of the WWN mod.">
-  <meta property="og:image" content="../assets/img/bg/banner.webp">
+  <meta property="og:image" content="https://wwn-games.github.io/WWN.site/assets/img/bg/og-banner.webp">
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#050b16">
+  <link rel="canonical" href="https://wwn-games.github.io/WWN.site/wiki/article.html">
 
   <link rel="icon" type="image/svg+xml" href="../assets/img/brand/favicon.svg">
+  <link rel="apple-touch-icon" href="../assets/img/brand/icon-192.png">
   <link rel="manifest" href="../site.webmanifest">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -34,12 +38,9 @@
       <a href="../index.html#gallery" data-i18n="nav.gallery">Gallery</a>
       <a href="../index.html#download" data-i18n="nav.download">Download</a>
       <a href="./" class="is-active" data-i18n="nav.wiki">Wiki</a>
-      <a href="catalog.html" data-i18n="catalog.title">Database</a>
+      <a href="../database.html" data-i18n="database.title">Database</a>
     </nav>
     <div class="header__side">
-      <button class="icon-btn" id="searchOpen" type="button" data-i18n-aria="wiki.search.placeholder" aria-label="Search the wiki…">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
-      </button>
       <div class="lang" role="group" aria-label="Language">
         <button type="button" data-lang-btn="RU">RU</button>
         <button type="button" data-lang-btn="EN">EN</button>
@@ -56,7 +57,7 @@
   <a href="../index.html#gallery" data-i18n="nav.gallery">Gallery</a>
   <a href="../index.html#download" data-i18n="nav.download">Download</a>
   <a href="./" class="is-active" data-i18n="nav.wiki">Wiki</a>
-  <a href="catalog.html" data-i18n="catalog.title">Database</a>
+  <a href="../database.html" data-i18n="database.title">Database</a>
   <div class="lang" role="group" aria-label="Language">
     <button type="button" data-lang-btn="RU">RU</button>
     <button type="button" data-lang-btn="EN">EN</button>
@@ -68,26 +69,30 @@
     <div class="wiki-sidebar__search">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
       <input type="search" id="searchInput" data-i18n-placeholder="wiki.search.placeholder" data-i18n-aria="wiki.search.placeholder" placeholder="Search the wiki…" aria-label="Search the wiki…">
+      <kbd class="wiki-sidebar__kbd">Ctrl K</kbd>
     </div>
     <nav class="wiki-nav" id="wikiNav" data-i18n-aria="wiki.title" aria-label="WWN Wiki"></nav>
     <div class="wiki-sidebar__cta">
-      <p data-i18n="download.help">Need install help? Check the wiki or ping the community.</p>
+      <p data-i18n="wiki.help">Need install help? Check the wiki or ping the community.</p>
       <a class="btn btn--sm" href="../index.html#download" data-i18n="nav.download">Download</a>
     </div>
   </aside>
 
   <main>
-    <article class="article">
-      <div class="article__head">
-        <div class="article__crumbs" id="crumbs"></div>
-        <h1 class="article__title" id="articleTitle">…</h1>
-        <div class="article__meta" id="articleMeta"></div>
-      </div>
-      <div class="article__body" id="articleBody">
-        <p data-i18n="wiki.subtitle">Mod reference: lore, factions, races, units, structures, mechanics and guides.</p>
-      </div>
-      <div class="article__pager" id="articlePager"></div>
-    </article>
+    <div class="article-layout">
+      <article class="article">
+        <div class="article__head">
+          <div class="article__crumbs" id="crumbs"></div>
+          <h1 class="article__title" id="articleTitle">…</h1>
+          <div class="article__meta" id="articleMeta"></div>
+        </div>
+        <div class="article__body" id="articleBody">
+          <p data-i18n="wiki.subtitle">Mod reference: lore, factions, races, units, structures, mechanics and guides.</p>
+        </div>
+        <div class="article__pager" id="articlePager"></div>
+      </article>
+      <aside class="article__aside" id="articleAside" data-i18n-aria="wiki.toc" aria-label="On this page"></aside>
+    </div>
   </main>
 </div>
 

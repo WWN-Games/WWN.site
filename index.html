@@ -2,33 +2,62 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>WWN — official mod site for Rusted Warfare | Download, wiki, lore</title>
   <meta name="description" content="Official site of the WWN mod for Rusted Warfare: space fleets, ground battles, two factions, its own universe and a living players' league. Download for free on Steam Workshop; full wiki with lore.">
   <meta name="theme-color" content="#050b16">
+  <link rel="canonical" href="https://wwn-games.github.io/WWN.site/">
 
   <meta property="og:type" content="website">
+  <meta property="og:url" content="https://wwn-games.github.io/WWN.site/">
   <meta property="og:title" content="WWN — a Rusted Warfare mod">
   <meta property="og:description" content="Space fleets, ground battles and a universe of its own. Download WWN for free.">
-  <meta property="og:image" content="assets/img/bg/banner.webp">
+  <meta property="og:image" content="https://wwn-games.github.io/WWN.site/assets/img/bg/og-banner.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="WWN — a Rusted Warfare mod">
   <meta name="twitter:description" content="Space fleets, ground battles and a universe of its own. Download WWN for free.">
-  <meta name="twitter:image" content="assets/img/bg/banner.webp">
+  <meta name="twitter:image" content="https://wwn-games.github.io/WWN.site/assets/img/bg/og-banner.webp">
 
   <link rel="icon" type="image/svg+xml" href="assets/img/brand/favicon.svg">
+  <link rel="apple-touch-icon" href="assets/img/brand/icon-192.png">
   <link rel="manifest" href="site.webmanifest">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Exo+2:wght@400;600;700&display=swap" rel="stylesheet">
 
-  <link rel="preload" as="image" href="assets/img/bg/banner.webp" fetchpriority="high">
   <link rel="stylesheet" href="assets/css/style.css">
   <script type="speculationrules">
     {"prefetch":[{"source":"document","where":{"href_matches":"wiki/*"},"eagerness":"moderate"}]}
   </script>
   <noscript><style>[data-reveal] { opacity: 1; transform: none; }</style></noscript>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://wwn-games.github.io/WWN.site/#website",
+          "url": "https://wwn-games.github.io/WWN.site/",
+          "name": "WWN",
+          "inLanguage": ["ru", "en"]
+        },
+        {
+          "@type": "VideoGame",
+          "@id": "https://wwn-games.github.io/WWN.site/#mod",
+          "name": "WWN — a Rusted Warfare mod",
+          "url": "https://wwn-games.github.io/WWN.site/",
+          "gamePlatform": "PC",
+          "applicationCategory": "GameModification",
+          "operatingSystem": "Windows, macOS, Linux, Android",
+          "isAccessibleForFree": true,
+          "image": "https://wwn-games.github.io/WWN.site/assets/img/bg/og-banner.webp"
+        }
+      ]
+    }
+  </script>
 </head>
 <body>
 
@@ -47,7 +76,7 @@
       <a href="#gallery" data-i18n="nav.gallery">Gallery</a>
       <a href="#download" data-i18n="nav.download">Download</a>
       <a href="wiki/" data-i18n="nav.wiki">Wiki</a>
-      <a href="wiki/catalog.html" data-i18n="catalog.title">Database</a>
+      <a href="database.html" data-i18n="database.title">Database</a>
     </nav>
 
     <div class="header__side">
@@ -69,7 +98,7 @@
   <a href="#news" data-i18n="nav.news">News</a>
   <a href="#download" data-i18n="nav.download">Download</a>
   <a href="wiki/" data-i18n="nav.wiki">Wiki</a>
-  <a href="wiki/catalog.html" data-i18n="catalog.title">Database</a>
+  <a href="database.html" data-i18n="database.title">Database</a>
   <a href="#faq" data-i18n="nav.faq">FAQ</a>
   <div class="lang" role="group" aria-label="Language">
     <button type="button" data-lang-btn="RU">RU</button>
@@ -81,7 +110,10 @@
 
   <!-- ============================================================ HERO -->
   <section class="hero">
-    <div class="hero__bg" aria-hidden="true"><i></i></div>
+    <div class="hero__bg" aria-hidden="true">
+      <img class="hero__bg-img" src="assets/img/bg/banner.webp" alt="" width="1920" height="768"
+        fetchpriority="high" decoding="async">
+    </div>
     <div class="hero__matte" aria-hidden="true"></div>
     <canvas id="starfield" aria-hidden="true"></canvas>
     <div class="orb orb--1" aria-hidden="true"></div>
@@ -141,7 +173,7 @@
     <div class="hero__dock">
       <a href="wiki/" data-i18n="nav.wiki">Wiki</a>
       <span class="sep"></span>
-      <a href="wiki/catalog.html" data-i18n="catalog.title">Database</a>
+      <a href="database.html" data-i18n="database.title">Database</a>
       <span class="sep"></span>
       <a href="#" data-link="discord">Discord</a>
       <span class="sep"></span>
@@ -315,7 +347,6 @@
           <p data-i18n="download.drive.desc">Manual install: download the archive, unpack it into the game's mods/units folder and enable the mod in the menu.</p>
           <span class="dl-card__note" data-link-note="drive" data-i18n="download.linkSoon">Link coming soon</span>
           <a class="btn btn--red" href="#" data-link="drive" data-i18n="download.drive.btn">Download from Drive</a>
-          <span class="dl-card__alt"><a href="#" data-link="gitlab" data-i18n="download.gitlab">Latest releases are also published on GitLab</a></span>
         </article>
       </div>
 
@@ -338,10 +369,6 @@
         </div>
       </div>
 
-      <div class="dl-note" data-reveal>
-        <span data-i18n="download.requirements">Requires a legit copy of Rusted Warfare (Steam / Google Play). The mod is free.</span>
-        <a class="btn btn--ghost btn--sm" href="#" data-link="gitlab" data-i18n="download.gitlab">Latest releases are also published on GitLab</a>
-      </div>
     </div>
   </section>
 
@@ -359,24 +386,16 @@
           <div class="faq__a" id="faqA1" inert aria-hidden="true"><p data-i18n="faq.a1">WWN is a major Rusted Warfare mod: space combat, new units and maps, two factions and its own fully-fleshed universe.</p></div>
         </div>
         <div class="faq__item" data-reveal>
-          <button class="faq__q" type="button" aria-expanded="false" aria-controls="faqA2"><span data-i18n="faq.q2">Is the mod free?</span><i></i></button>
-          <div class="faq__a" id="faqA2" inert aria-hidden="true"><p data-i18n="faq.a2">Yes, the mod is free. You only need the base Rusted Warfare game.</p></div>
+          <button class="faq__q" type="button" aria-expanded="false" aria-controls="faqA2"><span data-i18n="faq.q3">How do I play online?</span><i></i></button>
+          <div class="faq__a" id="faqA2" inert aria-hidden="true"><p data-i18n="faq.a3">All players in a lobby must run the same mod version. The host creates a game, others join as usual.</p></div>
         </div>
         <div class="faq__item" data-reveal>
-          <button class="faq__q" type="button" aria-expanded="false" aria-controls="faqA3"><span data-i18n="faq.q3">How do I play online?</span><i></i></button>
-          <div class="faq__a" id="faqA3" inert aria-hidden="true"><p data-i18n="faq.a3">All players in a lobby must run the same mod version. The host creates a game on WWN maps, others join as usual.</p></div>
+          <button class="faq__q" type="button" aria-expanded="false" aria-controls="faqA3"><span data-i18n="faq.q5">How do I track updates?</span><i></i></button>
+          <div class="faq__a" id="faqA3" inert aria-hidden="true"><p data-i18n-html="faq.a5">All news about new versions and development progress appears in <a href="#" data-link="discord">Discord</a>.</p></div>
         </div>
         <div class="faq__item" data-reveal>
-          <button class="faq__q" type="button" aria-expanded="false" aria-controls="faqA4"><span data-i18n="faq.q4">Will the mod break my saves?</span><i></i></button>
-          <div class="faq__a" id="faqA4" inert aria-hidden="true"><p data-i18n="faq.a4">Old vanilla saves may not open. Before updating WWN we recommend starting a new game.</p></div>
-        </div>
-        <div class="faq__item" data-reveal>
-          <button class="faq__q" type="button" aria-expanded="false" aria-controls="faqA5"><span data-i18n="faq.q5">How do I track updates?</span><i></i></button>
-          <div class="faq__a" id="faqA5" inert aria-hidden="true"><p data-i18n="faq.a5">Subscribe on Steam Workshop, follow GitLab releases and check the "What's new" section and wiki patch notes.</p></div>
-        </div>
-        <div class="faq__item" data-reveal>
-          <button class="faq__q" type="button" aria-expanded="false" aria-controls="faqA6"><span data-i18n="faq.q6">Where to discuss balance and find opponents?</span><i></i></button>
-          <div class="faq__a" id="faqA6" inert aria-hidden="true"><p data-i18n="faq.a6">In the WWN community: Discord and Steam Workshop. Links are in the header and footer.</p></div>
+          <button class="faq__q" type="button" aria-expanded="false" aria-controls="faqA4"><span data-i18n="faq.q6">Where to discuss balance and find opponents?</span><i></i></button>
+          <div class="faq__a" id="faqA4" inert aria-hidden="true"><p data-i18n-html="faq.a6">In <a href="#" data-link="discord">Discord</a>.</p></div>
         </div>
       </div>
     </div>
@@ -397,8 +416,8 @@
           <a class="icon-btn" href="#" data-link="steam" aria-label="Steam">
             <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.605 0 11.979 0zM7.54 18.21l-1.473-.61c.262.543.714.999 1.314 1.25 1.297.539 2.793-.076 3.332-1.375.263-.63.264-1.319.005-1.949s-.75-1.121-1.377-1.383c-.624-.26-1.29-.249-1.878-.03l1.523.63c.956.4 1.409 1.5 1.009 2.455-.397.957-1.497 1.41-2.454 1.012H7.54zm11.415-9.303c0-1.662-1.353-3.015-3.015-3.015-1.665 0-3.015 1.353-3.015 3.015 0 1.665 1.35 3.015 3.015 3.015 1.663 0 3.015-1.35 3.015-3.015zm-5.273-.005c0-1.252 1.013-2.266 2.265-2.266 1.249 0 2.266 1.014 2.266 2.266 0 1.251-1.017 2.265-2.266 2.265-1.253 0-2.265-1.014-2.265-2.265z" /></svg>
           </a>
-          <a class="icon-btn" href="#" data-link="gitlab" aria-label="GitLab">
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z" /></svg>
+          <a class="icon-btn" href="#" data-link="youtube" aria-label="YouTube">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" /></svg>
           </a>
         </div>
       </div>
@@ -410,7 +429,7 @@
           <li><a href="#factions" data-i18n="nav.factions">Factions</a></li>
           <li><a href="#gallery" data-i18n="nav.gallery">Gallery</a></li>
           <li><a href="wiki/" data-i18n="nav.wiki">Wiki</a></li>
-          <li><a href="wiki/catalog.html" data-i18n="catalog.title">Database</a></li>
+          <li><a href="database.html" data-i18n="database.title">Database</a></li>
         </ul>
       </div>
 

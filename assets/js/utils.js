@@ -13,7 +13,20 @@ export const abs = (path) => new URL(path, BASE).href;
 export const $ = (sel, root = document) => root.querySelector(sel);
 export const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 
-export const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+export const prefersReduced =
+  typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/** Устройство с курсором (мышь) — для дорогих hover-эффектов и параллакса. */
+export const finePointer =
+  typeof window !== "undefined" && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+/** Слабый/мобильный профиль: тач или экономия трафика. */
+export const liteMode =
+  typeof window !== "undefined" &&
+  (!finePointer ||
+    (navigator.hardwareConcurrency || 8) <= 2 ||
+    (typeof navigator.deviceMemory === "number" && navigator.deviceMemory <= 2) ||
+    document.documentElement.clientWidth < 900);
 
 /* ------------------------------------------------------------- локализация -- */
 /** Значение локализованного поля { ru, en } с фолбэком на ru/en. */
@@ -24,7 +37,7 @@ export const locObj = (obj, lang, fallback = {}) => (obj ? obj[lang] || obj.ru |
 
 /* ------------------------------------------------------------------- DOM -- */
 /** Пустой блок-сообщение («ничего не найдено» и т.п.). */
-export function emptyBlock(text, className = "catalog-empty") {
+export function emptyBlock(text, className = "empty-block") {
   const div = document.createElement("div");
   div.className = className;
   div.textContent = text;

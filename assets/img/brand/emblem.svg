@@ -22,21 +22,9 @@
       <circle cx="256" cy="256" r="152" fill="#fff"/>
       <path d="M256 214 L378 281 L134 281 Z" fill="#000"/>
     </mask>
-    <filter id="matte" x="-6%" y="-6%" width="112%" height="112%">
-      <feTurbulence type="fractalNoise" baseFrequency=".95" numOctaves="2" seed="7" result="n"/>
-      <feColorMatrix in="n" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .09 0" result="grain"/>
-      <feComposite in="grain" in2="SourceGraphic" operator="in" result="g"/>
-      <feMerge>
-        <feMergeNode in="SourceGraphic"/>
-        <feMergeNode in="g"/>
-      </feMerge>
-    </filter>
     <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
       <feMorphology operator="dilate" radius="5" result="t"/>
       <feGaussianBlur in="t" stdDeviation="8"/>
-    </filter>
-    <filter id="innerShadow" x="-25%" y="-25%" width="150%" height="150%">
-      <feGaussianBlur stdDeviation="5"/>
     </filter>
   </defs>
 
@@ -56,6 +44,5 @@
   </g>
 
   <use xlink:href="#emblem" filter="url(#glow)" opacity=".22"/>
-  <use xlink:href="#emblem" filter="url(#matte)"/>
-  <path d="M256 214 L378 281 L134 281 Z" fill="none" stroke="#02150C" stroke-width="16" opacity=".38" mask="url(#hole)" filter="url(#innerShadow)"/>
+  <use xlink:href="#emblem"/>
 </svg>

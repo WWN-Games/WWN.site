@@ -5,9 +5,12 @@
    ============================================================================ */
 
 import { WWN_CONFIG } from "./site-config.js";
-import { bootI18n, onLangChange, t } from "./i18n.js";
-import { $, abs, emptyBlock, escapeHtml, loc } from "./utils.js";
+import { bootI18n, onLangChange, registerI18n, t } from "./i18n.js";
+import { WIKI_I18N } from "./i18n/wiki.js";
+import { $, abs, debounce, emptyBlock, escapeHtml, loc } from "./utils.js";
 import { initHeader, initReveal } from "./ui.js";
+
+registerI18n(WIKI_I18N);
 
 const ICONS = {
   book: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
@@ -42,7 +45,7 @@ async function loadNav() {
   } catch {}
 
   try {
-    const res = await fetch(abs("data/wiki-nav.json"), { cache: "no-cache" });
+    const res = await fetch(abs(`data/wiki-nav.json?v=${WWN_CONFIG.version}`));
     if (!res.ok) throw new Error("nav");
     navData = await res.json();
     try { sessionStorage.setItem("wwn-nav-cache-v2", JSON.stringify(navData)); } catch {}
@@ -55,20 +58,61 @@ async function loadNav() {
   }
 }
 
+/* На мобильных список разделов свёрнут, чтобы не выталкивать контент. */
+let sidebarCollapsed = null;
+const mobileSidebar = () => window.matchMedia("(max-width: 1040px)").matches;
+
+function initSidebarToggle(lang) {
+  const nav = $("#wikiNav");
+  if (!nav) return;
+  let btn = $("#wikiNavToggle");
+  if (!btn) {
+    btn = document.createElement("button");
+    btn.type = "button";
+    btn.id = "wikiNavToggle";
+    btn.className = "wiki-nav__toggle";
+    btn.setAttribute("aria-controls", "wikiNav");
+    nav.before(btn);
+    btn.addEventListener("click", () => {
+      sidebarCollapsed = !nav.classList.contains("is-collapsed");
+      applySidebarState(btn, nav);
+    });
+  }
+  btn.textContent = t("wiki.sidebar", lang);
+  applySidebarState(btn, nav);
+}
+
+function applySidebarState(btn, nav) {
+  const mobile = mobileSidebar();
+  const collapsed = mobile && (sidebarCollapsed ?? true);
+  nav.classList.toggle("is-collapsed", collapsed);
+  btn.hidden = !mobile;
+  btn.setAttribute("aria-expanded", String(!collapsed));
+}
+
 function buildSidebar(lang, activeSlug) {
   const nav = $("#wikiNav");
   if (!nav || !navData) return;
+  const mobile = mobileSidebar();
   nav.replaceChildren(
     ...navData.categories.map((cat) => {
-      const group = document.createElement("div");
+      const group = document.createElement("details");
       group.className = "wiki-nav__group";
-      const heading = document.createElement("h4");
+      const hasActive = cat.articles.some((article) => article.slug === activeSlug);
+      group.open = !mobile || hasActive;
+
+      const summary = document.createElement("summary");
+      summary.className = "wiki-nav__summary";
       const icon = document.createElement("span");
       icon.className = "wiki-nav__icon";
       icon.innerHTML = ICONS[cat.icon] || ICONS.book;
       const label = document.createElement("span");
+      label.className = "wiki-nav__label";
       label.textContent = loc(cat.title, lang);
-      heading.append(icon, label);
+      const count = document.createElement("span");
+      count.className = "wiki-nav__count";
+      count.textContent = String(cat.articles.length);
+      summary.append(icon, label, count);
 
       const list = document.createElement("ul");
       cat.articles.forEach((article) => {
@@ -76,11 +120,14 @@ function buildSidebar(lang, activeSlug) {
         const link = document.createElement("a");
         link.href = `article.html?p=${encodeURIComponent(article.slug)}`;
         link.textContent = loc(article.title, lang);
-        if (article.slug === activeSlug) link.className = "is-active";
+        if (article.slug === activeSlug) {
+          link.className = "is-active";
+          link.setAttribute("aria-current", "page");
+        }
         li.append(link);
         list.append(li);
       });
-      group.append(heading, list);
+      group.append(summary, list);
       return group;
     })
   );
@@ -112,22 +159,34 @@ export function buildHome(lang) {
       card.className = "wiki-cat";
       card.dataset.reveal = "";
       card.style.transitionDelay = `${i * 60}ms`;
+      card.id = `wiki-cat-${cat.id}`;
 
-      const count = document.createElement("span");
-      count.className = "wiki-cat__count";
-      count.textContent = `${cat.articles.length} ${t("wiki.articles", lang)}`;
+      const head = document.createElement("header");
+      head.className = "wiki-cat__head";
 
       const icon = document.createElement("div");
       icon.className = "wiki-cat__icon";
       icon.innerHTML = ICONS[cat.icon] || ICONS.book;
 
+      const text = document.createElement("div");
+      text.className = "wiki-cat__text";
       const title = document.createElement("h3");
       title.textContent = loc(cat.title, lang);
       const desc = document.createElement("p");
+      desc.className = "wiki-cat__desc";
       desc.textContent = loc(cat.desc, lang);
+      text.append(title, desc);
+
+      const count = document.createElement("span");
+      count.className = "wiki-cat__count";
+      count.textContent = `${cat.articles.length} ${t("wiki.articles", lang)}`;
+
+      head.append(icon, text, count);
+      card.setAttribute("aria-labelledby", `wiki-cat-${cat.id}-title`);
+      title.id = `wiki-cat-${cat.id}-title`;
 
       const list = document.createElement("ul");
-      cat.articles.slice(0, 5).forEach((article) => {
+      cat.articles.forEach((article) => {
         const li = document.createElement("li");
         const link = document.createElement("a");
         link.href = `article.html?p=${encodeURIComponent(article.slug)}`;
@@ -136,7 +195,7 @@ export function buildHome(lang) {
         list.append(li);
       });
 
-      card.append(count, icon, title, desc, list);
+      card.append(head, list);
       return card;
     })
   );
@@ -192,29 +251,54 @@ function resetSearchIndex() {
   searchIndexLang = null;
 }
 
-async function buildSearchIndex(lang) {
-  if (searchIndex && searchIndexLang === lang) return searchIndex;
-  if (searchLoading && searchLoadingLang === lang) return searchLoading;
-  searchLoadingLang = lang;
+/** Готовый поисковый индекс (data/search-index-<lang>.json): один запрос
+ *  вместо загрузки всех markdown-файлов. Если файла нет — загрузка статей. */
+async function fetchSearchIndex(lang) {
+  const res = await fetch(abs(`data/search-index-${lang}.json?v=${WWN_CONFIG.version}`));
+  if (!res.ok) throw new Error("no index");
+  const entries = await res.json();
+  const bySlug = new Map(flatArticles.map((article) => [article.slug, article]));
+  return entries
+    .map((entry) => {
+      const article = bySlug.get(entry.slug);
+      return article ? { ...article, text: entry.text || "" } : null;
+    })
+    .filter(Boolean);
+}
 
-  searchLoading = Promise.all(
+async function buildSearchIndexFromMarkdown(lang) {
+  return Promise.all(
     flatArticles.map(async (article) => {
       try {
-        const res = await fetch(abs(`content/${lang}/${article.slug}.md`), { cache: "no-cache" });
+        const res = await fetch(abs(`content/${lang}/${article.slug}.md`));
         const raw = res.ok ? await res.text() : "";
         return { ...article, text: stripMd(raw) };
       } catch {
         return { ...article, text: "" };
       }
     })
-  ).then((items) => {
+  );
+}
+
+async function buildSearchIndex(lang) {
+  if (searchIndex && searchIndexLang === lang) return searchIndex;
+  if (searchLoading && searchLoadingLang === lang) return searchLoading;
+  searchLoadingLang = lang;
+
+  searchLoading = (async () => {
+    let items;
+    try {
+      items = await fetchSearchIndex(lang);
+    } catch {
+      items = await buildSearchIndexFromMarkdown(lang);
+    }
     if (searchLoadingLang === lang) {
       searchIndex = items;
       searchIndexLang = lang;
       searchLoading = null;
     }
     return items;
-  });
+  })();
 
   return searchLoading;
 }
@@ -228,10 +312,12 @@ async function runSearch(query, lang) {
   const needle = query.trim().toLowerCase();
   if (needle.length < 2) {
     results.replaceChildren();
-    hint && (hint.style.display = "");
+    if (hint) {
+      hint.style.display = "";
+      hint.textContent = t("wiki.search.hint", lang);
+    }
     return;
   }
-  hint && (hint.style.display = "none");
 
   const items = await buildSearchIndex(lang);
   if (seq !== searchSeq) return;
@@ -249,6 +335,11 @@ async function runSearch(query, lang) {
 
   if (seq !== searchSeq) return;
 
+  if (hint) {
+    hint.style.display = "";
+    hint.textContent = t("wiki.search.found", lang, { n: found.length });
+  }
+
   if (!found.length) {
     results.replaceChildren(emptyBlock(t("wiki.search.empty", lang)));
     return;
@@ -259,10 +350,17 @@ async function runSearch(query, lang) {
       const link = document.createElement("a");
       link.className = "search-result";
       link.href = `article.html?p=${encodeURIComponent(item.slug)}`;
-      link.innerHTML =
-        `<b>${highlight(title, query.trim())}</b>` +
-        `<small>${escapeHtml(category)}</small>` +
-        `<p>${highlight(snippet(item.text, needle), query.trim())}</p>`;
+      const top = document.createElement("span");
+      top.className = "search-result__top";
+      const tag = document.createElement("span");
+      tag.className = "search-result__cat";
+      tag.textContent = category;
+      const strong = document.createElement("b");
+      strong.innerHTML = highlight(title, query.trim());
+      top.append(tag, strong);
+      const text = document.createElement("p");
+      text.innerHTML = highlight(snippet(item.text, needle), query.trim());
+      link.append(top, text);
       return link;
     })
   );
@@ -271,6 +369,7 @@ async function runSearch(query, lang) {
 function initSearch() {
   const panel = $("#searchPanel");
   const input = $("#searchPanelInput");
+  const results = $("#searchResults");
   const sideInput = $("#searchInput");
   if (!panel || !input) return () => {};
 
@@ -284,7 +383,6 @@ function initSearch() {
     runSearch(input.value, searchLang);
   };
 
-  $("#searchOpen")?.addEventListener("click", () => openPanel());
   sideInput?.addEventListener("click", () => openPanel(sideInput.value));
   sideInput?.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
@@ -293,7 +391,28 @@ function initSearch() {
     }
   });
 
-  input.addEventListener("input", () => runSearch(input.value, searchLang));
+  input.addEventListener("input", debounce(() => runSearch(input.value, searchLang), 160));
+  input.addEventListener("keydown", (event) => {
+    if (event.key !== "ArrowDown") return;
+    const first = results?.querySelector(".search-result");
+    if (!first) return;
+    event.preventDefault();
+    first.focus();
+  });
+
+  results?.addEventListener("keydown", (event) => {
+    const items = [...results.querySelectorAll(".search-result")];
+    const index = items.indexOf(document.activeElement);
+    if (index === -1) return;
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      items[Math.min(index + 1, items.length - 1)].focus();
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault();
+      if (index === 0) input.focus();
+      else items[index - 1].focus();
+    }
+  });
 
   panel.addEventListener("click", (event) => {
     if (event.target === panel) panel.close();
@@ -335,8 +454,12 @@ export async function initShell({ slug = null, onRender } = {}) {
   const rerender = () => {
     applyLangVisuals(lang);
     setSearchLang(lang);
-    if (navReady) buildSidebar(lang, slug);
-    else if (navFailed) showNavError(lang);
+    if (navReady) {
+      buildSidebar(lang, slug);
+      initSidebarToggle(lang);
+    } else if (navFailed) {
+      showNavError(lang);
+    }
     return onRender?.(lang);
   };
 
@@ -344,6 +467,17 @@ export async function initShell({ slug = null, onRender } = {}) {
     lang = nextLang;
     resetSearchIndex();
     renderQueue = renderQueue.then(rerender).catch(() => {});
+  });
+
+  // смена раскладки: сайдбар-аккордеон сворачивается/разворачивается
+  let resizeTimer = 0;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      const nav = $("#wikiNav");
+      const btn = $("#wikiNavToggle");
+      if (nav && btn) applySidebarState(btn, nav);
+    }, 150);
   });
 
   try {

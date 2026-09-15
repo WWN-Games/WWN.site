@@ -2,23 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>404 — WWN</title>
   <meta name="robots" content="noindex">
   <meta name="theme-color" content="#050b16">
   <link rel="icon" type="image/svg+xml" href="assets/img/brand/favicon.svg" data-base>
+  <link rel="apple-touch-icon" href="assets/img/brand/icon-192.png" data-base>
   <link rel="manifest" href="site.webmanifest" data-base>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Exo+2:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Exo+2:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root { color-scheme: dark; }
     body {
+      min-height: 100vh;
       min-height: 100dvh;
       display: grid;
       place-items: center;
-      padding: 24px;
+      padding: calc(24px + env(safe-area-inset-top, 0px)) calc(24px + env(safe-area-inset-right, 0px)) calc(24px + env(safe-area-inset-bottom, 0px)) calc(24px + env(safe-area-inset-left, 0px));
       text-align: center;
       font-family: "Exo 2", system-ui, sans-serif;
       color: #eef5ff;

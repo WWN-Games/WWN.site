@@ -36,9 +36,6 @@
       <feMorphology operator="dilate" radius="5" result="t"/>
       <feGaussianBlur in="t" stdDeviation="8"/>
     </filter>
-    <filter id="innerShadow" x="-25%" y="-25%" width="150%" height="150%">
-      <feGaussianBlur stdDeviation="5"/>
-    </filter>
   </defs>
 
   <rect width="512" height="512" rx="112" fill="url(#plate)"/>
@@ -61,7 +58,6 @@
 
   <use xlink:href="#emblem" filter="url(#glow)" opacity=".22"/>
   <use xlink:href="#emblem"/>
-  <path d="M256 214 L378 281 L134 281 Z" fill="none" stroke="#02150C" stroke-width="16" opacity=".38" mask="url(#hole)" filter="url(#innerShadow)"/>
   </g>
   <rect x="1.5" y="1.5" width="509" height="509" rx="110.5" fill="none" stroke="#ffffff" stroke-opacity=".12" stroke-width="3"/>
   <rect x="5" y="5" width="502" height="502" rx="107" fill="none" stroke="#ffffff" stroke-opacity=".08" stroke-width="2"/>

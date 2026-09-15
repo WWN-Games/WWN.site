@@ -9,7 +9,7 @@
 
 import { $$ } from "./utils.js";
 
-const ARROW =
+export const ARROW =
   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
 
 const supportsPopover = () => typeof HTMLElement !== "undefined" && "popover" in HTMLElement.prototype;
@@ -43,9 +43,9 @@ function buildItems(menu, select) {
   );
 }
 
-function place(menu, btn, estimatedHeight = 0) {
+export function placeMenu(menu, btn, estimatedHeight = 0, minWidth = 180) {
   const rect = btn.getBoundingClientRect();
-  const width = Math.min(Math.max(rect.width, 180), Math.max(140, window.innerWidth - 16));
+  const width = Math.min(Math.max(rect.width, minWidth), Math.max(140, window.innerWidth - 16));
   const left = Math.max(8, Math.min(rect.left, window.innerWidth - width - 8));
   const height = menu.getBoundingClientRect().height || estimatedHeight;
   const spaceBelow = window.innerHeight - rect.bottom;
@@ -106,7 +106,7 @@ function enhance(select) {
     buildItems(menu, select);
     // До открытия высота меню неизвестна — берём оценку по числу пунктов,
     // точную позицию пересчитает rAF после открытия.
-    place(menu, btn, select.options.length * 37 + 14);
+    placeMenu(menu, btn, select.options.length * 37 + 14);
 
     listeners?.abort();
     listeners = new AbortController();
@@ -114,7 +114,7 @@ function enhance(select) {
       const rect = btn.getBoundingClientRect();
       const visible = rect.bottom > 0 && rect.top < window.innerHeight;
       if (!visible) menu.hidePopover();
-      else place(menu, btn);
+      else placeMenu(menu, btn);
     };
     window.addEventListener("scroll", reposition, { passive: true, signal: listeners.signal });
     window.addEventListener("resize", reposition, { signal: listeners.signal });
@@ -123,7 +123,7 @@ function enhance(select) {
       const item = menu.querySelector(".is-selected:not(:disabled)") || menu.querySelector(".wwn-menu__item:not(:disabled)");
       item?.focus({ preventScroll: true });
       item?.scrollIntoView({ block: "nearest" });
-      place(menu, btn);
+      placeMenu(menu, btn);
     });
   });
 

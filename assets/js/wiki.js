@@ -5,8 +5,10 @@
 
 import { marked } from "../vendor/marked.esm.js";
 import DOMPurify from "../vendor/purify.esm.js";
+import { WWN_CONFIG } from "./site-config.js";
 import { t } from "./i18n.js";
-import { $, abs, formatDate, loc } from "./utils.js";
+import { $, abs, formatDate, loc, prefersReduced } from "./utils.js";
+import { applyResponsiveImages } from "./media.js";
 import { buildHome, getFlatArticles, initShell, parseFrontMatter } from "./wiki-shell.js";
 
 /* -------------------------------------------------------------- markdown -- */
@@ -69,8 +71,24 @@ function renderMarkdown(markdown, slug) {
     img.loading = "lazy";
     img.decoding = "async";
   });
+  applyResponsiveImages(holder, "(max-width: 900px) 100vw, 900px");
 
   return holder;
+}
+
+/** Прокрутка к якорю после асинхронной загрузки статьи. */
+function scrollToHash() {
+  const hash = location.hash.slice(1);
+  if (!hash) return;
+  let target = null;
+  try {
+    target = document.getElementById(decodeURIComponent(hash));
+  } catch {
+    target = document.getElementById(hash);
+  }
+  if (!target) return;
+  const top = target.getBoundingClientRect().top + window.scrollY - 96;
+  window.scrollTo({ top, behavior: prefersReduced ? "auto" : "smooth" });
 }
 
 function buildToc(holder, lang) {
@@ -82,6 +100,7 @@ function buildToc(holder, lang) {
   const title = document.createElement("h4");
   title.textContent = t("wiki.toc", lang);
   const list = document.createElement("ol");
+  list.className = "article__toc-list";
   headings.forEach((heading) => {
     const li = document.createElement("li");
     if (heading.tagName === "H3") li.className = "lvl-3";
@@ -95,12 +114,80 @@ function buildToc(holder, lang) {
   return box;
 }
 
+let tocCleanup = null;
+
+function initTocSpy(links, headings) {
+  tocCleanup?.();
+  if (!links.length || !headings.length) return;
+
+  let ticking = false;
+  const update = () => {
+    ticking = false;
+    const line = window.scrollY + 120;
+    let current = 0;
+    headings.forEach((heading, i) => {
+      if (heading.getBoundingClientRect().top + window.scrollY <= line) current = i;
+    });
+    links.forEach((link, i) => link.classList.toggle("is-active", i === current));
+  };
+  const schedule = () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(update);
+  };
+
+  update();
+  window.addEventListener("scroll", schedule, { passive: true });
+  window.addEventListener("resize", schedule);
+  tocCleanup = () => {
+    window.removeEventListener("scroll", schedule);
+    window.removeEventListener("resize", schedule);
+    tocCleanup = null;
+  };
+}
+
+function addHeadingAnchors(holder) {
+  holder.querySelectorAll("h2, h3").forEach((heading) => {
+    const anchor = document.createElement("a");
+    anchor.className = "article__anchor";
+    anchor.href = `#${heading.id}`;
+    anchor.setAttribute("aria-label", heading.textContent.trim());
+    anchor.textContent = "#";
+    heading.append(anchor);
+  });
+}
+
+function initCopyButtons(holder, lang) {
+  holder.querySelectorAll("pre").forEach((pre) => {
+    const code = pre.querySelector("code");
+    if (!code || pre.querySelector(".article__copy")) return;
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "article__copy";
+    button.textContent = t("wiki.copy", lang);
+    button.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(code.textContent);
+        button.textContent = t("wiki.copied", lang);
+        button.classList.add("is-done");
+        setTimeout(() => {
+          button.textContent = t("wiki.copy", lang);
+          button.classList.remove("is-done");
+        }, 1600);
+      } catch {}
+    });
+    pre.append(button);
+  });
+}
+
 /* ---------------------------------------------------------------- article -- */
 let articleSeq = 0;
 
 function renderNotFound(body, lang, titleEl, crumbs, metaEl, pager) {
+  tocCleanup?.();
   body.classList.remove("is-ready");
   body.replaceChildren();
+  $("#articleAside")?.replaceChildren();
 
   const callout = document.createElement("div");
   callout.className = "callout";
@@ -144,7 +231,7 @@ function buildCrumbs(crumbs, article, lang) {
   crumbs.replaceChildren(
     item(t("nav.wiki", lang), "./"),
     separator(),
-    item(loc(article.category.title, lang), "catalog.html"),
+    item(loc(article.category.title, lang), "../database.html"),
     separator(),
     item(loc(article.title, lang))
   );
@@ -173,7 +260,7 @@ async function loadArticle(slug, lang) {
 
   let raw;
   try {
-    const res = await fetch(abs(`content/${lang}/${slug}.md`), { cache: "no-cache" });
+    const res = await fetch(abs(`content/${lang}/${slug}.md?v=${WWN_CONFIG.version}`));
     if (!res.ok) throw new Error(String(res.status));
     raw = await res.text();
   } catch {
@@ -213,12 +300,29 @@ async function loadArticle(slug, lang) {
     }
   }
 
+  const aside = $("#articleAside");
   body.classList.remove("is-ready");
   body.replaceChildren();
+
   const toc = buildToc(holder, lang);
-  if (toc) body.append(toc);
+  addHeadingAnchors(holder);
+  initCopyButtons(holder, lang);
   body.append(holder);
-  requestAnimationFrame(() => body.classList.add("is-ready"));
+
+  if (aside) {
+    aside.replaceChildren();
+    if (toc) aside.append(toc);
+  } else if (toc) {
+    body.prepend(toc);
+  }
+  initTocSpy(toc ? [...toc.querySelectorAll("a")] : [], [...holder.querySelectorAll("h2, h3")]);
+
+  requestAnimationFrame(() => {
+    body.classList.add("is-ready");
+    scrollToHash();
+    // подстраховка: картинки могли догрузиться и сдвинуть вёрстку
+    setTimeout(scrollToHash, 300);
+  });
 
   if (pager) {
     const index = articles.findIndex((item) => item.slug === slug);
