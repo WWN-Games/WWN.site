@@ -10,7 +10,7 @@ export function initHeader() {
   const header = $("#header");
   if (!header) return;
 
-  const progress = $("#scrollProgress") || $("#wikiProgress");
+  const progress = $("#scrollProgress");
 
   const burger = $("#burger");
   const mobileNav = $("#mobileNav");
@@ -38,6 +38,9 @@ export function initHeader() {
   if (spyTargets.length) {
     measure();
     window.addEventListener("resize", measure);
+    // тексты меняют высоту при смене языка и после загрузки шрифтов
+    document.addEventListener("wwn:langchange", measure);
+    document.fonts?.ready.then(measure).catch(() => {});
   }
 
   const toTop = $("#toTop");
@@ -90,7 +93,10 @@ export function resolveLinks(config) {
     } else if (["steam", "drive"].includes(el.getAttribute("data-link"))) {
       el.setAttribute("href", "#download");
     } else {
-      el.closest("li")?.remove();
+      // ссылки нет в конфиге — убираем кнопку целиком (или её пункт меню)
+      const li = el.closest("li");
+      if (li) li.remove();
+      else el.remove();
     }
   });
   $$("[data-link-note]").forEach((el) => {

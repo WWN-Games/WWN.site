@@ -5,7 +5,7 @@
 
 import { initDropdowns, refreshDropdown } from "./dropdown.js";
 import { getLang, t } from "./i18n.js";
-import { $, $$, abs, debounce, escapeHtml, loc, safeColor } from "./utils.js";
+import { $, $$, abs, debounce, emptyBlock, escapeHtml, loc, locObj, safeColor } from "./utils.js";
 import { initReveal } from "./ui.js";
 import { initShell } from "./wiki-shell.js";
 
@@ -27,7 +27,7 @@ const factionMap = new Map();
 const factionCounts = new Map();
 
 const list = (obj, lang) => {
-  const value = obj ? obj[lang] || obj.ru || obj.en || [] : [];
+  const value = locObj(obj, lang, []);
   return Array.isArray(value) ? value : [value];
 };
 const typeLabel = (type, lang) => {
@@ -225,7 +225,7 @@ function initTabs() {
       btn.classList.toggle("is-active", active);
       btn.setAttribute("aria-selected", String(active));
     });
-    history.replaceState(null, "", `#${tab}`);
+    try { history.replaceState(null, "", `#${tab}`); } catch {}
     buildTypeFilter();
     buildTagFilter();
     updateFilterVisibility();
@@ -251,20 +251,24 @@ const chip = (text, className = "") => `<span class="chip ${className}">${escape
  *  среди юнитов и строений. Самое высокое значение = 100% (полная полоса),
  *  остальные — пропорционально меньше. */
 const scale = { hp: 1, shield: 1, dps: 1, speed: 1, range: 1 };
+/** Показываем полосу только если характеристика есть хотя бы у кого-то
+ *  (например, у строений нет скорости — полосу не рисуем). */
+const hasStat = { hp: false, shield: false, dps: false, speed: false, range: false };
 
 function computeScale() {
   const all = [...data.units, ...data.buildings];
   Object.keys(scale).forEach((key) => {
     const values = all.map((item) => (Number.isFinite(item[key]) ? item[key] : 0));
     scale[key] = Math.max(1, ...values);
+    hasStat[key] = values.some((value) => value > 0);
   });
 }
 
 const formatValue = (value) => {
   if (!Number.isFinite(value) || value === 0) return 0;
-  const abs = Math.abs(value);
-  if (abs < 10) return Math.round(value * 100) / 100;
-  if (abs < 1000) return Math.round(value * 10) / 10;
+  const magnitude = Math.abs(value);
+  if (magnitude < 10) return Math.round(value * 100) / 100;
+  if (magnitude < 1000) return Math.round(value * 10) / 10;
   return Math.round(value);
 };
 
@@ -297,14 +301,18 @@ function unitCard(item) {
     item.draft ? chip(t("catalog.draft", lang), "chip--draft") : ""
   ].join("");
 
-  // полосы всегда показываются: нет урона — честный 0
-  const bars = [
-    statBar(t("catalog.hp", lang), item.hp || 0, scale.hp, color),
-    statBar(t("catalog.shield", lang), item.shield || 0, scale.shield, color),
-    statBar(t("catalog.dps", lang), item.dps || 0, scale.dps, color),
-    statBar(t("catalog.speed", lang), item.speed || 0, scale.speed, color),
-    statBar(t("catalog.range", lang), item.range || 0, scale.range, color)
-  ].join("");
+  // полосы показываются: нет урона — честный 0, нет характеристики у вида — полосы нет
+  const barDefs = [
+    ["hp", "catalog.hp"],
+    ["shield", "catalog.shield"],
+    ["dps", "catalog.dps"],
+    ["speed", "catalog.speed"],
+    ["range", "catalog.range"]
+  ];
+  const bars = barDefs
+    .filter(([key]) => hasStat[key])
+    .map(([key, label]) => statBar(t(label, lang), item[key] || 0, scale[key], color))
+    .join("");
 
   const strong = list(item.strongVs, lang);
   const weak = list(item.weakVs, lang);
@@ -428,11 +436,7 @@ function render() {
   }
 
   if (!items.length) {
-    grid.replaceChildren();
-    const empty = document.createElement("div");
-    empty.className = "catalog-empty";
-    empty.textContent = t("catalog.empty", lang);
-    grid.append(empty);
+    grid.replaceChildren(emptyBlock(t("catalog.empty", lang)));
   } else {
     grid.replaceChildren(...nodes);
     initReveal(grid);
@@ -469,27 +473,28 @@ async function boot() {
     debouncedRender();
   });
 
+  let dataReady = false;
   try {
     await loadAll();
-  } catch (e) {
-    const grid = $("#catalogGrid");
-    if (grid) {
-      const empty = document.createElement("div");
-      empty.className = "catalog-empty";
-      empty.textContent = t("catalog.noData", state.lang);
-      grid.replaceChildren(empty);
-    }
-    return;
+    buildLookups();
+    computeScale();
+    dataReady = true;
+  } catch {
+    // данные не загрузились — оболочка (шапка, меню, язык) должна работать всё равно
   }
-
-  buildLookups();
-  computeScale();
 
   await initShell({
     slug: null,
     onRender: (lang) => {
       state.lang = lang;
       document.title = t("meta.title.catalog", lang);
+
+      if (!dataReady) {
+        const grid = $("#catalogGrid");
+        if (grid) grid.replaceChildren(emptyBlock(t("catalog.noData", lang)));
+        return;
+      }
+
       buildFactionFilter();
       buildTypeFilter();
       buildTagFilter();

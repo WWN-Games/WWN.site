@@ -8,9 +8,9 @@
 import { WWN_CONFIG } from "./site-config.js";
 import { $$ } from "./utils.js";
 
-export const LANG_KEY = "wwn-lang";
+const LANG_KEY = "wwn-lang";
 
-export const I18N = {
+const I18N = {
   ru: {
     "nav.home": "Главная",
     "nav.features": "Возможности",
@@ -120,7 +120,7 @@ export const I18N = {
     "meta.title.home": "WWN — официальный сайт мода для Rusted Warfare | Скачать, вики, лор",
     "meta.title.wiki": "Вики WWN",
     "meta.title.wikiHome": "Вики WWN — лор, фракции, юниты, механики и гайды",
-    "meta.title.catalog": "Каталог WWN — фракции, юниты и строения",
+    "meta.title.catalog": "База данных WWN — фракции, юниты и строения",
     "wiki.title": "Вики WWN",
     "wiki.subtitle": "Справочник по моду: лор, фракции, расы, юниты, строения, механики и гайды.",
     "wiki.sidebar": "Разделы вики",
@@ -142,7 +142,7 @@ export const I18N = {
     "wiki.notFound.desc": "Проверь ссылку или вернись к списку статей.",
     "wiki.loadError.desc": "Скорее всего, сайт открыт как файл. Запусти локальный сервер (например, python3 -m http.server) или открой сайт на GitHub Pages.",
 
-    "catalog.title": "Каталог",
+    "catalog.title": "База данных",
     "catalog.subtitle": "Фракции, юниты и строения WWN",
     "catalog.tab.factions": "Фракции",
     "catalog.tab.units": "Юниты",
@@ -298,7 +298,7 @@ export const I18N = {
     "meta.title.home": "WWN — official mod site for Rusted Warfare | Download, wiki, lore",
     "meta.title.wiki": "WWN Wiki",
     "meta.title.wikiHome": "WWN Wiki — lore, factions, units, mechanics and guides",
-    "meta.title.catalog": "WWN Catalog — factions, units and structures",
+    "meta.title.catalog": "WWN Database — factions, units and structures",
     "wiki.title": "WWN Wiki",
     "wiki.subtitle": "Mod reference: lore, factions, races, units, structures, mechanics and guides.",
     "wiki.sidebar": "Wiki sections",
@@ -320,7 +320,7 @@ export const I18N = {
     "wiki.notFound.desc": "Check the link or go back to the article list.",
     "wiki.loadError.desc": "Most likely the site is opened as a file. Run a local server (e.g. python3 -m http.server) or open the site on GitHub Pages.",
 
-    "catalog.title": "Catalog",
+    "catalog.title": "Database",
     "catalog.subtitle": "WWN factions, units and structures",
     "catalog.tab.factions": "Factions",
     "catalog.tab.units": "Units",
@@ -373,14 +373,14 @@ export function getLang() {
   try {
     const stored = localStorage.getItem(LANG_KEY);
     if (stored && I18N[stored]) return stored;
-  } catch (e) {}
+  } catch {}
   const nav = (navigator.language || "ru").slice(0, 2).toLowerCase();
   return nav === "ru" ? "ru" : "en";
 }
 
-export function setLang(lang) {
+function setLang(lang) {
   if (!I18N[lang] || document.documentElement.lang === lang) return;
-  try { localStorage.setItem(LANG_KEY, lang); } catch (e) {}
+  try { localStorage.setItem(LANG_KEY, lang); } catch {}
   document.documentElement.lang = lang;
   applyI18n(lang);
   document.dispatchEvent(new CustomEvent("wwn:langchange", { detail: { lang } }));

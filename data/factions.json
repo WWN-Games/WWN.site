@@ -1,5 +1,5 @@
 {
-  "_comment": "Фракции WWN. Цвет используется в оформлении карточек. Эмблемы: assets/img/factions/*.webp",
+  "_comment": "Фракции WWN. Цвет используется в оформлении карточек. Эмблемы: assets/img/factions/*.svg",
   "factions": [
     {
       "id": "fenearth",
@@ -33,7 +33,7 @@
       "id": "proton",
       "name": { "ru": "Движение Протон", "en": "Proton Movement" },
       "motto": { "ru": "PHATHOU — Первый порядок", "en": "PHATHOU — the First Order" },
-      "color": "#ff3b4e",
+      "color": "#ff4157",
       "emblem": "assets/img/factions/faction-proton.svg",
       "lore": "lore/proton",
       "desc": {

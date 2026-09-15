@@ -16,10 +16,8 @@
   --cyan-rgb: 44, 182, 255;
 
   --red: #ff4157;
-  --red-hi: #ff8595;
   --red-rgb: 255, 65, 87;
 
-  --green: #86b957;
   --gold: #ffc266;
   --gold-rgb: 255, 194, 102;
 
@@ -33,7 +31,7 @@
 
   --font-display: "Russo One", "Exo 2", system-ui, sans-serif;
   --font-body: "Exo 2", "Segoe UI", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --font-mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
   --radius-sm: 12px;
   --radius: 18px;
   --radius-lg: 26px;
@@ -640,54 +638,104 @@ body:has(dialog[open]) { overflow: hidden; }
 }
 .card__icon svg { width: 25px; height: 25px; }
 .card__title { font-size: 17.5px; color: #fff; }
-.card__text { color: var(--muted); font-size: 14.5px; }
+.card__text,
+.fac__desc,
+.dl-card p,
+.faction-card__desc { color: var(--muted); font-size: 14.5px; }
 
 /* ------------------------------------------------------------- factions -- */
 .factions-showcase { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
-.fac {
+/* ------------------------------------------- faction cards — единый стандарт --
+   Один стиль для всех фракционных карточек: лендинг (.fac), база данных
+   (.faction-card) и карточки юнитов/строений (.unit-card).
+   Цвет задаётся переменной --faction-color на самой карточке
+   (у Протона — красный, у Фензема — синий). */
+.fac,
+.faction-card,
+.unit-card {
   position: relative;
+  border: 1px solid color-mix(in srgb, var(--faction-color, var(--cyan)) 22%, var(--line));
+  background:
+    radial-gradient(120% 95% at 86% -12%, color-mix(in srgb, var(--faction-color, var(--cyan)) 9%, transparent), transparent 62%),
+    linear-gradient(168deg, rgba(14, 29, 51, .82), rgba(5, 11, 21, .94));
+  overflow: hidden;
+}
+.fac::before,
+.faction-card::before,
+.unit-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--faction-color, var(--cyan)), transparent 72%);
+}
+.fac::after,
+.faction-card::after,
+.unit-card::after {
+  content: "";
+  position: absolute;
+  inset: -55% -35% auto auto;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--faction-color, var(--cyan)) 12%, transparent), transparent 68%);
+  pointer-events: none;
+}
+.fac:hover,
+.faction-card:hover,
+.unit-card:hover {
+  border-color: color-mix(in srgb, var(--faction-color, var(--cyan)) 68%, transparent);
+  box-shadow: var(--shadow-card), 0 0 22px color-mix(in srgb, var(--faction-color, var(--cyan)) 16%, transparent);
+}
+.fac__emblem,
+.faction-card__emblem,
+.unit-card__img {
+  border: 1px solid color-mix(in srgb, var(--faction-color, var(--cyan)) 32%, transparent);
+  background: rgba(6, 13, 24, .86);
+  box-shadow: 0 0 22px color-mix(in srgb, var(--faction-color, var(--cyan)) 14%, transparent) inset;
+}
+.fac__motto,
+.faction-card__motto { color: var(--faction-color, var(--cyan)); font-size: 13px; margin-top: 4px; }
+
+/* Кнопки внутри фракционных карточек — в цвете фракции.
+   У Протона получается та же красная кнопка, что «Скачать с Drive». */
+.fac .btn:not(.btn--ghost),
+.faction-card .btn:not(.btn--ghost) {
+  --btn-bg: linear-gradient(135deg,
+    color-mix(in srgb, var(--faction-color, var(--cyan)) 62%, #fff),
+    var(--faction-color, var(--cyan)) 65%,
+    color-mix(in srgb, var(--faction-color, var(--cyan)) 62%, #000));
+  color: #fff;
+  box-shadow: 0 14px 30px color-mix(in srgb, var(--faction-color, var(--cyan)) 36%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, .35);
+}
+.fac .btn:not(.btn--ghost):hover,
+.faction-card .btn:not(.btn--ghost):hover {
+  color: #fff;
+  box-shadow: 0 18px 40px color-mix(in srgb, var(--faction-color, var(--cyan)) 48%, transparent),
+    0 0 22px color-mix(in srgb, var(--faction-color, var(--cyan)) 24%, transparent);
+}
+
+.fac {
   display: grid;
   gap: 16px;
   align-content: start;
   padding: 34px 32px 30px;
-  border: 1px solid var(--line);
   border-radius: var(--radius-lg);
-  background: linear-gradient(165deg, rgba(14, 29, 51, .82), rgba(5, 11, 21, .94));
-  overflow: hidden;
   transition: transform .3s var(--ease-out), border-color .3s, box-shadow .3s;
 }
-.fac::before {
-  content: "";
-  position: absolute;
-  inset: -50% -30% auto auto;
-  width: 340px; height: 340px;
-  border-radius: 50%;
-  background: radial-gradient(circle, color-mix(in srgb, var(--faction-color, var(--cyan)) 26%, transparent), transparent 68%);
-  pointer-events: none;
-}
-.fac::after {
-  content: "";
-  position: absolute;
-  top: 0; left: 0;
-  width: 90px; height: 3px;
-  background: linear-gradient(90deg, var(--faction-color, var(--cyan)), transparent);
-}
-.fac:hover { transform: translateY(-6px); border-color: color-mix(in srgb, var(--faction-color, var(--cyan)) 45%, transparent); box-shadow: var(--shadow-card); }
-.fac__top { display: flex; align-items: center; gap: 18px; }
+.fac:hover { transform: translateY(-6px); }
+.fac__top,
+.faction-card__head { display: flex; align-items: center; gap: 18px; }
 .fac__emblem {
   width: 86px; height: 86px;
   flex: none;
   display: grid; place-items: center;
   border-radius: 18px;
-  border: 1px solid color-mix(in srgb, var(--faction-color, var(--cyan)) 40%, transparent);
-  background: rgba(6, 13, 24, .85);
   overflow: hidden;
-  box-shadow: 0 0 30px color-mix(in srgb, var(--faction-color, var(--cyan)) 22%, transparent) inset;
 }
 .fac__emblem img { width: 100%; height: 100%; object-fit: contain; padding: 9px; }
 .fac__name { font-family: var(--font-display); font-size: clamp(19px, 2vw, 24px); color: #fff; }
-.fac__motto { font-size: 13px; color: var(--faction-color, var(--cyan)); margin-top: 4px; }
-.fac__desc { color: var(--muted); font-size: 14.5px; }
 .fac__row { display: flex; flex-wrap: wrap; gap: 8px; }
 .fac__chip {
   padding: 6px 12px;
@@ -812,7 +860,9 @@ body:has(dialog[open]) { overflow: hidden; }
   opacity: 0;
   transition: opacity .3s;
 }
-.news__card:hover { transform: translateY(-5px); border-color: var(--line-strong); box-shadow: var(--shadow-card); }
+.news__card:hover,
+.dl-card:hover,
+.wiki-cat:hover { transform: translateY(-5px); border-color: var(--line-strong); box-shadow: var(--shadow-card); }
 .news__card:hover::after { opacity: 1; }
 .news__meta { display: flex; align-items: center; gap: 10px; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
 .tag {
@@ -823,13 +873,12 @@ body:has(dialog[open]) { overflow: hidden; }
   background: rgba(var(--cyan-rgb), .12);
   border: 1px solid rgba(var(--cyan-rgb), .3);
 }
-.tag--balance { color: var(--gold); background: rgba(var(--gold-rgb), .1); border-color: rgba(var(--gold-rgb), .32); }
-.tag--league { color: var(--red-hi); background: rgba(var(--red-rgb), .1); border-color: rgba(var(--red-rgb), .34); }
-.tag--fix { color: var(--green); background: rgba(134, 185, 87, .12); border-color: rgba(134, 185, 87, .34); }
 .tag--news { color: var(--text-soft); background: rgba(88, 168, 255, .1); border-color: var(--line-strong); }
 .news__all { margin-top: 42px; }
 .news__card h3 { font-size: 17px; color: #fff; }
-.news__card p { color: var(--muted); font-size: 14px; }
+.news__card p,
+.step p,
+.wiki-cat p { color: var(--muted); font-size: 14px; }
 
 /* ------------------------------------------------------------- download -- */
 .download-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 58px; }
@@ -853,7 +902,6 @@ body:has(dialog[open]) { overflow: hidden; }
   background: linear-gradient(90deg, var(--cyan), transparent 72%);
 }
 .dl-card--drive::before { background: linear-gradient(90deg, var(--gold), transparent 72%); }
-.dl-card:hover { transform: translateY(-5px); border-color: var(--line-strong); box-shadow: var(--shadow-card); }
 .dl-card__head { display: flex; align-items: center; gap: 15px; }
 .dl-card__icon {
   display: grid; place-items: center;
@@ -866,7 +914,6 @@ body:has(dialog[open]) { overflow: hidden; }
 .dl-card--drive .dl-card__icon { background: linear-gradient(135deg, #ffd08a, #e0912a); }
 .dl-card__icon svg { width: 28px; height: 28px; }
 .dl-card h3 { font-size: 20px; color: #fff; }
-.dl-card p { color: var(--muted); font-size: 14.5px; }
 .dl-card .btn { justify-self: start; margin-top: 6px; }
 .dl-card__note { font-size: 12.5px; color: var(--gold); letter-spacing: .06em; }
 .dl-card__alt { font-size: 12.5px; color: var(--muted); }
@@ -898,7 +945,6 @@ body:has(dialog[open]) { overflow: hidden; }
   background: linear-gradient(90deg, var(--cyan), transparent);
 }
 .step h4 { font-size: 16px; margin-bottom: 9px; color: #fff; }
-.step p { color: var(--muted); font-size: 14px; }
 
 .download-steps-head { margin-bottom: 36px; }
 .download-steps-head .section__title { font-size: clamp(21px, 2.6vw, 30px); }

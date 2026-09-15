@@ -26,7 +26,10 @@ export const WWN_CONFIG = {
   },
 
   // ---------------------------------------------------------------------------
-  // NUMBERS shown in the "stats" strip on the main page (данные из мода v1.1.6b9)
+  // NUMBERS shown in the "stats" strip on the main page.
+  // units и factions считаются автоматически из data/*.json (см. loadLiveStats
+  // в assets/js/main.js); здесь — только резервные значения на случай,
+  // если данные не загрузились. Карт в данных сайта нет — указываются тут.
   // ---------------------------------------------------------------------------
   stats: {
     units: 178,
@@ -42,9 +45,6 @@ export const WWN_CONFIG = {
   newsTags: {
     update: { ru: "Обновление", en: "Update" },
     news: { ru: "Новости", en: "News" },
-    balance: { ru: "Баланс", en: "Balance" },
-    league: { ru: "Лига", en: "League" },
-    fix: { ru: "Фикс", en: "Fix" }
   },
 
   // ---------------------------------------------------------------------------
@@ -64,18 +64,6 @@ export const WWN_CONFIG = {
       }
     },
     {
-      date: "2026-08-16",
-      tag: "news",
-      ru: {
-        title: "Вселенной WWN исполняется 10 лет 🏆",
-        text: "С юбилеем, WWN!"
-      },
-      en: {
-        title: "The WWN universe is turning 10 years old 🏆",
-        text: "Happy Anniversary, WWN!"
-      }
-    },
-    {
       date: "2026-08-20",
       tag: "news",
       ru: {
@@ -85,6 +73,18 @@ export const WWN_CONFIG = {
       en: {
         title: "The mod is on Steam Workshop",
         text: "Subscribe to WWN on Steam Workshop — updates arrive automatically."
+      }
+    },
+    {
+      date: "2026-08-16",
+      tag: "news",
+      ru: {
+        title: "Вселенной WWN исполняется 10 лет 🏆",
+        text: "С юбилеем, WWN!"
+      },
+      en: {
+        title: "The WWN universe is turning 10 years old 🏆",
+        text: "Happy Anniversary, WWN!"
       }
     }
   ],

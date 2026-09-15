@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>WWN Catalog — factions, units and structures</title>
-  <meta name="description" content="WWN catalog: factions, units and structures with stats, roles and filters.">
+  <title>WWN Database — factions, units and structures</title>
+  <meta name="description" content="WWN database: factions, units and structures with stats, roles and filters.">
   <meta name="theme-color" content="#050b16">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="WWN Catalog">
+  <meta property="og:title" content="WWN Database">
   <meta property="og:description" content="WWN factions, units and structures with stats, roles and filters.">
   <meta property="og:image" content="../assets/img/bg/banner.webp">
 
@@ -20,7 +20,7 @@
   <link rel="stylesheet" href="../assets/css/wiki.css">
 </head>
 <body class="wiki-body">
-<div class="wiki-progress" id="wikiProgress"></div>
+<div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
 
 <header class="header" id="header">
   <div class="header__inner">
@@ -28,13 +28,13 @@
       <img src="../assets/img/brand/logo.svg" alt="WWN">
       <span class="brand__sub" data-i18n="brand.sub">A Rusted Warfare mod</span>
     </a>
-    <nav class="nav" id="mainNav" aria-label="Main">
+    <nav class="nav" aria-label="Main">
       <a href="../index.html#features" data-i18n="nav.features">Features</a>
       <a href="../index.html#factions" data-i18n="nav.factions">Factions</a>
       <a href="../index.html#gallery" data-i18n="nav.gallery">Gallery</a>
       <a href="../index.html#download" data-i18n="nav.download">Download</a>
       <a href="./" data-i18n="nav.wiki">Wiki</a>
-      <a href="catalog.html" class="is-active" data-i18n="catalog.title">Catalog</a>
+      <a href="catalog.html" class="is-active" data-i18n="catalog.title">Database</a>
     </nav>
     <div class="header__side">
       <button class="icon-btn" id="searchOpen" type="button" data-i18n-aria="wiki.search.placeholder" aria-label="Search the wiki…">
@@ -44,19 +44,19 @@
         <button type="button" data-lang-btn="RU">RU</button>
         <button type="button" data-lang-btn="EN">EN</button>
       </div>
-      <button class="icon-btn burger" id="burger" type="button" aria-label="Menu" aria-expanded="false"><span></span></button>
+      <button class="icon-btn burger" id="burger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mobileNav"><span></span></button>
     </div>
   </div>
 </header>
 
-<div class="mobile-nav" id="mobileNav">
+<div class="mobile-nav" id="mobileNav" inert>
   <a href="../index.html" data-i18n="nav.home">Home</a>
   <a href="../index.html#features" data-i18n="nav.features">Features</a>
   <a href="../index.html#factions" data-i18n="nav.factions">Factions</a>
   <a href="../index.html#gallery" data-i18n="nav.gallery">Gallery</a>
   <a href="../index.html#download" data-i18n="nav.download">Download</a>
   <a href="./" data-i18n="nav.wiki">Wiki</a>
-  <a href="catalog.html" class="is-active" data-i18n="catalog.title">Catalog</a>
+  <a href="catalog.html" class="is-active" data-i18n="catalog.title">Database</a>
   <div class="lang" role="group" aria-label="Language">
     <button type="button" data-lang-btn="RU">RU</button>
     <button type="button" data-lang-btn="EN">EN</button>
@@ -78,12 +78,12 @@
 
   <main>
     <div class="catalog-head">
-      <span class="kicker" data-i18n="catalog.title">Catalog</span>
-      <h1 data-i18n="catalog.title">Catalog</h1>
+      <span class="kicker" data-i18n="catalog.title">Database</span>
+      <h1 data-i18n="catalog.title">Database</h1>
       <p data-i18n="catalog.subtitle">WWN factions, units and structures</p>
     </div>
 
-    <div class="tabs" id="catalogTabs" role="tablist" data-i18n-aria="catalog.title" aria-label="Catalog">
+    <div class="tabs" id="catalogTabs" role="tablist" data-i18n-aria="catalog.title" aria-label="Database">
       <button class="tab is-active" type="button" role="tab" aria-selected="true" aria-controls="catalogGrid" data-tab="factions">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 3 6v6c0 5 3.8 8.4 9 10 5.2-1.6 9-5 9-10V6z" /></svg>
         <span data-i18n="catalog.tab.factions">Factions</span>

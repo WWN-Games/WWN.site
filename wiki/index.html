@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>WWN Wiki — lore, factions, units, mechanics and guides</title>
-  <meta name="description" content="The complete WWN wiki for Rusted Warfare: universe lore, factions, unit and structure catalog, mechanics, guides and patch notes.">
+  <meta name="description" content="The complete WWN wiki for Rusted Warfare: universe lore, factions, unit and structure database, mechanics, guides and patch notes.">
   <meta name="theme-color" content="#050b16">
   <meta property="og:type" content="website">
   <meta property="og:title" content="WWN Wiki">
@@ -20,7 +20,7 @@
   <link rel="stylesheet" href="../assets/css/wiki.css">
 </head>
 <body class="wiki-body">
-<div class="wiki-progress" id="wikiProgress"></div>
+<div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
 
 <header class="header" id="header">
   <div class="header__inner">
@@ -28,13 +28,13 @@
       <img src="../assets/img/brand/logo.svg" alt="WWN">
       <span class="brand__sub" data-i18n="brand.sub">A Rusted Warfare mod</span>
     </a>
-    <nav class="nav" id="mainNav" aria-label="Main">
+    <nav class="nav" aria-label="Main">
       <a href="../index.html#features" data-i18n="nav.features">Features</a>
       <a href="../index.html#factions" data-i18n="nav.factions">Factions</a>
       <a href="../index.html#gallery" data-i18n="nav.gallery">Gallery</a>
       <a href="../index.html#download" data-i18n="nav.download">Download</a>
       <a href="./" class="is-active" data-i18n="nav.wiki">Wiki</a>
-      <a href="catalog.html" data-i18n="catalog.title">Catalog</a>
+      <a href="catalog.html" data-i18n="catalog.title">Database</a>
     </nav>
     <div class="header__side">
       <button class="icon-btn" id="searchOpen" type="button" data-i18n-aria="wiki.search.placeholder" aria-label="Search the wiki…">
@@ -44,19 +44,19 @@
         <button type="button" data-lang-btn="RU">RU</button>
         <button type="button" data-lang-btn="EN">EN</button>
       </div>
-      <button class="icon-btn burger" id="burger" type="button" aria-label="Menu" aria-expanded="false"><span></span></button>
+      <button class="icon-btn burger" id="burger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mobileNav"><span></span></button>
     </div>
   </div>
 </header>
 
-<div class="mobile-nav" id="mobileNav">
+<div class="mobile-nav" id="mobileNav" inert>
   <a href="../index.html" data-i18n="nav.home">Home</a>
   <a href="../index.html#features" data-i18n="nav.features">Features</a>
   <a href="../index.html#factions" data-i18n="nav.factions">Factions</a>
   <a href="../index.html#gallery" data-i18n="nav.gallery">Gallery</a>
   <a href="../index.html#download" data-i18n="nav.download">Download</a>
   <a href="./" class="is-active" data-i18n="nav.wiki">Wiki</a>
-  <a href="catalog.html" data-i18n="catalog.title">Catalog</a>
+  <a href="catalog.html" data-i18n="catalog.title">Database</a>
   <div class="lang" role="group" aria-label="Language">
     <button type="button" data-lang-btn="RU">RU</button>
     <button type="button" data-lang-btn="EN">EN</button>

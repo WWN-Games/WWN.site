@@ -3,53 +3,54 @@ title: Vasst
 updated: 2026-09-15
 ---
 
-The **Vasst** (commonly known as Protons) are the main race of the [Proton Movement](proton.md) — a widespread spacefaring race of crocodile-like reptilian predators.
+The **Vasst** (more commonly known as Protonians) are crocodile-like reptilian predatory unisexual amphibious beings and the main race of the [Proton Movement](proton.md).
 
-## General Information
+## General information
 
-The Vasst (commonly known as Protons due to a propaganda error) are a widespread spacefaring race of crocodile-like reptilian predators, primarily inhabiting the Capo-Bul sector of the galaxy within the Oten Territory. They are the main race of the Proton Movement. Their behavior, traditions, and lifestyle are very extravagant and often repulsive to others. Their language is incredibly difficult to pronounce, as are other languages for them. Due to the lack of accurate population counts, the exact number of Protons is unknown. According to Minel experts, Protons are the most numerous race in the galaxy (and the most frightening threat, in their opinion).
+The Vasst (more commonly known as Protonians due to a propaganda error) are a very widespread spacefaring race of crocodile-like reptilian predatory unisexual amphibious beings, mostly inhabiting the Capo-Bul sector of the galaxy within the Oten Territory. They are the main race of the Proton Movement. Their behavior, traditions and lifestyle are very extravagant and even repulsive to others, and their language is incredibly difficult to pronounce, as are other languages for them. Due to the fact that no population counts are kept as such, the exact number of Protonians is unknown. According to Minelian experts, Protonians are the most numerous race in the galaxy (and the most terrible threat, in their opinion).
 
-## History and Origin
+## History and origin
 
-The homeworld of the Vasst is undoubtedly the planet Gamprellaka, where this race originated millions of years ago. It is one of the oldest races in the galaxy. The name Vasst was given to this species by a race called the Luripo, who occupied the planet and intended to pacify the warring clans and educate them. However, the clans united and consumed the Luripo (literally) and seized their technologies. Thus, this race ventured into space and began occupying the cosmos. It spread to many planets, some with living conditions different from their homeworld. Thanks to their remarkable adaptability, the Vasst have significantly evolved on thousands of worlds and have countless subspecies. Often, these differences are not very noticeable, but there are also varieties with significant distinctions.
+The homeworld of the Vasst is undoubtedly the planet Gamprellaka, where this race originated millions of years ago. It is one of the oldest races in the galaxy. The name Vasst was given to this species by a race of so-called Luripo, who occupied the planet and intended to reconcile all the warring clans on the planet and educate them. However, the clans united and ate the Luripo (literally) and took their technologies. So this race went into space and began to occupy the cosmos. It spread to many planets, many of which have living conditions different from their homeworld. And thanks to their amazing adaptation, the Vasst changed greatly on thousands of worlds and have countless subspecies. Often this is not very noticeable, but there are also species with various serious differences.
 
-### Main Characteristics
+## Main characteristics
 
-In appearance, they most resemble Earth's crocodiles but differ significantly both externally and internally. They range from 2 to 5 meters in length. Skin color varies from dark gray to bright green, with different shades. The body is always slender and lean. Between 30% to 60% of the body is the tail. Four powerful, agile legs, combined with the body's flexibility and lightness, provide remarkable mobility and the ability to swim and navigate various obstacles and gaps. A robust body, bones, and skin give the Vasst increased survivability. Strong, resilient eyes allow them to see in the infrared spectrum, making Protons dangerous both day and night. Their unique metabolism and special skin allow them to feel comfortable on different planets, although they still need a special filter.
+In appearance they most resemble Earth's crocodiles, but differ greatly from them both externally and internally. They are 2 to 5 meters long. Skin color varies from dark gray to bright green. Different shades occur. The build is always slender and lean. From 30 to 60% of the body is the tail. Four powerful agile legs, together with the flexibility and lightness of the body, provide amazing mobility and the ability to swim and pass through all sorts of obstacles and gaps. A strong body, bones and skin give the Vasst increased survivability. And strong resilient eyes allow them to see in the infrared range, which makes Protonians dangerous both day and night. Their special metabolism and special skin allow them to feel quite comfortable on different planets; nevertheless, they still need a special filter.
 
-Some subspecies have a long tongue that allows them to grasp objects and prey. Others have venomous glands. Claws and spines can also vary in shape—from almost non-existent to very sharp. On average, they can hold their breath from 5 minutes to 3 hours. Some species can breathe underwater (with limitations). Different Vasst can hibernate.
+Some subspecies have a long tongue that allows them to grasp objects and prey. Others have venomous glands. Also, claws and spine can be of different shapes — from almost absent to very sharp. On average, they can hold their breath from 5 minutes to 3 hours. Some species can breathe underwater (with limitations). Various Vasst can hibernate.
 
-The Vasst are unisexual (more similar to male individuals in sexual characteristics). Depending on the subspecies, they can be oviparous or viviparous (a notable exception is the Vasst of the Tkhikontou clan, which could reproduce by budding). The offspring always develop in special mud nests but not without the supervision and help of the parents.
+Vasst are unisexual (in sexual characteristics they resemble more the male individual). Depending on the subspecies, they can be egg-laying or viviparous (the Vasst of the Tkhikontou clan stand apart, as they were capable of reproducing by budding). The offspring always develop in special mud nests, but not without the supervision and help of the parents.
 
-## Culture and Behavior
+## Culture and behavior
 
-The nature of the Vasst has always been warlike but not without honor and respect for the enemy (except for the Ziyongons (Minel)). The Vasst lack fear as we know it, as well as a range of other emotions. This is why they can so boldly rush into battle against gunfire or act immorally towards other races. However, this is considered normal in their culture. It is also worth noting that they are quite honest and straightforward.
+The nature of the Vasst has always been warlike, but not without honor and respect for the enemy (the exception being the Ziyongons (Minelians)). The Vasst lack fear as such, as we know it, as well as a number of other feelings. That is why they can so boldly rush into battle against gun barrels or act immorally towards other races. However, in their culture this is considered normal. It is also worth noting that they are quite honest and straightforward.
 
-In daily life and culture, they are diverse in their traditions and habits. They are quite superstitious about their behavioral rules and omens. They live in pairs, in large communities of about 100 individuals. Each community lives in its own building-quarter in large, crowded settlements. The settlements are chaotically built, curved communal houses-hives. The infrastructure is developed but with peculiarities. Cleanliness is a very relative concept for Protons, as their amphibious nature implies a wet, dirty environment. Therefore, their homes and technology are a nightmare for cleanliness-obsessed perfectionists (Ziyongons (Minel)). Nevertheless, there is almost no unpleasant smell due to specific pheromones.
+In daily life and culture they are just as diverse in their traditions and habits. They are quite superstitious about their rules of behavior and omens. They live in pairs, in large communities of about 100 individuals. Each community lives in its own quarter-building in large crowded settlements. The settlements are chaotically built, crooked communal house-hives. The infrastructure is developed, though with peculiarities. Cleanliness is a very relative concept for Protonians, because the nature of amphibians implies a wet, dirty water environment, so their homes and equipment are a terrible nightmare for cleanliness-obsessed perfectionists (the Ziyongons (Minelians)). Nevertheless, there is almost no unpleasant smell due to specific pheromones.
 
-## Technology and Genetics
+## Technology and genetics
 
-Thanks to the technologies of the Luripo race, they have long experimented with genetic engineering. Due to their simple genetic code, they have learned to create mud clones in their own image, known as Degers.
+Thanks to the technologies of the Luripo race, they have long experimented with genetic engineering and, thanks to their simple genetic code, learned to create mud clones in their own image, the so-called Deguers.
 
 ## Appearance
 
-The most common appearance of a Vasst (depicted in the standard uniform of the United Proton Liberation Army):
+The most common appearance of a Vasst (shown in the standard uniform of the United Proton Liberation Army):
 
-![The most common appearance of a Vasst in the standard uniform of the United Proton Liberation Army](../assets/img/lore/vasst-portrait.webp)
+![Portrait of a Vasst in uniform](../assets/img/lore/vasst-portrait.webp)
 
-One of the Vasst subspecies in armor, with a commander's golden chain and clan marking on the face:
+One of the Vasst subspecies in armour, with a commander's golden chain and a clan mark on the face:
 
-![A Vasst subspecies in armor, with a commander's golden chain and clan marking on the face](../assets/img/lore/vasst-subspecies.webp)
+![A Vasst subspecies in armour with a commander's golden chain](../assets/img/lore/vasst-subspecies.webp)
 
 In-game appearance:
 
-![Vasst appearance in the game](../assets/img/lore/vasst-ingame.webp)
+![Vasst in the game](../assets/img/lore/vasst-ingame.webp)
 
-### Example of Proton Speech
+### Example of Protonian speech
 
-<div class="audio-card"><span class="audio-card__label">Example of Proton Speech</span><audio controls preload="metadata" src="../assets/audio/proton-speech.mp3"></audio></div>
+<div class="audio-card"><span class="audio-card__label">Example of Protonian speech</span><audio controls preload="metadata" src="../assets/audio/proton-speech.mp3"></audio></div>
 
-## See also
+## What's next
 
-- [Proton Movement](proton.md)
-- [History of the Galaxy](history.md)
+- [Proton Movement](proton.md) — the state founded on the Vasst.
+- [Fenearth Republic](fenearth.md) — the second player on the political map of the galaxy.
+- [History of the Galaxy](history.md) — the place of the Vasst in the WWN timeline.

@@ -34,10 +34,13 @@ function renderMarkdown(markdown, slug) {
       return;
     }
     if (href.startsWith("#")) return;
-    let target = href.replace(/\.md$/i, "");
+    const hashAt = href.indexOf("#");
+    const pathPart = hashAt === -1 ? href : href.slice(0, hashAt);
+    const hashPart = hashAt === -1 ? "" : href.slice(hashAt);
+    let target = pathPart.replace(/\.md$/i, "");
     if (!target.includes("/") && dir) target = `${dir}/${target}`;
     target = target.replace(/^\.\//, "").replace(/^\.\.\//, "");
-    link.href = `article.html?p=${encodeURIComponent(target)}`;
+    link.href = `article.html?p=${encodeURIComponent(target)}${hashPart}`;
   });
 
   // одиночные картинки — в фигуры с подписью из alt
@@ -114,6 +117,7 @@ function renderNotFound(body, lang, titleEl, crumbs, metaEl, pager) {
   body.append(callout);
 
   if (titleEl) titleEl.textContent = t("wiki.notFound.title", lang);
+  document.title = `${t("wiki.notFound.title", lang)} — ${t("meta.title.wiki", lang)}`;
   crumbs?.replaceChildren();
   metaEl?.replaceChildren();
   pager?.replaceChildren();
@@ -158,8 +162,11 @@ async function loadArticle(slug, lang) {
   const articles = getFlatArticles();
   const article = articles.find((item) => item.slug === slug);
 
-  // slug вне реестра статей не запрашиваем (защита от path traversal)
-  if (!article && articles.length) {
+  // Защита от path traversal: slug допускается только из реестра статей,
+  // а если реестр недоступен — только по строгой маске пути (без «..»).
+  const slugPattern = /^[\w-]+(?:\/[\w-]+)*$/;
+  const allowed = slugPattern.test(slug) && !slug.includes("..");
+  if (!allowed || (articles.length && !article)) {
     renderNotFound(body, lang, titleEl, crumbs, metaEl, pager);
     return;
   }
@@ -169,7 +176,7 @@ async function loadArticle(slug, lang) {
     const res = await fetch(abs(`content/${lang}/${slug}.md`), { cache: "no-cache" });
     if (!res.ok) throw new Error(String(res.status));
     raw = await res.text();
-  } catch (e) {
+  } catch {
     if (seq !== articleSeq) return;
     renderNotFound(body, lang, titleEl, crumbs, metaEl, pager);
     return;

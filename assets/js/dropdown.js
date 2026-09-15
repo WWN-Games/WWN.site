@@ -43,11 +43,11 @@ function buildItems(menu, select) {
   );
 }
 
-function place(menu, btn) {
+function place(menu, btn, estimatedHeight = 0) {
   const rect = btn.getBoundingClientRect();
   const width = Math.min(Math.max(rect.width, 180), Math.max(140, window.innerWidth - 16));
   const left = Math.max(8, Math.min(rect.left, window.innerWidth - width - 8));
-  const height = menu.getBoundingClientRect().height;
+  const height = menu.getBoundingClientRect().height || estimatedHeight;
   const spaceBelow = window.innerHeight - rect.bottom;
   const flip = spaceBelow < Math.min(height || 260, 240) && rect.top > spaceBelow;
 
@@ -104,7 +104,9 @@ function enhance(select) {
   menu.addEventListener("beforetoggle", (event) => {
     if (event.newState !== "open") return;
     buildItems(menu, select);
-    place(menu, btn);
+    // До открытия высота меню неизвестна — берём оценку по числу пунктов,
+    // точную позицию пересчитает rAF после открытия.
+    place(menu, btn, select.options.length * 37 + 14);
 
     listeners?.abort();
     listeners = new AbortController();

@@ -4,20 +4,6 @@
 
 .wiki-body { background: var(--bg-0); }
 
-/* reading progress on wiki pages */
-.wiki-progress {
-  position: fixed;
-  top: 0; left: 0;
-  z-index: 120;
-  height: 2px;
-  width: 100%;
-  transform-origin: 0 50%;
-  transform: scaleX(0);
-  background: linear-gradient(90deg, var(--cyan), var(--cyan-hi) 50%, var(--red));
-  box-shadow: 0 0 12px rgba(var(--cyan-rgb), .55);
-  pointer-events: none;
-}
-
 /* --------------------------------------------------------------- layout -- */
 .wiki-shell {
   display: grid;
@@ -38,7 +24,8 @@
   gap: 24px;
 }
 .wiki-sidebar::-webkit-scrollbar { width: 7px; }
-.wiki-sidebar::-webkit-scrollbar-thumb { border: 2px solid transparent; background-clip: padding-box; }
+.wiki-sidebar::-webkit-scrollbar-thumb,
+.wwn-menu::-webkit-scrollbar-thumb { border: 2px solid transparent; background-clip: padding-box; }
 
 .wiki-sidebar__search { position: relative; }
 .wiki-sidebar__search input {
@@ -53,7 +40,6 @@
   transition: border-color .2s, box-shadow .2s;
 }
 .wiki-sidebar__search input::placeholder { color: var(--muted-2); }
-.wiki-sidebar__search input:focus { border-color: var(--cyan); box-shadow: var(--glow-cyan-soft); }
 .wiki-sidebar__search svg {
   position: absolute;
   left: 14px; top: 50%;
@@ -78,7 +64,8 @@
 .wiki-nav__group h4::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, var(--line-strong), transparent); }
 .wiki-nav__group h4 svg { width: 15px; height: 15px; }
 .wiki-nav__icon { display: inline-grid; place-items: center; }
-.wiki-nav__error { color: var(--muted); font-size: 13.5px; }
+.wiki-nav__error,
+.unit-card__desc { color: var(--muted); font-size: 13.5px; }
 .wiki-nav__group ul { list-style: none; display: grid; gap: 2px; }
 .wiki-nav__group a {
   display: flex;
@@ -165,7 +152,6 @@
   background: radial-gradient(circle, rgba(var(--cyan-rgb), .17), transparent 68%);
   pointer-events: none;
 }
-.wiki-cat:hover { transform: translateY(-5px); border-color: var(--line-strong); box-shadow: var(--shadow-card); }
 .wiki-cat__icon {
   display: grid; place-items: center;
   width: 50px; height: 50px;
@@ -177,7 +163,6 @@
 }
 .wiki-cat__icon svg { width: 24px; height: 24px; }
 .wiki-cat h3 { font-size: 18px; color: #fff; }
-.wiki-cat p { color: var(--muted); font-size: 14px; }
 .wiki-cat ul { list-style: none; display: grid; gap: 7px; margin-top: 6px; }
 .wiki-cat ul a { font-size: 13.5px; color: var(--text-soft); display: inline-flex; gap: 9px; align-items: center; }
 .wiki-cat ul a::before { content: "→"; color: var(--cyan); font-size: 12px; }
@@ -406,10 +391,12 @@
   opacity: 0;
   transition: opacity .25s;
 }
-.article__pager a:hover { border-color: var(--line-strong); box-shadow: var(--glow-cyan-soft); transform: translateY(-2px); }
+.article__pager a:hover,
+.search-result:hover { border-color: var(--line-strong); box-shadow: var(--glow-cyan-soft); transform: translateY(-2px); }
 .article__pager a:hover::after { opacity: 1; }
 .article__pager small { font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
-.article__pager b { font-weight: 600; color: #fff; font-size: 15px; }
+.article__pager b,
+.search-result b { font-weight: 600; color: #fff; font-size: 15px; }
 .article__pager .pager-next { text-align: right; margin-left: auto; }
 
 /* --------------------------------------------------------------- catalog -- */
@@ -462,9 +449,12 @@
 .catalog-toolbar input[type="search"] { flex: 1 1 180px; min-width: 130px; }
 .catalog-toolbar select { flex: 1 1 150px; min-width: 120px; max-width: 220px; }
 .catalog-toolbar input:hover,
-.catalog-toolbar select:hover { border-color: var(--line-strong); background: rgba(13, 27, 48, .8); }
+.catalog-toolbar select:hover,
+.wwn-select__btn:hover { border-color: var(--line-strong); background: rgba(13, 27, 48, .8); }
 .catalog-toolbar input:focus,
-.catalog-toolbar select:focus { border-color: var(--cyan); box-shadow: var(--glow-cyan-soft); }
+.catalog-toolbar select:focus,
+.wiki-sidebar__search input:focus,
+.wwn-select__btn.is-open { border-color: var(--cyan); box-shadow: var(--glow-cyan-soft); }
 .catalog-toolbar input::placeholder { color: var(--muted-2); }
 .catalog-toolbar select {
   appearance: none;
@@ -511,12 +501,11 @@
   cursor: pointer;
   transition: border-color .2s, box-shadow .2s, background .2s;
 }
-.wwn-select__btn:hover { border-color: var(--line-strong); background: rgba(13, 27, 48, .8); }
 .wwn-select__btn:focus-visible { outline: 2px solid var(--cyan-hi); outline-offset: 3px; }
-.wwn-select__btn.is-open { border-color: var(--cyan); box-shadow: var(--glow-cyan-soft); }
 .wwn-select__btn svg { width: 16px; height: 16px; color: var(--muted); flex: none; transition: transform .25s, color .25s; }
 .wwn-select__btn.is-open svg { transform: rotate(180deg); color: var(--cyan); }
-.wwn-select__value { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wwn-select__value,
+.wwn-menu__label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .wwn-menu {
   position: fixed;
@@ -533,7 +522,6 @@
 .wwn-menu:popover-open { animation: wwnMenuIn .16s ease; }
 @keyframes wwnMenuIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
 .wwn-menu::-webkit-scrollbar { width: 8px; }
-.wwn-menu::-webkit-scrollbar-thumb { border: 2px solid transparent; background-clip: padding-box; }
 .wwn-menu__item {
   display: flex;
   align-items: center;
@@ -563,7 +551,6 @@
 }
 .wwn-menu__item.is-selected::after { content: "✓"; color: var(--cyan); font-size: 12px; }
 .wwn-menu__item:disabled { opacity: .45; cursor: not-allowed; }
-.wwn-menu__label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .catalog-empty {
   grid-column: 1 / -1;
@@ -578,44 +565,24 @@
 .catalog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
 .catalog-grid[data-mode="factions"] { grid-template-columns: repeat(2, 1fr); align-items: start; }
 
+/* Карточки наследуют общий фракционный стандарт из style.css:
+   рамка, фон, полоса, свечение и рамка картинки задаются там по --faction-color. */
 .unit-card {
-  position: relative;
   display: grid;
   gap: 13px;
   align-content: start;
   padding: 22px 22px 20px;
-  border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: linear-gradient(170deg, rgba(15, 31, 54, .76), rgba(5, 11, 21, .94));
-  overflow: hidden;
   transition: transform .25s, border-color .25s, box-shadow .25s;
 }
-.unit-card::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0;
-  width: 52px; height: 2px;
-  background: linear-gradient(90deg, var(--faction-color, var(--cyan)), transparent);
-}
-.unit-card::after {
-  content: "";
-  position: absolute;
-  inset: -60% -40% auto auto;
-  width: 220px; height: 220px;
-  border-radius: 50%;
-  background: radial-gradient(circle, color-mix(in srgb, var(--faction-color, var(--cyan)) 12%, transparent), transparent 70%);
-  pointer-events: none;
-}
-.unit-card:hover { transform: translateY(-5px); border-color: var(--line-strong); box-shadow: var(--shadow-card); }
+.unit-card:hover,
+.faction-card:hover { transform: translateY(-5px); }
 .unit-card__top { display: flex; align-items: center; gap: 13px; }
 .unit-card__img {
   width: 96px;
   height: 96px;
   flex: none;
   border-radius: 12px;
-  border: 1px solid var(--line);
-  background: rgba(88, 168, 255, .08);
-  box-shadow: inset 0 0 20px rgba(0, 0, 0, .35);
   display: grid;
   place-items: center;
   overflow: hidden;
@@ -642,12 +609,11 @@
 .chip--faction { color: var(--faction-color, var(--cyan)); border-color: color-mix(in srgb, var(--faction-color, var(--cyan)) 42%, transparent); }
 .chip--tag { color: #b3e9ff; border-color: rgba(88, 168, 255, .38); background: rgba(88, 168, 255, .08); }
 .chip--draft { color: var(--gold); border-color: rgba(var(--gold-rgb), .35); }
-.unit-card__desc { font-size: 13.5px; color: var(--muted); }
 
 .statbars { display: grid; gap: 8px; margin-top: 3px; }
 .statbar { display: grid; grid-template-columns: 78px 1fr auto; align-items: center; gap: 11px; font-size: 12px; color: var(--muted); }
 .statbar__label { text-transform: uppercase; letter-spacing: .06em; font-size: 10px; }
-.statbar__track { display: block; height: 6px; border-radius: 4px; background: rgba(88, 168, 255, .16); box-shadow: inset 0 0 6px rgba(0, 0, 0, .5); overflow: hidden; }
+.statbar__track { display: block; height: 6px; border-radius: 4px; background: color-mix(in srgb, var(--faction-color, var(--cyan)) 16%, rgba(88, 168, 255, .14)); box-shadow: inset 0 0 6px rgba(0, 0, 0, .5); overflow: hidden; }
 .statbar__fill { display: block; height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--faction-color, var(--cyan)), #b3e9ff); box-shadow: 0 0 10px color-mix(in srgb, var(--faction-color, var(--cyan)) 65%, transparent); width: 0; transition: width .7s var(--ease-out); }
 .statbar__val { color: var(--text-soft); font-variant-numeric: tabular-nums; min-width: 42px; text-align: right; }
 
@@ -660,48 +626,22 @@
 /* faction cards */
 .faction-card {
   grid-column: span 1;
-  position: relative;
   display: grid;
   gap: 16px;
   align-content: start;
   padding: 30px 28px;
-  border: 1px solid var(--line);
   border-radius: var(--radius-lg);
-  background: linear-gradient(170deg, rgba(15, 31, 54, .78), rgba(5, 11, 21, .95));
-  overflow: hidden;
   transition: transform .26s, border-color .26s, box-shadow .26s;
 }
-.faction-card::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0;
-  width: 100px; height: 3px;
-  background: linear-gradient(90deg, var(--faction-color, var(--cyan)), transparent);
-}
-.faction-card::after {
-  content: "";
-  position: absolute;
-  inset: -40% -30% auto auto;
-  width: 300px; height: 300px;
-  border-radius: 50%;
-  background: radial-gradient(circle, color-mix(in srgb, var(--faction-color, var(--cyan)) 20%, transparent), transparent 68%);
-  pointer-events: none;
-}
-.faction-card:hover { transform: translateY(-5px); border-color: var(--line-strong); box-shadow: var(--shadow-card); }
-.faction-card__head { display: flex; align-items: center; gap: 18px; }
 .faction-card__emblem {
   width: 84px; height: 84px;
   flex: none;
   display: grid; place-items: center;
   border-radius: 18px;
-  border: 1px solid color-mix(in srgb, var(--faction-color, var(--cyan)) 40%, transparent);
-  background: rgba(6, 13, 24, .88);
   overflow: hidden;
 }
 .faction-card__emblem img { width: 100%; height: 100%; object-fit: contain; padding: 8px; }
 .faction-card__name { font-family: var(--font-display); font-size: 21px; color: #fff; }
-.faction-card__motto { font-size: 13px; color: var(--faction-color, var(--cyan)); margin-top: 4px; }
-.faction-card__desc { font-size: 14.5px; color: var(--muted); }
 .faction-card__blocks { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .faction-block { padding: 14px 16px; border: 1px solid var(--line); border-radius: 11px; background: rgba(9, 19, 34, .55); }
 .faction-block h5 { font-family: var(--font-display); font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--faction-color, var(--cyan)); margin-bottom: 8px; }
@@ -756,15 +696,14 @@
   background: rgba(9, 19, 34, .82);
   transition: .18s;
 }
-.search-result:hover { border-color: var(--line-strong); box-shadow: var(--glow-cyan-soft); transform: translateY(-2px); }
-.search-result b { color: #fff; font-weight: 600; font-size: 15px; }
 .search-result small { color: var(--muted); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
 .search-result p { color: var(--text-soft); font-size: 13.5px; }
 .search-result mark { background: rgba(var(--cyan-rgb), .28); color: #fff; border-radius: 3px; padding: 0 3px; }
 
 /* -------------------------------------------------------------- responsive */
 @media (max-width: 1240px) {
-  .catalog-grid { grid-template-columns: repeat(2, 1fr); }
+  .catalog-grid,
+  .catalog-grid[data-mode="factions"] { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 1040px) {
   .wiki-shell { grid-template-columns: 1fr; }
@@ -776,7 +715,8 @@
   .catalog-toolbar input[type="search"],
   .catalog-toolbar select,
   .catalog-toolbar .wwn-select { flex: 1 1 100%; max-width: none; }
-  .catalog-grid { grid-template-columns: 1fr; }
+  .catalog-grid,
+  .catalog-grid[data-mode="factions"] { grid-template-columns: 1fr; }
   .wiki-nav { grid-template-columns: 1fr; }
   .article__pager { flex-direction: column; }
   .article__pager a { max-width: 100%; }

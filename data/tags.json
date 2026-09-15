@@ -254,7 +254,7 @@
       },
       "group": "mod"
     },
-      {
+    {
       "id": "RocketTACT",
       "name": {
         "ru": "RocketTACT",
@@ -315,22 +315,6 @@
       "name": {
         "ru": "SIP",
         "en": "SIP"
-      },
-      "group": "mod"
-    },
-    {
-      "id": "Titan",
-      "name": {
-        "ru": "Titan",
-        "en": "Titan"
-      },
-      "group": "mod"
-    },
-    {
-      "id": "air",
-      "name": {
-        "ru": "air",
-        "en": "air"
       },
       "group": "mod"
     },

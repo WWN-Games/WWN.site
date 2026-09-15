@@ -14,9 +14,9 @@ The up-to-date list of versions and changes is published on the official release
 <strong>Tip:</strong> subscribe on Steam so you always run the freshest version — and online matches won't break due to version mismatch.
 </div>
 
-## Patch note format
+## Strict patch note format
 
-The full change list for every version lives in the repository's **Commits / Releases** section. Below is the format used for WWN patch notes.
+The full change list for every version lives in the repository's **Commits / Releases** section. Below is a template that makes WWN patch notes easy to read and write.
 
 ### Added
 

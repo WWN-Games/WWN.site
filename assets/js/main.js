@@ -3,8 +3,8 @@
    ============================================================================ */
 
 import { WWN_CONFIG } from "./site-config.js";
-import { bootI18n, getLang, t } from "./i18n.js";
-import { $, $$, debounce, formatDate, formatNumber, loc, prefersReduced } from "./utils.js";
+import { bootI18n, getLang, onLangChange, t } from "./i18n.js";
+import { $, $$, abs, debounce, formatDate, formatNumber, loc, locObj, prefersReduced } from "./utils.js";
 import { initHeader, initReveal, resolveLinks } from "./ui.js";
 
 const cfg = WWN_CONFIG;
@@ -158,13 +158,21 @@ function initParallax() {
   let x = 0;
   let y = 0;
   let running = !document.hidden;
+  let rafId = 0;
+
+  function start() {
+    if (!running || rafId) return;
+    rafId = requestAnimationFrame(tick);
+  }
 
   window.addEventListener("pointermove", (event) => {
     targetX = (event.clientX / window.innerWidth - 0.5) * 2;
     targetY = (event.clientY / window.innerHeight - 0.5) * 2;
+    start();
   }, { passive: true });
 
   function tick() {
+    rafId = 0;
     if (!running) return;
     x += (targetX - x) * 0.055;
     y += (targetY - y) * 0.055;
@@ -172,22 +180,28 @@ function initParallax() {
       const scale = layer.el.classList.contains("hero__bg") ? "scale(1.09) " : "";
       layer.el.style.transform = `${scale}translate3d(${x * layer.dx}px, ${y * layer.dy}px, 0)`;
     }
-    requestAnimationFrame(tick);
+    // когда смещение догнало цель — цикл останавливается до следующего движения мыши
+    if (Math.abs(targetX - x) > 0.0005 || Math.abs(targetY - y) > 0.0005) {
+      rafId = requestAnimationFrame(tick);
+    }
   }
-  requestAnimationFrame(tick);
+  start();
 
   document.addEventListener("visibilitychange", () => {
-    const next = !document.hidden;
-    if (next && !running) requestAnimationFrame(tick);
-    running = next;
+    running = !document.hidden;
+    if (running) start();
   });
 }
 
 /* --------------------------------------------------------------- счётчики -- */
 let counterGen = 0;
 
+/** Живые значения статистики: юниты/строения и фракции подставляются из
+ *  data/*.json (см. loadLiveStats), карты берутся из конфига. */
+const stats = { ...(cfg.stats || {}) };
+
 const statKey = (el) => (el.nextElementSibling?.getAttribute("data-i18n") || "").replace("stats.", "");
-const statTarget = (el) => cfg.stats?.[statKey(el)] ?? (Number(el.dataset.count) || 0);
+const statTarget = (el) => stats[statKey(el)] ?? 0;
 
 /** Мгновенно показать актуальные значения (например, при смене языка). */
 function syncStats(lang) {
@@ -195,6 +209,38 @@ function syncStats(lang) {
   $$(".stat__num").forEach((el) => {
     el.textContent = formatNumber(statTarget(el), lang);
   });
+}
+
+/** Подтянуть реальные количества из data/: юниты + строения и фракции.
+ *  Если данные недоступны, остаются значения из site-config.js. */
+async function loadLiveStats() {
+  if (!$$(".stat__num").length) return;
+  try {
+    const [units, buildings, factions] = await Promise.all(
+      ["units", "buildings", "factions"].map((name) =>
+        fetch(abs(`data/${name}.json`), { cache: "no-cache" })
+          .then((res) => (res.ok ? res.json() : null))
+          .catch(() => null)
+      )
+    );
+    let changed = false;
+
+    const unitCount = (units?.units?.length || 0) + (buildings?.buildings?.length || 0);
+    if (unitCount > 0 && stats.units !== unitCount) {
+      stats.units = unitCount;
+      changed = true;
+    }
+
+    const factionCount = factions?.factions?.length || 0;
+    if (factionCount > 0 && stats.factions !== factionCount) {
+      stats.factions = factionCount;
+      changed = true;
+    }
+
+    if (changed) syncStats(getLang());
+  } catch {
+    /* нет данных — остаются значения из конфига */
+  }
 }
 
 function initCounters() {
@@ -207,7 +253,6 @@ function initCounters() {
     return;
   }
 
-  const gen = counterGen;
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (!entry.isIntersecting) return;
@@ -215,8 +260,11 @@ function initCounters() {
       const el = entry.target;
       const target = statTarget(el);
       const start = performance.now();
+      // поколение фиксируем на старте: если значения обновятся (данные/язык),
+      // анимация остановится и syncStats покажет точное число
+      const myGen = counterGen;
       const step = (now) => {
-        if (gen !== counterGen) return;
+        if (myGen !== counterGen) return;
         const progress = Math.min((now - start) / 1400, 1);
         el.textContent = formatNumber(Math.round(target * (1 - (1 - progress) ** 3)), lang);
         if (progress < 1) requestAnimationFrame(step);
@@ -249,7 +297,7 @@ function renderGallery(lang) {
   galleryItems = [];
   grid.replaceChildren(
     ...items.map((item, i) => {
-      const localized = item[lang] || item.ru || item.en || {};
+      const localized = locObj(item, lang);
       const src = lang === "en" && item.srcEn ? item.srcEn : item.src;
       const caption = localized.caption || "";
       galleryItems.push({ src, caption });
@@ -319,7 +367,7 @@ function renderNews(lang) {
   if (!grid) return;
   grid.replaceChildren(
     ...(cfg.news || []).map((item) => {
-      const localized = item[lang] || item.ru || {};
+      const localized = locObj(item, lang);
       const card = document.createElement("article");
       card.className = "news__card";
 
@@ -403,6 +451,7 @@ function boot() {
   initStarfield();
   initParallax();
   initCounters();
+  loadLiveStats();
   initGalleryUi();
   initFaq();
   initReveal();
@@ -411,9 +460,9 @@ function boot() {
   const year = $("#year");
   if (year) year.textContent = String(new Date().getFullYear());
 
-  document.addEventListener("wwn:langchange", (event) => {
-    refreshDynamic(event.detail.lang);
-    syncStats(event.detail.lang);
+  onLangChange((next) => {
+    refreshDynamic(next);
+    syncStats(next);
   });
   window.addEventListener("resize", debounce(syncFaqHeights, 150));
 }

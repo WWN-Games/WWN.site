@@ -6,7 +6,7 @@
 
 import { WWN_CONFIG } from "./site-config.js";
 import { bootI18n, onLangChange, t } from "./i18n.js";
-import { $, abs, escapeHtml, loc } from "./utils.js";
+import { $, abs, emptyBlock, escapeHtml, loc } from "./utils.js";
 import { initHeader, initReveal } from "./ui.js";
 
 const ICONS = {
@@ -39,17 +39,20 @@ async function loadNav() {
       navData = JSON.parse(cached);
       indexNav();
     }
-  } catch (e) {}
+  } catch {}
 
-  const res = await fetch(abs("data/wiki-nav.json"), { cache: "no-cache" });
-  if (!res.ok) {
+  try {
+    const res = await fetch(abs("data/wiki-nav.json"), { cache: "no-cache" });
+    if (!res.ok) throw new Error("nav");
+    navData = await res.json();
+    try { sessionStorage.setItem("wwn-nav-cache-v2", JSON.stringify(navData)); } catch {}
+    indexNav();
+    return navData;
+  } catch (e) {
+    // сеть/файл недоступны — если есть валидный кэш, работаем на нём
     if (navData) return navData;
-    throw new Error("nav");
+    throw e;
   }
-  navData = await res.json();
-  try { sessionStorage.setItem("wwn-nav-cache-v2", JSON.stringify(navData)); } catch (e) {}
-  indexNav();
-  return navData;
 }
 
 function buildSidebar(lang, activeSlug) {
@@ -184,7 +187,7 @@ let searchLoading = null;
 let searchLoadingLang = null;
 let searchSeq = 0;
 
-export function resetSearchIndex() {
+function resetSearchIndex() {
   searchIndex = null;
   searchIndexLang = null;
 }
@@ -200,7 +203,7 @@ async function buildSearchIndex(lang) {
         const res = await fetch(abs(`content/${lang}/${article.slug}.md`), { cache: "no-cache" });
         const raw = res.ok ? await res.text() : "";
         return { ...article, text: stripMd(raw) };
-      } catch (e) {
+      } catch {
         return { ...article, text: "" };
       }
     })
@@ -247,7 +250,7 @@ async function runSearch(query, lang) {
   if (seq !== searchSeq) return;
 
   if (!found.length) {
-    results.innerHTML = `<div class="catalog-empty">${escapeHtml(t("wiki.search.empty", lang))}</div>`;
+    results.replaceChildren(emptyBlock(t("wiki.search.empty", lang)));
     return;
   }
 
@@ -314,19 +317,9 @@ function applyLangVisuals(lang) {
 function showNavError(lang) {
   const message = t("wiki.loadError.desc", lang);
   const nav = $("#wikiNav");
-  if (nav) {
-    const p = document.createElement("p");
-    p.className = "wiki-nav__error";
-    p.textContent = message;
-    nav.replaceChildren(p);
-  }
+  if (nav) nav.replaceChildren(emptyBlock(message, "wiki-nav__error"));
   const home = $("#wikiCategories");
-  if (home) {
-    const div = document.createElement("div");
-    div.className = "catalog-empty";
-    div.textContent = message;
-    home.replaceChildren(div);
-  }
+  if (home) home.replaceChildren(emptyBlock(message));
 }
 
 /** Общий запуск страниц вики/каталога: шапка, сайдбар, поиск, подписка на язык.
@@ -334,6 +327,7 @@ function showNavError(lang) {
 export async function initShell({ slug = null, onRender } = {}) {
   let lang = bootI18n();
   let navReady = false;
+  let navFailed = false;
   let renderQueue = Promise.resolve();
   initHeader();
   const setSearchLang = initSearch();
@@ -342,23 +336,25 @@ export async function initShell({ slug = null, onRender } = {}) {
     applyLangVisuals(lang);
     setSearchLang(lang);
     if (navReady) buildSidebar(lang, slug);
+    else if (navFailed) showNavError(lang);
     return onRender?.(lang);
   };
 
   onLangChange((nextLang) => {
     lang = nextLang;
     resetSearchIndex();
-    renderQueue = renderQueue.then(rerender);
+    renderQueue = renderQueue.then(rerender).catch(() => {});
   });
 
   try {
     await loadNav();
     navReady = true;
-  } catch (e) {
+  } catch {
+    navFailed = true;
     showNavError(lang);
   }
 
-  renderQueue = renderQueue.then(rerender);
+  renderQueue = renderQueue.then(rerender).catch(() => {});
   await renderQueue;
   return lang;
 }

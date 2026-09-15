@@ -5,7 +5,7 @@
    ============================================================================ */
 
 /** Корень сайта (работает и на GitHub Pages в подкаталоге). */
-export const BASE = new URL("../../", import.meta.url);
+const BASE = new URL("../../", import.meta.url);
 
 /** Абсолютный URL от корня сайта: abs("data/units.json"). */
 export const abs = (path) => new URL(path, BASE).href;
@@ -18,6 +18,18 @@ export const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce
 /* ------------------------------------------------------------- локализация -- */
 /** Значение локализованного поля { ru, en } с фолбэком на ru/en. */
 export const loc = (obj, lang) => (obj ? obj[lang] || obj.ru || obj.en || "" : "");
+
+/** Локализованный объект целиком (например, { caption }) с фолбэком. */
+export const locObj = (obj, lang, fallback = {}) => (obj ? obj[lang] || obj.ru || obj.en || fallback : fallback);
+
+/* ------------------------------------------------------------------- DOM -- */
+/** Пустой блок-сообщение («ничего не найдено» и т.п.). */
+export function emptyBlock(text, className = "catalog-empty") {
+  const div = document.createElement("div");
+  div.className = className;
+  div.textContent = text;
+  return div;
+}
 
 const dateFormatters = new Map();
 export const formatDate = (iso, lang) => {

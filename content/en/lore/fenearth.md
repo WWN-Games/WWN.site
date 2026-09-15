@@ -3,61 +3,51 @@ title: Fenearth Republic
 updated: 2026-09-15
 ---
 
-The **Fenearth Republic** (FR/Fenearth) is one of the two factions of WWN — an independent state formed during the Galactic Turmoil, built on the industrial legacy of the Galactic Federation.
+The **Fenearth Republic (FR/Fenearth)** is an independent state formed during the Galactic Turmoil in 2061 PZLI (Earth calendar).
+
+## General information
+
+Fenearth is a federative parliamentary republic occupying most of the Capo-Nant sector of the galaxy. Its economy is one of the strongest in the galaxy, and its powerful industrial base was inherited by the republic from the Galactic Federation.
+
+## Characteristics
+
+| Parameter | Value |
+| --- | --- |
+| Territory | Occupies most of the Capo-Nant sector of the galaxy (~21% of the entire galaxy) |
+| Capital | Planet Fenkar |
+| Form of government | Federative parliamentary republic |
+| Highest governing body | Supreme Republican Parliament |
+| Economic position | One of the strongest in the galaxy (2nd place) |
+| Main currency | Reformed Galvals |
+| Military power | Has significant military potential |
+| Main races | Lets (Fenkarians), Humans (Earthlings), Seuzians (Siauaya-Awarites), Olympians |
+| Rights and opportunities | All races have equal rights and opportunities |
+
+## History of origin
+
+The history of the Fenearth Republic goes back to the beginning of the Galactic Crisis and the start of the Galactic Turmoil. After the Ramderan Uprising and the onset of lawlessness, the industrial elite became concerned about possible dangers and proclaimed the creation of a defensive federation to protect their planets and infrastructure. Later, similar unions joined it and the Alliance of Federations was formed.
+
+### Alliance of Federations
+
+This union tried to protect the legacy of the Galactic Federation, although it fought against it, since its command did not recognize any subjects. The Alliance of Federations existed until 2061 PZLI, when, together with the Free Space of Earth, after lengthy negotiations, the Fenearth Republic was formed.
+
+## Goals and objectives
+
+The goal of the new state remained the same as that of its founders — peaceful settlement and coexistence while preserving the memory of the past.
+
+## Industrial base
+
+Since the main industrial part was concentrated in the Capo-Nant sector of the galaxy, the FR acquired a powerful industrial base and almost all the technologies of the GF, which allowed it to keep producing such equipment. The timely discovery of the Hidden Fleets and Operation Great Hijack also influenced the replenishment of the ranks of "ordinary" equipment. That is why almost all Fenearth hardware consists of GF technology and its modifications.
+
+## Standard of living
+
+The standard of living in the Republic remains acceptable, although it varies depending on the planets.
+
+## Map and emblem
 
 ![Map of the Fenearth Republic](../assets/img/lore/map-fenearth.webp)
 
 ![Emblem of the Fenearth Republic](../assets/img/factions/faction-fer.svg)
-
-## General Information
-
-The Fenearth Republic (FR/Fenearth) is an independent state formed during the Galactic Turmoil in 2061 PZLI (Earth calendar).
-
-### Territory and Capital
-
-- **Territory:** Occupies a large part of the Capo-Nant sector of the galaxy (~21% of the entire galaxy).
-- **Capital:** Planet Fenkar.
-
-### Political Structure
-
-- **Form of government:** Federative parliamentary republic.
-- **Highest governing body:** Supreme Republican Parliament.
-
-### Economy
-
-- **Economic status:** One of the strongest in the galaxy (2nd place).
-- **Main currency:** Reformed Galvals.
-
-### Military Potential
-
-- **Military strength:** Has significant military potential.
-
-### Population
-
-| Parameter | Value |
-| --- | --- |
-| Rights and opportunities | All races have equal rights and opportunities |
-| Main races | Lets (Fenkarians), Humans (Earthlings), Seuzians (Siauaya-Awarites), Olympians |
-
-## History of Origin
-
-The history of the Fenearth Republic dates back to the beginning of the Galactic Crisis and the Galactic Turmoil. After the Ramderan Uprising and the onset of lawlessness, the industrial elite became concerned about potential dangers and proclaimed the creation of a defensive federation to protect their planets and infrastructure. Later, similar alliances joined, forming the Alliance of Federations.
-
-### Alliance of Federations
-
-This union aimed to protect the legacy of the Galactic Federation, although it fought against it because its command did not recognize any subjects. The Alliance of Federations existed until 2061 PZLI, when, together with the Free Space of Earth, after lengthy negotiations, the Fenearth Republic was formed.
-
-## Goals and Objectives
-
-The goal of the new state remains the same as that of its founders — peaceful coexistence and preservation of the memory of the past.
-
-### Industrial Base
-
-Since the main industrial part was concentrated in the Capo-Nant sector of the galaxy, the FR acquired a powerful industrial base and almost all the technologies of the GF, allowing it to continue producing such equipment. The timely discovery of Hidden Fleets and Operation Great Hijack also influenced the replenishment of the ranks of "ordinary" equipment. This is why almost all Fenearth technology consists of GF technology and its modifications.
-
-## Standard of Living
-
-The standard of living in the Republic remains acceptable, although it varies depending on the planets.
 
 ## Anthem of the Fenearth Republic
 
@@ -66,28 +56,29 @@ The standard of living in the Republic remains acceptable, although it varies de
 ### Lyrics
 
 <pre>
-Fenearthian! (Great union)
+Fenearthian! (The great union)
 
 Fenearthian!
 Republic!
 Hundreds of races
-live in peace and friendship
+Live in peace and friendshi-ip
 United and mighty
-is our great union!
+Is our great union!
 
 But if the enemy
-attacks us
+Attacks us
 Then into battle will go
-our entire valiant fleet!
+Our entire valiant fleet!
 
 Fenearthian!
 Republic!
-All as one we
-will defend our land!
-And put the space in order!
+All as one
+We will defend our land!
+And put the cosmos in orde-er!
 </pre>
 
-## See also
+## What's next
 
-- [History of the Galaxy](history.md)
-- [Proton Movement](proton.md)
+- [Proton Movement](proton.md) — the second player on the political map of the galaxy.
+- [History of the Galaxy](history.md) — Fenearth's place in the WWN timeline.
+- [Vasst](vasst.md) — the main race of the Proton Movement.

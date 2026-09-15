@@ -38,7 +38,7 @@
         {
           "slug": "lore/proton",
           "title": { "ru": "Движение Протон", "en": "Proton Movement" },
-          "desc": { "ru": "Союз кланов Отена и Единая Освободительная Армия.", "en": "The clan union of Oten and its United Liberation Army." }
+          "desc": { "ru": "Союз кланов Отена и Единая Протонская Освободительная Армия.", "en": "The clan union of Oten and its United Proton Liberation Army." }
         }
       ]
     },
@@ -132,7 +132,7 @@
         {
           "slug": "guides/economy",
           "title": { "ru": "Гайд по экономике", "en": "Economy guide" },
-          "desc": { "ru": "Как не проиграть на макро.", "en": "How to win the macro game." }
+          "desc": { "ru": "Как не проиграть на макро.", "en": "How not to lose in the macro game." }
         },
         {
           "slug": "guides/combat",
