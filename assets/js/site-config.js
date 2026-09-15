@@ -5,9 +5,8 @@
    ============================================================================ */
 
 export const WWN_CONFIG = {
-  // Version shown in the header badge and download section
+  // Version shown in the header badge
   version: "1.0.0",
-  updated: "2026-09-15",
 
   // ---------------------------------------------------------------------------
   // LINKS — replace the placeholders below with real URLs
@@ -19,12 +18,10 @@ export const WWN_CONFIG = {
     drive: "https://drive.google.com/file/d/1a3r6f3GG2pORNaqzCVBrsTKvrXs_ctYg/view?usp=sharing",
     // Community links (leave "" to hide the button automatically)
     discord: "https://discord.gg/sRwKDGrbDy",
-    youtube: "",
+    youtube: "https://www.youtube.com/@shykinc4860",
     telegram: "",
     vk: "",
     gitlab: "https://gitlab.com/wwn.games/wwn.mod-rustedwarfare/WWN-Mod",
-    // Steam page of the base game (Rusted Warfare)
-    gameSteam: "https://store.steampowered.com/app/241100/Rusted_Warfare/",
     github: ""
   },
 
@@ -39,12 +36,25 @@ export const WWN_CONFIG = {
   },
 
   // ---------------------------------------------------------------------------
+  // NEWS TAGS — доступные теги для news[].tag: id + подпись на двух языках.
+  // Цвет задаётся классом .tag--<id> в assets/css/style.css
+  // (для update отдельного класса нет — используется базовый .tag).
+  // ---------------------------------------------------------------------------
+  newsTags: {
+    update: { ru: "Обновление", en: "Update" },
+    news: { ru: "Новости", en: "News" },
+    balance: { ru: "Баланс", en: "Balance" },
+    league: { ru: "Лига", en: "League" },
+    fix: { ru: "Фикс", en: "Fix" }
+  },
+
+  // ---------------------------------------------------------------------------
   // NEWS — short cards in the "What's new" section. Add/remove freely.
   // ---------------------------------------------------------------------------
   news: [
     {
       date: "2026-09-15",
-      tag: "update",
+      tag: "news",
       ru: {
         title: "Лор WWN теперь на сайте",
         text: "Полная история галактики: Странники и Хранители, Война Очищения, Смута и Тройственный Конфликт — с картами эпох."
@@ -55,20 +65,20 @@ export const WWN_CONFIG = {
       }
     },
     {
-      date: "2026-09-01",
-      tag: "league",
+      date: "2026-08-16",
+      tag: "news",
       ru: {
-        title: "Сезон WWN League",
-        text: "Соревновательные матчи, фиксированный пул карт и рейтинг игроков — правила в вики."
+        title: "Вселенной WWN исполняется 10 лет 🏆",
+        text: "С юбилеем, WWN!"
       },
       en: {
-        title: "WWN League season",
-        text: "Competitive matches, a fixed map pool and player ratings — rules in the wiki."
+        title: "The WWN universe is turning 10 years old 🏆",
+        text: "Happy Anniversary, WWN!"
       }
     },
     {
       date: "2026-08-20",
-      tag: "balance",
+      tag: "news",
       ru: {
         title: "Мод в Steam Workshop",
         text: "Подпишись на WWN в мастерской Steam — обновления будут приходить автоматически."
@@ -81,32 +91,25 @@ export const WWN_CONFIG = {
   ],
 
   // ---------------------------------------------------------------------------
-  // GALLERY — images from assets/img. caption is localised.
+  // GALLERY — images from assets/img/gallery. caption is localised.
+  // Optional keys: wide (2 columns), tall (2 rows), srcEn (English-only image).
   // ---------------------------------------------------------------------------
   gallery: [
     {
       src: "assets/img/gallery/screenshot-1.webp",
       wide: true,
-      ru: { caption: "Ядерный удар: позиции противника накрыты с орбиты" },
-      en: { caption: "Nuclear strike: enemy positions hit from orbit" }
+      ru: { caption: "Ядерный удар" },
+      en: { caption: "Nuclear strike" }
     },
-    // Пример (раскомментируйте и заполните):
-    // {
-    //   src: "assets/img/gallery/screenshot-1.webp",   // путь от корня сайта
-    //   wide: true,                                    // опционально: широкая плитка
-    //   tall: false,                                   // опционально: высокая плитка
-    //   ru: { caption: "Подпись на русском" },
-    //   en: { caption: "Caption in English" }
-    // }
-  ],
-
-  // ---------------------------------------------------------------------------
-  // Misc
-  // ---------------------------------------------------------------------------
-  discordInvite: "https://discord.gg/sRwKDGrbDy",
-  siteName: "WWN",
-  siteTagline: {
-    ru: "Мод для Rusted Warfare",
-    en: "A Rusted Warfare mod"
-  }
+    {
+      src: "assets/img/gallery/screenshot-2.webp",
+      ru: { caption: "Фензем юниты" },
+      en: { caption: "Fenearth units" }
+    },
+    {
+      src: "assets/img/gallery/screenshot-3.webp",
+      ru: { caption: "Протон юниты" },
+      en: { caption: "Proton units" }
+    }
+  ]
 };

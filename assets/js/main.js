@@ -3,8 +3,9 @@
    ============================================================================ */
 
 import { WWN_CONFIG } from "./site-config.js";
-import { getLang, t, bootI18n, initLangSwitch, setPageTitle } from "./i18n.js";
-import { $, $$, formatDate, formatNumber, prefersReduced, initHeader, initReveal, resolveLinks } from "./ui.js";
+import { bootI18n, getLang, t } from "./i18n.js";
+import { $, $$, debounce, formatDate, formatNumber, loc, prefersReduced } from "./utils.js";
+import { initHeader, initReveal, resolveLinks } from "./ui.js";
 
 const cfg = WWN_CONFIG;
 
@@ -13,6 +14,7 @@ function initStarfield() {
   const canvas = $("#starfield");
   if (!canvas || prefersReduced) return;
   const ctx = canvas.getContext("2d");
+  if (!ctx) return;
   const DPR = Math.min(window.devicePixelRatio || 1, 2);
   let stars = [];
   let dust = [];
@@ -54,7 +56,7 @@ function initStarfield() {
     meteors = [];
   }
   resize();
-  window.addEventListener("resize", resize);
+  window.addEventListener("resize", debounce(resize, 150));
 
   function spawnMeteor(w, h) {
     const fromTop = Math.random() > 0.35;
@@ -68,8 +70,10 @@ function initStarfield() {
     });
   }
 
+  let running = !document.hidden;
   let last = 0;
   function frame(now) {
+    if (!running) return;
     const w = canvas.clientWidth;
     const h = canvas.clientHeight;
     ctx.clearRect(0, 0, w, h);
@@ -126,6 +130,16 @@ function initStarfield() {
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
+
+  document.addEventListener("visibilitychange", () => {
+    const next = !document.hidden;
+    if (next && !running) {
+      running = true;
+      last = performance.now();
+      requestAnimationFrame(frame);
+    }
+    running = next;
+  });
 }
 
 /* -------------------------------------------------------------- параллакс -- */
@@ -143,6 +157,7 @@ function initParallax() {
   let targetY = 0;
   let x = 0;
   let y = 0;
+  let running = !document.hidden;
 
   window.addEventListener("pointermove", (event) => {
     targetX = (event.clientX / window.innerWidth - 0.5) * 2;
@@ -150,6 +165,7 @@ function initParallax() {
   }, { passive: true });
 
   function tick() {
+    if (!running) return;
     x += (targetX - x) * 0.055;
     y += (targetY - y) * 0.055;
     for (const layer of layers) {
@@ -159,32 +175,48 @@ function initParallax() {
     requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);
+
+  document.addEventListener("visibilitychange", () => {
+    const next = !document.hidden;
+    if (next && !running) requestAnimationFrame(tick);
+    running = next;
+  });
 }
 
 /* --------------------------------------------------------------- счётчики -- */
-const statKey = (el) => (el.nextElementSibling?.getAttribute("data-i18n") || "").replace("stats.", "");
+let counterGen = 0;
 
+const statKey = (el) => (el.nextElementSibling?.getAttribute("data-i18n") || "").replace("stats.", "");
+const statTarget = (el) => cfg.stats?.[statKey(el)] ?? (Number(el.dataset.count) || 0);
+
+/** Мгновенно показать актуальные значения (например, при смене языка). */
 function syncStats(lang) {
+  counterGen += 1;
   $$(".stat__num").forEach((el) => {
-    const key = statKey(el);
-    const value = cfg.stats?.[key] ?? (Number(el.dataset.count) || 0);
-    el.dataset.count = String(value);
-    el.textContent = formatNumber(value, lang);
+    el.textContent = formatNumber(statTarget(el), lang);
   });
 }
 
 function initCounters() {
   const counters = $$(".stat__num");
   if (!counters.length) return;
+  const lang = getLang();
+
+  if (prefersReduced || !("IntersectionObserver" in window)) {
+    counters.forEach((el) => { el.textContent = formatNumber(statTarget(el), lang); });
+    return;
+  }
+
+  const gen = counterGen;
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (!entry.isIntersecting) return;
       observer.unobserve(entry.target);
       const el = entry.target;
-      const target = Number(el.dataset.count) || 0;
-      const lang = getLang();
+      const target = statTarget(el);
       const start = performance.now();
       const step = (now) => {
+        if (gen !== counterGen) return;
         const progress = Math.min((now - start) / 1400, 1);
         el.textContent = formatNumber(Math.round(target * (1 - (1 - progress) ** 3)), lang);
         if (progress < 1) requestAnimationFrame(step);
@@ -219,40 +251,51 @@ function renderGallery(lang) {
     ...items.map((item, i) => {
       const localized = item[lang] || item.ru || item.en || {};
       const src = lang === "en" && item.srcEn ? item.srcEn : item.src;
-      galleryItems.push({ src, caption: localized.caption || "" });
+      const caption = localized.caption || "";
+      galleryItems.push({ src, caption });
 
       const figure = document.createElement("figure");
       figure.className = "gallery__item";
       if (item.wide) figure.classList.add("gallery__item--wide");
       if (item.tall) figure.classList.add("gallery__item--tall");
+      figure.tabIndex = 0;
+      figure.setAttribute("role", "button");
+      figure.setAttribute("aria-label", caption);
 
       const img = document.createElement("img");
       img.src = src;
-      img.alt = localized.caption || "";
+      img.alt = caption;
       img.loading = "lazy";
       img.decoding = "async";
 
-      const caption = document.createElement("figcaption");
-      caption.textContent = localized.caption || "";
+      const figcaption = document.createElement("figcaption");
+      figcaption.textContent = caption;
 
-      figure.append(img, caption);
+      figure.append(img, figcaption);
       figure.addEventListener("click", () => openLightbox(i));
+      figure.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          openLightbox(i);
+        }
+      });
       return figure;
     })
   );
 }
 
 function openLightbox(index) {
-  if (!lightbox || !galleryItems.length) return;
+  if (!lightbox || !lightboxImage || !galleryItems.length) return;
   galleryIndex = (index + galleryItems.length) % galleryItems.length;
   const item = galleryItems[galleryIndex];
   lightboxImage.src = item.src;
   lightboxImage.alt = item.caption;
-  lightboxCaption.textContent = item.caption;
+  if (lightboxCaption) lightboxCaption.textContent = item.caption;
   if (!lightbox.open) lightbox.showModal();
 }
 
 function stepLightbox(direction) {
+  if (!galleryItems.length) return;
   openLightbox(galleryIndex + direction);
 }
 
@@ -279,59 +322,86 @@ function renderNews(lang) {
       const localized = item[lang] || item.ru || {};
       const card = document.createElement("article");
       card.className = "news__card";
-      const tagClass = item.tag && item.tag !== "update" ? ` tag--${item.tag}` : "";
-      card.innerHTML =
-        `<div class="news__meta">
-           <span class="tag${tagClass}">${t(`news.tag.${item.tag || "update"}`, lang)}</span>
-           <time datetime="${item.date}">${formatDate(item.date, lang)}</time>
-         </div>
-         <h3></h3><p></p>`;
-      card.querySelector("h3").textContent = localized.title || "";
-      card.querySelector("p").textContent = localized.text || "";
+
+      const meta = document.createElement("div");
+      meta.className = "news__meta";
+
+      const tagName = String(item.tag || "update").replace(/[^\w-]/g, "");
+      const tag = document.createElement("span");
+      tag.className = `tag${tagName !== "update" ? ` tag--${tagName}` : ""}`;
+      tag.textContent = loc(cfg.newsTags?.[tagName], lang) || tagName;
+
+      const time = document.createElement("time");
+      time.dateTime = item.date || "";
+      time.textContent = item.date ? formatDate(item.date, lang) : "";
+
+      meta.append(tag, time);
+
+      const title = document.createElement("h3");
+      title.textContent = localized.title || "";
+      const text = document.createElement("p");
+      text.textContent = localized.text || "";
+
+      card.append(meta, title, text);
       return card;
     })
   );
 }
 
 /* --------------------------------------------------------------------- FAQ -- */
+function syncFaqHeights() {
+  $$(".faq__item.is-open .faq__a").forEach((answer) => {
+    answer.style.maxHeight = `${answer.scrollHeight}px`;
+  });
+}
+
 function initFaq() {
   $$(".faq__item").forEach((item) => {
     const question = $(".faq__q", item);
     const answer = $(".faq__a", item);
-    question?.addEventListener("click", () => {
+    if (!question || !answer) return;
+
+    const setOpen = (open) => {
+      item.classList.toggle("is-open", open);
+      question.setAttribute("aria-expanded", String(open));
+      answer.inert = !open;
+      answer.setAttribute("aria-hidden", String(!open));
+      answer.style.maxHeight = open ? `${answer.scrollHeight}px` : "";
+    };
+
+    setOpen(false);
+    question.addEventListener("click", () => {
       const wasOpen = item.classList.contains("is-open");
       $$(".faq__item").forEach((other) => {
+        if (other === item) return;
         other.classList.remove("is-open");
+        $(".faq__q", other)?.setAttribute("aria-expanded", "false");
         const otherAnswer = $(".faq__a", other);
-        if (otherAnswer) otherAnswer.style.maxHeight = "";
+        if (otherAnswer) {
+          otherAnswer.style.maxHeight = "";
+          otherAnswer.inert = true;
+          otherAnswer.setAttribute("aria-hidden", "true");
+        }
       });
-      if (!wasOpen) {
-        item.classList.add("is-open");
-        answer.style.maxHeight = `${answer.scrollHeight}px`;
-      }
+      setOpen(!wasOpen);
     });
   });
 }
 
 /* ------------------------------------------------------------------- boot -- */
-let currentLang = getLang();
-
 function refreshDynamic(lang) {
-  currentLang = lang;
-  syncStats(lang);
   renderGallery(lang);
   renderNews(lang);
-  setPageTitle(t("meta.title.home", lang), t("meta.title.home", lang), lang);
+  syncFaqHeights();
+  document.title = t("meta.title.home", lang);
 }
 
 function boot() {
   const lang = bootI18n();
   initHeader();
-  initLangSwitch();
   resolveLinks(cfg);
   initStarfield();
   initParallax();
-  syncStats(lang);
   initCounters();
   initGalleryUi();
   initFaq();
@@ -341,7 +411,11 @@ function boot() {
   const year = $("#year");
   if (year) year.textContent = String(new Date().getFullYear());
 
-  document.addEventListener("wwn:langchange", (event) => refreshDynamic(event.detail.lang));
+  document.addEventListener("wwn:langchange", (event) => {
+    refreshDynamic(event.detail.lang);
+    syncStats(event.detail.lang);
+  });
+  window.addEventListener("resize", debounce(syncFaqHeights, 150));
 }
 
 boot();

@@ -7,7 +7,7 @@
    Если Popover API недоступен, остаётся обычный <select>.
    ============================================================================ */
 
-import { $$ } from "./ui.js";
+import { $$ } from "./utils.js";
 
 const ARROW =
   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
@@ -45,7 +45,7 @@ function buildItems(menu, select) {
 
 function place(menu, btn) {
   const rect = btn.getBoundingClientRect();
-  const width = Math.min(Math.max(rect.width, 180), window.innerWidth - 16);
+  const width = Math.min(Math.max(rect.width, 180), Math.max(140, window.innerWidth - 16));
   const left = Math.max(8, Math.min(rect.left, window.innerWidth - width - 8));
   const height = menu.getBoundingClientRect().height;
   const spaceBelow = window.innerHeight - rect.bottom;
@@ -62,9 +62,12 @@ function place(menu, btn) {
   }
 }
 
+let selectSeq = 0;
+
 function enhance(select) {
   if (select.dataset.wwnSelect) return;
   select.dataset.wwnSelect = "1";
+  if (!select.id) select.id = `wwn-select-${++selectSeq}`;
 
   const wrap = document.createElement("div");
   wrap.className = "wwn-select";
@@ -78,6 +81,8 @@ function enhance(select) {
   btn.className = "wwn-select__btn";
   btn.setAttribute("aria-haspopup", "listbox");
   btn.setAttribute("aria-expanded", "false");
+  const label = select.getAttribute("aria-label") || select.getAttribute("title");
+  if (label) btn.setAttribute("aria-label", label);
   btn.innerHTML = `<span class="wwn-select__value"></span>${ARROW}`;
   wrap.append(btn);
 
@@ -85,7 +90,8 @@ function enhance(select) {
   menu.className = "wwn-menu";
   menu.popover = "auto";
   menu.setAttribute("role", "listbox");
-  menu.id = `wwn-menu-${select.id || Math.random().toString(36).slice(2, 8)}`;
+  if (label) menu.setAttribute("aria-label", label);
+  menu.id = `wwn-menu-${select.id}`;
   btn.setAttribute("aria-controls", menu.id);
   btn.setAttribute("popovertarget", menu.id);
   document.body.append(menu);
@@ -100,6 +106,7 @@ function enhance(select) {
     buildItems(menu, select);
     place(menu, btn);
 
+    listeners?.abort();
     listeners = new AbortController();
     const reposition = () => {
       const rect = btn.getBoundingClientRect();

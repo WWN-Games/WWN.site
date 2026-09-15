@@ -1,32 +1,9 @@
 /* ============================================================================
-   WWN — общий модуль интерфейса
-   Базовые пути, хелперы, шапка, меню, появление блоков, прогресс, ссылки.
+   WWN — инициализация интерфейса
+   Шапка, мобильное меню, прогресс чтения, ссылки из конфига, появление блоков.
    ============================================================================ */
 
-/** Корень сайта (работает и на GitHub Pages в подкаталоге). */
-export const BASE = new URL("../../", import.meta.url);
-
-/** Абсолютный URL от корня сайта: abs("data/units.json"). */
-export const abs = (path) => new URL(path, BASE).href;
-
-export const $ = (sel, root = document) => root.querySelector(sel);
-export const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
-
-export const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-/* ------------------------------------------------------------- локализация -- */
-export const formatDate = (iso, lang) => {
-  const date = new Date(`${iso}T00:00:00`);
-  if (Number.isNaN(date.getTime())) return iso;
-  return new Intl.DateTimeFormat(lang === "en" ? "en-GB" : "ru-RU", {
-    day: "numeric",
-    month: "long",
-    year: "numeric"
-  }).format(date);
-};
-
-export const formatNumber = (value, lang) =>
-  new Intl.NumberFormat(lang === "en" ? "en-US" : "ru-RU").format(value);
+import { $, $$, prefersReduced } from "./utils.js";
 
 /* ------------------------------------------------------------------ шапка -- */
 export function initHeader() {
@@ -35,56 +12,69 @@ export function initHeader() {
 
   const progress = $("#scrollProgress") || $("#wikiProgress");
 
-  const onScroll = () => {
-    header.classList.toggle("is-scrolled", window.scrollY > 18);
-    if (progress) {
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      progress.style.transform = `scaleX(${max > 0 ? Math.min(window.scrollY / max, 1) : 0})`;
-    }
-  };
-  onScroll();
-  window.addEventListener("scroll", onScroll, { passive: true });
-
   const burger = $("#burger");
   const mobileNav = $("#mobileNav");
   if (burger && mobileNav) {
-    burger.addEventListener("click", () => {
-      const open = mobileNav.classList.toggle("is-open");
+    const setOpen = (open) => {
+      mobileNav.classList.toggle("is-open", open);
       burger.classList.toggle("is-open", open);
       burger.setAttribute("aria-expanded", String(open));
-    });
-    $$("a", mobileNav).forEach((link) =>
-      link.addEventListener("click", () => {
-        mobileNav.classList.remove("is-open");
-        burger.classList.remove("is-open");
-      })
-    );
+      mobileNav.inert = !open;
+    };
+    setOpen(false);
+    burger.addEventListener("click", () => setOpen(!mobileNav.classList.contains("is-open")));
+    $$("a", mobileNav).forEach((link) => link.addEventListener("click", () => setOpen(false)));
   }
 
   // подсветка активного пункта меню при скролле
-  const spyLinks = $$("#mainNav a[href^='#']");
-  const spyTargets = spyLinks
+  const spyTargets = $$("#mainNav a[href^='#']")
     .map((link) => ({ link, el: document.getElementById(link.getAttribute("href").slice(1)) }))
     .filter((target) => target.el);
+
+  let spyOffsets = [];
+  const measure = () => {
+    spyOffsets = spyTargets.map((target) => ({ link: target.link, top: target.el.offsetTop }));
+  };
   if (spyTargets.length) {
-    const spy = () => {
-      const position = window.scrollY + window.innerHeight * 0.32;
-      let current = null;
-      for (const target of spyTargets) if (target.el.offsetTop <= position) current = target;
-      spyTargets.forEach((target) => target.link.classList.toggle("is-active", target === current));
-    };
-    spy();
-    window.addEventListener("scroll", spy, { passive: true });
+    measure();
+    window.addEventListener("resize", measure);
   }
 
   const toTop = $("#toTop");
+
+  let ticking = false;
+  const update = () => {
+    ticking = false;
+    const y = window.scrollY;
+    header.classList.toggle("is-scrolled", y > 18);
+
+    if (progress) {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      progress.style.transform = `scaleX(${max > 0 ? Math.min(y / max, 1) : 0})`;
+    }
+
+    if (spyOffsets.length) {
+      const position = y + window.innerHeight * 0.32;
+      let current = null;
+      for (const target of spyOffsets) if (target.top <= position) current = target;
+      for (const target of spyOffsets) target.link.classList.toggle("is-active", target === current);
+    }
+
+    if (toTop) toTop.classList.toggle("is-visible", y > 700);
+  };
+  const schedule = () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(update);
+  };
+
+  update();
+  window.addEventListener("scroll", schedule, { passive: true });
+
   if (toTop) {
     toTop.addEventListener("click", () =>
       window.scrollTo({ top: 0, behavior: prefersReduced ? "auto" : "smooth" })
     );
-    const watch = () => toTop.classList.toggle("is-visible", window.scrollY > 700);
-    watch();
-    window.addEventListener("scroll", watch, { passive: true });
   }
 }
 
@@ -95,10 +85,8 @@ export function resolveLinks(config) {
     const url = links[el.getAttribute("data-link")];
     if (url) {
       el.setAttribute("href", url);
-      if (!el.hasAttribute("data-noblank")) {
-        el.setAttribute("target", "_blank");
-        el.setAttribute("rel", "noopener");
-      }
+      el.setAttribute("target", "_blank");
+      el.setAttribute("rel", "noopener");
     } else if (["steam", "drive"].includes(el.getAttribute("data-link"))) {
       el.setAttribute("href", "#download");
     } else {
@@ -114,7 +102,7 @@ export function resolveLinks(config) {
 let revealObserver = null;
 
 export function initReveal(root = document) {
-  const els = $$("[data-reveal]", root);
+  const els = $$("[data-reveal]", root).filter((el) => !el.classList.contains("is-in"));
   if (!els.length) return;
 
   if (prefersReduced || !("IntersectionObserver" in window)) {

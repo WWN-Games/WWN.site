@@ -27,5 +27,5 @@ updated: 2026-09-15
 | Ресурс | Где |
 | --- | --- |
 | Steam Workshop | [мод WWN](https://steamcommunity.com/sharedfiles/filedetails/?id=3247893564) |
-| Discord | [wwn community](https://discord.gg/sRwKDGrbDy) |
+| Discord | [WWN community](https://discord.gg/sRwKDGrbDy) |
 | GitLab | [WWN-Mod](https://gitlab.com/wwn.games/wwn.mod-rustedwarfare/WWN-Mod) |

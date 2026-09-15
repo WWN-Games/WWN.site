@@ -12,14 +12,12 @@
         {
           "slug": "lore/overview",
           "title": { "ru": "Вселенная WWN", "en": "The WWN Universe" },
-          "desc": { "ru": "Общий обзор сеттинга и галактики.", "en": "An overview of the setting and the galaxy." },
-          "updated": "2026-09-15"
+          "desc": { "ru": "Общий обзор сеттинга и галактики.", "en": "An overview of the setting and the galaxy." }
         },
         {
           "slug": "lore/history",
           "title": { "ru": "История галактики", "en": "History of the Galaxy" },
-          "desc": { "ru": "Все эпохи: от Странников до Тройственного Конфликта.", "en": "All eras: from the Wanderers to the Triple Conflict." },
-          "updated": "2026-09-15"
+          "desc": { "ru": "Все эпохи: от Странников до Тройственного Конфликта.", "en": "All eras: from the Wanderers to the Triple Conflict." }
         }
       ]
     },
@@ -35,14 +33,12 @@
         {
           "slug": "lore/fenearth",
           "title": { "ru": "Фенземская Республика", "en": "Fenearth Republic" },
-          "desc": { "ru": "Промышленный наследник ВГФ и его флот.", "en": "The industrial heir of the GF and its fleet." },
-          "updated": "2026-09-15"
+          "desc": { "ru": "Промышленный наследник ВГФ и его флот.", "en": "The industrial heir of the GF and its fleet." }
         },
         {
           "slug": "lore/proton",
           "title": { "ru": "Движение Протон", "en": "Proton Movement" },
-          "desc": { "ru": "Союз кланов Отена и Единая Освободительная Армия.", "en": "The clan union of Oten and its United Liberation Army." },
-          "updated": "2026-09-15"
+          "desc": { "ru": "Союз кланов Отена и Единая Освободительная Армия.", "en": "The clan union of Oten and its United Liberation Army." }
         }
       ]
     },
@@ -58,8 +54,7 @@
         {
           "slug": "lore/vasst",
           "title": { "ru": "Вастт", "en": "Vasst" },
-          "desc": { "ru": "Крокодилоподобные протонцы — самая многочисленная раса.", "en": "The crocodile-like Protonians — the most numerous race." },
-          "updated": "2026-09-15"
+          "desc": { "ru": "Крокодилоподобные протонцы — самая многочисленная раса.", "en": "The crocodile-like Protonians — the most numerous race." }
         }
       ]
     },
@@ -75,14 +70,12 @@
         {
           "slug": "units/roles",
           "title": { "ru": "Классы и роли юнитов", "en": "Unit classes & roles" },
-          "desc": { "ru": "От разведчиков до линкоров.", "en": "From scouts to battleships." },
-          "updated": "2026-09-15"
+          "desc": { "ru": "От разведчиков до линкоров.", "en": "From scouts to battleships." }
         },
         {
           "slug": "buildings/overview",
           "title": { "ru": "Строения и оборона", "en": "Structures & defense" },
-          "desc": { "ru": "Базы, экономика и фортификации.", "en": "Bases, economy and fortifications." },
-          "updated": "2026-09-15"
+          "desc": { "ru": "Базы, экономика и фортификации.", "en": "Bases, economy and fortifications." }
         }
       ]
     },
@@ -98,26 +91,22 @@
         {
           "slug": "mechanics/overview",
           "title": { "ru": "Основные механики", "en": "Core mechanics" },
-          "desc": { "ru": "Что отличает WWN от ванилы.", "en": "What sets WWN apart from vanilla." },
-          "updated": "2026-09-15"
+          "desc": { "ru": "Что отличает WWN от ванилы.", "en": "What sets WWN apart from vanilla." }
         },
         {
           "slug": "mechanics/economy",
           "title": { "ru": "Экономика и логистика", "en": "Economy & logistics" },
-          "desc": { "ru": "Ресурсы, энергия, снабжение.", "en": "Resources, energy, supply." },
-          "updated": "2026-09-15"
+          "desc": { "ru": "Ресурсы, энергия, снабжение.", "en": "Resources, energy, supply." }
         },
         {
           "slug": "mechanics/warfare",
           "title": { "ru": "Война на земле и в космосе", "en": "Ground & space warfare" },
-          "desc": { "ru": "Взаимодействие двух театров.", "en": "How the two theatres interact." },
-          "updated": "2026-09-15"
+          "desc": { "ru": "Взаимодействие двух театров.", "en": "How the two theatres interact." }
         },
         {
           "slug": "mechanics/league",
           "title": { "ru": "WWN League", "en": "WWN League" },
-          "desc": { "ru": "Правила, карты и регламент лиги.", "en": "Rules, map pool and league format." },
-          "updated": "2026-09-15"
+          "desc": { "ru": "Правила, карты и регламент лиги.", "en": "Rules, map pool and league format." }
         }
       ]
     },
@@ -133,26 +122,22 @@
         {
           "slug": "guides/installation",
           "title": { "ru": "Установка и обновление", "en": "Installation & updates" },
-          "desc": { "ru": "Steam Workshop, ручная установка, решение проблем.", "en": "Steam Workshop, manual install, troubleshooting." },
-          "updated": "2026-09-15"
+          "desc": { "ru": "Steam Workshop, ручная установка, решение проблем.", "en": "Steam Workshop, manual install, troubleshooting." }
         },
         {
           "slug": "guides/start",
           "title": { "ru": "С чего начать", "en": "Getting started" },
-          "desc": { "ru": "Первые шаги в WWN.", "en": "Your first steps in WWN." },
-          "updated": "2026-09-15"
+          "desc": { "ru": "Первые шаги в WWN.", "en": "Your first steps in WWN." }
         },
         {
           "slug": "guides/economy",
           "title": { "ru": "Гайд по экономике", "en": "Economy guide" },
-          "desc": { "ru": "Как не проиграть на макро.", "en": "How to win the macro game." },
-          "updated": "2026-09-15"
+          "desc": { "ru": "Как не проиграть на макро.", "en": "How to win the macro game." }
         },
         {
           "slug": "guides/combat",
           "title": { "ru": "Боевые тактики", "en": "Combat tactics" },
-          "desc": { "ru": "Позиционирование, фокус, осады.", "en": "Positioning, focus fire, sieges." },
-          "updated": "2026-09-15"
+          "desc": { "ru": "Позиционирование, фокус, осады.", "en": "Positioning, focus fire, sieges." }
         }
       ]
     },
@@ -168,8 +153,7 @@
         {
           "slug": "changelog",
           "title": { "ru": "История обновлений", "en": "Changelog" },
-          "desc": { "ru": "Версии мода и ссылки на релизы.", "en": "Mod versions and release links." },
-          "updated": "2026-09-15"
+          "desc": { "ru": "Версии мода и ссылки на релизы.", "en": "Mod versions and release links." }
         }
       ]
     },
@@ -185,14 +169,12 @@
         {
           "slug": "misc/contact",
           "title": { "ru": "Контакты", "en": "Contact" },
-          "desc": { "ru": "Discord, Steam Workshop, GitLab.", "en": "Discord, Steam Workshop, GitLab." },
-          "updated": "2026-09-15"
+          "desc": { "ru": "Discord, Steam Workshop, GitLab.", "en": "Discord, Steam Workshop, GitLab." }
         },
         {
           "slug": "misc/contributing",
           "title": { "ru": "Вклад в мод", "en": "Contributing" },
-          "desc": { "ru": "Как помочь WWN: баланс, карты, тексты.", "en": "How to help WWN: balance, maps, writing." },
-          "updated": "2026-09-15"
+          "desc": { "ru": "Как помочь WWN: баланс, карты, тексты.", "en": "How to help WWN: balance, maps, writing." }
         }
       ]
     }

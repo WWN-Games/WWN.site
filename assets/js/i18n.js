@@ -6,7 +6,7 @@
    ============================================================================ */
 
 import { WWN_CONFIG } from "./site-config.js";
-import { $, $$ } from "./ui.js";
+import { $$ } from "./utils.js";
 
 export const LANG_KEY = "wwn-lang";
 
@@ -29,9 +29,6 @@ export const I18N = {
     "hero.downloadSteam": "Скачать в Steam",
     "hero.downloadDrive": "Google Drive",
     "hero.openWiki": "Открыть вики",
-    "hero.tag1": "Космос и поверхность",
-    "hero.tag2": "Фензем против Протона",
-    "hero.tag3": "Онлайн-лига",
 
     "stats.units": "юнитов и строений",
     "stats.factions": "фракции",
@@ -79,10 +76,6 @@ export const I18N = {
     "news.title": "Что нового",
     "news.subtitle": "Новости мода и сообщества",
     "news.all": "Все патчноуты",
-    "news.tag.update": "Обновление",
-    "news.tag.balance": "Баланс",
-    "news.tag.league": "Лига",
-    "news.tag.fix": "Фикс",
 
     "download.title": "Скачать WWN",
     "download.subtitle": "Установка за пару минут",
@@ -121,7 +114,6 @@ export const I18N = {
     "footer.nav": "Навигация",
     "footer.community": "Сообщество",
     "footer.download": "Скачать",
-    "footer.gitlab": "GitLab (релизы)",
     "footer.disclaimer": "Официальный сайт мода WWN для Rusted Warfare. Rusted Warfare © Corroding Games.",
     "footer.rights": "Все материалы мода принадлежат команде WWN.",
     "footer.backToTop": "Наверх",
@@ -132,6 +124,8 @@ export const I18N = {
     "meta.title.catalog": "Каталог WWN — фракции, юниты и строения",
     "wiki.title": "Вики WWN",
     "wiki.subtitle": "Справочник по моду: лор, фракции, расы, юниты, строения, механики и гайды.",
+    "wiki.sidebar": "Разделы вики",
+    "wiki.search.title": "Поиск по вики",
     "wiki.search.placeholder": "Поиск по вики…",
     "wiki.search.empty": "Ничего не найдено",
     "wiki.search.hint": "Введи минимум 2 символа",
@@ -157,6 +151,7 @@ export const I18N = {
     "catalog.filter.all": "Все",
     "catalog.filter.faction": "Фракция",
     "catalog.filter.type": "Тип",
+    "catalog.filter.tag": "Тег",
     "catalog.sort.label": "Сортировка",
     "catalog.sort.name": "По названию",
     "catalog.sort.cost": "По цене",
@@ -213,9 +208,6 @@ export const I18N = {
     "hero.downloadSteam": "Get it on Steam",
     "hero.downloadDrive": "Google Drive",
     "hero.openWiki": "Open the wiki",
-    "hero.tag1": "Space & surface",
-    "hero.tag2": "Fenearth vs Proton",
-    "hero.tag3": "Online league",
 
     "stats.units": "units & structures",
     "stats.factions": "factions",
@@ -263,10 +255,6 @@ export const I18N = {
     "news.title": "What's new",
     "news.subtitle": "Mod and community news",
     "news.all": "All patch notes",
-    "news.tag.update": "Update",
-    "news.tag.balance": "Balance",
-    "news.tag.league": "League",
-    "news.tag.fix": "Fix",
 
     "download.title": "Download WWN",
     "download.subtitle": "Install in a couple of minutes",
@@ -305,7 +293,6 @@ export const I18N = {
     "footer.nav": "Navigation",
     "footer.community": "Community",
     "footer.download": "Download",
-    "footer.gitlab": "GitLab (releases)",
     "footer.disclaimer": "Official website of the WWN mod for Rusted Warfare. Rusted Warfare © Corroding Games.",
     "footer.rights": "All mod materials belong to the WWN team.",
     "footer.backToTop": "Back to top",
@@ -316,6 +303,8 @@ export const I18N = {
     "meta.title.catalog": "WWN Catalog — factions, units and structures",
     "wiki.title": "WWN Wiki",
     "wiki.subtitle": "Mod reference: lore, factions, races, units, structures, mechanics and guides.",
+    "wiki.sidebar": "Wiki sections",
+    "wiki.search.title": "Search the wiki",
     "wiki.search.placeholder": "Search the wiki…",
     "wiki.search.empty": "Nothing found",
     "wiki.search.hint": "Type at least 2 characters",
@@ -341,6 +330,7 @@ export const I18N = {
     "catalog.filter.all": "All",
     "catalog.filter.faction": "Faction",
     "catalog.filter.type": "Type",
+    "catalog.filter.tag": "Tag",
     "catalog.sort.label": "Sort by",
     "catalog.sort.name": "By name",
     "catalog.sort.cost": "By cost",
@@ -391,7 +381,7 @@ export function getLang() {
 }
 
 export function setLang(lang) {
-  if (!I18N[lang]) return;
+  if (!I18N[lang] || document.documentElement.lang === lang) return;
   try { localStorage.setItem(LANG_KEY, lang); } catch (e) {}
   document.documentElement.lang = lang;
   applyI18n(lang);
@@ -399,12 +389,13 @@ export function setLang(lang) {
 }
 
 /* -------------------------------------------------------------- переводы -- */
-export function t(key, lang) {
+export function t(key, lang, vars) {
   const dict = I18N[lang || getLang()] || I18N.ru;
   let value = dict[key];
   if (value === undefined) value = I18N.ru[key];
   if (value === undefined) return key;
-  return value.replace(/\{version\}/g, WWN_CONFIG.version || "");
+  const params = { version: WWN_CONFIG.version || "", ...vars };
+  return value.replace(/\{(\w+)\}/g, (match, name) => (name in params ? params[name] : match));
 }
 
 export function applyI18n(lang = getLang()) {
@@ -429,10 +420,19 @@ export function applyI18n(lang = getLang()) {
 }
 
 /* --------------------------------------------------- переключатель языка -- */
+let langSwitchBound = false;
+
 export function initLangSwitch() {
+  if (langSwitchBound) return;
+  langSwitchBound = true;
   $$("[data-lang-btn]").forEach((btn) =>
     btn.addEventListener("click", () => setLang(btn.getAttribute("data-lang-btn").toLowerCase()))
   );
+}
+
+/** Подписка на смену языка: handler(lang) вызывается один раз на переключение. */
+export function onLangChange(handler) {
+  document.addEventListener("wwn:langchange", (event) => handler(event.detail.lang));
 }
 
 /** Стартовая локализация страницы. */
@@ -442,9 +442,4 @@ export function bootI18n() {
   applyI18n(lang);
   initLangSwitch();
   return lang;
-}
-
-/** Заголовок документа с учётом языка. */
-export function setPageTitle(ru, en, lang = getLang()) {
-  document.title = lang === "ru" ? ru : en;
 }
