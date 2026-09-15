@@ -1,0 +1,1346 @@
+{
+  "_schema": [
+    "Реестр тегов каталога. id — то, что пишется в поле tags юнита или строения.",
+    "name — подпись { ru, en }, group — группа: tier | class | movement | mod.",
+    "Новый тег: добавьте сюда запись с новым id и впишите id в tags нужных карточек.",
+    "Незарегистрированные теги на сайте показываются как есть (по id)."
+  ],
+  "tags": [
+    {
+      "id": "T1",
+      "name": {
+        "ru": "T1",
+        "en": "T1"
+      },
+      "group": "tier"
+    },
+    {
+      "id": "T2",
+      "name": {
+        "ru": "T2",
+        "en": "T2"
+      },
+      "group": "tier"
+    },
+    {
+      "id": "T3",
+      "name": {
+        "ru": "T3",
+        "en": "T3"
+      },
+      "group": "tier"
+    },
+    {
+      "id": "T4",
+      "name": {
+        "ru": "T4",
+        "en": "T4"
+      },
+      "group": "tier"
+    },
+    {
+      "id": "titan",
+      "name": {
+        "ru": "Титан",
+        "en": "Titan"
+      },
+      "group": "tier"
+    },
+    {
+      "id": "ship",
+      "name": {
+        "ru": "Корабль",
+        "en": "Ship"
+      },
+      "group": "class"
+    },
+    {
+      "id": "super-ship",
+      "name": {
+        "ru": "Суперкорабль",
+        "en": "Super ship"
+      },
+      "group": "class"
+    },
+    {
+      "id": "space-ship",
+      "name": {
+        "ru": "Космический корабль",
+        "en": "Space ship"
+      },
+      "group": "class"
+    },
+    {
+      "id": "super-space-ship",
+      "name": {
+        "ru": "Космический суперкорабль",
+        "en": "Super space ship"
+      },
+      "group": "class"
+    },
+    {
+      "id": "plane",
+      "name": {
+        "ru": "Самолёт",
+        "en": "Aircraft"
+      },
+      "group": "class"
+    },
+    {
+      "id": "super-plane",
+      "name": {
+        "ru": "Суперсамолёт",
+        "en": "Super aircraft"
+      },
+      "group": "class"
+    },
+    {
+      "id": "tank",
+      "name": {
+        "ru": "Танк",
+        "en": "Tank"
+      },
+      "group": "class"
+    },
+    {
+      "id": "super-tank",
+      "name": {
+        "ru": "Супертанк",
+        "en": "Super tank"
+      },
+      "group": "class"
+    },
+    {
+      "id": "bot",
+      "name": {
+        "ru": "Бот",
+        "en": "Bot"
+      },
+      "group": "class"
+    },
+    {
+      "id": "super-bot",
+      "name": {
+        "ru": "Супербот",
+        "en": "Super bot"
+      },
+      "group": "class"
+    },
+    {
+      "id": "infantry",
+      "name": {
+        "ru": "Пехота",
+        "en": "Infantry"
+      },
+      "group": "class"
+    },
+    {
+      "id": "super-infantry",
+      "name": {
+        "ru": "Суперпехота",
+        "en": "Super infantry"
+      },
+      "group": "class"
+    },
+    {
+      "id": "building",
+      "name": {
+        "ru": "Здание",
+        "en": "Structure"
+      },
+      "group": "class"
+    },
+    {
+      "id": "super-building",
+      "name": {
+        "ru": "Суперздание",
+        "en": "Super structure"
+      },
+      "group": "class"
+    },
+    {
+      "id": "super-structure",
+      "name": {
+        "ru": "Суперструктура",
+        "en": "Superstructure"
+      },
+      "group": "class"
+    },
+    {
+      "id": "NONE",
+      "name": {
+        "ru": "NONE",
+        "en": "NONE"
+      },
+      "group": "movement"
+    },
+    {
+      "id": "LAND",
+      "name": {
+        "ru": "LAND",
+        "en": "LAND"
+      },
+      "group": "movement"
+    },
+    {
+      "id": "AIR",
+      "name": {
+        "ru": "AIR",
+        "en": "AIR"
+      },
+      "group": "movement"
+    },
+    {
+      "id": "WATER",
+      "name": {
+        "ru": "WATER",
+        "en": "WATER"
+      },
+      "group": "movement"
+    },
+    {
+      "id": "HOVER",
+      "name": {
+        "ru": "HOVER",
+        "en": "HOVER"
+      },
+      "group": "movement"
+    },
+    {
+      "id": "BUILDING",
+      "name": {
+        "ru": "BUILDING",
+        "en": "BUILDING"
+      },
+      "group": "movement"
+    },
+    {
+      "id": "OVER_CLIFF",
+      "name": {
+        "ru": "OVER_CLIFF",
+        "en": "OVER_CLIFF"
+      },
+      "group": "movement"
+    },
+    {
+      "id": "OVER_CLIFF_WATER",
+      "name": {
+        "ru": "OVER_CLIFF_WATER",
+        "en": "OVER_CLIFF_WATER"
+      },
+      "group": "movement"
+    },
+    {
+      "id": "AORB",
+      "name": {
+        "ru": "AORB",
+        "en": "AORB"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "Ant",
+      "name": {
+        "ru": "Ant",
+        "en": "Ant"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "AntiGi",
+      "name": {
+        "ru": "AntiGi",
+        "en": "AntiGi"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "AntiNU",
+      "name": {
+        "ru": "AntiNU",
+        "en": "AntiNU"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "BIG",
+      "name": {
+        "ru": "BIG",
+        "en": "BIG"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "BIGtarget",
+      "name": {
+        "ru": "BIGtarget",
+        "en": "BIGtarget"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "BuiColUnit",
+      "name": {
+        "ru": "BuiColUnit",
+        "en": "BuiColUnit"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "CosmoT1",
+      "name": {
+        "ru": "CosmoT1",
+        "en": "CosmoT1"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "HeavyDrop",
+      "name": {
+        "ru": "HeavyDrop",
+        "en": "HeavyDrop"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "ImportantConstruction",
+      "name": {
+        "ru": "ImportantConstruction",
+        "en": "ImportantConstruction"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "KZSc",
+      "name": {
+        "ru": "KZSc",
+        "en": "KZSc"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "KZSs",
+      "name": {
+        "ru": "KZSs",
+        "en": "KZSs"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "NOuwShield2",
+      "name": {
+        "ru": "NOuwShield2",
+        "en": "NOuwShield2"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "ORB",
+      "name": {
+        "ru": "ORB",
+        "en": "ORB"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "ORBt1",
+      "name": {
+        "ru": "ORBt1",
+        "en": "ORBt1"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "ORBt3",
+      "name": {
+        "ru": "ORBt3",
+        "en": "ORBt3"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "PGen",
+      "name": {
+        "ru": "PGen",
+        "en": "PGen"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "SIP",
+      "name": {
+        "ru": "SIP",
+        "en": "SIP"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "T1air",
+      "name": {
+        "ru": "T1air",
+        "en": "T1air"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "T1amphibian",
+      "name": {
+        "ru": "T1amphibian",
+        "en": "T1amphibian"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "T1bot",
+      "name": {
+        "ru": "T1bot",
+        "en": "T1bot"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "T1infantry",
+      "name": {
+        "ru": "T1infantry",
+        "en": "T1infantry"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "T1ship",
+      "name": {
+        "ru": "T1ship",
+        "en": "T1ship"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "T1space",
+      "name": {
+        "ru": "T1space",
+        "en": "T1space"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "T1supply",
+      "name": {
+        "ru": "T1supply",
+        "en": "T1supply"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "T1tank",
+      "name": {
+        "ru": "T1tank",
+        "en": "T1tank"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "T2air",
+      "name": {
+        "ru": "T2air",
+        "en": "T2air"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "T2bot",
+      "name": {
+        "ru": "T2bot",
+        "en": "T2bot"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "T2infantry",
+      "name": {
+        "ru": "T2infantry",
+        "en": "T2infantry"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "T2ship",
+      "name": {
+        "ru": "T2ship",
+        "en": "T2ship"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "T2space",
+      "name": {
+        "ru": "T2space",
+        "en": "T2space"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "T2tank",
+      "name": {
+        "ru": "T2tank",
+        "en": "T2tank"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "T3air",
+      "name": {
+        "ru": "T3air",
+        "en": "T3air"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "T3baseFac",
+      "name": {
+        "ru": "T3baseFac",
+        "en": "T3baseFac"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "T3bot",
+      "name": {
+        "ru": "T3bot",
+        "en": "T3bot"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "T3ship",
+      "name": {
+        "ru": "T3ship",
+        "en": "T3ship"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "T3space",
+      "name": {
+        "ru": "T3space",
+        "en": "T3space"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "T3tank",
+      "name": {
+        "ru": "T3tank",
+        "en": "T3tank"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "T4air",
+      "name": {
+        "ru": "T4air",
+        "en": "T4air"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "T4baseFac",
+      "name": {
+        "ru": "T4baseFac",
+        "en": "T4baseFac"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "T4bot",
+      "name": {
+        "ru": "T4bot",
+        "en": "T4bot"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "T4ship",
+      "name": {
+        "ru": "T4ship",
+        "en": "T4ship"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "T4space",
+      "name": {
+        "ru": "T4space",
+        "en": "T4space"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "T4tank",
+      "name": {
+        "ru": "T4tank",
+        "en": "T4tank"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "TT",
+      "name": {
+        "ru": "TT",
+        "en": "TT"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "TTair",
+      "name": {
+        "ru": "TTair",
+        "en": "TTair"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "TTbot",
+      "name": {
+        "ru": "TTbot",
+        "en": "TTbot"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "TTship",
+      "name": {
+        "ru": "TTship",
+        "en": "TTship"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "TTspace",
+      "name": {
+        "ru": "TTspace",
+        "en": "TTspace"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "TTtank",
+      "name": {
+        "ru": "TTtank",
+        "en": "TTtank"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "TitanL",
+      "name": {
+        "ru": "TitanL",
+        "en": "TitanL"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "WeCo",
+      "name": {
+        "ru": "WeCo",
+        "en": "WeCo"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "air",
+      "name": {
+        "ru": "air",
+        "en": "air"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "airG",
+      "name": {
+        "ru": "airG",
+        "en": "airG"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "airT1",
+      "name": {
+        "ru": "airT1",
+        "en": "airT1"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "airT2",
+      "name": {
+        "ru": "airT2",
+        "en": "airT2"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "airT3",
+      "name": {
+        "ru": "airT3",
+        "en": "airT3"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "airT4",
+      "name": {
+        "ru": "airT4",
+        "en": "airT4"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "amphT1",
+      "name": {
+        "ru": "amphT1",
+        "en": "amphT1"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "arty",
+      "name": {
+        "ru": "arty",
+        "en": "arty"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "barracks",
+      "name": {
+        "ru": "barracks",
+        "en": "barracks"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "barracksFER",
+      "name": {
+        "ru": "barracksFER",
+        "en": "barracksFER"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "barracksT2",
+      "name": {
+        "ru": "barracksT2",
+        "en": "barracksT2"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "battery",
+      "name": {
+        "ru": "battery",
+        "en": "battery"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "beta",
+      "name": {
+        "ru": "beta",
+        "en": "beta"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "botT1",
+      "name": {
+        "ru": "botT1",
+        "en": "botT1"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "botT2",
+      "name": {
+        "ru": "botT2",
+        "en": "botT2"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "botT3",
+      "name": {
+        "ru": "botT3",
+        "en": "botT3"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "botT4",
+      "name": {
+        "ru": "botT4",
+        "en": "botT4"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "bugSP",
+      "name": {
+        "ru": "bugSP",
+        "en": "bugSP"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "builderAIRt1",
+      "name": {
+        "ru": "builderAIRt1",
+        "en": "builderAIRt1"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "builderAIRt3",
+      "name": {
+        "ru": "builderAIRt3",
+        "en": "builderAIRt3"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "builderBOTt1",
+      "name": {
+        "ru": "builderBOTt1",
+        "en": "builderBOTt1"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "builderBOTt3",
+      "name": {
+        "ru": "builderBOTt3",
+        "en": "builderBOTt3"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "builderLANDt1",
+      "name": {
+        "ru": "builderLANDt1",
+        "en": "builderLANDt1"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "builderLANDt3",
+      "name": {
+        "ru": "builderLANDt3",
+        "en": "builderLANDt3"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "builderNAVt1",
+      "name": {
+        "ru": "builderNAVt1",
+        "en": "builderNAVt1"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "builderNAVt3",
+      "name": {
+        "ru": "builderNAVt3",
+        "en": "builderNAVt3"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "builderSPt1",
+      "name": {
+        "ru": "builderSPt1",
+        "en": "builderSPt1"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "building+",
+      "name": {
+        "ru": "building+",
+        "en": "building+"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "de",
+      "name": {
+        "ru": "de",
+        "en": "de"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "desant",
+      "name": {
+        "ru": "desant",
+        "en": "desant"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "eng",
+      "name": {
+        "ru": "eng",
+        "en": "eng"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "eng2",
+      "name": {
+        "ru": "eng2",
+        "en": "eng2"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "factory",
+      "name": {
+        "ru": "factory",
+        "en": "factory"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "forAst",
+      "name": {
+        "ru": "forAst",
+        "en": "forAst"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "heli",
+      "name": {
+        "ru": "heli",
+        "en": "heli"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "hq",
+      "name": {
+        "ru": "hq",
+        "en": "hq"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "launcherAI",
+      "name": {
+        "ru": "launcherAI",
+        "en": "launcherAI"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "lavaDrop",
+      "name": {
+        "ru": "lavaDrop",
+        "en": "lavaDrop"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "mine",
+      "name": {
+        "ru": "mine",
+        "en": "mine"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "nav",
+      "name": {
+        "ru": "nav",
+        "en": "nav"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "navT1",
+      "name": {
+        "ru": "navT1",
+        "en": "navT1"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "navT2",
+      "name": {
+        "ru": "navT2",
+        "en": "navT2"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "navT3",
+      "name": {
+        "ru": "navT3",
+        "en": "navT3"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "navT4",
+      "name": {
+        "ru": "navT4",
+        "en": "navT4"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "noST",
+      "name": {
+        "ru": "noST",
+        "en": "noST"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "noStealth",
+      "name": {
+        "ru": "noStealth",
+        "en": "noStealth"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "rad",
+      "name": {
+        "ru": "rad",
+        "en": "rad"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "radar15",
+      "name": {
+        "ru": "radar15",
+        "en": "radar15"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "radar30",
+      "name": {
+        "ru": "radar30",
+        "en": "radar30"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "radar50",
+      "name": {
+        "ru": "radar50",
+        "en": "radar50"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "radarT1",
+      "name": {
+        "ru": "radarT1",
+        "en": "radarT1"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "radarT3",
+      "name": {
+        "ru": "radarT3",
+        "en": "radarT3"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "ringT",
+      "name": {
+        "ru": "ringT",
+        "en": "ringT"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "ringTact",
+      "name": {
+        "ru": "ringTact",
+        "en": "ringTact"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "ringTr",
+      "name": {
+        "ru": "ringTr",
+        "en": "ringTr"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "shieldT2",
+      "name": {
+        "ru": "shieldT2",
+        "en": "shieldT2"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "shieldT4",
+      "name": {
+        "ru": "shieldT4",
+        "en": "shieldT4"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "siloG",
+      "name": {
+        "ru": "siloG",
+        "en": "siloG"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "siloN",
+      "name": {
+        "ru": "siloN",
+        "en": "siloN"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "siloT",
+      "name": {
+        "ru": "siloT",
+        "en": "siloT"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "sonar30",
+      "name": {
+        "ru": "sonar30",
+        "en": "sonar30"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "sonar50",
+      "name": {
+        "ru": "sonar50",
+        "en": "sonar50"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "spaceFAB",
+      "name": {
+        "ru": "spaceFAB",
+        "en": "spaceFAB"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "subhq",
+      "name": {
+        "ru": "subhq",
+        "en": "subhq"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "superORB",
+      "name": {
+        "ru": "superORB",
+        "en": "superORB"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "supply",
+      "name": {
+        "ru": "supply",
+        "en": "supply"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "tankT1",
+      "name": {
+        "ru": "tankT1",
+        "en": "tankT1"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "tankT2",
+      "name": {
+        "ru": "tankT2",
+        "en": "tankT2"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "tankT3",
+      "name": {
+        "ru": "tankT3",
+        "en": "tankT3"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "tankT4",
+      "name": {
+        "ru": "tankT4",
+        "en": "tankT4"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "transportable",
+      "name": {
+        "ru": "transportable",
+        "en": "transportable"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "transportableOBR",
+      "name": {
+        "ru": "transportableOBR",
+        "en": "transportableOBR"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "transportableOBRz",
+      "name": {
+        "ru": "transportableOBRz",
+        "en": "transportableOBRz"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "transportableORB",
+      "name": {
+        "ru": "transportableORB",
+        "en": "transportableORB"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "transportableORBz",
+      "name": {
+        "ru": "transportableORBz",
+        "en": "transportableORBz"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "transportableSOL",
+      "name": {
+        "ru": "transportableSOL",
+        "en": "transportableSOL"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "tur",
+      "name": {
+        "ru": "tur",
+        "en": "tur"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "turretAorbT1",
+      "name": {
+        "ru": "turretAorbT1",
+        "en": "turretAorbT1"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "turretAorbT4",
+      "name": {
+        "ru": "turretAorbT4",
+        "en": "turretAorbT4"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "turretT1",
+      "name": {
+        "ru": "turretT1",
+        "en": "turretT1"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "turretT2",
+      "name": {
+        "ru": "turretT2",
+        "en": "turretT2"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "turretT3",
+      "name": {
+        "ru": "turretT3",
+        "en": "turretT3"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "turretT4",
+      "name": {
+        "ru": "turretT4",
+        "en": "turretT4"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "unitBuilding",
+      "name": {
+        "ru": "unitBuilding",
+        "en": "unitBuilding"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "ust",
+      "name": {
+        "ru": "ust",
+        "en": "ust"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "wat",
+      "name": {
+        "ru": "wat",
+        "en": "wat"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "waterDrop",
+      "name": {
+        "ru": "waterDrop",
+        "en": "waterDrop"
+      },
+      "group": "mod"
+    }
+  ]
+}

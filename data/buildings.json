@@ -1,138 +1,865 @@
 {
-  "_comment": "Каталог строений WWN. Поля: id, name{ru,en}, faction, type(economy|defense|structure|support), role, cost, hp, dps, range, buildTime, desc, strongVs[], weakVs[], image, draft.",
+  "_schema": [
+    "Компактный формат строений. Поля:",
+    "id — строковый идентификатор (картинка: assets/img/catalog/<id>.webp);",
+    "name, desc — { ru, en }; если перевод совпадает, en можно не писать;",
+    "faction — id из factions.json;",
+    "type — economy | defense | structure;",
+    "cost, hp, shield, dps, speed, range, buildTime — числа;",
+    "tags — id тегов из data/tags.json (например, [\"T2\", \"ship\", \"WATER\"]); свои теги добавляются в этот файл.",
+    "shield, dps, speed, range можно не писать, если значение 0.",
+    "Необязательное поле image переопределяет картинку, image: \"\" — показать инициалы."
+  ],
   "buildings": [
     {
-      "id": "command-center",
-      "name": { "ru": "Командный центр", "en": "Command Center" },
+      "id": "0sfacfzr",
+      "name": { "ru": "Орбитальная суперверфь", "en": "Orbital supershipyard" },
       "faction": "fenearth",
       "type": "structure",
-      "role": { "ru": "Штаб", "en": "Headquarters" },
-      "cost": 2000,
-      "hp": 4200,
-      "dps": 0,
-      "range": 0,
-      "buildTime": "60 с",
       "desc": {
-        "ru": "Главное здание базы. Открывает технологии и определяет, что вы можете строить. Потеря центра — почти гарантированное поражение.",
-        "en": "The main base structure. Unlocks tech and defines what you can build. Losing it almost guarantees defeat."
+        "ru": "Производит космические суперкорабли • Космические корабли многозадачны, имеют хорошую прочность и урон, могут перемещаться по всей карте, но очень дорогие • Верфи могут достаточно быстро перемещаться своим ходом или быть транспортированы Броненосцем • Большая часть кораблей имеет возможность спуска в атмосферу для поддержки и выгрузки наземных сил • Малые космические корабли зачастую могут обслуживаться в некоторых юнитах как вертолёты или самолёты",
+        "en": "Produces superspaceships"
       },
-      "strongVs": { "ru": [], "en": [] },
-      "weakVs": { "ru": ["Осадная артиллерия", "Бомбардировка"], "en": ["Siege artillery", "Bombing"] },
-      "draft": true
+      "tags": ["T1", "building", "AIR"],
+      "cost": 3500, "hp": 3500, "buildTime": 120
     },
+
     {
-      "id": "power-plant",
-      "name": { "ru": "Электростанция", "en": "Power Plant" },
+      "id": "aafzr",
+      "name": { "ru": "ПВО", "en": "Air defense" },
+      "faction": "fenearth",
+      "type": "defense",
+      "desc": {
+        "ru": "Атакует воздушные цели на среднем расстоянии • Так же может слабо стрелять по земле • Есть возможность зарядки тактической ПРО",
+        "en": "Can shoot down planes • Can attack ground targets • Tactical missile defense"
+      },
+      "tags": ["T2", "building", "BUILDING"],
+      "cost": 600, "hp": 900, "dps": 60, "range": 400, "buildTime": 8
+    },
+
+    {
+      "id": "aape",
+      "name": { "ru": "ПВО", "en": "Air defense" },
+      "faction": "proton",
+      "type": "defense",
+      "desc": {
+        "ru": "Атакует воздушные цели на среднем расстоянии",
+        "en": "Can shoot down planes • Basic air defense to get rid of everything that flyes"
+      },
+      "tags": ["T2", "building", "BUILDING"],
+      "cost": 500, "hp": 800, "dps": 280, "range": 280, "buildTime": 16
+    },
+
+    {
+      "id": "airfzr",
+      "name": { "ru": "Аэродром", "en": "Aerodrome" },
+      "faction": "fenearth",
+      "type": "structure",
+      "desc": {
+        "ru": "Производит базовые летательные аппараты • Ремонтирует самолеты и малые звездолеты поблизозти • Самолеты быстрые и функциональные, средняя живучесть, имеют тепловые ловушки против ракет",
+        "en": "Produces aircraft"
+      },
+      "tags": ["T1", "building", "BUILDING"],
+      "cost": 700, "hp": 1300, "range": 250, "buildTime": 18
+    },
+
+    {
+      "id": "airfzrt2",
+      "name": { "ru": "Аэродром Т2", "en": "Aerodrome Т2" },
+      "faction": "fenearth",
+      "type": "structure",
+      "desc": {
+        "ru": "Производит базовые летательные аппараты • Производит бомбардировщики и транспортники • Ремонтирует самолеты и малые звездолеты поблизозти • Самолеты быстрые и функциональные, средняя живучесть, имеют тепловые ловушки против ракет",
+        "en": "Produces aircraft"
+      },
+      "tags": ["T2", "building", "BUILDING"],
+      "cost": 2400, "hp": 2000, "range": 300, "buildTime": 35
+    },
+
+    {
+      "id": "airfzrt3",
+      "name": { "ru": "Супераэродром Т3", "en": "Superaerodrome Т3" },
+      "faction": "fenearth",
+      "type": "structure",
+      "desc": {
+        "ru": "Производит суперсамолеты • Ремонтирует самолеты и малые звездолеты поблизозти • Самолеты быстрые и функциональные, средняя живучесть, имеют тепловые ловушки против ракет",
+        "en": "Produces superplanes"
+      },
+      "tags": ["T3", "super-building", "BUILDING"],
+      "cost": 3000, "hp": 3800, "range": 400, "buildTime": 180
+    },
+
+    {
+      "id": "airfzrt4",
+      "name": { "ru": "Супераэродром Т4", "en": "Superaerodrome Т4" },
+      "faction": "fenearth",
+      "type": "structure",
+      "desc": {
+        "ru": "Производит суперсамолеты и звездолёты • Производит атомные бомбардировщики и суперштурмовиков • Ремонтирует самолеты и малые звездолеты поблизозти • Самолеты быстрые и функциональные, средняя живучесть, имеют тепловые ловушки против ракет",
+        "en": "Produces aircraft"
+      },
+      "tags": ["T4", "super-building", "BUILDING"],
+      "cost": 6200, "hp": 5600, "range": 500, "buildTime": 200
+    },
+
+    {
+      "id": "airpe",
+      "name": { "ru": "Аэродром", "en": "Aerodrome" },
+      "faction": "proton",
+      "type": "structure",
+      "desc": {
+        "ru": "ОЮСАНОЙ ЛХАКАНАХЕСА • Производит базовые летательные аппараты • Строит самолет для выхода в космос • Бонус к скорости производства при нахождении рядом с генератором • Самолеты очень быстрые и функциональные, малая живучесть • Имеют неплохую лазерную защиту для обороны от физических снарядов",
+        "en": "AGHASARENOI LHAKANAKHESA • Manufactures aircraft • Building an aeroplane to go into space • Bonus for being near the generator • Very usefull in the beginning to start the fights"
+      },
+      "tags": ["T1", "building", "BUILDING"],
+      "cost": 400, "hp": 1000, "buildTime": 24
+    },
+
+    {
+      "id": "amphpe",
+      "name": { "ru": "Завод амфибий", "en": "Amphibian factory" },
+      "faction": "proton",
+      "type": "structure",
+      "desc": {
+        "ru": "АГХАСАРЁНОЙ ЛХАКАНАХЕСА • Производит и чинит в радиусе юниты-амфибии • Бонус к скорости производства при нахождении рядом с шахтой • Амфибии являются спецаилизированными юнитами поддержки • Плавают, зачастую могут пересекать труднопроходимую местность",
+        "en": "AGHASARENOI LHAKANAKHESA n -Manufactures and repairs amphibious units • Bonus when you are near a mine • Very usefull in the beginning to start the fights"
+      },
+      "tags": ["T1", "building", "BUILDING"],
+      "cost": 500, "hp": 800, "range": 150, "buildTime": 35
+    },
+
+    {
+      "id": "ancorp",
+      "name": { "ru": "Орбитальная турель \"Якорь\"", "en": "Orbital turret \"Anchor\"" },
+      "faction": "proton",
+      "type": "defense",
+      "desc": {
+        "ru": "Космическая оборонительная турель • Атакует космос, воздух и поверхность • Неповоротливая и медленная, но прочная",
+        "en": "Space turret • Attacks space, air and surface • perfect allrounder to shoot down litteraly everything"
+      },
+      "tags": ["T1", "building", "AIR"],
+      "cost": 900, "hp": 1500, "dps": 150, "range": 400, "buildTime": 50
+    },
+
+    {
+      "id": "antigiperfzr",
+      "name": { "ru": "Гипер щит", "en": "Giper shield" },
+      "faction": "fenearth",
+      "type": "defense",
+      "desc": { "ru": "Может сбивать гипер ракеты", "en": "Can shoot down giper missiles" },
+      "tags": ["T3", "super-building", "BUILDING"],
+      "cost": 9000, "hp": 2500, "range": 1000, "buildTime": 95
+    },
+
+    {
+      "id": "antilauncherfzr",
+      "name": { "ru": "Ядерный щит", "en": "Nuclear shield" },
+      "faction": "fenearth",
+      "type": "defense",
+      "desc": { "ru": "Может сбивать ядерные ракеты", "en": "Can shoot down nuclear missiles" },
+      "tags": ["T1", "building", "BUILDING"],
+      "cost": 4000, "hp": 2500, "range": 1000, "buildTime": 50
+    },
+
+    {
+      "id": "antilauncherpe",
+      "name": { "ru": "Ракетный щит", "en": "Rocket shield" },
+      "faction": "proton",
+      "type": "defense",
+      "desc": {
+        "ru": "Может сбивать ядерные и гипер ракеты",
+        "en": "Can shoot down nuclear and giper missiles • Use this if you made the enemy really angry and they are about to fire nukes at you"
+      },
+      "tags": ["T1", "building", "BUILDING"],
+      "cost": 2000, "hp": 1500, "range": 800, "buildTime": 65
+    },
+
+    {
+      "id": "aorbfzr",
+      "name": { "ru": "Система защиты \"Орбиталь\"", "en": "Protection system \"Orbital\"" },
+      "faction": "fenearth",
+      "type": "defense",
+      "desc": { "ru": "Атакует юниты на орбите • Может так же атаковать большие корабли и титаны в атмосфере", "en": "Shoots down spaceships" },
+      "tags": ["T3", "super-building", "BUILDING"],
+      "cost": 900, "hp": 1500, "dps": 90, "range": 500, "buildTime": 12
+    },
+
+    {
+      "id": "barracks",
+      "name": { "ru": "Казармы", "en": "Barracks" },
+      "faction": "fenearth",
+      "type": "structure",
+      "desc": {
+        "ru": "Производит и оснащает солдат • Производит артиллерию и грузовики • Пехота дешевая, но сильная, подходит для удержания точек • Пехота может окапываться",
+        "en": "Produces and equips soldiers"
+      },
+      "tags": ["T1", "building", "BUILDING"],
+      "cost": 300, "hp": 800, "buildTime": 8
+    },
+
+    {
+      "id": "barrackspe",
+      "name": { "ru": "Бараки", "en": "Barracks" },
+      "faction": "proton",
+      "type": "structure",
+      "desc": {
+        "ru": "ПАТХОНРИ ЛХАКАПФЕЭАЙО • Производит, оснащает и лечит в радиусе солдат • Бонус к скорости производства при нахождении рядом с генератором • Все пехотинцы могут плавать • Пехота дешевая, сильная, подходит для дерзких рейдов и обходных манёвров",
+        "en": "PATHONRI LHAKAPFEAYO • Produces, equips and treats soldiers • Bonus for being near the generator • Very usefull in the beginning to start the fights"
+      },
+      "tags": ["T1", "building", "BUILDING"],
+      "cost": 300, "hp": 800, "range": 150, "buildTime": 15
+    },
+
+    {
+      "id": "barrackst2",
+      "name": { "ru": "Полевой штаб", "en": "Field headquarters" },
+      "faction": "fenearth",
+      "type": "structure",
+      "desc": {
+        "ru": "Производит и оснащает солдат • Производит артиллерию и грузовики • Имеет пулемёты для защиты от земли и вохдуха • Лечит ближайшую пехоту • Пехота дешевая, но сильная, подходит для удержания точек • Пехота может окапываться",
+        "en": "Produces and equips soldiers"
+      },
+      "tags": ["T2", "building", "BUILDING"],
+      "cost": 1100, "hp": 1800, "dps": 56.3, "range": 300, "buildTime": 30
+    },
+
+    {
+      "id": "barrackst2pe",
+      "name": { "ru": "Бараки Т2", "en": "Barracks T2" },
+      "faction": "proton",
+      "type": "structure",
+      "desc": {
+        "ru": "ПАТХОНРИ ЛХАКАПФЕЭАЙО • Производит, оснащает и лечит солдат • Бонус к скорости производства при нахождении рядом с генератором • Все пехотинцы могут плавать • Пехота дешевая, но сильная, подходит дерзких рейдов и обходных манёвров",
+        "en": "PATHONRI LHAKAPFEAYO • Produces, equips and treats soldiers • Bonus for being near the generator • Very usefull in the beginning to start the fights"
+      },
+      "tags": ["T2", "building", "BUILDING"],
+      "cost": 700, "hp": 1600, "range": 180, "buildTime": 40
+    },
+
+    {
+      "id": "botfzr",
+      "name": { "ru": "Завод ботов", "en": "Bot factory" },
+      "faction": "fenearth",
+      "type": "structure",
+      "desc": {
+        "ru": "Производит ботов • Боты манёвренные, быстрые, легкие, но слабые • Имеют реген, умеют ходить по горам и под водой",
+        "en": "Produces bots"
+      },
+      "tags": ["T1", "building", "BUILDING"],
+      "cost": 500, "hp": 900, "buildTime": 23
+    },
+
+    {
+      "id": "botst3",
+      "name": { "ru": "Завод суперботов T3", "en": "Superbots factory T3" },
+      "faction": "fenearth",
+      "type": "structure",
+      "desc": {
+        "ru": "Производит суперботов • Боты манёвренные, быстрые, легкие, но слабые • Имеют реген, умеют ходить по горам и под водой",
+        "en": "Manufactures tanks and SPGs"
+      },
+      "tags": ["T3", "super-building", "BUILDING"],
+      "cost": 2900, "hp": 3200, "buildTime": 190
+    },
+
+    {
+      "id": "botst4",
+      "name": { "ru": "Завод суперботов T4", "en": "Superbots factory T4" },
+      "faction": "fenearth",
+      "type": "structure",
+      "desc": {
+        "ru": "Производит суперботов • Боты манёвренные, быстрые, легкие, но слабые • Имеют реген, умеют ходить по горам и под водой",
+        "en": "Manufactures tanks and SPGs"
+      },
+      "tags": ["T4", "super-building", "BUILDING"],
+      "cost": 5900, "hp": 4600, "buildTime": 250
+    },
+
+    {
+      "id": "bott2",
+      "name": { "ru": "Завод ботов T2", "en": "Bot factory T2" },
+      "faction": "fenearth",
+      "type": "structure",
+      "desc": {
+        "ru": "Производит ботов • Боты манёвренные, быстрые, легкие, но слабые • Имеют реген, умеют ходить по горам и под водой",
+        "en": "Produces bots"
+      },
+      "tags": ["T2", "building", "BUILDING"],
+      "cost": 2000, "hp": 1300, "buildTime": 80
+    },
+
+    {
+      "id": "fabfzr",
+      "name": { "ru": "Фабрикатор", "en": "Fabricator" },
       "faction": "fenearth",
       "type": "economy",
-      "role": { "ru": "Энергия", "en": "Power" },
-      "cost": 350,
-      "hp": 700,
-      "dps": 0,
-      "range": 0,
-      "buildTime": "12 с",
-      "desc": {
-        "ru": "Даёт энергию для щитов, радаров и тяжёлых заводов. Приоритетная цель диверсантов.",
-        "en": "Provides power for shields, radars and heavy factories. A top target for saboteurs."
-      },
-      "strongVs": { "ru": [], "en": [] },
-      "weakVs": { "ru": ["Диверсанты", "Рейды"], "en": ["Saboteurs", "Raids"] },
-      "draft": true
+      "desc": { "ru": "Генерирует деньги • Взрывается при уничтожении", "en": "Generates money • Explodes on destruction" },
+      "tags": ["T4", "super-building", "BUILDING"],
+      "cost": 5500, "hp": 1500, "dps": 3000, "buildTime": 250
     },
+
     {
-      "id": "factory",
-      "name": { "ru": "Военный завод", "en": "War Factory" },
-      "faction": "proton",
-      "type": "structure",
-      "role": { "ru": "Производство", "en": "Production" },
-      "cost": 900,
-      "hp": 1800,
-      "dps": 0,
-      "range": 0,
-      "buildTime": "26 с",
-      "desc": {
-        "ru": "Производит наземную технику. Держите несколько заводов — темп армии решает исход матча.",
-        "en": "Produces ground vehicles. Keep several factories — army tempo decides matches."
-      },
-      "strongVs": { "ru": [], "en": [] },
-      "weakVs": { "ru": ["Артиллерия", "Диверсанты"], "en": ["Artillery", "Saboteurs"] },
-      "draft": true
-    },
-    {
-      "id": "orbital-dock",
-      "name": { "ru": "Орбитальный док", "en": "Orbital Dock" },
-      "faction": "proton",
-      "type": "structure",
-      "role": { "ru": "Космическое производство", "en": "Space production" },
-      "cost": 1600,
-      "hp": 2600,
-      "dps": 0,
-      "range": 0,
-      "buildTime": "40 с",
-      "desc": {
-        "ru": "Строит и ремонтирует космические корабли. Ключ к контролю орбиты над вашим сектором.",
-        "en": "Builds and repairs spaceships. Key to orbital control above your sector."
-      },
-      "strongVs": { "ru": [], "en": [] },
-      "weakVs": { "ru": ["Космические рейды"], "en": ["Space raids"] },
-      "draft": true
-    },
-    {
-      "id": "aa-turret",
-      "name": { "ru": "ПВО-турель", "en": "AA Turret" },
-      "faction": "proton",
-      "type": "defense",
-      "role": { "ru": "Противовоздушная оборона", "en": "Anti-air defense" },
-      "cost": 300,
-      "hp": 640,
-      "dps": 65,
-      "range": 280,
-      "buildTime": "10 с",
-      "desc": {
-        "ru": "Зенитная турель. Обязательна в городах и у заводов — иначе авиация сотрёт базу.",
-        "en": "Anti-air turret. Mandatory in cities and near factories — otherwise air power will erase your base."
-      },
-      "strongVs": { "ru": ["Авиация"], "en": ["Air"] },
-      "weakVs": { "ru": ["Артиллерия", "Танки"], "en": ["Artillery", "Tanks"] },
-      "draft": true
-    },
-    {
-      "id": "shield-generator",
-      "name": { "ru": "Генератор щита", "en": "Shield Generator" },
+      "id": "gaubfzr",
+      "name": { "ru": "Гаубица", "en": "Howitzer" },
       "faction": "fenearth",
       "type": "defense",
-      "role": { "ru": "Защитное поле", "en": "Defense field" },
-      "cost": 1200,
-      "hp": 1100,
-      "dps": 0,
-      "range": 340,
-      "buildTime": "24 с",
       "desc": {
-        "ru": "Накрывает базу энергощитом, который поглощает урон до отключения питания.",
-        "en": "Covers the base with an energy shield that absorbs damage until power fails."
+        "ru": "Мощная тяжелая артиллерийская установка • Стреляет мощными снарядами на большое расстояние • Снаряды станят врага",
+        "en": "Powerful, heavy installation • Shoots a large radius • very strong turret"
       },
-      "strongVs": { "ru": ["Обстрелы на дистанции"], "en": ["Ranged bombardments"] },
-      "weakVs": { "ru": ["Отключение энергии", "Диверсанты"], "en": ["Power loss", "Saboteurs"] },
-      "draft": true
+      "tags": ["T1", "building", "BUILDING"],
+      "cost": 900, "hp": 1400, "dps": 50, "range": 385, "buildTime": 25
     },
+
     {
-      "id": "radar",
-      "name": { "ru": "Радар", "en": "Radar" },
-      "faction": "proton",
-      "type": "support",
-      "role": { "ru": "Обнаружение", "en": "Detection" },
-      "cost": 450,
-      "hp": 520,
-      "dps": 0,
-      "range": 900,
-      "buildTime": "14 с",
+      "id": "gilauncherfzr",
+      "name": { "ru": "Гипер ракетная установка", "en": "Giper rocket launcher" },
+      "faction": "fenearth",
+      "type": "defense",
       "desc": {
-        "ru": "Раскрывает скрытых юнитов и даёт обзор. Без радаров рейды «Авы» останутся незамеченными.",
-        "en": "Reveals stealth units and grants vision. Without radar, Ava raiders stay unseen."
+        "ru": "Производит гипер ракеты • Может пускать ракеты в любую точку на карте • Гипер ракеты являются орудием абсолютного уничтожения • Есть режим стрельбы по космосу • (Народное прозвище: Гиперка)",
+        "en": "Can build giper rockets"
       },
-      "strongVs": { "ru": ["Скрытность"], "en": ["Stealth"] },
-      "weakVs": { "ru": ["Авиация", "Артиллерия"], "en": ["Air", "Artillery"] },
-      "draft": true
+      "tags": ["T3", "super-building", "BUILDING"],
+      "cost": 12000, "hp": 4500, "dps": 10000, "range": 99999, "buildTime": 240
+    },
+
+    {
+      "id": "goldmine1",
+      "name": { "ru": "Шахта Т1", "en": "Mine T1" },
+      "faction": "fenearth",
+      "type": "economy",
+      "desc": { "ru": "Генерирует деньги • Улучшаема", "en": "Generates money" },
+      "tags": ["T1", "building", "BUILDING"],
+      "cost": 500, "hp": 1000, "buildTime": 12
+    },
+
+    {
+      "id": "goldmine2",
+      "name": { "ru": "Шахта Т2", "en": "Mine T2" },
+      "faction": "fenearth",
+      "type": "economy",
+      "desc": { "ru": "Генерирует деньги • Улучшаема", "en": "Generates money" },
+      "tags": ["T2", "building", "BUILDING"],
+      "cost": 2200, "hp": 2000, "buildTime": 25
+    },
+
+    {
+      "id": "goldmine3",
+      "name": { "ru": "Шахта Т3", "en": "Mine T3" },
+      "faction": "fenearth",
+      "type": "economy",
+      "desc": { "ru": "Генерирует деньги", "en": "Generates money" },
+      "tags": ["T3", "super-building", "BUILDING"],
+      "cost": 5400, "hp": 5500, "buildTime": 100
+    },
+
+    {
+      "id": "horizon",
+      "name": { "ru": "Универсальная турель \"Горизонт\"", "en": "Universal turret \"Horizon\"" },
+      "faction": "fenearth",
+      "type": "defense",
+      "desc": {
+        "ru": "Тяжелая артиллерийская установка высокой дальности • Так же может атаковать наземные, воздушные и космические цели • Может перейти в усиленный противоорбитальный режим",
+        "en": "Powerful, heavy installation • Shoots a large radius • Has anti-air and anti-orbital defenses • Against almost everything usefull"
+      },
+      "tags": ["T3", "super-building", "BUILDING"],
+      "cost": 3500, "hp": 3000, "dps": 100, "range": 800, "buildTime": 40
+    },
+
+    {
+      "id": "kosmfzr",
+      "name": { "ru": "Космодром", "en": "Cosmodrome" },
+      "faction": "fenearth",
+      "type": "structure",
+      "desc": {
+        "ru": "Производит базовые космические аппараты • Космические аппараты имеют возможность беспрепятственно перемещаться по всей карте и совершать прыжки • Большая часть кораблей имеет возможность спуска в атмосферу для поддержки и выгрузки наземных сил • Малые космические корабли зачастую могут обслуживаться в некоторых юнитах как вертолёты или самолёты",
+        "en": "Manufactures basic spacecraft"
+      },
+      "tags": ["T1", "building", "BUILDING"],
+      "cost": 1800, "hp": 3000, "buildTime": 110
+    },
+
+    {
+      "id": "kzsfzr",
+      "name": { "ru": "Жерло КЗС", "en": "DSC Vent" },
+      "faction": "fenearth",
+      "type": "structure",
+      "desc": {
+        "ru": "Комплекс Звезды Смерти • Для работы нужно 4 стабилизатора, как показано на схеме после постройки • Уничтожает планету и все юниты на ней и на орбите • Может так же уничтожить газовый гигант или вызвать вспышку на звезде",
+        "en": "Requires 4 stabilizers to work • Destroys a planet"
+      },
+      "tags": ["titan", "super-structure", "BUILDING"],
+      "cost": 25000, "hp": 10000, "dps": 70, "range": 100000, "buildTime": 1000
+    },
+
+    {
+      "id": "launcherfzr",
+      "name": { "ru": "Тактическая ракетная установка", "en": "Tactical missile launcher" },
+      "faction": "fenearth",
+      "type": "defense",
+      "desc": {
+        "ru": "Может наносить точечные удары на небольшое расстояние • Тактические ракеты хороши против одиночных дорогих целей • Есть режим стрельбы по космосу • Можно улучшить до ядерной утсновки • (Народное прозвище: Тактичка)",
+        "en": "Can launch powerful missiles at short range"
+      },
+      "tags": ["T1", "building", "BUILDING"],
+      "cost": 1600, "hp": 1500, "dps": 1800, "range": 1700, "buildTime": 40
+    },
+
+    {
+      "id": "mingun",
+      "name": { "ru": "Мин-пушка", "en": "Min-gun" },
+      "faction": "proton",
+      "type": "defense",
+      "desc": {
+        "ru": "Дистанционно закладывает мины на большом расстоянии по целеуказанию • Может минировать космическое пространство",
+        "en": "Planting mines at long range • Allows you to cover the world in mines"
+      },
+      "tags": ["T1", "building", "BUILDING"],
+      "cost": 800, "hp": 1200, "dps": 16.7, "range": 1000, "buildTime": 30
+    },
+
+    {
+      "id": "mudb",
+      "name": { "ru": "Грязевые ванны клонирования", "en": "Cloning mud baths" },
+      "faction": "proton",
+      "type": "economy",
+      "desc": {
+        "ru": "ДХИЙУМНАХЕСА • С помощью грязевого клонирования производит дегеров • Осторожно! В случае нехватки энергии произойдет досрочный выброс из капсул, дегеры будут агрессивными",
+        "en": "DHIYUMNAKHESA • Mud cloning produces degers • Will create them after a bit of patience"
+      },
+      "tags": ["T1", "building", "BUILDING"],
+      "cost": 10, "hp": 50, "buildTime": 15
+    },
+
+    {
+      "id": "nulauncherfzr",
+      "name": { "ru": "Стратегическая ракетная установка", "en": "Strategic missile launcher" },
+      "faction": "fenearth",
+      "type": "defense",
+      "desc": {
+        "ru": "Производит тактические и ядерные ракеты • Может пускать ракеты в любую точку на карте • Ядерные ракеты хороши против групповых целей • Есть режим стрельбы по космосу • (Народное прозвище: Ядерка, Нюка)",
+        "en": "Can build nuclear missiles"
+      },
+      "tags": ["T2", "building", "BUILDING"],
+      "cost": 5000, "hp": 3000, "dps": 4800, "range": 99999, "buildTime": 80
+    },
+
+    {
+      "id": "pbat",
+      "name": { "ru": "Батарея", "en": "Battery" },
+      "faction": "proton",
+      "type": "economy",
+      "desc": {
+        "ru": "Накапливает энергию • Увеличивает максимальную вместительность энергии на 1000 • Увеличивает эффективность генераторов по соседству • При уничтожении происходит стан-взрыв в небольшом радиусе",
+        "en": "Stores energy • A lot of energy"
+      },
+      "tags": ["T1", "building", "BUILDING"],
+      "cost": 250, "hp": 450, "dps": 250, "buildTime": 15
+    },
+
+    {
+      "id": "pgen1",
+      "name": { "ru": "Энергогенератор Т1", "en": "Energy generator T1" },
+      "faction": "proton",
+      "type": "economy",
+      "desc": {
+        "ru": "Генерирует энергию • Эффективность увеличивается при нахождении рядом с батареями, гейзером или на горячих планетах • Увеличивает эффективность шахт по соседству • При уничтожении происходит взрыв в небольшом радиусе",
+        "en": "Generates energy • Bonuses when being near a battery, geyser or on hot planets • Let the power rise!"
+      },
+      "tags": ["T2", "building", "BUILDING"],
+      "cost": 450, "hp": 600, "dps": 400, "buildTime": 25
+    },
+
+    {
+      "id": "pmine1",
+      "name": { "ru": "Шахта Т1", "en": "Mine T1" },
+      "faction": "proton",
+      "type": "economy",
+      "desc": {
+        "ru": "Генерирует деньги, потребляет энергию • Эффективность увеличивается при нахождении рядом с генераторами • Чинит, реклеймит и помогает строить юниты в среднем радиусе • Улучшаема",
+        "en": "Generates money • Bonus for being near the generator • A mine that produces money"
+      },
+      "tags": ["T1", "building", "BUILDING"],
+      "cost": 400, "hp": 850, "buildTime": 35
+    },
+
+    {
+      "id": "radarfzr",
+      "name": { "ru": "Радар", "en": "Radar" },
+      "faction": "fenearth",
+      "type": "defense",
+      "desc": {
+        "ru": "Дает большой радиус обзора • Обнаруживает стелс юнитов • Требуется для работы некоторых зданий",
+        "en": "Detects stealth units • Gives a large viewing radius"
+      },
+      "tags": ["T1", "building", "BUILDING"],
+      "cost": 1000, "hp": 550, "range": 1000, "buildTime": 20
+    },
+
+    {
+      "id": "radarfzr3",
+      "name": { "ru": "Супер Радар", "en": "Super Radar" },
+      "faction": "fenearth",
+      "type": "defense",
+      "desc": {
+        "ru": "Дает очень большой радиус обзора • Хорошо обнаруживает стелс юнитов • Требуется для работы некоторых зданий",
+        "en": "Detects stealth units • Gives a large viewing radius"
+      },
+      "tags": ["T3", "super-building", "BUILDING"],
+      "cost": 3200, "hp": 1000, "range": 1700, "buildTime": 50
+    },
+
+    {
+      "id": "radarpe",
+      "name": { "ru": "Антенна", "en": "Antenna" },
+      "faction": "proton",
+      "type": "defense",
+      "desc": {
+        "ru": "Дает большой радиус обзора • Обнаруживает стелс юнитов • Требуется для работы некоторых зданий • Уманьшает энергопотребление при нахождении рядом с генератором",
+        "en": "Detects stealth units • Gives a large viewing radius • Bonus for being near the generator • Shows you a lot that you have not seen yet"
+      },
+      "tags": ["T1", "building", "BUILDING"],
+      "cost": 700, "hp": 400, "range": 1100, "buildTime": 20
+    },
+
+    {
+      "id": "sam",
+      "name": { "ru": "Супер-ПВО", "en": "Super Air Defense" },
+      "faction": "fenearth",
+      "type": "defense",
+      "desc": { "ru": "Атакует воздушные цели на большом расстоянии", "en": "Can shoot down planes • Large radius and damage" },
+      "tags": ["T2", "building", "BUILDING"],
+      "cost": 1250, "hp": 2200, "dps": 800, "range": 400, "buildTime": 21
+    },
+
+    {
+      "id": "seafzr",
+      "name": { "ru": "Верфь", "en": "Shipyard" },
+      "faction": "fenearth",
+      "type": "structure",
+      "desc": {
+        "ru": "Производит корабли и подводные лодки • Корабли обладают высокой прочностью и дальностью стрельбы, но дорогие",
+        "en": "Produces ships, submarines"
+      },
+      "tags": ["T1", "building", "BUILDING"],
+      "cost": 750, "hp": 2000, "range": 250, "buildTime": 25
+    },
+
+    {
+      "id": "seafzrt2",
+      "name": { "ru": "Верфь T2", "en": "Shipyard T2" },
+      "faction": "fenearth",
+      "type": "structure",
+      "desc": {
+        "ru": "Производит корабли и подводные лодки • Корабли обладают высокой прочностью и дальностью стрельбы, но дорогие",
+        "en": "Produces ships, submarines"
+      },
+      "tags": ["T2", "building", "BUILDING"],
+      "cost": 2750, "hp": 4000, "range": 250, "buildTime": 100
+    },
+
+    {
+      "id": "seafzrt3",
+      "name": { "ru": "Суперверфь T3", "en": "Supershipyard T3" },
+      "faction": "fenearth",
+      "type": "structure",
+      "desc": {
+        "ru": "Производит корабли и подводные лодки • Корабли обладают высокой прочностью и дальностью стрельбы, но дорогие",
+        "en": "Produces superships, submarines"
+      },
+      "tags": ["T3", "super-building", "BUILDING"],
+      "cost": 3500, "hp": 5000, "range": 300, "buildTime": 100
+    },
+
+    {
+      "id": "seafzrt4",
+      "name": { "ru": "Суперверфь T4", "en": "Supershipyard T4" },
+      "faction": "fenearth",
+      "type": "structure",
+      "desc": {
+        "ru": "Производит корабли и подводные лодки • Корабли обладают высокой прочностью и дальностью стрельбы, но дорогие",
+        "en": "Produces superships, submarines"
+      },
+      "tags": ["T4", "super-building", "BUILDING"],
+      "cost": 7000, "hp": 6000, "range": 350, "buildTime": 100
+    },
+
+    {
+      "id": "seape",
+      "name": { "ru": "Верфь", "en": "Shipyard" },
+      "faction": "proton",
+      "type": "structure",
+      "desc": {
+        "ru": "Производит и чинит пришвартованные корабли и подводные лодки • Корабли обладают хорошей прочностью и дальностью стрельбы, но дорогие",
+        "en": "Produces ships, submarines • Needed for every good waterbattle"
+      },
+      "tags": ["T1", "building", "BUILDING"],
+      "cost": 650, "hp": 1600, "buildTime": 35
+    },
+
+    {
+      "id": "sfacfzr",
+      "name": { "ru": "Орбитальная верфь", "en": "Orbital shipyard" },
+      "faction": "fenearth",
+      "type": "structure",
+      "desc": {
+        "ru": "Производит космические корабли • Космические корабли многозадачны, имеют хорошую прочность и урон, могут перемещаться по всей карте, но очень дорогие • Верфи могут достаточно быстро перемещаться своим ходом или быть транспортированы Броненосцем • Большая часть кораблей имеет возможность спуска в атмосферу для поддержки и выгрузки наземных сил • Малые космические корабли зачастую могут обслуживаться в некоторых юнитах как вертолёты или самолёты",
+        "en": "Produces spaceships • Spaaaaaaaaaaaace"
+      },
+      "tags": ["T1", "building", "AIR"],
+      "cost": 3500, "hp": 3500, "shield": 2000, "buildTime": 90
+    },
+
+    {
+      "id": "sfacfzr2",
+      "name": { "ru": "Орбитальная суперверфь", "en": "Orbital supershipyard" },
+      "faction": "fenearth",
+      "type": "structure",
+      "desc": {
+        "ru": "Производит космические суперкорабли • Космические корабли многозадачны, имеют хорошую прочность и урон, могут перемещаться по всей карте, но очень дорогие • Верфи могут достаточно быстро перемещаться своим ходом или быть транспортированы Броненосцем • Большая часть кораблей имеет возможность спуска в атмосферу для поддержки и выгрузки наземных сил • Малые космические корабли зачастую могут обслуживаться в некоторых юнитах как вертолёты или самолёты",
+        "en": "Produces superspaceships"
+      },
+      "tags": ["T2", "building", "AIR"],
+      "cost": 7500, "hp": 6000, "shield": 3500, "buildTime": 50
+    },
+
+    {
+      "id": "sfacpe",
+      "name": { "ru": "Орбитальная верфь", "en": "Orbital shipyard" },
+      "faction": "proton",
+      "type": "structure",
+      "desc": {
+        "ru": "Производит космические корабли • Космические корабли сильные, прочные, могут перемещаться по всей карте, очень дорогие • Верфи могут медленно перемещаться • Большая часть кораблей имеет возможность спуска в атмосферу для поддержки и выгрузки наземных сил • Малые космические корабли зачастую могут обслуживаться в некоторых юнитах как вертолёты или самолёты",
+        "en": "Manufactures and repairs spacecraft • Ready for spacebattle? Here ya gooo!"
+      },
+      "tags": ["T1", "building", "AIR"],
+      "cost": 2000, "hp": 4000, "buildTime": 90
+    },
+
+    {
+      "id": "shieldfzr",
+      "name": { "ru": "Генератор Щита", "en": "Shield Generator" },
+      "faction": "fenearth",
+      "type": "defense",
+      "desc": {
+        "ru": "Защищает от снарядов врага • Может выдержать попадение тактической ракеты",
+        "en": "Protects from enemy fire. • Shield your units from enemy fire"
+      },
+      "tags": ["T1", "building", "BUILDING"],
+      "cost": 1000, "hp": 1000, "shield": 400, "buildTime": 20
+    },
+
+    {
+      "id": "sip",
+      "name": { "ru": "Сдвоенная Ионная Пушка", "en": "Twin Ion Cannon" },
+      "faction": "fenearth",
+      "type": "defense",
+      "desc": {
+        "ru": "Огромный разовый урон по одиночным целям, станит • Атакует абслоюно все на большом расстоянии • Абсолютное орудие планетарной защиты • (Народное прозвище: Вилка, Розетка)",
+        "en": "High one-time damage over a large radius • Strong but long reload time"
+      },
+      "tags": ["T1", "building", "BUILDING"],
+      "cost": 10000, "hp": 7000, "dps": 416.7, "range": 800, "buildTime": 600
+    },
+
+    {
+      "id": "sonarpe",
+      "name": { "ru": "Сонар", "en": "Sonar" },
+      "faction": "proton",
+      "type": "defense",
+      "desc": {
+        "ru": "Большой радиус обзора, имеет хороший сонар • Хорошо обнаруживает подводные юниты • Медленный",
+        "en": "Large radius • Good at detecting underwater units • Nothing can hide from it!"
+      },
+      "tags": ["T2", "building", "WATER"],
+      "cost": 200, "hp": 600, "buildTime": 30
+    },
+
+    {
+      "id": "stabfzr",
+      "name": { "ru": "Стабилизатор КЗС", "en": "DSC Stabilizer" },
+      "faction": "fenearth",
+      "type": "structure",
+      "desc": { "ru": "Заряжает жерло и позволяет с него стрелять", "en": "Charges the vent and allows you to shoot from it" },
+      "tags": ["T2", "building", "BUILDING"],
+      "cost": 5000, "hp": 7000, "range": 200, "buildTime": 500
+    },
+
+    {
+      "id": "subhq",
+      "name": { "ru": "Под-Штаб", "en": "Sub HQ" },
+      "faction": "fenearth",
+      "type": "structure",
+      "desc": { "ru": "Запасной штаб • Может строить простые турели", "en": "Reserve headquarters" },
+      "tags": ["T1", "building", "BUILDING"],
+      "cost": 2000, "hp": 2800, "range": 150, "buildTime": 45
+    },
+
+    {
+      "id": "supershieldfzr",
+      "name": { "ru": "Супер генератор щита", "en": "Supershield Generator" },
+      "faction": "fenearth",
+      "type": "defense",
+      "desc": {
+        "ru": "Защищает от снарядов врага • Может выдержать попадание ядерной ракеты",
+        "en": "Protects from enemy fire • Can withstand nuclear missiles"
+      },
+      "tags": ["T3", "super-building", "BUILDING"],
+      "cost": 2700, "hp": 3500, "shield": 1300, "buildTime": 65
+    },
+
+    {
+      "id": "suppe",
+      "name": { "ru": "Штаб снабжения", "en": "Supply Headquarters" },
+      "faction": "proton",
+      "type": "economy",
+      "desc": {
+        "ru": "Производит спецаилизированные мобильные установки для поддержки армии • Лечит пехоту и установки в среднем радиусе вокруг • Хороший радиус обзора, есть радар",
+        "en": "Manufactures mobile plants • Treats infantry and rigs • Usefull to add some support directly to your builders"
+      },
+      "tags": ["T1", "building", "BUILDING"],
+      "cost": 400, "hp": 950, "range": 150, "buildTime": 24
+    },
+
+    {
+      "id": "tanks",
+      "name": { "ru": "Танковый завод", "en": "Tank factory" },
+      "faction": "fenearth",
+      "type": "structure",
+      "desc": {
+        "ru": "Производит танки и самоходные установки • Танки имеют большую прочность, броню и урон • Медленные, зачастую не могут пересекать труднопроходимую местность",
+        "en": "Manufactures tanks and SPGs • Get some strong units with this one"
+      },
+      "tags": ["T1", "building", "BUILDING"],
+      "cost": 500, "hp": 950, "buildTime": 11
+    },
+
+    {
+      "id": "tankspe",
+      "name": { "ru": "Завод наземной бронетехники", "en": "Land Armour Plant" },
+      "faction": "proton",
+      "type": "structure",
+      "desc": {
+        "ru": "ШУМРОСАНОЙ ЛХАКАНАХЕСА • Производит и чинит в радиусе бронетехнику и различные установки • Бонус к скорости производства при нахождении рядом с шахтой • Бронетехника имеет неплохую прочность, броню, урон и скорость • Зачастую не могут пересекать труднопроходимую местность",
+        "en": "SHUMROSANOY LHAKANAKHESA • Manufactures tanks and SPGs • Bonus when you are near a mine • Very basic units can be build here, good for the start"
+      },
+      "tags": ["T1", "building", "BUILDING"],
+      "cost": 500, "hp": 800, "range": 150, "buildTime": 30
+    },
+
+    {
+      "id": "tankst2",
+      "name": { "ru": "Танковый завод T2", "en": "Tank factory T2" },
+      "faction": "fenearth",
+      "type": "structure",
+      "desc": {
+        "ru": "Производит танки и самоходные установки • Танки имеют большую прочность, броню и урон • Медленные, зачастую не могут пересекать труднопроходимую местность",
+        "en": "Manufactures tanks and SPGs"
+      },
+      "tags": ["T2", "building", "BUILDING"],
+      "cost": 2000, "hp": 1500, "buildTime": 70
+    },
+
+    {
+      "id": "tankst3",
+      "name": { "ru": "Завод супертанков T3", "en": "Supertank factory T3" },
+      "faction": "fenearth",
+      "type": "structure",
+      "desc": {
+        "ru": "Производит супертанки и самоходные установки • Танки имеют большую прочность, броню и урон • Медленные, зачастую не могут пересекать труднопроходимую местность",
+        "en": "Produces supertanks"
+      },
+      "tags": ["T3", "super-building", "BUILDING"],
+      "cost": 2900, "hp": 3500, "buildTime": 160
+    },
+
+    {
+      "id": "tankst4",
+      "name": { "ru": "Завод супертанков T4", "en": "Supertank factory T4" },
+      "faction": "fenearth",
+      "type": "structure",
+      "desc": {
+        "ru": "Производит супертанки и самоходные установки • Танки имеют большую прочность, броню и урон • Медленные, зачастую не могут пересекать труднопроходимую местность",
+        "en": "Produces supertanks"
+      },
+      "tags": ["T4", "super-building", "BUILDING"],
+      "cost": 5900, "hp": 5000, "buildTime": 200
+    },
+
+    {
+      "id": "tmd-p",
+      "name": { "ru": "ПРО", "en": "Missile defense" },
+      "faction": "proton",
+      "type": "defense",
+      "desc": {
+        "ru": "Сбивает небольшие ракеты, потребляя энергокредиты • При полном заряде может сбить 2 тактические ракеты • Для сбития тактического оружия требуется 500 энергокредитов и хотя бы половина заряда установки",
+        "en": "Shoots down missiles by consuming energy credits • Shooting down tactical weapons requires 500 energy credits • Very handy when you know that the enemy is ready to fire some missiles at you"
+      },
+      "tags": ["T3", "super-building", "NONE"],
+      "cost": 600, "hp": 700, "range": 350, "buildTime": 11
+    },
+
+    {
+      "id": "torpfzr",
+      "name": { "ru": "Торпедный аппарат", "en": "Torpedo launcher" },
+      "faction": "fenearth",
+      "type": "defense",
+      "desc": {
+        "ru": "Атакует водные и подводные юниты • Стреляет торпедами, медленный • Имеет сонар и большой радиус обзора • Если стоит на месте, чинит корабли в большом радиусе • Имеет флак-зенитку",
+        "en": "Fires torpedoes • Has sonar • Has flak"
+      },
+      "tags": ["T3", "super-building", "WATER"],
+      "cost": 3000, "hp": 5500, "dps": 100, "range": 500, "buildTime": 55
+    },
+
+    {
+      "id": "turret-t1",
+      "name": { "ru": "Оборонительная турель", "en": "Defensive turret" },
+      "faction": "fenearth",
+      "type": "defense",
+      "desc": {
+        "ru": "Атакует наземные цели в небольшом радиусе • Имеет высокий урон и прочность • Есть защита от ракет",
+        "en": "High damage over a small radius"
+      },
+      "tags": ["T1", "building", "BUILDING"],
+      "cost": 550, "hp": 1100, "dps": 196.8, "range": 210, "buildTime": 7
+    },
+
+    {
+      "id": "turret-t1p",
+      "name": { "ru": "Оборонительная турель", "en": "Defensive turret" },
+      "faction": "proton",
+      "type": "defense",
+      "desc": {
+        "ru": "Атакует наземные цели в среднем радиусе • Имеет высокий урон и прочность • Имеет лазерную защиту",
+        "en": "High damage over a small radius • Has laser protection • your most basic defense, used for most defenses"
+      },
+      "tags": ["T1", "building", "BUILDING"],
+      "cost": 600, "hp": 750, "dps": 126.7, "range": 235, "buildTime": 12
+    },
+
+    {
+      "id": "turret-t3",
+      "name": { "ru": "Супертурель", "en": "Superturret" },
+      "faction": "fenearth",
+      "type": "defense",
+      "desc": { "ru": "Атакует наземные цели в небольшом радиусе • Имеет высокий урон и прочность", "en": "High damage over a small radius" },
+      "tags": ["T1", "building", "BUILDING"],
+      "cost": 1200, "hp": 2500, "dps": 500, "range": 270, "buildTime": 20
+    },
+
+    {
+      "id": "wecofzr",
+      "name": { "ru": "Контроллер погоды", "en": "Weather controller" },
+      "faction": "fenearth",
+      "type": "structure",
+      "desc": {
+        "ru": "Может вызывать различные погодные явления в любой точке на карте",
+        "en": "Can change the weather anywhere in nearby planets • Play a bit around with the weather, surely will be fun"
+      },
+      "tags": ["titan", "super-structure", "BUILDING"],
+      "cost": 18000, "hp": 10000, "dps": 70, "range": 999999, "buildTime": 900
     }
   ]
 }

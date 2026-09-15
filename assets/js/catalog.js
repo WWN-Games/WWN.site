@@ -18,7 +18,7 @@ const state = {
 };
 if (!["factions", "units", "buildings"].includes(state.tab)) state.tab = "factions";
 
-const data = { factions: [], units: [], buildings: [] };
+const data = { factions: [], units: [], buildings: [], tags: [] };
 
 const loc = (obj, lang) => (obj ? obj[lang] || obj.ru || obj.en || "" : "");
 const list = (obj, lang) => {
@@ -27,6 +27,10 @@ const list = (obj, lang) => {
 };
 const typeLabel = (type, lang) => t(`catalog.type.${type}`, lang) || type;
 
+const tagLabel = (id, lang) => {
+  const tag = data.tags.find((t) => t.id === id);
+  return tag ? loc(tag.name, lang) || id : id;
+};
 const factionColor = (id) => data.factions.find((f) => f.id === id)?.color || "#29b8ff";
 const factionName = (id, lang) => {
   const faction = data.factions.find((f) => f.id === id);
@@ -35,8 +39,8 @@ const factionName = (id, lang) => {
 
 /* ----------------------------------------------------------------- данные -- */
 async function loadAll() {
-  const [factions, units, buildings] = await Promise.all(
-    ["factions", "units", "buildings"].map((name) =>
+  const [factions, units, buildings, tags] = await Promise.all(
+    ["factions", "units", "buildings", "tags"].map((name) =>
       fetch(abs(`data/${name}.json`), { cache: "no-cache" }).then((res) => {
         if (!res.ok) throw new Error(name);
         return res.json();
@@ -46,6 +50,7 @@ async function loadAll() {
   data.factions = factions.factions || [];
   data.units = units.units || [];
   data.buildings = buildings.buildings || [];
+  data.tags = tags.tags || [];
 }
 
 /* ---------------------------------------------------------------- фильтры -- */
@@ -176,35 +181,63 @@ function initTabs() {
 /* ---------------------------------------------------------------- карточки -- */
 const chip = (text, className = "") => `<span class="chip ${className}">${text}</span>`;
 
+/** Общая шкала полос для всех карточек сразу: абсолютный максимум
+ *  среди юнитов и строений. Самое высокое значение = 100% (полная полоса),
+ *  остальные — пропорционально меньше. */
+const scale = { hp: 1, shield: 1, dps: 1, speed: 1, range: 1 };
+
+function computeScale() {
+  const all = [...data.units, ...data.buildings];
+  Object.keys(scale).forEach((key) => {
+    const values = all.map((item) => (Number.isFinite(item[key]) ? item[key] : 0));
+    scale[key] = Math.max(1, ...values);
+  });
+}
+
+const formatValue = (value) => {
+  if (!Number.isFinite(value) || value === 0) return 0;
+  const abs = Math.abs(value);
+  if (abs < 10) return Math.round(value * 100) / 100;
+  if (abs < 1000) return Math.round(value * 10) / 10;
+  return Math.round(value);
+};
+
 const statBar = (label, value, max, color) => {
-  const percent = max > 0 ? Math.max(3, Math.round((value / max) * 100)) : 0;
+  const safe = Number.isFinite(value) ? value : 0;
+  const percent = safe > 0 && max > 0 ? Math.max(3, Math.min(100, Math.round((safe / max) * 100))) : 0;
   return `<div class="statbar" style="--faction-color:${color}">
     <span class="statbar__label">${label}</span>
     <span class="statbar__track"><span class="statbar__fill" style="width:${percent}%"></span></span>
-    <span class="statbar__val">${value}</span>
+    <span class="statbar__val">${formatValue(safe)}</span>
   </div>`;
 };
 
-function unitCard(item, maxes) {
+function unitCard(item) {
   const lang = state.lang;
   const color = factionColor(item.faction);
   const name = loc(item.name, lang);
-  const image = item.image
-    ? `<img src="${abs(item.image)}" alt="${name}" loading="lazy">`
-    : `<span>${name.slice(0, 2).toUpperCase()}</span>`;
+  // картинка по умолчанию — по id; item.image переопределяет, "" скрывает
+  const imageSrc = item.image === "" ? "" : item.image || `assets/img/catalog/${item.id}.webp`;
+  const initials = name.slice(0, 2).toUpperCase();
+  const image = imageSrc
+    ? `<img src="${abs(imageSrc)}" alt="${name}" data-initials="${initials}" loading="lazy">`
+    : `<span>${initials}</span>`;
 
   const chips = [
     chip(factionName(item.faction, lang), "chip--faction"),
     item.type ? chip(typeLabel(item.type, lang)) : "",
+    ...(item.tags || []).map((id) => chip(tagLabel(id, lang), "chip--tag")),
     item.role ? chip(loc(item.role, lang)) : "",
     item.draft ? chip(t("catalog.draft", lang), "chip--draft") : ""
   ].join("");
 
+  // полосы всегда показываются: нет урона — честный 0
   const bars = [
-    item.hp ? statBar(t("catalog.hp", lang), item.hp, maxes.hp, color) : "",
-    item.dps ? statBar(t("catalog.dps", lang), item.dps, maxes.dps, color) : "",
-    item.speed ? statBar(t("catalog.speed", lang), item.speed, maxes.speed, color) : "",
-    item.range ? statBar(t("catalog.range", lang), item.range, maxes.range, color) : ""
+    statBar(t("catalog.hp", lang), item.hp || 0, scale.hp, color),
+    statBar(t("catalog.shield", lang), item.shield || 0, scale.shield, color),
+    statBar(t("catalog.dps", lang), item.dps || 0, scale.dps, color),
+    statBar(t("catalog.speed", lang), item.speed || 0, scale.speed, color),
+    statBar(t("catalog.range", lang), item.range || 0, scale.range, color)
   ].join("");
 
   const strong = list(item.strongVs, lang);
@@ -219,7 +252,7 @@ function unitCard(item, maxes) {
   const costs = item.cost || item.buildTime
     ? `<div class="unit-card__sub">
          ${item.cost ? chip(`${t("catalog.cost", lang)}: ${item.cost}`) : ""}
-         ${item.buildTime ? chip(`${t("catalog.buildTime", lang)}: ${item.buildTime}`) : ""}
+         ${item.buildTime ? chip(`${t("catalog.buildTime", lang)}: ${item.buildTime}${t("catalog.seconds", lang)} (1x)`) : ""}
        </div>`
     : "";
 
@@ -242,7 +275,7 @@ function unitCard(item, maxes) {
   return article;
 }
 
-function factionCard(faction) {
+function factionCard(faction, counts) {
   const lang = state.lang;
   const color = faction.color || "#29b8ff";
   const name = loc(faction.name, lang);
@@ -251,6 +284,12 @@ function factionCard(faction) {
     : `<span style="color:${color};font-family:var(--font-display)">${name.slice(0, 2)}</span>`;
   const strengths = list(faction.strengths, lang);
   const weaknesses = list(faction.weaknesses, lang);
+  const counters = counts
+    ? `<div class="unit-card__sub" style="margin-top:8px">
+         ${chip(`${t("catalog.tab.units", lang)}: ${counts.units}`)}
+         ${chip(`${t("catalog.tab.buildings", lang)}: ${counts.buildings}`)}
+       </div>`
+    : "";
 
   const block = (title, value) =>
     value ? `<div class="faction-block"><h5>${title}</h5><p>${value}</p></div>` : "";
@@ -267,6 +306,7 @@ function factionCard(faction) {
        <div>
          <div class="faction-card__name">${name}</div>
          <div class="faction-card__motto">${loc(faction.motto, lang)}</div>
+         ${counters}
        </div>
      </div>
      ${faction.desc ? `<p class="faction-card__desc">${loc(faction.desc, lang)}</p>` : ""}
@@ -281,19 +321,10 @@ function factionCard(faction) {
 }
 
 /* ------------------------------------------------------------------- рендер -- */
-function computeMaxes(items) {
-  const maxes = { hp: 0, dps: 0, speed: 0, range: 0 };
-  items.forEach((item) => {
-    Object.keys(maxes).forEach((key) => {
-      if (typeof item[key] === "number" && item[key] > maxes[key]) maxes[key] = item[key];
-    });
-  });
-  return maxes;
-}
-
 const matches = (item, lang) => {
   if (!state.search) return true;
-  const haystack = `${loc(item.name, lang)} ${loc(item.role, lang)} ${loc(item.desc, lang)}`.toLowerCase();
+  const tags = (item.tags || []).map((id) => `${id} ${tagLabel(id, lang)}`).join(" ");
+  const haystack = `${loc(item.name, lang)} ${loc(item.role, lang)} ${loc(item.desc, lang)} ${tags}`.toLowerCase();
   return haystack.includes(state.search);
 };
 
@@ -309,7 +340,12 @@ function render() {
 
   if (state.tab === "factions") {
     items = data.factions.filter((faction) => matches(faction, lang));
-    nodes = items.map(factionCard);
+    nodes = items.map((faction) =>
+      factionCard(faction, {
+        units: data.units.filter((u) => u.faction === faction.id).length,
+        buildings: data.buildings.filter((b) => b.faction === faction.id).length
+      })
+    );
   } else {
     const source = state.tab === "units" ? data.units : data.buildings;
     items = source
@@ -324,8 +360,7 @@ function render() {
           ? loc(a.name, lang).localeCompare(loc(b.name, lang))
           : (b[state.sort] || 0) - (a[state.sort] || 0)
       );
-    const maxes = computeMaxes(items);
-    nodes = items.map((item) => unitCard(item, maxes));
+    nodes = items.map((item) => unitCard(item));
   }
 
   if (!items.length) {
@@ -337,11 +372,27 @@ function render() {
   if (count) count.textContent = t("catalog.count", lang).replace("{n}", String(items.length));
 }
 
+/** Если картинки нет — показываем инициалы вместо битой иконки. */
+function initImageFallback() {
+  document.addEventListener(
+    "error",
+    (event) => {
+      const img = event.target;
+      if (!(img instanceof HTMLImageElement) || !img.dataset.initials) return;
+      const span = document.createElement("span");
+      span.textContent = img.dataset.initials;
+      img.replaceWith(span);
+    },
+    true
+  );
+}
+
 /* --------------------------------------------------------------------- boot -- */
 async function boot() {
   document.title = t("meta.title.catalog", state.lang);
   initDropdowns();
   initTabs();
+  initImageFallback();
 
   $("#catalogSearch")?.addEventListener("input", (event) => {
     state.search = event.target.value.trim().toLowerCase();
@@ -359,6 +410,7 @@ async function boot() {
   buildFactionFilter();
   buildTypeFilter();
   buildSortFilter();
+  computeScale();
   updateFilterVisibility();
   render();
 

@@ -29,13 +29,13 @@ export const WWN_CONFIG = {
   },
 
   // ---------------------------------------------------------------------------
-  // NUMBERS shown in the "stats" strip on the main page (edit freely)
+  // NUMBERS shown in the "stats" strip on the main page (данные из мода v1.1.6b9)
   // ---------------------------------------------------------------------------
   stats: {
-    units: 80,
+    units: 178,
     factions: 2,
-    maps: 30,
-    races: 6
+    maps: 13,
+    races: 8
   },
 
   // ---------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 {
-  "_comment": "Фракции WWN. Цвет используется в оформлении карточек. Эмблемы: assets/img/*.png",
+  "_comment": "Фракции WWN. Цвет используется в оформлении карточек. Эмблемы: assets/img/factions/*.webp",
   "factions": [
     {
       "id": "fenearth",
