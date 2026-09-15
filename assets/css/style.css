@@ -589,42 +589,32 @@ body:has(dialog[open]) { overflow: hidden; }
 .section__sub { color: var(--muted); font-size: 16.5px; max-width: 640px; }
 
 .hero__stats {
+  position: relative;
+  z-index: 1;
   justify-self: center;
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
   justify-content: center;
-  padding: 15px 10px;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: rgba(6, 13, 24, .76);
+  gap: 8px 30px;
+  padding: 12px 24px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: rgba(6, 13, 24, .3);
 }
-.stat {
-  position: relative;
-  min-width: 142px;
-  padding: 0 30px;
-  text-align: center;
-}
-.stat + .stat::before {
-  content: "";
-  position: absolute;
-  left: 0; top: 50%;
-  transform: translateY(-50%);
-  width: 1px; height: 36px;
-  background: linear-gradient(180deg, transparent, var(--line-strong), transparent);
-}
+.stat { display: grid; justify-items: center; gap: 1px; }
 .stat__num {
   font-family: var(--font-display);
-  font-size: clamp(23px, 2.2vw, 28px);
-  line-height: 1.15;
+  font-size: clamp(19px, 1.8vw, 23px);
+  line-height: 1.1;
   color: #fff;
-  text-shadow: 0 0 22px rgba(var(--cyan-rgb), .35);
+  text-shadow: 0 0 18px rgba(var(--cyan-rgb), .3);
 }
 .stat__label {
-  margin-top: 4px;
-  font-size: 10.5px;
-  letter-spacing: .15em;
+  font-size: 9.5px;
+  letter-spacing: .14em;
   text-transform: uppercase;
   color: var(--muted);
+  text-shadow: 0 1px 6px rgba(2, 6, 12, .7);
 }
 
 .cards, .news, .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
@@ -1061,10 +1051,9 @@ body:has(dialog[open]) { overflow: hidden; }
   .hero__inner { gap: 20px; }
   .hero__divider { gap: 10px; font-size: 9px; letter-spacing: .22em; width: min(100%, 86vw); }
   .hero__cta .btn { width: 100%; }
-  .hero__stats { padding: 12px 4px; width: 100%; }
-  .stat { min-width: 0; flex: 1; padding: 0 10px; }
-  .stat__num { font-size: 21px; }
-  .stat__label { font-size: 9.5px; letter-spacing: .1em; }
+  .hero__stats { width: 100%; padding: 10px 12px; gap: 6px 18px; }
+  .stat__num { font-size: 18px; }
+  .stat__label { font-size: 9px; }
   .footer__top { grid-template-columns: 1fr; gap: 28px; }
   .lightbox { padding: 60px 14px calc(20px + var(--safe-bottom)); }
   .lightbox__body { max-width: 100%; }
