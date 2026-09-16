@@ -29,10 +29,10 @@
 
   <link rel="stylesheet" href="assets/css/fonts.css">
   <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="modulepreload" href="assets/js/main.js">
   <script type="speculationrules">
     {"prefetch":[{"source":"document","where":{"href_matches":"wiki/*"},"eagerness":"moderate"}]}
   </script>
-  <noscript><style>[data-reveal] { opacity: 1; transform: none; }</style></noscript>
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -61,7 +61,7 @@
 </head>
 <body>
 
-<a class="skip-link" href="#top" data-i18n="a11y.skip">Skip to content</a>
+<a class="skip-link" href="#top" data-i18n="a11y.skip"></a>
 
 <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
 
@@ -69,16 +69,16 @@
   <div class="header__inner">
     <a class="brand" href="#top" aria-label="WWN">
       <img src="assets/img/brand/logo.svg" alt="WWN">
-      <span class="brand__sub" data-i18n="brand.sub">A Rusted Warfare mod</span>
+      <span class="brand__sub" data-i18n="brand.sub"></span>
     </a>
 
     <nav class="nav" id="mainNav" aria-label="Main">
-      <a href="#features" data-i18n="nav.features">Features</a>
-      <a href="#factions" data-i18n="nav.factions">Factions</a>
-      <a href="#gallery" data-i18n="nav.gallery">Gallery</a>
-      <a href="#download" data-i18n="nav.download">Download</a>
-      <a href="wiki/" data-i18n="nav.wiki">Wiki</a>
-      <a href="database.html" data-i18n="database.title">Database</a>
+      <a href="#features" data-i18n="nav.features"></a>
+      <a href="#factions" data-i18n="nav.factions"></a>
+      <a href="#gallery" data-i18n="nav.gallery"></a>
+      <a href="#download" data-i18n="nav.download"></a>
+      <a href="wiki/" data-i18n="nav.wiki"></a>
+      <a href="database.html" data-i18n="database.title"></a>
     </nav>
 
     <div class="header__side">
@@ -94,14 +94,14 @@
 </header>
 
 <div class="mobile-nav" id="mobileNav" inert>
-  <a href="#features" data-i18n="nav.features">Features</a>
-  <a href="#factions" data-i18n="nav.factions">Factions</a>
-  <a href="#gallery" data-i18n="nav.gallery">Gallery</a>
-  <a href="#news" data-i18n="nav.news">News</a>
-  <a href="#download" data-i18n="nav.download">Download</a>
-  <a href="wiki/" data-i18n="nav.wiki">Wiki</a>
-  <a href="database.html" data-i18n="database.title">Database</a>
-  <a href="#faq" data-i18n="nav.faq">FAQ</a>
+  <a href="#features" data-i18n="nav.features"></a>
+  <a href="#factions" data-i18n="nav.factions"></a>
+  <a href="#gallery" data-i18n="nav.gallery"></a>
+  <a href="#news" data-i18n="nav.news"></a>
+  <a href="#download" data-i18n="nav.download"></a>
+  <a href="wiki/" data-i18n="nav.wiki"></a>
+  <a href="database.html" data-i18n="database.title"></a>
+  <a href="#faq" data-i18n="nav.faq"></a>
   <div class="lang" role="group" aria-label="Language">
     <button type="button" data-lang-btn="RU">RU</button>
     <button type="button" data-lang-btn="EN">EN</button>
@@ -111,8 +111,9 @@
 <main id="top">
   <section class="hero">
     <div class="hero__bg" aria-hidden="true">
-      <img class="hero__bg-img" src="assets/img/bg/banner.webp" alt="" width="1920" height="768"
-        fetchpriority="high" decoding="async">
+      <img class="hero__bg-img" src="assets/img/bg/banner-1440.webp" alt="" width="1440" height="576"
+        srcset="assets/img/bg/banner-960.webp 960w, assets/img/bg/banner-1440.webp 1440w"
+        sizes="100vw" fetchpriority="high" decoding="async">
     </div>
     <div class="hero__grade" aria-hidden="true"></div>
     <div class="hero__aura" aria-hidden="true"></div>
@@ -121,43 +122,43 @@
     <div class="wrap hero__inner">
       <span class="hero__badge">
         <span class="dot"></span>
-        <span data-i18n="hero.badge">version {version}</span>
+        <span data-i18n="hero.badge"></span>
       </span>
 
       <div class="hero__divider" aria-hidden="true">
         <span></span><i>WWN&nbsp;//&nbsp;RUSTED&nbsp;WARFARE</i><span></span>
       </div>
 
-      <h1 class="hero__title" data-i18n-html="hero.title">A galaxy on the edge of <span class="accent">the Triple Conflict</span></h1>
+      <h1 class="hero__title" data-i18n-html="hero.title"></h1>
 
-      <p class="hero__desc" data-i18n="hero.desc">WWN is a large-scale Rusted Warfare mod: battles in space and on the surface, two great powers, dozens of worlds and a living players' league. Deploy your fleet and rewrite the galactic map.</p>
+      <p class="hero__desc" data-i18n="hero.desc"></p>
 
       <div class="hero__cta">
         <a class="btn btn--lg" href="#download" data-link="steam">
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.605 0 11.979 0zM7.54 18.21l-1.473-.61c.262.543.714.999 1.314 1.25 1.297.539 2.793-.076 3.332-1.375.263-.63.264-1.319.005-1.949s-.75-1.121-1.377-1.383c-.624-.26-1.29-.249-1.878-.03l1.523.63c.956.4 1.409 1.5 1.009 2.455-.397.957-1.497 1.41-2.454 1.012H7.54zm11.415-9.303c0-1.662-1.353-3.015-3.015-3.015-1.665 0-3.015 1.353-3.015 3.015 0 1.665 1.35 3.015 3.015 3.015 1.663 0 3.015-1.35 3.015-3.015zm-5.273-.005c0-1.252 1.013-2.266 2.265-2.266 1.249 0 2.266 1.014 2.266 2.266 0 1.251-1.017 2.265-2.266 2.265-1.253 0-2.265-1.014-2.265-2.265z" /></svg>
-          <span data-i18n="hero.downloadSteam">Get it on Steam</span>
+          <span data-i18n="hero.downloadSteam"></span>
         </a>
         <a class="btn btn--lg" href="#download" data-link="drive">
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.01 1.485c-2.082 0-3.754.02-3.743.047.01.02 1.708 3.001 3.774 6.62l3.76 6.574h3.76c2.081 0 3.753-.02 3.742-.047-.005-.02-1.708-3.001-3.775-6.62l-3.76-6.574zm-4.76 1.73a789.828 789.861 0 0 0-3.63 6.319L0 15.868l1.89 3.298 1.885 3.297 3.62-6.335 3.618-6.33-1.88-3.287C8.1 4.704 7.255 3.22 7.25 3.214zm2.259 12.653-.203.348c-.114.198-.96 1.672-1.88 3.287a423.93 423.948 0 0 1-1.698 2.97c-.01.026 3.24.042 7.222.042h7.244l1.796-3.157c.992-1.734 1.85-3.23 1.906-3.323l.104-.167h-7.249z" /></svg>
-          <span data-i18n="hero.downloadDrive">Google Drive</span>
+          <span data-i18n="hero.downloadDrive"></span>
         </a>
         <a class="btn btn--lg" href="wiki/">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /></svg>
-          <span data-i18n="hero.openWiki">Open the wiki</span>
+          <span data-i18n="hero.openWiki"></span>
         </a>
       </div>
     </div>
 
     <div class="hero__stats">
-      <span class="stat"><b class="stat__num">0</b><span class="stat__label" data-i18n="stats.units">units &amp; structures</span></span>
-      <span class="stat"><b class="stat__num">0</b><span class="stat__label" data-i18n="stats.factions">factions</span></span>
-      <span class="stat"><b class="stat__num">0</b><span class="stat__label" data-i18n="stats.maps">maps</span></span>
+      <span class="stat"><b class="stat__num">0</b><span class="stat__label" data-i18n="stats.units"></span></span>
+      <span class="stat"><b class="stat__num">0</b><span class="stat__label" data-i18n="stats.factions"></span></span>
+      <span class="stat"><b class="stat__num">0</b><span class="stat__label" data-i18n="stats.maps"></span></span>
     </div>
 
     <div class="hero__dock">
-      <a href="wiki/" data-i18n="nav.wiki">Wiki</a>
+      <a href="wiki/" data-i18n="nav.wiki"></a>
       <span class="sep"></span>
-      <a href="database.html" data-i18n="database.title">Database</a>
+      <a href="database.html" data-i18n="database.title"></a>
       <span class="sep"></span>
       <a href="#" data-link="discord">Discord</a>
       <span class="sep"></span>
@@ -167,8 +168,8 @@
   <section class="section" id="features">
     <div class="wrap">
       <div class="section__head section__head--center" data-reveal>
-        <span class="kicker" data-i18n="features.title">Mod features</span>
-        <h2 class="section__title" data-i18n="features.subtitle">What WWN adds to Rusted Warfare</h2>
+        <span class="kicker" data-i18n="features.title"></span>
+        <h2 class="section__title" data-i18n="features.subtitle"></h2>
       </div>
 
       <div class="cards">
@@ -176,48 +177,48 @@
           <div class="card__icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 7v10l8 5 8-5V7z" /><path d="M12 22V12M4 7l8 5 8-5" /></svg>
           </div>
-          <h3 class="card__title" data-i18n="features.f1.title">Space battles</h3>
-          <p class="card__text" data-i18n="features.f1.desc">A new mechanic: fights are no longer limited to one planet. Orbital fleets cut supply lines and support the army from above.</p>
+          <h3 class="card__title" data-i18n="features.f1.title"></h3>
+          <p class="card__text" data-i18n="features.f1.desc"></p>
         </article>
 
         <article class="card" data-reveal data-reveal-delay="1">
           <div class="card__icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 3 6v6c0 5 3.8 8.4 9 10 5.2-1.6 9-5 9-10V6z" /><path d="m9 12 2 2 4-4" /></svg>
           </div>
-          <h3 class="card__title" data-i18n="features.f2.title">New units</h3>
-          <p class="card__text" data-i18n="features.f2.desc">Fenearth and Proton hardware: from support ships to improvised Proton prototypes proven in battle.</p>
+          <h3 class="card__title" data-i18n="features.f2.title"></h3>
+          <p class="card__text" data-i18n="features.f2.desc"></p>
         </article>
 
         <article class="card" data-reveal data-reveal-delay="2">
           <div class="card__icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 20 3 17V4l6 3 6-3 6 3v13l-6-3-6 3z" /><path d="M9 7v13M15 4v13" /></svg>
           </div>
-          <h3 class="card__title" data-i18n="features.f3.title">New maps</h3>
-          <p class="card__text" data-i18n="features.f3.desc">Space and mixed maps with varied environments — from orbital corridors to fortified planetary bases.</p>
+          <h3 class="card__title" data-i18n="features.f3.title"></h3>
+          <p class="card__text" data-i18n="features.f3.desc"></p>
         </article>
 
         <article class="card" data-reveal>
           <div class="card__icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16z" /><path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" /><path d="M12 12h.01" /></svg>
           </div>
-          <h3 class="card__title" data-i18n="features.f4.title">Improved gameplay</h3>
-          <p class="card__text" data-i18n="features.f4.desc">Reworked mod mechanics: economy, defense and sieges. Every match plays out differently.</p>
+          <h3 class="card__title" data-i18n="features.f4.title"></h3>
+          <p class="card__text" data-i18n="features.f4.desc"></p>
         </article>
 
         <article class="card" data-reveal data-reveal-delay="1">
           <div class="card__icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /></svg>
           </div>
-          <h3 class="card__title" data-i18n="features.f5.title">Lore &amp; factions</h3>
-          <p class="card__text" data-i18n="features.f5.desc">A full universe: galaxy history, two powers, races and era maps — all in the wiki.</p>
+          <h3 class="card__title" data-i18n="features.f5.title"></h3>
+          <p class="card__text" data-i18n="features.f5.desc"></p>
         </article>
 
         <article class="card" data-reveal data-reveal-delay="2">
           <div class="card__icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" /></svg>
           </div>
-          <h3 class="card__title" data-i18n="features.f6.title">A living community</h3>
-          <p class="card__text" data-i18n="features.f6.desc">Updates, balance talks, custom maps and matches. Join the Discord and play with others.</p>
+          <h3 class="card__title" data-i18n="features.f6.title"></h3>
+          <p class="card__text" data-i18n="features.f6.desc"></p>
         </article>
       </div>
     </div>
@@ -225,9 +226,9 @@
   <section class="section section--bordered section--alt" id="factions">
     <div class="wrap">
       <div class="section__head" data-reveal>
-        <span class="kicker" data-i18n="facsec.kicker">Factions</span>
-        <h2 class="section__title" data-i18n="facsec.title">Two powers, one galaxy</h2>
-        <p class="section__sub" data-i18n="facsec.sub">Pick a side in the Triple Conflict</p>
+        <span class="kicker" data-i18n="facsec.kicker"></span>
+        <h2 class="section__title" data-i18n="facsec.title"></h2>
+        <p class="section__sub" data-i18n="facsec.sub"></p>
       </div>
 
       <div class="factions-showcase">
@@ -235,34 +236,34 @@
           <div class="fac__top">
             <div class="fac__emblem"><img src="assets/img/factions/faction-fer.svg" alt="Fenearth Republic" loading="lazy"></div>
             <div>
-              <div class="fac__name" data-i18n="facsec.fenearth.name">Fenearth Republic</div>
-              <div class="fac__motto" data-i18n="facsec.fenearth.motto">Heir of the Galactic Federation</div>
+              <div class="fac__name" data-i18n="facsec.fenearth.name"></div>
+              <div class="fac__motto" data-i18n="facsec.fenearth.motto"></div>
             </div>
           </div>
-          <p class="fac__desc" data-i18n="facsec.fenearth.desc">A federal parliamentary republic and the galaxy's second economy. Industrial might, GF technology and a heavy fleet.</p>
+          <p class="fac__desc" data-i18n="facsec.fenearth.desc"></p>
           <div class="fac__row">
-            <span class="chip" data-i18n="factions.chip.industry">Industry</span>
-            <span class="chip" data-i18n="factions.chip.fleet">Heavy fleet</span>
-            <span class="chip" data-i18n="factions.chip.tech">GF technology</span>
+            <span class="chip" data-i18n="factions.chip.industry"></span>
+            <span class="chip" data-i18n="factions.chip.fleet"></span>
+            <span class="chip" data-i18n="factions.chip.tech"></span>
           </div>
-          <a class="btn btn--sm fac__link" href="wiki/article.html?p=lore/fenearth" data-i18n="facsec.openLore">Read in the wiki</a>
+          <a class="btn btn--sm fac__link" href="wiki/article.html?p=lore/fenearth" data-i18n="facsec.openLore"></a>
         </article>
 
         <article class="fac" style="--faction-color:#ff4157" data-reveal data-reveal-delay="1">
           <div class="fac__top">
             <div class="fac__emblem"><img src="assets/img/factions/faction-proton.svg" alt="Proton Movement" loading="lazy"></div>
             <div>
-              <div class="fac__name" data-i18n="facsec.proton.name">Proton Movement</div>
-              <div class="fac__motto" data-i18n="facsec.proton.motto">PHATHOU — the First Order</div>
+              <div class="fac__name" data-i18n="facsec.proton.name"></div>
+              <div class="fac__motto" data-i18n="facsec.proton.motto"></div>
             </div>
           </div>
-          <p class="fac__desc" data-i18n="facsec.proton.desc">A union of clans of the Oten Territory. A mass army, rugged hardware and the ferocity of the crocodile-like Vasst.</p>
+          <p class="fac__desc" data-i18n="facsec.proton.desc"></p>
           <div class="fac__row">
-            <span class="chip" data-i18n="factions.chip.mass">Mass army</span>
-            <span class="chip" data-i18n="factions.chip.repair">Field repairs</span>
-            <span class="chip" data-i18n="factions.chip.vasst">Vasst</span>
+            <span class="chip" data-i18n="factions.chip.mass"></span>
+            <span class="chip" data-i18n="factions.chip.repair"></span>
+            <span class="chip" data-i18n="factions.chip.vasst"></span>
           </div>
-          <a class="btn btn--sm fac__link" href="wiki/article.html?p=lore/proton" data-i18n="facsec.openLore">Read in the wiki</a>
+          <a class="btn btn--sm fac__link" href="wiki/article.html?p=lore/proton" data-i18n="facsec.openLore"></a>
         </article>
       </div>
     </div>
@@ -270,8 +271,8 @@
   <section class="section section--bordered section--alt" id="gallery">
     <div class="wrap">
       <div class="section__head" data-reveal>
-        <span class="kicker" data-i18n="gallery.title">Gallery</span>
-        <h2 class="section__title" data-i18n="gallery.subtitle">In-game screenshots</h2>
+        <span class="kicker" data-i18n="gallery.title"></span>
+        <h2 class="section__title" data-i18n="gallery.subtitle"></h2>
       </div>
 
       <div class="gallery" id="galleryGrid" data-reveal></div>
@@ -280,22 +281,22 @@
   <section class="section" id="news">
     <div class="wrap">
       <div class="section__head" data-reveal>
-        <span class="kicker" data-i18n="news.title">What's new</span>
-        <h2 class="section__title" data-i18n="news.subtitle">Mod and community news</h2>
+        <span class="kicker" data-i18n="news.title"></span>
+        <h2 class="section__title" data-i18n="news.subtitle"></h2>
       </div>
       <div class="news" id="newsGrid" data-reveal></div>
 
       <div class="news__all" data-reveal>
-        <a class="btn" href="wiki/article.html?p=changelog" data-i18n="news.all">Releases</a>
+        <a class="btn" href="wiki/article.html?p=changelog" data-i18n="news.all"></a>
       </div>
     </div>
   </section>
   <section class="section" id="download">
     <div class="wrap">
       <div class="section__head section__head--center" data-reveal>
-        <span class="kicker" data-i18n="nav.download">Download</span>
-        <h2 class="section__title" data-i18n="download.title">Download WWN</h2>
-        <p class="section__sub" data-i18n="download.subtitle">Install in a couple of minutes</p>
+        <span class="kicker" data-i18n="nav.download"></span>
+        <h2 class="section__title" data-i18n="download.title"></h2>
+        <p class="section__sub" data-i18n="download.subtitle"></p>
       </div>
 
       <div class="download-grid">
@@ -304,12 +305,12 @@
             <div class="dl-card__icon">
               <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.605 0 11.979 0zM7.54 18.21l-1.473-.61c.262.543.714.999 1.314 1.25 1.297.539 2.793-.076 3.332-1.375.263-.63.264-1.319.005-1.949s-.75-1.121-1.377-1.383c-.624-.26-1.29-.249-1.878-.03l1.523.63c.956.4 1.409 1.5 1.009 2.455-.397.957-1.497 1.41-2.454 1.012H7.54zm11.415-9.303c0-1.662-1.353-3.015-3.015-3.015-1.665 0-3.015 1.353-3.015 3.015 0 1.665 1.35 3.015 3.015 3.015 1.663 0 3.015-1.35 3.015-3.015zm-5.273-.005c0-1.252 1.013-2.266 2.265-2.266 1.249 0 2.266 1.014 2.266 2.266 0 1.251-1.017 2.265-2.266 2.265-1.253 0-2.265-1.014-2.265-2.265z" /></svg>
             </div>
-            <h3 data-i18n="download.steam.title">Steam Workshop</h3>
+            <h3 data-i18n="download.steam.title"></h3>
           </div>
-          <p data-i18n="download.steam.desc">One click — auto-updates and a workshop subscription right inside Steam.</p>
+          <p data-i18n="download.steam.desc"></p>
           <div class="dl-card__foot">
-            <span class="dl-card__note" data-link-note="steam" data-i18n="download.linkSoon">Link coming soon</span>
-            <a class="btn btn--cyan" href="#" data-link="steam" data-i18n="download.steam.btn">Open in Steam</a>
+            <span class="dl-card__note" data-link-note="steam" data-i18n="download.linkSoon"></span>
+            <a class="btn btn--cyan" href="#" data-link="steam" data-i18n="download.steam.btn"></a>
           </div>
         </article>
 
@@ -318,32 +319,32 @@
             <div class="dl-card__icon">
               <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.01 1.485c-2.082 0-3.754.02-3.743.047.01.02 1.708 3.001 3.774 6.62l3.76 6.574h3.76c2.081 0 3.753-.02 3.742-.047-.005-.02-1.708-3.001-3.775-6.62l-3.76-6.574zm-4.76 1.73a789.828 789.861 0 0 0-3.63 6.319L0 15.868l1.89 3.298 1.885 3.297 3.62-6.335 3.618-6.33-1.88-3.287C8.1 4.704 7.255 3.22 7.25 3.214zm2.259 12.653-.203.348c-.114.198-.96 1.672-1.88 3.287a423.93 423.948 0 0 1-1.698 2.97c-.01.026 3.24.042 7.222.042h7.244l1.796-3.157c.992-1.734 1.85-3.23 1.906-3.323l.104-.167h-7.249z" /></svg>
             </div>
-            <h3 data-i18n="download.drive.title">Google Drive</h3>
+            <h3 data-i18n="download.drive.title"></h3>
           </div>
-          <p data-i18n="download.drive.desc">Manual install: download the archive, unpack it into the game's mods/units folder and enable the mod in the menu.</p>
+          <p data-i18n="download.drive.desc"></p>
           <div class="dl-card__foot">
-            <span class="dl-card__note" data-link-note="drive" data-i18n="download.linkSoon">Link coming soon</span>
-            <a class="btn btn--red" href="#" data-link="drive" data-i18n="download.drive.btn">Download from Drive</a>
+            <span class="dl-card__note" data-link-note="drive" data-i18n="download.linkSoon"></span>
+            <a class="btn btn--red" href="#" data-link="drive" data-i18n="download.drive.btn"></a>
           </div>
         </article>
       </div>
 
       <div class="section__head section__head--center download-steps-head" data-reveal>
-        <h3 class="section__title" data-i18n="download.steps.title">How to install</h3>
+        <h3 class="section__title" data-i18n="download.steps.title"></h3>
       </div>
 
       <div class="steps">
         <div class="step" data-reveal>
-          <h4 data-i18n="download.step1.title">Download the mod</h4>
-          <p data-i18n="download.step1.desc">Subscribe on Steam Workshop or download the archive from Google Drive.</p>
+          <h4 data-i18n="download.step1.title"></h4>
+          <p data-i18n="download.step1.desc"></p>
         </div>
         <div class="step" data-reveal data-reveal-delay="1">
-          <h4 data-i18n="download.step2.title">Install</h4>
-          <p data-i18n="download.step2.desc">Steam enables it automatically. For the archive, unpack it into the Rusted Warfare mods/units directory.</p>
+          <h4 data-i18n="download.step2.title"></h4>
+          <p data-i18n="download.step2.desc"></p>
         </div>
         <div class="step" data-reveal data-reveal-delay="2">
-          <h4 data-i18n="download.step3.title">Play</h4>
-          <p data-i18n="download.step3.desc">Launch Rusted Warfare, enable the mod in the mods menu and host a game on WWN maps.</p>
+          <h4 data-i18n="download.step3.title"></h4>
+          <p data-i18n="download.step3.desc"></p>
         </div>
       </div>
 
@@ -352,26 +353,26 @@
   <section class="section section--bordered section--alt" id="faq">
     <div class="wrap">
       <div class="section__head section__head--center" data-reveal>
-        <span class="kicker" data-i18n="nav.faq">FAQ</span>
-        <h2 class="section__title" data-i18n="faq.title">FAQ</h2>
+        <span class="kicker" data-i18n="nav.faq"></span>
+        <h2 class="section__title" data-i18n="faq.title"></h2>
       </div>
 
       <div class="faq">
         <div class="faq__item" data-reveal>
-          <button class="faq__q" type="button" aria-expanded="false" aria-controls="faqA1"><span data-i18n="faq.q1">What is WWN?</span><i></i></button>
-          <div class="faq__a" id="faqA1" inert aria-hidden="true"><p data-i18n="faq.a1">WWN is a major Rusted Warfare mod: space combat, new units and maps, two factions and its own fully-fleshed universe.</p></div>
+          <button class="faq__q" type="button" aria-expanded="false" aria-controls="faqA1"><span data-i18n="faq.q1"></span><i></i></button>
+          <div class="faq__a" id="faqA1" inert aria-hidden="true"><p data-i18n="faq.a1"></p></div>
         </div>
         <div class="faq__item" data-reveal>
-          <button class="faq__q" type="button" aria-expanded="false" aria-controls="faqA2"><span data-i18n="faq.q3">How do I play online?</span><i></i></button>
-          <div class="faq__a" id="faqA2" inert aria-hidden="true"><p data-i18n="faq.a3">All players in a lobby must run the same mod version. The host creates a game, others join as usual.</p></div>
+          <button class="faq__q" type="button" aria-expanded="false" aria-controls="faqA2"><span data-i18n="faq.q3"></span><i></i></button>
+          <div class="faq__a" id="faqA2" inert aria-hidden="true"><p data-i18n="faq.a3"></p></div>
         </div>
         <div class="faq__item" data-reveal>
-          <button class="faq__q" type="button" aria-expanded="false" aria-controls="faqA3"><span data-i18n="faq.q5">How do I track updates?</span><i></i></button>
-          <div class="faq__a" id="faqA3" inert aria-hidden="true"><p data-i18n-html="faq.a5">All news about new versions and development progress appears in <a href="#" data-link="discord">Discord</a>.</p></div>
+          <button class="faq__q" type="button" aria-expanded="false" aria-controls="faqA3"><span data-i18n="faq.q5"></span><i></i></button>
+          <div class="faq__a" id="faqA3" inert aria-hidden="true"><p data-i18n-html="faq.a5"></p></div>
         </div>
         <div class="faq__item" data-reveal>
-          <button class="faq__q" type="button" aria-expanded="false" aria-controls="faqA4"><span data-i18n="faq.q6">Where to discuss balance and find opponents?</span><i></i></button>
-          <div class="faq__a" id="faqA4" inert aria-hidden="true"><p data-i18n-html="faq.a6">In <a href="#" data-link="discord">Discord</a>.</p></div>
+          <button class="faq__q" type="button" aria-expanded="false" aria-controls="faqA4"><span data-i18n="faq.q6"></span><i></i></button>
+          <div class="faq__a" id="faqA4" inert aria-hidden="true"><p data-i18n-html="faq.a6"></p></div>
         </div>
       </div>
     </div>
@@ -382,7 +383,7 @@
     <div class="footer__top">
       <div class="footer__brand">
         <img src="assets/img/brand/logo.svg" alt="WWN">
-        <p data-i18n="siteTagline">The WWN mod for Rusted Warfare. Space fleets, ground battles and a living players' league.</p>
+        <p data-i18n="siteTagline"></p>
         <div class="footer__social">
           <a class="icon-btn" href="#" data-link="discord" aria-label="Discord">
             <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z" /></svg>
@@ -397,18 +398,18 @@
       </div>
 
       <div>
-        <h3 data-i18n="footer.nav">Navigation</h3>
+        <h3 data-i18n="footer.nav"></h3>
         <ul>
-          <li><a href="#features" data-i18n="nav.features">Features</a></li>
-          <li><a href="#factions" data-i18n="nav.factions">Factions</a></li>
-          <li><a href="#gallery" data-i18n="nav.gallery">Gallery</a></li>
-          <li><a href="wiki/" data-i18n="nav.wiki">Wiki</a></li>
-          <li><a href="database.html" data-i18n="database.title">Database</a></li>
+          <li><a href="#features" data-i18n="nav.features"></a></li>
+          <li><a href="#factions" data-i18n="nav.factions"></a></li>
+          <li><a href="#gallery" data-i18n="nav.gallery"></a></li>
+          <li><a href="wiki/" data-i18n="nav.wiki"></a></li>
+          <li><a href="database.html" data-i18n="database.title"></a></li>
         </ul>
       </div>
 
       <div>
-        <h3 data-i18n="footer.community">Community</h3>
+        <h3 data-i18n="footer.community"></h3>
         <ul>
           <li><a href="#" data-link="discord">Discord</a></li>
           <li><a href="#" data-link="youtube">YouTube</a></li>
@@ -416,7 +417,7 @@
       </div>
 
       <div>
-        <h3 data-i18n="footer.download">Download</h3>
+        <h3 data-i18n="footer.download"></h3>
         <ul>
           <li><a href="#" data-link="steam">Steam Workshop</a></li>
           <li><a href="#" data-link="drive">Google Drive</a></li>
@@ -425,22 +426,22 @@
     </div>
 
     <div class="footer__bottom">
-      <p>© <span id="year">2026</span> WWN. <span data-i18n="footer.disclaimer">Official website of the WWN mod for Rusted Warfare. Rusted Warfare © Corroding Games. All mod materials belong to the WWN team.</span></p>
+      <p>© <span id="year"></span> WWN. <span data-i18n="footer.disclaimer"></span></p>
     </div>
   </div>
 </footer>
 
-<button class="to-top" id="toTop" type="button" aria-label="Back to top" data-i18n-aria="footer.backToTop">
+<button class="to-top" id="toTop" type="button" data-i18n-aria="footer.backToTop">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6" /></svg>
 </button>
 <dialog class="lightbox" id="lightbox" aria-label="Gallery">
-  <button class="lightbox__close" id="lbClose" type="button" data-i18n-aria="gallery.close" aria-label="Close">
+  <button class="lightbox__close" id="lbClose" type="button" data-i18n-aria="gallery.close">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
   </button>
-  <button class="lightbox__prev" id="lbPrev" type="button" data-i18n-aria="gallery.prev" aria-label="Previous">
+  <button class="lightbox__prev" id="lbPrev" type="button" data-i18n-aria="gallery.prev">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6" /></svg>
   </button>
-  <button class="lightbox__next" id="lbNext" type="button" data-i18n-aria="gallery.next" aria-label="Next">
+  <button class="lightbox__next" id="lbNext" type="button" data-i18n-aria="gallery.next">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg>
   </button>
   <div class="lightbox__body">

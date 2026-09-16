@@ -4,10 +4,16 @@
    ============================================================================ */
 
 import { WWN_CONFIG } from "./site-config.js";
-import { t } from "./i18n.js";
+import { bootI18n, registerI18n, t } from "./i18n.js";
+import { WIKI_I18N } from "./i18n/wiki.js";
 import { $, abs, formatDate, loc, prefersReduced } from "./utils.js";
 import { applyResponsiveImages } from "./media.js";
-import { buildHome, getFlatArticles, initShell, parseFrontMatter } from "./wiki-shell.js";
+
+registerI18n(WIKI_I18N);
+
+/* Оболочку вики (сайдбар, поиск, реестр статей) подтягиваем асинхронно:
+   переводы и каркас появляются раньше, чем она нужна. */
+let buildHome, getFlatArticles, initShell, parseFrontMatter;
 
 /* marked и DOMPurify грузим только на странице статьи, чтобы каталог вики не тянул vendor. */
 let vendorPromise = null;
@@ -387,12 +393,15 @@ async function loadArticle(slug, lang) {
   }
 }
 async function boot() {
+  bootI18n();
   const slug = new URLSearchParams(location.search).get("p");
   const isArticlePage = Boolean($("#articleBody"));
   if (isArticlePage && !slug) {
     location.replace("./");
     return;
   }
+
+  ({ buildHome, getFlatArticles, initShell, parseFrontMatter } = await import("./wiki-shell.js"));
 
   await initShell({
     slug,

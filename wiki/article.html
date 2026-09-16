@@ -28,24 +28,25 @@
   <link rel="stylesheet" href="../assets/css/fonts.css">
   <link rel="stylesheet" href="../assets/css/style.css">
   <link rel="stylesheet" href="../assets/css/wiki.css">
+  <link rel="modulepreload" href="../assets/js/wiki.js">
 </head>
 <body class="wiki-body">
-<a class="skip-link" href="#main-content" data-i18n="a11y.skip">Skip to content</a>
+<a class="skip-link" href="#main-content" data-i18n="a11y.skip"></a>
 <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
 
 <header class="header" id="header">
   <div class="header__inner">
     <a class="brand" href="../index.html" aria-label="WWN">
       <img src="../assets/img/brand/logo.svg" alt="WWN">
-      <span class="brand__sub" data-i18n="brand.sub">A Rusted Warfare mod</span>
+      <span class="brand__sub" data-i18n="brand.sub"></span>
     </a>
     <nav class="nav" aria-label="Main">
-      <a href="../index.html#features" data-i18n="nav.features">Features</a>
-      <a href="../index.html#factions" data-i18n="nav.factions">Factions</a>
-      <a href="../index.html#gallery" data-i18n="nav.gallery">Gallery</a>
-      <a href="../index.html#download" data-i18n="nav.download">Download</a>
-      <a href="./" class="is-active" data-i18n="nav.wiki">Wiki</a>
-      <a href="../database.html" data-i18n="database.title">Database</a>
+      <a href="../index.html#features" data-i18n="nav.features"></a>
+      <a href="../index.html#factions" data-i18n="nav.factions"></a>
+      <a href="../index.html#gallery" data-i18n="nav.gallery"></a>
+      <a href="../index.html#download" data-i18n="nav.download"></a>
+      <a href="./" class="is-active" data-i18n="nav.wiki"></a>
+      <a href="../database.html" data-i18n="database.title"></a>
     </nav>
     <div class="header__side">
       <div class="lang" role="group" aria-label="Language">
@@ -58,13 +59,13 @@
 </header>
 
 <div class="mobile-nav" id="mobileNav" inert>
-  <a href="../index.html" data-i18n="nav.home">Home</a>
-  <a href="../index.html#features" data-i18n="nav.features">Features</a>
-  <a href="../index.html#factions" data-i18n="nav.factions">Factions</a>
-  <a href="../index.html#gallery" data-i18n="nav.gallery">Gallery</a>
-  <a href="../index.html#download" data-i18n="nav.download">Download</a>
-  <a href="./" class="is-active" data-i18n="nav.wiki">Wiki</a>
-  <a href="../database.html" data-i18n="database.title">Database</a>
+  <a href="../index.html" data-i18n="nav.home"></a>
+  <a href="../index.html#features" data-i18n="nav.features"></a>
+  <a href="../index.html#factions" data-i18n="nav.factions"></a>
+  <a href="../index.html#gallery" data-i18n="nav.gallery"></a>
+  <a href="../index.html#download" data-i18n="nav.download"></a>
+  <a href="./" class="is-active" data-i18n="nav.wiki"></a>
+  <a href="../database.html" data-i18n="database.title"></a>
   <div class="lang" role="group" aria-label="Language">
     <button type="button" data-lang-btn="RU">RU</button>
     <button type="button" data-lang-btn="EN">EN</button>
@@ -72,17 +73,17 @@
 </div>
 
 <div class="wiki-shell">
-  <aside class="wiki-sidebar" data-i18n-aria="wiki.sidebar" aria-label="Wiki sections">
+  <aside class="wiki-sidebar" data-i18n-aria="wiki.sidebar">
     <div class="wiki-sidebar__search">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
-      <input type="search" id="searchInput" data-i18n-placeholder="wiki.search.placeholder" data-i18n-aria="wiki.search.placeholder" placeholder="Search the wiki…" aria-label="Search the wiki…">
+      <input type="search" id="searchInput" data-i18n-placeholder="wiki.search.placeholder" data-i18n-aria="wiki.search.placeholder">
       <kbd class="wiki-sidebar__kbd">Ctrl K</kbd>
     </div>
-    <button type="button" id="wikiNavToggle" class="wiki-nav__toggle" aria-controls="wikiNav" data-i18n="wiki.sidebar">Wiki sections</button>
-    <nav class="wiki-nav" id="wikiNav" data-i18n-aria="wiki.title" aria-label="WWN Wiki"></nav>
+    <button type="button" id="wikiNavToggle" class="wiki-nav__toggle" aria-controls="wikiNav" data-i18n="wiki.sidebar"></button>
+    <nav class="wiki-nav" id="wikiNav" data-i18n-aria="wiki.title"></nav>
     <div class="wiki-sidebar__cta">
-      <p data-i18n="wiki.help">Need install help? Check the wiki or ping the community.</p>
-      <a class="btn btn--sm" href="../index.html#download" data-i18n="nav.download">Download</a>
+      <p data-i18n="wiki.help"></p>
+      <a class="btn btn--sm" href="../index.html#download" data-i18n="nav.download"></a>
     </div>
   </aside>
 
@@ -95,29 +96,29 @@
           <div class="article__meta" id="articleMeta"></div>
         </div>
         <div class="article__body" id="articleBody">
-          <p data-i18n="wiki.subtitle">Mod reference: lore, factions, races, units, structures, mechanics and guides.</p>
+          <p data-i18n="wiki.subtitle"></p>
         </div>
         <div class="article__pager" id="articlePager"></div>
       </article>
-      <aside class="article__aside" id="articleAside" data-i18n-aria="wiki.toc" aria-label="On this page"></aside>
+      <aside class="article__aside" id="articleAside" data-i18n-aria="wiki.toc"></aside>
     </div>
   </main>
 </div>
 
-<dialog class="search-panel" id="searchPanel" data-i18n-aria="wiki.search.title" aria-label="Search the wiki">
+<dialog class="search-panel" id="searchPanel" data-i18n-aria="wiki.search.title">
   <div class="search-panel__box">
     <search>
-      <input class="search-panel__input" id="searchPanelInput" type="search" autocomplete="off" data-i18n-placeholder="wiki.search.placeholder" data-i18n-aria="wiki.search.title" placeholder="Search the wiki…" aria-label="Search the wiki">
+      <input class="search-panel__input" id="searchPanelInput" type="search" autocomplete="off" data-i18n-placeholder="wiki.search.placeholder" data-i18n-aria="wiki.search.title">
     </search>
-    <p class="search-panel__hint" id="searchHint" role="status" data-i18n="wiki.search.hint">Type at least 2 characters</p>
+    <p class="search-panel__hint" id="searchHint" role="status" data-i18n="wiki.search.hint"></p>
     <div class="search-results" id="searchResults"></div>
   </div>
 </dialog>
 
 <footer class="footer footer--compact">
   <div class="wrap footer__bottom">
-    <p>© <span id="year">2026</span> WWN. <span data-i18n="footer.disclaimer">Official website of the WWN mod for Rusted Warfare. Rusted Warfare © Corroding Games. All mod materials belong to the WWN team.</span></p>
-    <a class="btn btn--sm" href="./" data-i18n="wiki.back">Back to wiki</a>
+    <p>© <span id="year"></span> WWN. <span data-i18n="footer.disclaimer"></span></p>
+    <a class="btn btn--sm" href="./" data-i18n="wiki.back"></a>
   </div>
 </footer>
 

@@ -140,6 +140,14 @@ a:hover { color: #fff; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
 svg { flex: none; }
 
+/* до применения переводов привязки пусты — резервируем строку,
+   чтобы появление текста не сдвигало уже отрисованный макет
+   (в hero текст многострочный — там резерв только вредит) */
+[data-i18n]:empty::after,
+[data-i18n-html]:empty::after { content: "\200b"; }
+.hero [data-i18n]:empty::after,
+.hero [data-i18n-html]:empty::after { content: none; }
+
 ::selection { background: rgba(var(--cyan-rgb), 0.32); color: #fff; }
 
 /* Переход к основному содержимому — виден только при фокусе с клавиатуры. */

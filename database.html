@@ -20,24 +20,25 @@
   <link rel="stylesheet" href="assets/css/fonts.css">
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/database.css">
+  <link rel="modulepreload" href="assets/js/database.js">
 </head>
 <body>
-<a class="skip-link" href="#main-content" data-i18n="a11y.skip">Skip to content</a>
+<a class="skip-link" href="#main-content" data-i18n="a11y.skip"></a>
 <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
 
 <header class="header" id="header">
   <div class="header__inner">
     <a class="brand" href="index.html" aria-label="WWN">
       <img src="assets/img/brand/logo.svg" alt="WWN">
-      <span class="brand__sub" data-i18n="brand.sub">A Rusted Warfare mod</span>
+      <span class="brand__sub" data-i18n="brand.sub"></span>
     </a>
     <nav class="nav" aria-label="Main">
-      <a href="index.html#features" data-i18n="nav.features">Features</a>
-      <a href="index.html#factions" data-i18n="nav.factions">Factions</a>
-      <a href="index.html#gallery" data-i18n="nav.gallery">Gallery</a>
-      <a href="index.html#download" data-i18n="nav.download">Download</a>
-      <a href="wiki/" data-i18n="nav.wiki">Wiki</a>
-      <a href="database.html" class="is-active" data-i18n="database.title">Database</a>
+      <a href="index.html#features" data-i18n="nav.features"></a>
+      <a href="index.html#factions" data-i18n="nav.factions"></a>
+      <a href="index.html#gallery" data-i18n="nav.gallery"></a>
+      <a href="index.html#download" data-i18n="nav.download"></a>
+      <a href="wiki/" data-i18n="nav.wiki"></a>
+      <a href="database.html" class="is-active" data-i18n="database.title"></a>
     </nav>
     <div class="header__side">
       <div class="lang" role="group" aria-label="Language">
@@ -50,13 +51,13 @@
 </header>
 
 <div class="mobile-nav" id="mobileNav" inert>
-  <a href="index.html" data-i18n="nav.home">Home</a>
-  <a href="index.html#features" data-i18n="nav.features">Features</a>
-  <a href="index.html#factions" data-i18n="nav.factions">Factions</a>
-  <a href="index.html#gallery" data-i18n="nav.gallery">Gallery</a>
-  <a href="index.html#download" data-i18n="nav.download">Download</a>
-  <a href="wiki/" data-i18n="nav.wiki">Wiki</a>
-  <a href="database.html" class="is-active" data-i18n="database.title">Database</a>
+  <a href="index.html" data-i18n="nav.home"></a>
+  <a href="index.html#features" data-i18n="nav.features"></a>
+  <a href="index.html#factions" data-i18n="nav.factions"></a>
+  <a href="index.html#gallery" data-i18n="nav.gallery"></a>
+  <a href="index.html#download" data-i18n="nav.download"></a>
+  <a href="wiki/" data-i18n="nav.wiki"></a>
+  <a href="database.html" class="is-active" data-i18n="database.title"></a>
   <div class="lang" role="group" aria-label="Language">
     <button type="button" data-lang-btn="RU">RU</button>
     <button type="button" data-lang-btn="EN">EN</button>
@@ -66,32 +67,32 @@
 <main class="database-page" id="main-content">
   <div class="wrap">
     <div class="database-head">
-      <span class="kicker" data-i18n="database.title">Database</span>
-      <h1 data-i18n="database.title">Database</h1>
-      <p data-i18n="database.subtitle">WWN factions, units and structures</p>
+      <span class="kicker" data-i18n="database.title"></span>
+      <h1 data-i18n="database.title"></h1>
+      <p data-i18n="database.subtitle"></p>
     </div>
 
-    <div class="tabs" id="databaseTabs" role="tablist" data-i18n-aria="database.title" aria-label="Database">
+    <div class="tabs" id="databaseTabs" role="tablist" data-i18n-aria="database.title">
       <button class="tab is-active" type="button" role="tab" aria-selected="true" aria-controls="databaseGrid" data-tab="factions">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 3 6v6c0 5 3.8 8.4 9 10 5.2-1.6 9-5 9-10V6z" /></svg>
-        <span data-i18n="database.tab.factions">Factions</span>
+        <span data-i18n="database.tab.factions"></span>
       </button>
       <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="databaseGrid" data-tab="units">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V12M4 7l8 5 8-5M12 2 4 7v10l8 5 8-5V7z" /></svg>
-        <span data-i18n="database.tab.units">Units</span>
+        <span data-i18n="database.tab.units"></span>
       </button>
       <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="databaseGrid" data-tab="buildings">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V8l6-4 6 4v13" /><path d="M9 21v-6h4v6M15 12h6v9h-6" /></svg>
-        <span data-i18n="database.tab.buildings">Structures</span>
+        <span data-i18n="database.tab.buildings"></span>
       </button>
     </div>
 
     <div class="database-toolbar">
-      <input type="search" id="databaseSearch" data-i18n-placeholder="database.search.placeholder" data-i18n-aria="database.search.placeholder" placeholder="Search by name…" aria-label="Search by name…">
-      <select id="databaseFaction" data-dropdown data-i18n-title="database.filter.faction" data-i18n-aria="database.filter.faction" title="Faction" aria-label="Faction"></select>
-      <select id="databaseType" data-dropdown data-i18n-title="database.filter.type" data-i18n-aria="database.filter.type" title="Type" aria-label="Type"></select>
+      <input type="search" id="databaseSearch" data-i18n-placeholder="database.search.placeholder" data-i18n-aria="database.search.placeholder">
+      <select id="databaseFaction" data-dropdown data-i18n-title="database.filter.faction" data-i18n-aria="database.filter.faction"></select>
+      <select id="databaseType" data-dropdown data-i18n-title="database.filter.type" data-i18n-aria="database.filter.type"></select>
       <div class="tag-filter" id="tagFilter"></div>
-      <select id="databaseSort" data-dropdown data-i18n-title="database.sort.label" data-i18n-aria="database.sort.label" title="Sort by" aria-label="Sort by"></select>
+      <select id="databaseSort" data-dropdown data-i18n-title="database.sort.label" data-i18n-aria="database.sort.label"></select>
     </div>
 
     <output class="database-count" id="databaseCount" aria-live="polite"></output>
@@ -101,8 +102,8 @@
 
 <footer class="footer footer--compact">
   <div class="wrap footer__bottom">
-    <p>© <span id="year">2026</span> WWN. <span data-i18n="footer.disclaimer">Official website of the WWN mod for Rusted Warfare. Rusted Warfare © Corroding Games. All mod materials belong to the WWN team.</span></p>
-    <a class="btn btn--sm" href="index.html" data-i18n="nav.home">Home</a>
+    <p>© <span id="year"></span> WWN. <span data-i18n="footer.disclaimer"></span></p>
+    <a class="btn btn--sm" href="index.html" data-i18n="nav.home"></a>
   </div>
 </footer>
 
