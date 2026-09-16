@@ -10,8 +10,6 @@ import { WWN_CONFIG } from "./site-config.js";
 import { $$ } from "./utils.js";
 
 const LANG_KEY = "wwn-lang";
-
-/* -------------------------- общие строки: шапка, подвал, метатеги, 404 -- */
 const CORE_I18N = {
   ru: {
     "nav.home": "Главная",
@@ -28,8 +26,7 @@ const CORE_I18N = {
     "footer.nav": "Навигация",
     "footer.community": "Сообщество",
     "footer.download": "Скачать",
-    "footer.disclaimer": "Официальный сайт мода WWN для Rusted Warfare. Rusted Warfare © Corroding Games.",
-    "footer.rights": "Все материалы мода принадлежат команде WWN.",
+    "footer.disclaimer": "Официальный сайт мода WWN для Rusted Warfare. Rusted Warfare © Corroding Games. Все материалы мода принадлежат команде WWN.",
     "footer.backToTop": "Наверх",
     "meta.title.home": "WWN — официальный сайт мода для Rusted Warfare | Скачать, вики, лор",
     "meta.title.wiki": "Вики WWN",
@@ -38,7 +35,8 @@ const CORE_I18N = {
     "notfound.title": "404 — потерялись в космосе",
     "notfound.desc": "Такой страницы здесь нет. Возможно, она улетела на дальнюю орбиту.",
     "notfound.home": "На главную",
-    "notfound.wiki": "В вики"
+    "notfound.wiki": "В вики",
+    "a11y.skip": "К содержимому"
   },
   en: {
     "nav.home": "Home",
@@ -55,8 +53,7 @@ const CORE_I18N = {
     "footer.nav": "Navigation",
     "footer.community": "Community",
     "footer.download": "Download",
-    "footer.disclaimer": "Official website of the WWN mod for Rusted Warfare. Rusted Warfare © Corroding Games.",
-    "footer.rights": "All mod materials belong to the WWN team.",
+    "footer.disclaimer": "Official website of the WWN mod for Rusted Warfare. Rusted Warfare © Corroding Games. All mod materials belong to the WWN team.",
     "footer.backToTop": "Back to top",
     "meta.title.home": "WWN — official mod site for Rusted Warfare | Download, wiki, lore",
     "meta.title.wiki": "WWN Wiki",
@@ -65,7 +62,8 @@ const CORE_I18N = {
     "notfound.title": "404 — lost in space",
     "notfound.desc": "This page doesn't exist. It probably drifted to a far orbit.",
     "notfound.home": "Go home",
-    "notfound.wiki": "Open the wiki"
+    "notfound.wiki": "Open the wiki",
+    "a11y.skip": "Skip to content"
   }
 };
 
@@ -78,8 +76,6 @@ export function registerI18n(dict) {
     if (dict[lang]) Object.assign(dicts[lang], dict[lang]);
   }
 }
-
-/* ------------------------------------------------------------------ язык -- */
 export function getLang() {
   try {
     const stored = localStorage.getItem(LANG_KEY);
@@ -96,8 +92,6 @@ function setLang(lang) {
   applyI18n(lang);
   document.dispatchEvent(new CustomEvent("wwn:langchange", { detail: { lang } }));
 }
-
-/* -------------------------------------------------------------- переводы -- */
 export function t(key, lang, vars) {
   const dict = dicts[lang || getLang()] || dicts.ru;
   let value = dict[key];
@@ -124,11 +118,11 @@ export function applyI18n(lang = getLang()) {
     el.setAttribute("aria-label", t(el.getAttribute("data-i18n-aria"), lang))
   );
   $$("[data-lang-btn]").forEach((el) => {
-    el.classList.toggle("is-active", el.getAttribute("data-lang-btn") === (lang === "ru" ? "RU" : "EN"));
+    const active = el.getAttribute("data-lang-btn") === (lang === "ru" ? "RU" : "EN");
+    el.classList.toggle("is-active", active);
+    el.setAttribute("aria-pressed", String(active));
   });
 }
-
-/* --------------------------------------------------- переключатель языка -- */
 let langSwitchBound = false;
 
 export function initLangSwitch() {

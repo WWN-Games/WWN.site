@@ -9,9 +9,6 @@
   <link rel="icon" type="image/svg+xml" href="assets/img/brand/favicon.svg" data-base>
   <link rel="apple-touch-icon" href="assets/img/brand/icon-192.png" data-base>
   <link rel="manifest" href="site.webmanifest" data-base>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Exo+2:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     html { color-scheme: dark; }
     body.notfound-page {
@@ -29,11 +26,10 @@
     .notfound { display: grid; justify-items: center; gap: 16px; max-width: 560px; }
     .notfound__logo { width: min(190px, 58vw); height: auto; filter: drop-shadow(0 0 24px rgba(var(--cyan-rgb, 44, 182, 255), .45)); }
     .notfound__code {
-      font-family: var(--font-display, "Russo One", system-ui, sans-serif);
+      font-family: var(--font-display, sans-serif);
       font-size: clamp(72px, 18vw, 140px);
       line-height: 1;
       background: var(--grad-text, linear-gradient(120deg, #8ee0ff, #2f8dff 60%, #b9e6ff));
-      -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
     }
@@ -47,7 +43,7 @@
       justify-content: center;
       gap: 10px;
       padding: 14px 26px;
-      font-family: var(--font-display, "Russo One", system-ui, sans-serif);
+      font-family: var(--font-display, sans-serif);
       font-size: 13px;
       letter-spacing: .07em;
       text-transform: uppercase;
@@ -83,8 +79,12 @@
     const lang = STORED === "ru" || STORED === "en" ? STORED : browserLang;
     document.documentElement.lang = lang;
 
+    // 404 отдаётся на любой глубине URL, поэтому корень сайта ищем перебором:
+    // поднимаемся на уровень выше, пока не найдём data/wiki-nav.json.
+    const depth = location.pathname.split("/").filter(Boolean).length;
+    const prefixes = Array.from({ length: Math.min(depth + 2, 8) }, (_, i) => "../".repeat(i) || "./");
     let base = null;
-    for (const prefix of ["./", "../", "../../"]) {
+    for (const prefix of prefixes) {
       try {
         const res = await fetch(`${prefix}data/wiki-nav.json`, { method: "HEAD" });
         if (res.ok) { base = prefix; break; }
@@ -92,10 +92,13 @@
     }
     base ??= "./";
 
+    const fonts = document.createElement("link");
+    fonts.rel = "stylesheet";
+    fonts.href = `${base}assets/css/fonts.css`;
     const theme = document.createElement("link");
     theme.rel = "stylesheet";
     theme.href = `${base}assets/css/style.css`;
-    document.head.append(theme);
+    document.head.append(fonts, theme);
 
     document.querySelectorAll("[data-base]").forEach((el) => {
       const path = `${base}${el.getAttribute("href") || el.getAttribute("src")}`;
@@ -109,7 +112,6 @@
       const i18n = await import(`${base}assets/js/i18n.js`);
       i18n.applyI18n(lang);
       i18n.initLangSwitch();
-      i18n.onLangChange((next) => i18n.applyI18n(next));
     } catch (e) {
       // без модуля — статичные английские тексты уже в разметке
     }

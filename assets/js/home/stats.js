@@ -1,10 +1,11 @@
 /* ============================================================================
-   WWN — статистика главной: живые числа из data/stats.json (маленький файл)
+   WWN — статистика главной: живые числа из data/stats.json
    с фолбэком на значения из site-config.js.
    ============================================================================ */
 
-import { $, $$, abs, formatNumber, prefersReduced } from "../utils.js";
+import { $$, formatNumber, prefersReduced } from "../utils.js";
 import { getLang } from "../i18n.js";
+import { loadStats } from "../stats-data.js";
 
 let stats = {};
 let counterGen = 0;
@@ -20,23 +21,17 @@ export function syncStats(lang) {
   });
 }
 
-async function loadLiveStats(version) {
+async function loadLiveStats() {
   if (!$$(".stat__num").length) return;
-  try {
-    const res = await fetch(abs(`data/stats.json?v=${version}`));
-    if (!res.ok) return;
-    const live = await res.json();
-    let changed = false;
-    for (const key of ["units", "factions", "maps"]) {
-      if (Number.isFinite(live[key]) && live[key] > 0 && stats[key] !== live[key]) {
-        stats[key] = live[key];
-        changed = true;
-      }
+  const live = await loadStats();
+  let changed = false;
+  for (const key of ["units", "factions", "maps"]) {
+    if (live[key] > 0 && stats[key] !== live[key]) {
+      stats[key] = live[key];
+      changed = true;
     }
-    if (changed) syncStats(getLang());
-  } catch {
-    /* нет данных — остаются значения из конфига */
   }
+  if (changed) syncStats(getLang());
 }
 
 export function initStats(config) {
@@ -45,7 +40,7 @@ export function initStats(config) {
   if (!counters.length) return;
   const lang = getLang();
 
-  if (prefersReduced || !("IntersectionObserver" in window)) {
+  if (prefersReduced) {
     counters.forEach((el) => {
       el.textContent = formatNumber(statTarget(el), lang);
     });
@@ -75,5 +70,5 @@ export function initStats(config) {
     counters.forEach((el) => observer.observe(el));
   }
 
-  loadLiveStats(config.version || "0");
+  loadLiveStats();
 }

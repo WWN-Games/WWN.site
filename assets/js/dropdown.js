@@ -4,15 +4,12 @@
    <select data-dropdown> получает кнопку в стиле сайта и меню в top layer.
    Кнопка — нативный инвокер (popovertarget): повторный клик закрывает список,
    Enter/Space работают сами, клик вне и Escape закрывают нативно.
-   Если Popover API недоступен, остаётся обычный <select>.
    ============================================================================ */
 
 import { $$ } from "./utils.js";
 
 export const ARROW =
   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
-
-const supportsPopover = () => typeof HTMLElement !== "undefined" && "popover" in HTMLElement.prototype;
 
 const currentText = (select) => select.options[select.selectedIndex]?.textContent ?? "";
 
@@ -174,7 +171,6 @@ function enhance(select) {
 
 /** Включить кастомные списки для всех <select data-dropdown> внутри root. */
 export function initDropdowns(root = document) {
-  if (!supportsPopover()) return;
   $$("select[data-dropdown]", root).forEach(enhance);
 }
 

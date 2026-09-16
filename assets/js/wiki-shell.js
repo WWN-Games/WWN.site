@@ -1,14 +1,13 @@
 /* ============================================================================
    WWN — оболочка вики (ES-модуль): шапка, сайдбар, главная вики и поиск.
-   Не тянет marked/DOMPurify — их подключает только страница статьи (wiki.js),
-   поэтому каталог использует эту оболочку без лишнего кода.
    ============================================================================ */
 
 import { WWN_CONFIG } from "./site-config.js";
 import { bootI18n, onLangChange, registerI18n, t } from "./i18n.js";
 import { WIKI_I18N } from "./i18n/wiki.js";
 import { $, abs, debounce, emptyBlock, escapeHtml, loc } from "./utils.js";
-import { initHeader, initReveal } from "./ui.js";
+import { initHeader, initReveal, initYear } from "./ui.js";
+import { loadStats } from "./stats-data.js";
 
 registerI18n(WIKI_I18N);
 
@@ -24,10 +23,9 @@ const ICONS = {
 
 let navData = null;
 let flatArticles = [];
+let liveStats = null;
 
 export const getFlatArticles = () => flatArticles;
-
-/* ------------------------------------------------------------------- nav -- */
 function indexNav() {
   flatArticles = [];
   navData.categories.forEach((cat) => {
@@ -64,15 +62,10 @@ const mobileSidebar = () => window.matchMedia("(max-width: 1040px)").matches;
 
 function initSidebarToggle(lang) {
   const nav = $("#wikiNav");
-  if (!nav) return;
-  let btn = $("#wikiNavToggle");
-  if (!btn) {
-    btn = document.createElement("button");
-    btn.type = "button";
-    btn.id = "wikiNavToggle";
-    btn.className = "wiki-nav__toggle";
-    btn.setAttribute("aria-controls", "wikiNav");
-    nav.before(btn);
+  const btn = $("#wikiNavToggle");
+  if (!nav || !btn) return;
+  if (!btn.dataset.bound) {
+    btn.dataset.bound = "1";
     btn.addEventListener("click", () => {
       sidebarCollapsed = !nav.classList.contains("is-collapsed");
       applySidebarState(btn, nav);
@@ -132,8 +125,6 @@ function buildSidebar(lang, activeSlug) {
     })
   );
 }
-
-/* -------------------------------------------------------------- wiki home -- */
 export function buildHome(lang) {
   const grid = $("#wikiCategories");
   if (!grid || !navData) return;
@@ -143,7 +134,7 @@ export function buildHome(lang) {
     stats.replaceChildren(
       ...[[navData.categories.length, t("wiki.stats.sections", lang)],
         [flatArticles.length, t("wiki.articles", lang)],
-        [WWN_CONFIG.stats?.factions ?? 0, t("wiki.stats.factions", lang)]].map(([value, label]) => {
+        [liveStats?.factions ?? WWN_CONFIG.stats?.factions ?? 0, t("wiki.stats.factions", lang)]].map(([value, label]) => {
         const span = document.createElement("span");
         const strong = document.createElement("b");
         strong.textContent = String(value);
@@ -158,7 +149,7 @@ export function buildHome(lang) {
       const card = document.createElement("section");
       card.className = "wiki-cat";
       card.dataset.reveal = "";
-      card.style.transitionDelay = `${i * 60}ms`;
+      card.dataset.revealDelay = String(Math.min(i, 2));
       card.id = `wiki-cat-${cat.id}`;
 
       const head = document.createElement("header");
@@ -201,8 +192,6 @@ export function buildHome(lang) {
   );
   initReveal(grid);
 }
-
-/* ------------------------------------------------------- front matter/поиск -- */
 export function parseFrontMatter(raw) {
   const meta = {};
   const match = raw.match(/^---\s*\n([\s\S]*?)\n---\s*\n?/);
@@ -270,7 +259,7 @@ async function buildSearchIndexFromMarkdown(lang) {
   return Promise.all(
     flatArticles.map(async (article) => {
       try {
-        const res = await fetch(abs(`content/${lang}/${article.slug}.md`));
+        const res = await fetch(abs(`content/${lang}/${article.slug}.md?v=${WWN_CONFIG.version}`));
         const raw = res.ok ? await res.text() : "";
         return { ...article, text: stripMd(raw) };
       } catch {
@@ -429,8 +418,6 @@ function initSearch() {
 
   return (lang) => { searchLang = lang; };
 }
-
-/* ------------------------------------------------------------ lang / boot -- */
 function applyLangVisuals(lang) {
   document.body.style.setProperty("--wiki-hero-img", `url("${abs(`assets/img/lore/tc-${lang === "en" ? "en" : "ru"}.webp`)}")`);
 }
@@ -451,6 +438,7 @@ export async function initShell({ slug = null, onRender } = {}) {
   let navFailed = false;
   let renderQueue = Promise.resolve();
   initHeader();
+  initYear();
   const setSearchLang = initSearch();
 
   const rerender = () => {
@@ -471,7 +459,6 @@ export async function initShell({ slug = null, onRender } = {}) {
     renderQueue = renderQueue.then(rerender).catch(() => {});
   });
 
-  // смена раскладки: сайдбар-аккордеон сворачивается/разворачивается
   let resizeTimer = 0;
   window.addEventListener("resize", () => {
     clearTimeout(resizeTimer);
@@ -483,7 +470,8 @@ export async function initShell({ slug = null, onRender } = {}) {
   });
 
   try {
-    await loadNav();
+    const [, stats] = await Promise.all([loadNav(), loadStats()]);
+    liveStats = stats;
     navReady = true;
   } catch {
     navFailed = true;

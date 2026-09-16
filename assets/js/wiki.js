@@ -3,29 +3,37 @@
    Оболочка (шапка, сайдбар, поиск) — в wiki-shell.js.
    ============================================================================ */
 
-import { marked } from "../vendor/marked.esm.js";
-import DOMPurify from "../vendor/purify.esm.js";
 import { WWN_CONFIG } from "./site-config.js";
 import { t } from "./i18n.js";
 import { $, abs, formatDate, loc, prefersReduced } from "./utils.js";
 import { applyResponsiveImages } from "./media.js";
 import { buildHome, getFlatArticles, initShell, parseFrontMatter } from "./wiki-shell.js";
 
-/* -------------------------------------------------------------- markdown -- */
-function renderMarkdown(markdown, slug) {
+/* marked и DOMPurify грузим только на странице статьи, чтобы каталог вики не тянул vendor. */
+let vendorPromise = null;
+const loadVendor = () => {
+  vendorPromise ||= Promise.all([
+    import("../vendor/marked.esm.js"),
+    import("../vendor/purify.esm.js")
+  ]).then(([markedMod, purifyMod]) => ({ marked: markedMod.marked, DOMPurify: purifyMod.default }));
+  return vendorPromise;
+};
+function renderMarkdown(markdown, slug, lang, { marked, DOMPurify }) {
   const sanitized = DOMPurify.sanitize(marked.parse(markdown, { gfm: true }), {
     ADD_ATTR: ["target", "rel", "id", "controls", "preload"]
   });
   const holder = document.createElement("div");
   holder.innerHTML = sanitized;
 
-  const dir = slug.includes("/") ? slug.split("/").slice(0, -1).join("/") : "";
-
-  holder.querySelectorAll("h1, h2, h3").forEach((heading, i) => {
-    const text = heading.textContent.trim();
-    heading.id =
-      "s-" + slug.split("/").pop() + "-" + i + "-" +
-      text.toLowerCase().replace(/[^\p{L}\p{N}\s-]/gu, "").trim().replace(/\s+/g, "-").slice(0, 48);
+  const usedIds = new Set();
+  holder.querySelectorAll("h1, h2, h3").forEach((heading) => {
+    const base = heading.textContent.trim().toLowerCase()
+      .replace(/[^\p{L}\p{N}\s-]/gu, "").trim().replace(/\s+/g, "-").slice(0, 64) || "section";
+    let id = base;
+    let n = 2;
+    while (usedIds.has(id)) id = `${base}-${n++}`;
+    usedIds.add(id);
+    heading.id = id;
   });
 
   holder.querySelectorAll("a").forEach((link) => {
@@ -39,9 +47,10 @@ function renderMarkdown(markdown, slug) {
     const hashAt = href.indexOf("#");
     const pathPart = hashAt === -1 ? href : href.slice(0, hashAt);
     const hashPart = hashAt === -1 ? "" : href.slice(hashAt);
-    let target = pathPart.replace(/\.md$/i, "");
-    if (!target.includes("/") && dir) target = `${dir}/${target}`;
-    target = target.replace(/^\.\//, "").replace(/^\.\.\//, "");
+    if (!/\.md$/i.test(pathPart)) return; // не статья — оставляем ссылку как есть
+    // резолвим относительно адреса markdown-файла, поэтому работают любые ../
+    const resolved = new URL(pathPart, `https://wwn.local/content/${lang}/${slug}.md`);
+    const target = resolved.pathname.replace(/^\/content\/[^/]+\//, "").replace(/\.md$/i, "");
     link.href = `article.html?p=${encodeURIComponent(target)}${hashPart}`;
   });
 
@@ -95,12 +104,11 @@ function buildToc(holder, lang) {
   const headings = [...holder.querySelectorAll("h2, h3")];
   if (headings.length < 3) return null;
 
-  const box = document.createElement("nav");
+  const box = document.createElement("details");
   box.className = "article__toc";
-  const title = document.createElement("h4");
+  const title = document.createElement("summary");
   title.textContent = t("wiki.toc", lang);
   const list = document.createElement("ol");
-  list.className = "article__toc-list";
   headings.forEach((heading) => {
     const li = document.createElement("li");
     if (heading.tagName === "H3") li.className = "lvl-3";
@@ -111,23 +119,28 @@ function buildToc(holder, lang) {
     list.append(li);
   });
   box.append(title, list);
+  // на десктопе список раскрыт, на мобильных — свёрнут (высота зарезервирована в CSS)
+  box.open = !window.matchMedia("(max-width: 1240px)").matches;
   return box;
 }
 
 let tocCleanup = null;
 
-function initTocSpy(links, headings) {
+function initTocSpy(links, headings, root) {
   tocCleanup?.();
   if (!links.length || !headings.length) return;
 
+  let offsets = [];
   let ticking = false;
+
+  const measure = () => {
+    offsets = headings.map((heading) => heading.getBoundingClientRect().top + window.scrollY);
+  };
   const update = () => {
     ticking = false;
     const line = window.scrollY + 120;
     let current = 0;
-    headings.forEach((heading, i) => {
-      if (heading.getBoundingClientRect().top + window.scrollY <= line) current = i;
-    });
+    for (let i = 0; i < offsets.length; i++) if (offsets[i] <= line) current = i;
     links.forEach((link, i) => link.classList.toggle("is-active", i === current));
   };
   const schedule = () => {
@@ -135,13 +148,22 @@ function initTocSpy(links, headings) {
     ticking = true;
     requestAnimationFrame(update);
   };
+  const remeasure = () => {
+    measure();
+    schedule();
+  };
 
+  measure();
   update();
   window.addEventListener("scroll", schedule, { passive: true });
-  window.addEventListener("resize", schedule);
+  window.addEventListener("resize", remeasure);
+  document.fonts.ready.then(remeasure).catch(() => {});
+  const observer = root ? new ResizeObserver(remeasure) : null;
+  observer?.observe(root);
   tocCleanup = () => {
     window.removeEventListener("scroll", schedule);
-    window.removeEventListener("resize", schedule);
+    window.removeEventListener("resize", remeasure);
+    observer?.disconnect();
     tocCleanup = null;
   };
 }
@@ -179,8 +201,6 @@ function initCopyButtons(holder, lang) {
     pre.append(button);
   });
 }
-
-/* ---------------------------------------------------------------- article -- */
 let articleSeq = 0;
 
 function renderNotFound(body, lang, titleEl, crumbs, metaEl, pager) {
@@ -237,6 +257,21 @@ function buildCrumbs(crumbs, article, lang) {
   );
 }
 
+/** Актуальные canonical/OG для конкретной статьи (в HTML они статические, общие). */
+function applyArticleMeta(slug, title, description, lang) {
+  const url = `${location.origin}${location.pathname}?p=${encodeURIComponent(slug)}`;
+  document.title = `${title} — ${t("meta.title.wiki", lang)}`;
+  const setContent = (selector, value) => document.querySelector(selector)?.setAttribute("content", value);
+  setContent('meta[name="description"]', description);
+  setContent('meta[property="og:title"]', title);
+  setContent('meta[property="og:description"]', description);
+  setContent('meta[property="og:url"]', url);
+  setContent('meta[name="twitter:title"]', title);
+  setContent('meta[name="twitter:description"]', description);
+  const canonical = document.querySelector('link[rel="canonical"]');
+  if (canonical) canonical.href = url;
+}
+
 async function loadArticle(slug, lang) {
   const body = $("#articleBody");
   if (!body) return;
@@ -271,11 +306,13 @@ async function loadArticle(slug, lang) {
   if (seq !== articleSeq) return;
 
   const { meta, body: markdown } = parseFrontMatter(raw);
-  const holder = renderMarkdown(markdown, slug);
+  const vendor = await loadVendor();
+  if (seq !== articleSeq) return;
+  const holder = renderMarkdown(markdown, slug, lang, vendor);
   const title = meta.title || loc(article?.title, lang) || slug;
 
   if (titleEl) titleEl.textContent = title;
-  document.title = `${title} — ${t("meta.title.wiki", lang)}`;
+  applyArticleMeta(slug, title, loc(article?.desc, lang) || t("wiki.subtitle", lang), lang);
 
   if (crumbs && article) buildCrumbs(crumbs, article, lang);
 
@@ -315,7 +352,7 @@ async function loadArticle(slug, lang) {
   } else if (toc) {
     body.prepend(toc);
   }
-  initTocSpy(toc ? [...toc.querySelectorAll("a")] : [], [...holder.querySelectorAll("h2, h3")]);
+  initTocSpy(toc ? [...toc.querySelectorAll("a")] : [], [...holder.querySelectorAll("h2, h3")], holder);
 
   requestAnimationFrame(() => {
     body.classList.add("is-ready");
@@ -349,8 +386,6 @@ async function loadArticle(slug, lang) {
     if (next) pager.append(pagerLink(next, "pager-next", t("wiki.next", lang), "right"));
   }
 }
-
-/* ------------------------------------------------------------------- boot -- */
 async function boot() {
   const slug = new URLSearchParams(location.search).get("p");
   const isArticlePage = Boolean($("#articleBody"));

@@ -1,6 +1,6 @@
 ---
 title: Installation & updates
-updated: 2026-09-15
+updated: 2026-09-16
 ---
 
 Installing WWN takes a couple of minutes. Below are all the ways: through Steam Workshop and manually.
@@ -17,10 +17,9 @@ Installing WWN takes a couple of minutes. Below are all the ways: through Steam 
 
 ## Option 2. Manual install
 
-1. Download the mod archive: [Google Drive](https://drive.google.com/file/d/1a3r6f3GG2pORNaqzCVBrsTKvrXs_ctYg/view?usp=sharing).
-2. Unpack the archive.
-3. Copy the files into the `mods/units` directory of your Rusted Warfare installation.
-4. Launch the game and enable the mod in the mods menu.
+1. Download the mod: [Google Drive](https://drive.google.com/file/d/1a3r6f3GG2pORNaqzCVBrsTKvrXs_ctYg/view?usp=sharing).
+2. Move the mod into the `mods/units` directory of your Rusted Warfare installation.
+3. Launch the game and enable the mod in the mods menu.
 
 ## Where to track updates
 
@@ -32,9 +31,8 @@ Installing WWN takes a couple of minutes. Below are all the ways: through Steam 
 | Problem | Solution |
 | --- | --- |
 | The mod is missing in the menu | Check the `mods/units` folder and restart the game |
-| Version error in an online game | All players must run the same WWN version |
-| Old saves won't open | Start a new game after updating the mod |
+| Version error in an online game | All players must run the same mod and game version |
 
 ## Found a bug?
 
-Report it in [Discord](https://discord.gg/sRwKDGrbDy) with a detailed description and your mod version.
+Report it on our [GitHub](https://github.com/WWN-Games/WWN.issues/issues/new/choose) by filling in a simple form, or message us on [Discord](https://discord.gg/sRwKDGrbDy).

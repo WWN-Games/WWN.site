@@ -5,7 +5,11 @@
 
 import { $, $$, prefersReduced } from "./utils.js";
 
-/* ------------------------------------------------------------------ шапка -- */
+/** Актуальный год в подвале — на всех страницах. */
+export function initYear() {
+  const year = $("#year");
+  if (year) year.textContent = String(new Date().getFullYear());
+}
 export function initHeader() {
   const header = $("#header");
   if (!header) return;
@@ -31,13 +35,11 @@ export function initHeader() {
         burger.focus();
       }
     });
-    // при переходе на десктопную ширину меню принудительно закрывается
-    window.matchMedia("(min-width: 901px)").addEventListener?.("change", (event) => {
+    window.matchMedia("(min-width: 901px)").addEventListener("change", (event) => {
       if (event.matches) setOpen(false);
     });
   }
 
-  // подсветка активного пункта меню при скролле
   const spyTargets = $$("#mainNav a[href^='#']")
     .map((link) => ({ link, el: document.getElementById(link.getAttribute("href").slice(1)) }))
     .filter((target) => target.el);
@@ -51,10 +53,20 @@ export function initHeader() {
     window.addEventListener("resize", measure);
     // тексты меняют высоту при смене языка и после загрузки шрифтов
     document.addEventListener("wwn:langchange", measure);
-    document.fonts?.ready.then(measure).catch(() => {});
+    document.fonts.ready.then(measure).catch(() => {});
   }
 
   const toTop = $("#toTop");
+
+  // высота документа для прогресса: кэш, чтобы не читать scrollHeight в кадре скролла
+  let maxScroll = 0;
+  const measureScroll = () => {
+    maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+  };
+  if (progress) {
+    measureScroll();
+    new ResizeObserver(measureScroll).observe(document.body);
+  }
 
   let ticking = false;
   const update = () => {
@@ -63,8 +75,7 @@ export function initHeader() {
     header.classList.toggle("is-scrolled", y > 18);
 
     if (progress) {
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      progress.style.transform = `scaleX(${max > 0 ? Math.min(y / max, 1) : 0})`;
+      progress.style.transform = `scaleX(${maxScroll > 0 ? Math.min(y / maxScroll, 1) : 0})`;
     }
 
     if (spyOffsets.length) {
@@ -91,8 +102,6 @@ export function initHeader() {
     );
   }
 }
-
-/* ------------------------------------------------------------- ссылки конфига -- */
 export function resolveLinks(config) {
   const links = config?.links || {};
   $$("[data-link]").forEach((el) => {
@@ -114,15 +123,16 @@ export function resolveLinks(config) {
     el.style.display = links[el.getAttribute("data-link-note")] ? "none" : "";
   });
 }
+/* Единый эффект появления (главная, вики, база): стартует ровно на крае окна. */
+const REVEAL = { threshold: 0, rootMargin: "0px" };
 
-/* ------------------------------------------------------- появление секций -- */
 let revealObserver = null;
 
 export function initReveal(root = document) {
   const els = $$("[data-reveal]", root).filter((el) => !el.classList.contains("is-in"));
   if (!els.length) return;
 
-  if (prefersReduced || !("IntersectionObserver" in window)) {
+  if (prefersReduced) {
     els.forEach((el) => el.classList.add("is-in"));
     return;
   }
@@ -134,7 +144,7 @@ export function initReveal(root = document) {
         revealObserver.unobserve(entry.target);
       });
     },
-    { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
+    REVEAL
   );
   els.forEach((el) => revealObserver.observe(el));
 }

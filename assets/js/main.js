@@ -5,8 +5,8 @@
 import { WWN_CONFIG } from "./site-config.js";
 import { bootI18n, onLangChange, registerI18n, t } from "./i18n.js";
 import { HOME_I18N } from "./i18n/home.js";
-import { $, debounce } from "./utils.js";
-import { initHeader, initReveal, resolveLinks } from "./ui.js";
+import { debounce } from "./utils.js";
+import { initHeader, initReveal, initYear, resolveLinks } from "./ui.js";
 import { initHero } from "./home/hero.js";
 import { initGalleryUi, renderGallery } from "./home/gallery.js";
 import { renderNews } from "./home/news.js";
@@ -28,6 +28,7 @@ function refreshDynamic(lang) {
 function boot() {
   const lang = bootI18n();
   initHeader();
+  initYear();
   resolveLinks(cfg);
   initHero();
   initGalleryUi();
@@ -35,9 +36,6 @@ function boot() {
   initStats(cfg);
   initReveal();
   refreshDynamic(lang);
-
-  const year = $("#year");
-  if (year) year.textContent = String(new Date().getFullYear());
 
   onLangChange((next) => {
     refreshDynamic(next);

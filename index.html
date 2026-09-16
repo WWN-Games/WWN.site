@@ -9,10 +9,13 @@
   <link rel="canonical" href="https://wwn-games.github.io/WWN.site/">
 
   <meta property="og:type" content="website">
+  <meta property="og:site_name" content="WWN">
+  <meta property="og:locale" content="en_US">
   <meta property="og:url" content="https://wwn-games.github.io/WWN.site/">
   <meta property="og:title" content="WWN — a Rusted Warfare mod">
   <meta property="og:description" content="Space fleets, ground battles and a universe of its own. Download WWN for free.">
   <meta property="og:image" content="https://wwn-games.github.io/WWN.site/assets/img/bg/og-banner.webp">
+  <meta property="og:image:alt" content="WWN — a Rusted Warfare mod">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
@@ -24,10 +27,7 @@
   <link rel="apple-touch-icon" href="assets/img/brand/icon-192.png">
   <link rel="manifest" href="site.webmanifest">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Exo+2:wght@400;600;700&display=swap" rel="stylesheet">
-
+  <link rel="stylesheet" href="assets/css/fonts.css">
   <link rel="stylesheet" href="assets/css/style.css">
   <script type="speculationrules">
     {"prefetch":[{"source":"document","where":{"href_matches":"wiki/*"},"eagerness":"moderate"}]}
@@ -60,6 +60,8 @@
   </script>
 </head>
 <body>
+
+<a class="skip-link" href="#top" data-i18n="a11y.skip">Skip to content</a>
 
 <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
 
@@ -107,23 +109,14 @@
 </div>
 
 <main id="top">
-
-  <!-- ============================================================ HERO -->
   <section class="hero">
     <div class="hero__bg" aria-hidden="true">
       <img class="hero__bg-img" src="assets/img/bg/banner.webp" alt="" width="1920" height="768"
         fetchpriority="high" decoding="async">
     </div>
-    <div class="hero__matte" aria-hidden="true"></div>
-    <canvas id="starfield" aria-hidden="true"></canvas>
-    <div class="orb orb--1" aria-hidden="true"></div>
-    <div class="orb orb--2" aria-hidden="true"></div>
-    <div class="orb orb--3" aria-hidden="true"></div>
-    <div class="hero__aurora" aria-hidden="true"></div>
-    <div class="hero__rays" aria-hidden="true"></div>
-    <div class="hero__scan" aria-hidden="true"></div>
-    <div class="hero__horizon" aria-hidden="true"></div>
-    <div class="hero__overlay" aria-hidden="true"></div>
+    <div class="hero__grade" aria-hidden="true"></div>
+    <div class="hero__aura" aria-hidden="true"></div>
+    <div class="hero__meteors" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
 
     <div class="wrap hero__inner">
       <span class="hero__badge">
@@ -171,8 +164,6 @@
       <a href="#" data-link="steam">Steam Workshop</a>
     </div>
   </section>
-
-  <!-- ======================================================== FEATURES -->
   <section class="section" id="features">
     <div class="wrap">
       <div class="section__head section__head--center" data-reveal>
@@ -231,8 +222,6 @@
       </div>
     </div>
   </section>
-
-  <!-- ======================================================= FACTIONS -->
   <section class="section section--bordered section--alt" id="factions">
     <div class="wrap">
       <div class="section__head" data-reveal>
@@ -278,8 +267,6 @@
       </div>
     </div>
   </section>
-
-  <!-- ========================================================= GALLERY -->
   <section class="section section--bordered section--alt" id="gallery">
     <div class="wrap">
       <div class="section__head" data-reveal>
@@ -290,8 +277,6 @@
       <div class="gallery" id="galleryGrid" data-reveal></div>
     </div>
   </section>
-
-  <!-- ============================================================ NEWS -->
   <section class="section" id="news">
     <div class="wrap">
       <div class="section__head" data-reveal>
@@ -305,8 +290,6 @@
       </div>
     </div>
   </section>
-
-  <!-- ======================================================== DOWNLOAD -->
   <section class="section" id="download">
     <div class="wrap">
       <div class="section__head section__head--center" data-reveal>
@@ -366,8 +349,6 @@
 
     </div>
   </section>
-
-  <!-- ============================================================= FAQ -->
   <section class="section section--bordered section--alt" id="faq">
     <div class="wrap">
       <div class="section__head section__head--center" data-reveal>
@@ -396,8 +377,6 @@
     </div>
   </section>
 </main>
-
-<!-- ============================================================ FOOTER -->
 <footer class="footer">
   <div class="wrap">
     <div class="footer__top">
@@ -446,7 +425,7 @@
     </div>
 
     <div class="footer__bottom">
-      <p>© <span id="year">2026</span> WWN. <span data-i18n="footer.disclaimer">Official website of the WWN mod for Rusted Warfare. Rusted Warfare © Corroding Games.</span> <span data-i18n="footer.rights">All mod materials belong to the WWN team.</span></p>
+      <p>© <span id="year">2026</span> WWN. <span data-i18n="footer.disclaimer">Official website of the WWN mod for Rusted Warfare. Rusted Warfare © Corroding Games. All mod materials belong to the WWN team.</span></p>
     </div>
   </div>
 </footer>
@@ -454,8 +433,6 @@
 <button class="to-top" id="toTop" type="button" aria-label="Back to top" data-i18n-aria="footer.backToTop">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6" /></svg>
 </button>
-
-<!-- ========================================================= LIGHTBOX -->
 <dialog class="lightbox" id="lightbox" aria-label="Gallery">
   <button class="lightbox__close" id="lbClose" type="button" data-i18n-aria="gallery.close" aria-label="Close">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>

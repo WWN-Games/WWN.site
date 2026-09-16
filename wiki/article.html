@@ -6,24 +6,31 @@
   <title>WWN Wiki</title>
   <meta name="description" content="WWN wiki article: lore, factions, units, structures, mechanics and guides for Rusted Warfare.">
   <meta property="og:type" content="article">
+  <meta property="og:site_name" content="WWN">
+  <meta property="og:locale" content="en_US">
   <meta property="og:url" content="https://wwn-games.github.io/WWN.site/wiki/article.html">
   <meta property="og:title" content="WWN Wiki">
   <meta property="og:description" content="Lore, factions, units, structures, mechanics and guides of the WWN mod.">
   <meta property="og:image" content="https://wwn-games.github.io/WWN.site/assets/img/bg/og-banner.webp">
+  <meta property="og:image:alt" content="WWN Wiki">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="WWN Wiki">
+  <meta name="twitter:description" content="Lore, factions, units, structures, mechanics and guides of the WWN mod.">
+  <meta name="twitter:image" content="https://wwn-games.github.io/WWN.site/assets/img/bg/og-banner.webp">
   <meta name="theme-color" content="#050b16">
   <link rel="canonical" href="https://wwn-games.github.io/WWN.site/wiki/article.html">
 
   <link rel="icon" type="image/svg+xml" href="../assets/img/brand/favicon.svg">
   <link rel="apple-touch-icon" href="../assets/img/brand/icon-192.png">
   <link rel="manifest" href="../site.webmanifest">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Exo+2:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/fonts.css">
   <link rel="stylesheet" href="../assets/css/style.css">
   <link rel="stylesheet" href="../assets/css/wiki.css">
 </head>
 <body class="wiki-body">
+<a class="skip-link" href="#main-content" data-i18n="a11y.skip">Skip to content</a>
 <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
 
 <header class="header" id="header">
@@ -71,6 +78,7 @@
       <input type="search" id="searchInput" data-i18n-placeholder="wiki.search.placeholder" data-i18n-aria="wiki.search.placeholder" placeholder="Search the wiki…" aria-label="Search the wiki…">
       <kbd class="wiki-sidebar__kbd">Ctrl K</kbd>
     </div>
+    <button type="button" id="wikiNavToggle" class="wiki-nav__toggle" aria-controls="wikiNav" data-i18n="wiki.sidebar">Wiki sections</button>
     <nav class="wiki-nav" id="wikiNav" data-i18n-aria="wiki.title" aria-label="WWN Wiki"></nav>
     <div class="wiki-sidebar__cta">
       <p data-i18n="wiki.help">Need install help? Check the wiki or ping the community.</p>
@@ -78,7 +86,7 @@
     </div>
   </aside>
 
-  <main>
+  <main id="main-content">
     <div class="article-layout">
       <article class="article">
         <div class="article__head">
@@ -101,14 +109,14 @@
     <search>
       <input class="search-panel__input" id="searchPanelInput" type="search" autocomplete="off" data-i18n-placeholder="wiki.search.placeholder" data-i18n-aria="wiki.search.title" placeholder="Search the wiki…" aria-label="Search the wiki">
     </search>
-    <p class="search-panel__hint" id="searchHint" data-i18n="wiki.search.hint">Type at least 2 characters</p>
+    <p class="search-panel__hint" id="searchHint" role="status" data-i18n="wiki.search.hint">Type at least 2 characters</p>
     <div class="search-results" id="searchResults"></div>
   </div>
 </dialog>
 
 <footer class="footer footer--compact">
   <div class="wrap footer__bottom">
-    <p><span data-i18n="footer.disclaimer">Official website of the WWN mod for Rusted Warfare. Rusted Warfare © Corroding Games.</span></p>
+    <p>© <span id="year">2026</span> WWN. <span data-i18n="footer.disclaimer">Official website of the WWN mod for Rusted Warfare. Rusted Warfare © Corroding Games. All mod materials belong to the WWN team.</span></p>
     <a class="btn btn--sm" href="./" data-i18n="wiki.back">Back to wiki</a>
   </div>
 </footer>

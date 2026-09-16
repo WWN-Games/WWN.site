@@ -9,7 +9,7 @@ import { ARROW, initDropdowns, placeMenu, refreshDropdown } from "./dropdown.js"
 import { bootI18n, getLang, onLangChange, registerI18n, t } from "./i18n.js";
 import { DATABASE_I18N } from "./i18n/database.js";
 import { $, $$, abs, debounce, emptyBlock, escapeHtml, loc, locObj, safeColor } from "./utils.js";
-import { initHeader, initReveal } from "./ui.js";
+import { initHeader, initReveal, initYear } from "./ui.js";
 
 registerI18n(DATABASE_I18N);
 
@@ -49,20 +49,42 @@ const factionName = (id, lang) => {
   return faction ? loc(faction.name, lang) : id;
 };
 
-/* ----------------------------------------------------------------- данные -- */
+/* карточки зависят только от id и языка — собираем HTML один раз */
+const cardCache = new Map();
+
+/* Тяжёлое построение сетки уводим за кадр: клик и ввод не ждут рендер. */
+let renderToken = 0;
+const nextFrame = () => new Promise((resolve) => {
+  if (globalThis.scheduler?.yield) {
+    scheduler.yield().then(resolve, resolve);
+    return;
+  }
+  requestAnimationFrame(() => setTimeout(resolve, 0));
+});
+
+function scheduleRender() {
+  const token = ++renderToken;
+  nextFrame().then(() => {
+    if (token === renderToken) render();
+  });
+}
 async function loadAll() {
-  const [factions, units, buildings, tags] = await Promise.all(
-    ["factions", "units", "buildings", "tags"].map((name) =>
+  const names = ["factions", "units", "buildings", "tags"];
+  const results = await Promise.allSettled(
+    names.map((name) =>
       fetch(abs(`data/${name}.json?v=${WWN_CONFIG.version}`)).then((res) => {
         if (!res.ok) throw new Error(name);
         return res.json();
       })
     )
   );
-  data.factions = factions.factions || [];
-  data.units = units.units || [];
-  data.buildings = buildings.buildings || [];
-  data.tags = tags.tags || [];
+  const [factions, units, buildings, tags] = results.map((result) =>
+    result.status === "fulfilled" ? result.value : null
+  );
+  data.factions = factions?.factions || [];
+  data.units = units?.units || [];
+  data.buildings = buildings?.buildings || [];
+  data.tags = tags?.tags || [];
 }
 
 function buildLookups() {
@@ -81,8 +103,6 @@ function buildLookups() {
     if (counts) counts.buildings += 1;
   });
 }
-
-/* ---------------------------------------------------------------- фильтры -- */
 /* На вкладке «Фракции» списков нет; на «Юнитах» и «Строениях» — все. */
 const tabSource = () => state.tab === "units" ? data.units : state.tab === "buildings" ? data.buildings : [];
 const tabTypes = () => [...new Set(tabSource().map((item) => item.type).filter(Boolean))];
@@ -123,7 +143,7 @@ function bindSelect(select, apply) {
   select.dataset.bound = "1";
   select.addEventListener("change", () => {
     apply(select.value);
-    render();
+    scheduleRender();
   });
 }
 
@@ -163,6 +183,8 @@ function buildFactionFilter() {
   );
 }
 
+let typeFilterSignature = "";
+
 function buildTypeFilter() {
   const select = $("#databaseType");
   if (!select) return;
@@ -170,6 +192,12 @@ function buildTypeFilter() {
   const types = tabTypes();
 
   if (state.type !== "all" && !types.includes(state.type)) state.type = "all";
+
+  // список опций меняется только вместе с вкладкой/языком — не перестраиваем зря
+  const signature = `${state.lang}|${state.tab}|${state.type}|${types.join(",")}`;
+  if (signature === typeFilterSignature) return;
+  typeFilterSignature = signature;
+
   if (!types.length) {
     select.replaceChildren();
     refreshDropdown(select);
@@ -235,15 +263,11 @@ function renderTagPanel() {
     if (!options.some((tag) => tag.id === id)) tagDraft.delete(id);
   }
 
-  const groups = new Map();
-  options.forEach((tag) => {
-    if (!groups.has(tag.group)) groups.set(tag.group, []);
-    groups.get(tag.group).push(tag);
-  });
+  const groups = Object.groupBy(options, (tag) => tag.group);
 
   const body = tagPanel.querySelector(".tag-panel__body");
   body.replaceChildren(
-    ...[...groups.keys()]
+    ...Object.keys(groups)
       .sort((a, b) => (TAG_GROUP_ORDER[a] ?? 9) - (TAG_GROUP_ORDER[b] ?? 9))
       .map((group) => {
         const section = document.createElement("div");
@@ -253,7 +277,7 @@ function renderTagPanel() {
         title.textContent = tagGroupTitle(group);
         const chips = document.createElement("div");
         chips.className = "tag-panel__chips";
-        groups.get(group).forEach((tag) => {
+        groups[group].forEach((tag) => {
           const chip = document.createElement("button");
           chip.type = "button";
           chip.className = "tag-chip";
@@ -281,7 +305,7 @@ function updateTagButton() {
 function closeTagPanel() {
   if (!tagPanelOpen) return;
   tagPanelOpen = false;
-  if (typeof tagPanel.hidePopover === "function") tagPanel.hidePopover();
+  tagPanel.hidePopover();
 }
 
 function initTagFilter() {
@@ -363,13 +387,13 @@ function initTagFilter() {
       state.tags.clear();
       updateTagButton();
       renderTagPanel();
-      render();
+      scheduleRender();
       return;
     }
     if (event.target.closest(".tag-panel__apply")) {
       state.tags = new Set(tagDraft);
       updateTagButton();
-      render();
+      scheduleRender();
       closeTagPanel();
     }
   });
@@ -377,6 +401,11 @@ function initTagFilter() {
 
 function syncTagFilter() {
   if (!tagPanel) initTagFilter();
+  // применённые теги могли исчезнуть при смене вкладки — чистим
+  const available = new Set(tabTagIds());
+  for (const id of state.tags) {
+    if (!available.has(id)) state.tags.delete(id);
+  }
   applyTagPanelLabels();
   if (tagPanelOpen) renderTagPanel();
   updateTagButton();
@@ -396,11 +425,10 @@ function buildSortFilter() {
     null
   );
 }
-
-/* -------------------------------------------------------------------- вкладки -- */
 function initTabs() {
   const tabs = $$("#databaseTabs .tab");
   const activate = (tab, focus = false) => {
+    if (tab === state.tab && !focus) return;
     state.tab = tab;
     tabs.forEach((btn) => {
       const active = btn.dataset.tab === tab;
@@ -409,14 +437,16 @@ function initTabs() {
       btn.tabIndex = active ? 0 : -1;
       if (active && focus) btn.focus();
     });
+    $("#databaseGrid")?.setAttribute("aria-labelledby", `tab-${tab}`);
     try { history.replaceState(null, "", `#${tab}`); } catch {}
     buildTypeFilter();
     syncTagFilter();
     updateFilterVisibility();
-    render();
+    scheduleRender();
   };
   tabs.forEach((btn) => {
     // подсветка всегда соответствует текущей вкладке (в т.ч. после перезагрузки с #units)
+    btn.id = `tab-${btn.dataset.tab}`;
     const active = btn.dataset.tab === state.tab;
     btn.classList.toggle("is-active", active);
     btn.setAttribute("aria-selected", String(active));
@@ -443,20 +473,15 @@ function initTabs() {
     if (["factions", "units", "buildings"].includes(hash) && hash !== state.tab) activate(hash);
   });
 }
-
-/* ---------------------------------------------------------------- карточки -- */
 const chip = (text, className = "") => `<span class="chip ${className}">${escapeHtml(text)}</span>`;
 
-/** Общая шкала полос: за 100% берём максимум, а при длинном хвосте
- *  (выбросы вроде 999999) — удвоенную медиану. Шкала нелинейная (^0.7),
- *  чтобы низкие значения не выглядели пустым местом. */
-const scale = {
-  hp: { reference: 1, median: 0 },
-  shield: { reference: 1, median: 0 },
-  dps: { reference: 1, median: 0 },
-  speed: { reference: 1, median: 0 },
-  range: { reference: 1, median: 0 }
-};
+/** Шкала полос — логарифмическая с устойчивыми опорами:
+ *  lo — 5-й процентиль, hi — максимум, а при явном выбросе (max > p95×3,
+ *  как range = 999999) — 95-й процентиль. Ненулевые значения получают
+ *  минимум 10% полосы, топ не «залипает»: в 100% упираются единицы. */
+const MIN_BAR = 10;
+
+const scale = { hp: null, shield: null, dps: null, speed: null, range: null };
 /** Показываем полосу только если характеристика есть хотя бы у кого-то
  *  (например, у строений нет скорости — полосу не рисуем). */
 const hasStat = { hp: false, shield: false, dps: false, speed: false, range: false };
@@ -475,12 +500,14 @@ function computeScale() {
       .sort((a, b) => a - b);
     hasStat[key] = values.length > 0;
     if (!values.length) {
-      scale[key] = { reference: 1, median: 0 };
+      scale[key] = null;
       return;
     }
-    const med = median(values);
+    const at = (q) => values[Math.min(values.length - 1, Math.round(q * (values.length - 1)))];
+    const lo = at(0.05);
+    const p95 = at(0.95);
     const max = values[values.length - 1];
-    scale[key] = { reference: Math.max(1, max <= med * 4 ? max : med * 2), median: med };
+    scale[key] = { lo, hi: max > p95 * 3 ? p95 : max, median: median(values) };
   });
 }
 
@@ -492,27 +519,32 @@ const formatValue = (value) => {
   return Math.round(value);
 };
 
-const BAR_CURVE = 0.7;
-
-const barPercent = (value, reference) =>
-  value > 0 && reference > 0
-    ? Math.max(6, Math.min(100, Math.round(((value / reference) ** BAR_CURVE) * 100)))
-    : 0;
+const barPercent = (value, key) => {
+  const s = scale[key];
+  if (!(value > 0) || !s) return 0;
+  const span = Math.log(s.hi / s.lo);
+  if (!(span > 0)) return 100;
+  const t = Math.log(value / s.lo) / span;
+  return Math.max(MIN_BAR, Math.min(100, Math.round(MIN_BAR + (100 - MIN_BAR) * t)));
+};
 
 const statBar = (key, label, value, color) => {
   const safe = Number.isFinite(value) ? value : 0;
-  const { reference = 1, median: med = 0 } = scale[key] || {};
-  const percent = barPercent(safe, reference);
-  const medianPercent = barPercent(med, reference);
-  return `<div class="statbar" data-stat="${key}" style="--faction-color:${color};--median:${medianPercent}%">
+  const percent = barPercent(safe, key);
+  const medianPercent = barPercent(scale[key]?.median ?? 0, key);
+  return `<div class="statbar" style="--faction-color:${color};--median:${medianPercent}%">
     <span class="statbar__label">${escapeHtml(label)}</span>
-    <span class="statbar__track"><span class="statbar__fill" data-percent="${percent}"></span></span>
+    <span class="statbar__track"><span class="statbar__fill" style="--w:${percent}%"></span></span>
     <span class="statbar__val">${formatValue(safe)}</span>
   </div>`;
 };
 
-function unitCard(item) {
+function unitCardHtml(item) {
   const lang = state.lang;
+  const cacheKey = `${lang}|u|${item.id}`;
+  const cached = cardCache.get(cacheKey);
+  if (cached !== undefined) return cached;
+
   const color = factionColor(item.faction);
   const name = loc(item.name, lang);
   // картинка по умолчанию — по id; item.image переопределяет, "" скрывает
@@ -559,25 +591,28 @@ function unitCard(item) {
        </div>`
     : "";
 
-  const article = document.createElement("article");
-  article.className = "unit-card";
-  article.style.setProperty("--faction-color", color);
-  article.dataset.reveal = "";
-  article.innerHTML =
-    `<div class="unit-card__top">
-       <div class="unit-card__img">${image}</div>
-       <div class="unit-card__name">${escapeHtml(name)}</div>
-     </div>
-     <div class="unit-card__tags">${chips}</div>
-     ${costs}
-     ${item.desc ? `<p class="unit-card__desc">${escapeHtml(loc(item.desc, lang))}</p>` : ""}
-     ${bars ? `<div class="statbars">${bars}</div>` : ""}
-     ${matchups}`;
-  return article;
+  const html =
+    `<article class="unit-card" data-reveal style="--faction-color:${color}">
+       <div class="unit-card__top">
+         <div class="unit-card__img">${image}</div>
+         <div class="unit-card__name">${escapeHtml(name)}</div>
+       </div>
+       <div class="unit-card__tags">${chips}</div>
+       ${costs}
+       ${item.desc ? `<p class="unit-card__desc">${escapeHtml(loc(item.desc, lang))}</p>` : ""}
+       ${bars ? `<div class="statbars">${bars}</div>` : ""}
+       ${matchups}
+     </article>`;
+  cardCache.set(cacheKey, html);
+  return html;
 }
 
-function factionCard(faction, counts) {
+function factionCardHtml(faction, counts) {
   const lang = state.lang;
+  const cacheKey = `${lang}|f|${faction.id}`;
+  const cached = cardCache.get(cacheKey);
+  if (cached !== undefined) return cached;
+
   const color = safeColor(faction.color, "#29b8ff");
   const name = loc(faction.name, lang);
   const emblem = faction.emblem
@@ -599,31 +634,28 @@ function factionCard(faction, counts) {
       ? `<div class="faction-block"><h5>${escapeHtml(title)}</h5><ul>${items.map((x) => `<li>${escapeHtml(x)}</li>`).join("")}</ul></div>`
       : "";
 
-  const article = document.createElement("article");
-  article.className = "faction-card";
-  article.style.setProperty("--faction-color", color);
-  article.dataset.reveal = "";
-  article.innerHTML =
-    `<div class="faction-card__head">
-       <div class="faction-card__emblem">${emblem}</div>
-       <div>
-         <div class="faction-card__name">${escapeHtml(name)}</div>
-         <div class="faction-card__motto">${escapeHtml(loc(faction.motto, lang))}</div>
-         ${counters}
+  const html =
+    `<article class="faction-card" data-reveal style="--faction-color:${color}">
+       <div class="faction-card__head">
+         <div class="faction-card__emblem">${emblem}</div>
+         <div>
+           <div class="faction-card__name">${escapeHtml(name)}</div>
+           <div class="faction-card__motto">${escapeHtml(loc(faction.motto, lang))}</div>
+           ${counters}
+         </div>
        </div>
-     </div>
-     ${faction.desc ? `<p class="faction-card__desc">${escapeHtml(loc(faction.desc, lang))}</p>` : ""}
-     <div class="faction-card__blocks">
-       ${block(t("database.faction.playstyle", lang), loc(faction.playstyle, lang))}
-       ${block(t("database.faction.specialty", lang), loc(faction.specialty, lang))}
-       ${blockList(t("database.strong", lang), strengths)}
-       ${blockList(t("database.weak", lang), weaknesses)}
-     </div>
-     ${faction.lore ? `<a class="btn btn--sm faction-card__link" href="wiki/article.html?p=${encodeURIComponent(faction.lore)}">${escapeHtml(t("database.openLore", lang))}</a>` : ""}`;
-  return article;
+       ${faction.desc ? `<p class="faction-card__desc">${escapeHtml(loc(faction.desc, lang))}</p>` : ""}
+       <div class="faction-card__blocks">
+         ${block(t("database.faction.playstyle", lang), loc(faction.playstyle, lang))}
+         ${block(t("database.faction.specialty", lang), loc(faction.specialty, lang))}
+         ${blockList(t("database.strong", lang), strengths)}
+         ${blockList(t("database.weak", lang), weaknesses)}
+       </div>
+       ${faction.lore ? `<a class="btn btn--sm faction-card__link" href="wiki/article.html?p=${encodeURIComponent(faction.lore)}">${escapeHtml(t("database.openLore", lang))}</a>` : ""}
+     </article>`;
+  cardCache.set(cacheKey, html);
+  return html;
 }
-
-/* ------------------------------------------------------------------- рендер -- */
 const matches = (item, lang) => {
   if (!state.search) return true;
   const tags = (item.tags || []).map((id) => `${id} ${tagLabel(id, lang)}`).join(" ");
@@ -639,13 +671,13 @@ function render() {
   grid.dataset.mode = state.tab;
 
   let items = [];
-  let nodes = [];
+  let html = "";
 
   if (state.tab === "factions") {
     items = data.factions.filter((faction) => matches(faction, lang));
-    nodes = items.map((faction) =>
-      factionCard(faction, factionCounts.get(faction.id) || { units: 0, buildings: 0 })
-    );
+    html = items
+      .map((faction) => factionCardHtml(faction, factionCounts.get(faction.id) || { units: 0, buildings: 0 }))
+      .join("");
   } else {
     const source = state.tab === "units" ? data.units : data.buildings;
     items = source
@@ -666,19 +698,17 @@ function render() {
           ? loc(a.name, lang).localeCompare(loc(b.name, lang))
           : (b[state.sort] || 0) - (a[state.sort] || 0)
       );
-    nodes = items.map((item) => unitCard(item));
+    html = items.map((item) => unitCardHtml(item)).join("");
   }
 
+  grid.classList.remove("is-shown");
   if (!items.length) {
     grid.replaceChildren(emptyBlock(t("database.empty", lang)));
   } else {
-    grid.replaceChildren(...nodes);
+    grid.innerHTML = html;
     initReveal(grid);
-    requestAnimationFrame(() => {
-      grid.querySelectorAll(".statbar__fill").forEach((fill) => {
-        fill.style.width = `${fill.dataset.percent || 0}%`;
-      });
-    });
+    // одна общая анимация полос вместо записи ширины в ~900 элементов
+    requestAnimationFrame(() => grid.classList.add("is-shown"));
   }
   if (count) count.textContent = t("database.count", lang, { n: items.length });
 }
@@ -699,8 +729,6 @@ function initImageFallback() {
     true
   );
 }
-
-/* --------------------------------------------------------------------- boot -- */
 function renderPage(lang) {
   state.lang = lang;
   document.title = t("meta.title.database", lang);
@@ -716,7 +744,7 @@ function renderPage(lang) {
   syncTagFilter();
   buildSortFilter();
   updateFilterVisibility();
-  render();
+  scheduleRender();
 }
 
 let dataReady = false;
@@ -724,11 +752,12 @@ let dataReady = false;
 async function boot() {
   const lang = bootI18n();
   initHeader();
+  initYear();
   initDropdowns();
   initTabs();
   initImageFallback();
 
-  const debouncedRender = debounce(render, 140);
+  const debouncedRender = debounce(scheduleRender, 140);
   $("#databaseSearch")?.addEventListener("input", (event) => {
     state.search = event.target.value.trim().toLowerCase();
     debouncedRender();
@@ -738,9 +767,9 @@ async function boot() {
     await loadAll();
     buildLookups();
     computeScale();
-    dataReady = true;
+    dataReady = data.factions.length > 0 || data.units.length > 0 || data.buildings.length > 0;
   } catch {
-    // данные не загрузились — шапка, меню и язык должны работать всё равно
+    // при неожиданной ошибке шапка, меню и язык всё равно работают
   }
 
   renderPage(lang);

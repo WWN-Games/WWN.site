@@ -88,7 +88,7 @@ export const DATABASE_I18N = {
     "database.speed": "Speed",
     "database.range": "Range",
     "database.buildTime": "Build time",
-    "database.seconds": "s",
+    "database.seconds": " s",
     "database.strong": "Strong vs",
     "database.weak": "Weak vs",
     "database.draft": "Draft",

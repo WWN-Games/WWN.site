@@ -19,10 +19,7 @@ export const WWN_CONFIG = {
     drive: "https://drive.google.com/file/d/1a3r6f3GG2pORNaqzCVBrsTKvrXs_ctYg/view?usp=sharing",
     // Community links (leave "" to hide the button automatically)
     discord: "https://discord.gg/sRwKDGrbDy",
-    youtube: "https://www.youtube.com/@shykinc4860",
-    telegram: "",
-    vk: "",
-    github: ""
+    youtube: "https://www.youtube.com/@shykinc4860"
   },
 
   // ---------------------------------------------------------------------------

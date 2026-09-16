@@ -17,13 +17,12 @@
   <link rel="icon" type="image/svg+xml" href="assets/img/brand/favicon.svg">
   <link rel="apple-touch-icon" href="assets/img/brand/icon-192.png">
   <link rel="manifest" href="site.webmanifest">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Exo+2:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/fonts.css">
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/database.css">
 </head>
 <body>
+<a class="skip-link" href="#main-content" data-i18n="a11y.skip">Skip to content</a>
 <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
 
 <header class="header" id="header">
@@ -64,7 +63,7 @@
   </div>
 </div>
 
-<main class="database-page">
+<main class="database-page" id="main-content">
   <div class="wrap">
     <div class="database-head">
       <span class="kicker" data-i18n="database.title">Database</span>
@@ -95,14 +94,14 @@
       <select id="databaseSort" data-dropdown data-i18n-title="database.sort.label" data-i18n-aria="database.sort.label" title="Sort by" aria-label="Sort by"></select>
     </div>
 
-    <div class="database-count" id="databaseCount"></div>
-    <div class="database-grid" id="databaseGrid" role="tabpanel"></div>
+    <output class="database-count" id="databaseCount" aria-live="polite"></output>
+    <div class="database-grid" id="databaseGrid" role="tabpanel" tabindex="0"></div>
   </div>
 </main>
 
 <footer class="footer footer--compact">
   <div class="wrap footer__bottom">
-    <p><span data-i18n="footer.disclaimer">Official website of the WWN mod for Rusted Warfare. Rusted Warfare © Corroding Games.</span></p>
+    <p>© <span id="year">2026</span> WWN. <span data-i18n="footer.disclaimer">Official website of the WWN mod for Rusted Warfare. Rusted Warfare © Corroding Games. All mod materials belong to the WWN team.</span></p>
     <a class="btn btn--sm" href="index.html" data-i18n="nav.home">Home</a>
   </div>
 </footer>

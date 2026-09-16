@@ -1,37 +1,27 @@
 /* ============================================================================
    WWN — адаптивные изображения (ES-модуль)
-   Читает сгенерированный манифест assets/js/media-manifest.js и подставляет
+   Читает манифест assets/js/media-manifest.js и подставляет
    srcset/sizes/width/height, чтобы браузер грузил нужный размер без CLS.
    ============================================================================ */
 
 import { MEDIA } from "./media-manifest.js";
 import { abs } from "./utils.js";
 
-const byHref = new Map();
+const mediaByHref = new Map(
+  Object.entries(MEDIA).map(([key, value]) => [abs(key), { key, ...value }])
+);
 
 function entryFor(src) {
   if (!src) return null;
-  let href;
   try {
-    href = new URL(src, document.baseURI).href;
+    return mediaByHref.get(new URL(src, document.baseURI).href) ?? null;
   } catch {
     return null;
   }
-  if (!byHref.has(href)) {
-    let found = null;
-    for (const [key, value] of Object.entries(MEDIA)) {
-      if (abs(key) === href) {
-        found = { key, ...value };
-        break;
-      }
-    }
-    byHref.set(href, found);
-  }
-  return byHref.get(href);
 }
 
 /** Данные для srcset/sizes/размеров конкретной картинки. */
-export function imageData(src) {
+function imageData(src) {
   const entry = entryFor(src);
   if (!entry) return null;
   const parts = entry.variants.map((w) => `${abs(entry.key.replace(/\.webp$/, `-${w}.webp`))} ${w}w`);
