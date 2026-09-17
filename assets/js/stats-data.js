@@ -11,7 +11,6 @@ import { WWN_CONFIG } from "./site-config.js";
 import { abs } from "./utils.js";
 
 const CACHE_KEY = `wwn-db-counts-v${WWN_CONFIG.version}`;
-const FALLBACK = { units: 180, factions: 2, maps: 13 };
 
 function readCache() {
   try {
@@ -58,5 +57,5 @@ export async function loadStats() {
   })().catch(() => null);
 
   const [fromFile, fromDb] = await Promise.all([file, counts]);
-  return { ...FALLBACK, ...fromFile, ...(fromDb || {}) };
+  return { ...fromFile, ...(fromDb || {}) };
 }

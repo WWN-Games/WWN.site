@@ -67,10 +67,16 @@ for (const group of FOLD_GROUPS) {
   for (const char of rest) FOLD_MAP[char] = base;
 }
 const FOLD_RE = new RegExp(`[${Object.keys(FOLD_MAP).join("")}]`, "g");
+/* Дефисы и тире тоже сворачиваются в пробел (1:1): «Капо-Нант» и «Капо Нант» — одно и то же. */
+const DASH_RE = /[-\u2010-\u2015]/g;
 
-/** Свёртка текста для поиска: регистр, ё→е, латинская диакритика. */
+/** Свёртка текста для поиска: регистр, ё→е, дефисы, латинская диакритика. */
 export const foldSearch = (text) =>
-  String(text).toLowerCase().replace(/ё/g, "е").replace(FOLD_RE, (char) => FOLD_MAP[char]);
+  String(text)
+    .toLowerCase()
+    .replace(/ё/g, "е")
+    .replace(DASH_RE, " ")
+    .replace(FOLD_RE, (char) => FOLD_MAP[char]);
 
 /* Формы слова по числу: plural(lang, n, { one, few, many, other }). */
 const pluralRules = new Map();

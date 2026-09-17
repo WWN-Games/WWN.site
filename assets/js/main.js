@@ -61,8 +61,7 @@ async function boot() {
     return;
   }
 
-  if ("requestIdleCallback" in window) requestIdleCallback(renderAll, { timeout: 300 });
-  else setTimeout(renderAll, 60);
+  requestIdleCallback(renderAll, { timeout: 300 });
 }
 
 boot();

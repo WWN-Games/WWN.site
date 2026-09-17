@@ -63,6 +63,7 @@ ffmpeg -i in.webp -c:v libwebp -quality 78 -compression_level 6 out.webp
 | `js/media.js` | адаптивные картинки по `media-manifest.js` |
 | `js/media-manifest.js` | размеры и варианты изображений: `srcset/sizes/width/height` |
 | `js/wiki-shell.js` | оболочка вики: сайдбар, главная вики, поиск |
+| `js/md-text.js` | разбор markdown для поиска: `parseFrontMatter`, `stripMd` (используется и сборкой индекса) |
 | `js/wiki.js` | статья вики: Markdown, оглавление, переходы (marked и DOMPurify грузятся динамически) |
 | `js/database.js` | база данных: вкладки, фильтры, сортировка, кастомные выпадающие списки (Popover API) |
 | `vendor/` | marked 18.0.13 + DOMPurify 3.4.15 (готовые ESM-сборки, не редактируются) |

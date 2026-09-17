@@ -8,6 +8,7 @@ import { bootI18n, getLang, initLangSwitch, registerDictLoaders, t } from "./i18
 import { $, abs, emptyBlock, formatDate, loc } from "./utils.js";
 import { initHeader, initYear } from "./ui.js";
 import { applyResponsiveImages } from "./media.js";
+import { parseFrontMatter } from "./md-text.js";
 
 registerDictLoaders({
   ru: () => import("./i18n/wiki.ru.js"),
@@ -16,7 +17,7 @@ registerDictLoaders({
 
 /* Оболочку вики (сайдбар, поиск, реестр статей) подтягиваем асинхронно:
    переводы и каркас появляются раньше, чем она нужна. */
-let buildHome, getFlatArticles, initShell, parseFrontMatter;
+let buildHome, getFlatArticles, initShell;
 
 /* marked и DOMPurify грузим только на странице статьи, чтобы каталог вики не тянул vendor. */
 let vendorPromise = null;
@@ -523,7 +524,7 @@ async function boot() {
 
   await bootI18n();
 
-  ({ buildHome, getFlatArticles, initShell, parseFrontMatter } = await import("./wiki-shell.js"));
+  ({ buildHome, getFlatArticles, initShell } = await import("./wiki-shell.js"));
 
   await initShell({
     slug,

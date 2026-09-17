@@ -6,9 +6,13 @@
    отдельно, вместе с блоками главной.
    ============================================================================ */
 
+// YouTube: два канала — англоязычный и русскоязычный (Вашиан).
+const YOUTUBE_EN = "https://www.youtube.com/@shykinc4860";
+const YOUTUBE_RU = "https://www.youtube.com/@%D0%92%D0%B0%D1%88%D0%B8%D0%B0%D0%BD";
+
 export const WWN_CONFIG = {
-  // Версия показывается в бейдже главной и служит ключом сброса кэша
-  // для data/*.json (?v=...). Меняйте вместе с обновлением данных.
+  // Версия мода: показывается в бейдже главной и заодно служит ключом
+  // сброса кэша для data/*.json (?v=...). Меняется с релизом мода.
   version: "1.1.6",
 
   // ---------------------------------------------------------------------------
@@ -20,13 +24,10 @@ export const WWN_CONFIG = {
     steam: "https://steamcommunity.com/sharedfiles/filedetails/?id=3247893564",
     drive: "https://drive.google.com/file/d/1a3r6f3GG2pORNaqzCVBrsTKvrXs_ctYg/view?usp=sharing",
     discord: "https://discord.gg/sRwKDGrbDy",
-    // YouTube: англоязычный канал и русскоязычный (Вашиан)
-    youtube: "https://www.youtube.com/@shykinc4860",
-    youtubeRu: "https://www.youtube.com/@%D0%92%D0%B0%D1%88%D0%B8%D0%B0%D0%BD",
-    // иконка в подвале: RU-языку — русский канал, EN — английский
-    youtubeByLang: {
-      ru: "https://www.youtube.com/@%D0%92%D0%B0%D1%88%D0%B8%D0%B0%D0%BD",
-      en: "https://www.youtube.com/@shykinc4860"
-    }
+    // иконка в подвале: RU-языку — русский канал, EN — английский (см. resolveLinks)
+    youtube: { ru: YOUTUBE_RU, en: YOUTUBE_EN },
+    // явные пункты списка — всегда на конкретный канал
+    youtubeEn: YOUTUBE_EN,
+    youtubeRu: YOUTUBE_RU
   }
 };

@@ -39,5 +39,5 @@ export function initFaq() {
     });
   });
 
-  document.fonts?.ready.then(syncFaqHeights).catch(() => {});
+  document.fonts.ready.then(syncFaqHeights).catch(() => {});
 }

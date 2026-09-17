@@ -6,6 +6,7 @@ import { WWN_CONFIG } from "./site-config.js";
 import { bootI18n, getLang, onLangChange, t } from "./i18n.js";
 import { $, abs, collator, debounce, emptyBlock, escapeHtml, foldSearch, loc, nextFocusIndex, plural } from "./utils.js";
 import { initReveal } from "./ui.js";
+import { stripMd } from "./md-text.js";
 
 
 const ICONS = {
@@ -202,31 +203,6 @@ export function buildHome(lang) {
   );
   initReveal(grid);
 }
-export function parseFrontMatter(raw) {
-  const meta = {};
-  const match = raw.match(/^---\s*\n([\s\S]*?)\n---\s*\n?/);
-  if (!match) return { meta, body: raw };
-  match[1].split("\n").forEach((line) => {
-    const idx = line.indexOf(":");
-    if (idx === -1) return;
-    const key = line.slice(0, idx).trim();
-    const value = line.slice(idx + 1).trim().replace(/^["']|["']$/g, "");
-    meta[key] = value === "true" ? true : value === "false" ? false : value;
-  });
-  return { meta, body: raw.slice(match[0].length) };
-}
-
-const stripMd = (markdown) =>
-  parseFrontMatter(markdown).body
-    .replace(/^\[\^[\w.-]+\]:[ \t]*/gm, "")
-    .replace(/\[\^[\w.-]+\]/g, " ")
-    .replace(/```[\s\S]*?```/g, " ")
-    .replace(/`[^`]*`/g, " ")
-    .replace(/!?\[([^\]]*)\]\([^)]*\)/g, "$1")
-    .replace(/[#>*_~|-]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-
 const highlight = (text, query) => {
   const fold = foldSearch(text);
   const needle = foldSearch(query);

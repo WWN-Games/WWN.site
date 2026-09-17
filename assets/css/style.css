@@ -855,6 +855,12 @@ body:has(.mobile-nav:popover-open) { overflow: hidden; }
 .tag--news { color: var(--text-soft); background: rgba(88, 168, 255, .1); border-color: var(--line-strong); }
 .news__all { margin-top: 42px; }
 .news__card h3 { font-size: 17px; color: #fff; }
+.news__card h3 a { color: inherit; transition: color .2s; }
+.news__card h3 a:hover { color: var(--cyan-hi); }
+/* вся карточка кликабельна: невидимая область ссылки-заголовка растянута по карточке */
+.news__link::after { content: ""; position: absolute; inset: 0; }
+.news__arrow { margin-left: 5px; opacity: .55; transition: opacity .2s; }
+.news__card h3 a:hover .news__arrow { opacity: 1; }
 .news__card p,
 .step p,
 .wiki-cat p { color: var(--muted); font-size: 14px; }

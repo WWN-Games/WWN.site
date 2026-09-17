@@ -821,11 +821,12 @@ function factionCardHtml(faction, counts) {
     : `<span style="color:${color};font-family:var(--font-display)">${escapeHtml(name.slice(0, 2))}</span>`;
   const strengths = list(faction.strengths, lang);
   const weaknesses = list(faction.weaknesses, lang);
-  // подфракция: true — просто плашка; строка — id родителя (его имя уйдёт в подсказку)
+  // подфракция: true — плашка «Подфракция»; строка — id родителя, его имя пишем прямо в плашке
   const parent = typeof faction.subfaction === "string" ? factionMap.get(faction.subfaction) : null;
-  const subfactionLabel = t("database.subfaction", lang);
   const subfaction = faction.subfaction
-    ? `<span class="chip chip--sub"${parent ? ` title="${escapeHtml(`${subfactionLabel}: ${loc(parent.name, lang)}`)}"` : ""}>${escapeHtml(subfactionLabel)}</span>`
+    ? `<span class="chip chip--sub">${escapeHtml(
+        parent ? t("database.subfactionOf", lang, { name: loc(parent.name, lang) }) : t("database.subfaction", lang)
+      )}</span>`
     : "";
   const counters = counts
     ? `<div class="unit-card__sub" style="margin-top:8px">

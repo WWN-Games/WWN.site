@@ -18,23 +18,28 @@ export const SITE_DATA = {
 
   // ---------------------------------------------------------------------------
   // NEWS — карточки в разделе «Что нового»: добавляйте/убирайте свободно.
+  // Необязательное поле link: внешняя (https://…) или внутренняя (wiki/article.html?p=…)
+  // ссылка строкой либо объектом { ru, en }. Заголовок становится ссылкой, а клик
+  // в любом месте карточки открывает материал.
   // ---------------------------------------------------------------------------
   news: [
     {
-      date: "2026-09-15",
+      date: "2026-09-17",
       tag: "news",
+      link: "wiki/",
       ru: {
-        title: "Лор WWN теперь на сайте",
-        text: "Полная история галактики: Странники и Хранители, Война Очищения, Смута и Тройственный Конфликт — с картами эпох."
+        title: "Вики WWN: лор, фракции и гайды",
+        text: "История галактики, фракции, юниты и руководства — в отдельном разделе сайта. Начни с обзора вселенной WWN."
       },
       en: {
-        title: "WWN lore is now on the site",
-        text: "The full galaxy history: Wanderers and Keepers, the War of Purification, the Turmoil and the Triple Conflict — with era maps."
+        title: "WWN wiki: lore, factions and guides",
+        text: "Galaxy history, factions, units and guides — in a dedicated section of the site. Start with the WWN universe overview."
       }
     },
     {
       date: "2026-08-20",
       tag: "news",
+      link: "https://steamcommunity.com/sharedfiles/filedetails/?id=3247893564",
       ru: {
         title: "Мод в Steam Workshop",
         text: "Подпишись на WWN в мастерской Steam — обновления будут приходить автоматически."

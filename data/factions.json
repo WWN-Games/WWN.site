@@ -104,7 +104,7 @@
       "subfaction": true,
       "name": {
         "ru": "Чёрный рынок",
-        "en": "Чёрный рынок"
+        "en": "Dark Market"
       },
       "color": "#646464",
       "emblem": "assets/img/factions/faction-darkmarket.svg",
@@ -134,7 +134,7 @@
       "subfaction": true,
       "name": {
         "ru": "Аборигены",
-        "en": "Аборигены"
+        "en": "Aborigines"
       },
       "color": "#907434",
       "emblem": "assets/img/factions/faction-aborigines.svg",
