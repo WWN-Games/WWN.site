@@ -17,7 +17,7 @@ After unsuccessful attempts to find an antidote, they decided to quarantine all 
 
 One of the quarantined galaxies was the Milky Way — recently discovered by the Wanderers and not yet fully built up with gates. This is where the entire subsequent history of WWN unfolds.
 
-![Map of the galaxy in the era of the Distant Past](../assets/img/lore/dp-en.webp)
+![Map of the galaxy in the era of the Distant Past](../assets/img/lore/dp-en.avif)
 
 ## Factions and races
 

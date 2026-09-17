@@ -4,12 +4,15 @@
    ============================================================================ */
 
 import { WWN_CONFIG } from "./site-config.js";
-import { bootI18n, registerI18n, t } from "./i18n.js";
-import { WIKI_I18N } from "./i18n/wiki.js";
+import { bootI18n, initLangSwitch, registerDictLoaders, t } from "./i18n.js";
 import { $, abs, formatDate, loc, prefersReduced } from "./utils.js";
+import { initHeader, initYear } from "./ui.js";
 import { applyResponsiveImages } from "./media.js";
 
-registerI18n(WIKI_I18N);
+registerDictLoaders({
+  ru: () => import("./i18n/wiki.ru.js"),
+  en: () => import("./i18n/wiki.en.js")
+});
 
 /* Оболочку вики (сайдбар, поиск, реестр статей) подтягиваем асинхронно:
    переводы и каркас появляются раньше, чем она нужна. */
@@ -393,7 +396,10 @@ async function loadArticle(slug, lang) {
   }
 }
 async function boot() {
-  bootI18n();
+  initHeader();
+  initYear();
+  initLangSwitch();
+  await bootI18n();
   const slug = new URLSearchParams(location.search).get("p");
   const isArticlePage = Boolean($("#articleBody"));
   if (isArticlePage && !slug) {

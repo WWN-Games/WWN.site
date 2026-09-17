@@ -5,13 +5,193 @@
    ============================================================================ */
 
 import { WWN_CONFIG } from "./site-config.js";
-import { ARROW, initDropdowns, placeMenu, refreshDropdown } from "./dropdown.js";
-import { bootI18n, getLang, onLangChange, registerI18n, t } from "./i18n.js";
-import { DATABASE_I18N } from "./i18n/database.js";
-import { $, $$, abs, debounce, emptyBlock, escapeHtml, loc, locObj, safeColor } from "./utils.js";
+import { bootI18n, getLang, initLangSwitch, onLangChange, registerDictLoaders, t } from "./i18n.js";
+import { $, $$, abs, debounce, emptyBlock, escapeHtml, loc, locObj, nextFocusIndex, safeColor } from "./utils.js";
 import { initHeader, initReveal, initYear } from "./ui.js";
 
-registerI18n(DATABASE_I18N);
+registerDictLoaders({
+  ru: () => import("./i18n/database.ru.js"),
+  en: () => import("./i18n/database.en.js")
+});
+
+/* ----------------------------------------------------------------------------
+   Кастомные выпадающие списки (Popover API): <select data-dropdown> получает
+   кнопку в стиле сайта и меню в top layer. Кнопка — нативный инвокер
+   (popovertarget): повторный клик закрывает, Enter/Space работают сами,
+   клик вне и Escape закрывают нативно.
+   ---------------------------------------------------------------------------- */
+
+const ARROW =
+  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
+
+const currentText = (select) => select.options[select.selectedIndex]?.textContent ?? "";
+
+function syncButton(btn, select) {
+  if (!btn) return;
+  const value = btn.querySelector(".wwn-select__value");
+  if (value) value.textContent = currentText(select);
+  btn.disabled = select.disabled;
+}
+
+function buildItems(menu, select) {
+  menu.replaceChildren(
+    ...Array.from(select.options, (opt) => {
+      const item = document.createElement("button");
+      item.type = "button";
+      item.className = "wwn-menu__item" + (opt.selected ? " is-selected" : "");
+      item.dataset.value = opt.value;
+      item.setAttribute("role", "option");
+      item.setAttribute("aria-selected", String(opt.selected));
+      item.disabled = opt.disabled;
+
+      const label = document.createElement("span");
+      label.className = "wwn-menu__label";
+      label.textContent = opt.textContent;
+      item.append(label);
+      return item;
+    })
+  );
+}
+
+function placeMenu(menu, btn, estimatedHeight = 0, minWidth = 180) {
+  const rect = btn.getBoundingClientRect();
+  const width = Math.min(Math.max(rect.width, minWidth), Math.max(140, window.innerWidth - 16));
+  const left = Math.max(8, Math.min(rect.left, window.innerWidth - width - 8));
+  const height = menu.getBoundingClientRect().height || estimatedHeight;
+  const spaceBelow = window.innerHeight - rect.bottom;
+  const flip = spaceBelow < Math.min(height || 260, 240) && rect.top > spaceBelow;
+
+  menu.style.left = `${Math.round(left)}px`;
+  menu.style.width = `${Math.round(width)}px`;
+  if (flip) {
+    menu.style.top = "";
+    menu.style.bottom = `${Math.round(window.innerHeight - rect.top + 6)}px`;
+  } else {
+    menu.style.bottom = "";
+    menu.style.top = `${Math.round(rect.bottom + 6)}px`;
+  }
+}
+
+let selectSeq = 0;
+
+function enhance(select) {
+  if (select.dataset.wwnSelect) return;
+  select.dataset.wwnSelect = "1";
+  if (!select.id) select.id = `wwn-select-${++selectSeq}`;
+
+  const wrap = document.createElement("div");
+  wrap.className = "wwn-select";
+  select.replaceWith(wrap);
+  wrap.append(select);
+  select.classList.add("wwn-select__native");
+  select.tabIndex = -1;
+
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "wwn-select__btn";
+  btn.setAttribute("aria-haspopup", "listbox");
+  btn.setAttribute("aria-expanded", "false");
+  const label = select.getAttribute("aria-label") || select.getAttribute("title");
+  if (label) btn.setAttribute("aria-label", label);
+  btn.innerHTML = `<span class="wwn-select__value"></span>${ARROW}`;
+  wrap.append(btn);
+
+  const menu = document.createElement("div");
+  menu.className = "wwn-menu";
+  menu.popover = "auto";
+  menu.setAttribute("role", "listbox");
+  if (label) menu.setAttribute("aria-label", label);
+  menu.id = `wwn-menu-${select.id}`;
+  btn.setAttribute("aria-controls", menu.id);
+  btn.setAttribute("popovertarget", menu.id);
+  document.body.append(menu);
+
+  syncButton(btn, select);
+  select.addEventListener("change", () => syncButton(btn, select));
+
+  let listeners = null;
+
+  menu.addEventListener("beforetoggle", (event) => {
+    if (event.newState !== "open") return;
+    buildItems(menu, select);
+    // До открытия высота меню неизвестна — берём оценку по числу пунктов,
+    // точную позицию пересчитает rAF после открытия.
+    placeMenu(menu, btn, select.options.length * 37 + 14);
+
+    listeners?.abort();
+    listeners = new AbortController();
+    const reposition = () => {
+      const rect = btn.getBoundingClientRect();
+      const visible = rect.bottom > 0 && rect.top < window.innerHeight;
+      if (!visible) menu.hidePopover();
+      else placeMenu(menu, btn);
+    };
+    window.addEventListener("scroll", reposition, { passive: true, signal: listeners.signal });
+    window.addEventListener("resize", reposition, { signal: listeners.signal });
+
+    requestAnimationFrame(() => {
+      const item = menu.querySelector(".is-selected:not(:disabled)") || menu.querySelector(".wwn-menu__item:not(:disabled)");
+      item?.focus({ preventScroll: true });
+      item?.scrollIntoView({ block: "nearest" });
+      placeMenu(menu, btn);
+    });
+  });
+
+  menu.addEventListener("toggle", (event) => {
+    const open = event.newState === "open";
+    btn.classList.toggle("is-open", open);
+    btn.setAttribute("aria-expanded", String(open));
+    if (!open) {
+      listeners?.abort();
+      listeners = null;
+    }
+  });
+
+  menu.addEventListener("click", (event) => {
+    const item = event.target.closest(".wwn-menu__item");
+    if (!item || item.disabled) return;
+    if (select.value !== item.dataset.value) {
+      select.value = item.dataset.value;
+      select.dispatchEvent(new Event("change", { bubbles: true }));
+    }
+    syncButton(btn, select);
+    menu.hidePopover();
+    btn.focus({ preventScroll: true });
+  });
+
+  menu.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      btn.focus({ preventScroll: true });
+      return;
+    }
+    const items = [...menu.querySelectorAll(".wwn-menu__item:not(:disabled)")];
+    const next = nextFocusIndex(items, event);
+    if (next === -1) return;
+    event.preventDefault();
+    items[next].focus();
+  });
+
+  btn.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+      event.preventDefault();
+      menu.showPopover();
+    }
+  });
+}
+
+/** Включить кастомные списки для всех <select data-dropdown> внутри root. */
+function initDropdowns(root = document) {
+  $$("select[data-dropdown]", root).forEach(enhance);
+}
+
+/** Обновить подпись и закрыть список (например, при скрытии селекта). */
+function refreshDropdown(select) {
+  const wrap = select.closest(".wwn-select");
+  syncButton(wrap?.querySelector(".wwn-select__btn") ?? null, select);
+  if (select.classList.contains("is-hidden")) {
+    document.getElementById(`wwn-menu-${select.id}`)?.hidePopover();
+  }
+}
 
 const state = {
   lang: getLang(),
@@ -456,16 +636,11 @@ function initTabs() {
 
   // навигация по табам стрелками (паттерн WAI-ARIA tabs)
   $("#databaseTabs")?.addEventListener("keydown", (event) => {
-    const index = tabs.indexOf(document.activeElement);
-    if (index === -1) return;
-    let next = null;
-    if (event.key === "ArrowRight") next = tabs[(index + 1) % tabs.length];
-    else if (event.key === "ArrowLeft") next = tabs[(index - 1 + tabs.length) % tabs.length];
-    else if (event.key === "Home") next = tabs[0];
-    else if (event.key === "End") next = tabs[tabs.length - 1];
-    if (!next) return;
+    if (!tabs.includes(document.activeElement)) return;
+    const next = nextFocusIndex(tabs, event, { axis: "x" });
+    if (next === -1) return;
     event.preventDefault();
-    activate(next.dataset.tab, true);
+    activate(tabs[next].dataset.tab, true);
   });
 
   window.addEventListener("hashchange", () => {
@@ -548,7 +723,7 @@ function unitCardHtml(item) {
   const color = factionColor(item.faction);
   const name = loc(item.name, lang);
   // картинка по умолчанию — по id; item.image переопределяет, "" скрывает
-  const imageSrc = item.image === "" ? "" : item.image || `assets/img/database/${item.id}.webp`;
+  const imageSrc = item.image === "" ? "" : item.image || `assets/img/database/${item.id}.avif`;
   const initials = name.slice(0, 2).toUpperCase();
   const image = imageSrc
     ? `<img src="${escapeHtml(abs(imageSrc))}" alt="${escapeHtml(name)}" data-initials="${escapeHtml(initials)}" loading="lazy">`
@@ -750,9 +925,10 @@ function renderPage(lang) {
 let dataReady = false;
 
 async function boot() {
-  const lang = bootI18n();
   initHeader();
   initYear();
+  initLangSwitch();
+  const lang = await bootI18n();
   initDropdowns();
   initTabs();
   initImageFallback();

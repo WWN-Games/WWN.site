@@ -1,0 +1,28 @@
+/* WWN — тексты вики (EN). */
+
+export const DICT = {
+  "wiki.title": "WWN Wiki",
+  "wiki.subtitle": "Mod reference: lore, factions, races, units, structures, mechanics and guides.",
+  "wiki.sidebar": "Wiki sections",
+  "wiki.search.title": "Search the wiki",
+  "wiki.search.placeholder": "Search the wiki…",
+  "wiki.search.empty": "Nothing found in the wiki",
+  "wiki.search.hint": "Type at least 2 characters",
+  "wiki.search.found": "Found: {n}",
+  "wiki.articles": "articles",
+  "wiki.help": "Need install help? Check the wiki or ping the community.",
+  "wiki.stats.sections": "sections",
+  "wiki.stats.factions": "factions",
+  "wiki.back": "Back to wiki",
+  "wiki.toc": "On this page",
+  "wiki.updated": "Updated",
+  "wiki.draft": "Draft",
+  "wiki.readingTime": "min read",
+  "wiki.copy": "Copy",
+  "wiki.copied": "Copied",
+  "wiki.prev": "Previous",
+  "wiki.next": "Next",
+  "wiki.notFound.title": "Article not found",
+  "wiki.notFound.desc": "Check the link or go back to the article list.",
+  "wiki.loadError.desc": "Most likely the site is opened as a file. Run a local server (e.g. python3 -m http.server) or open the site on GitHub Pages.",
+};

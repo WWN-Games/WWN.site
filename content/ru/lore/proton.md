@@ -34,7 +34,7 @@ updated: 2026-09-15
 
 ## Карта и герб
 
-![Карта Движения Протон](../assets/img/lore/map-proton.webp)
+![Карта Движения Протон](../assets/img/lore/map-proton.avif)
 
 ![Герб Движения Протон](../assets/img/factions/faction-proton.svg)
 

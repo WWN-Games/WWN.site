@@ -30,6 +30,25 @@
   <link rel="stylesheet" href="assets/css/fonts.css">
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="modulepreload" href="assets/js/main.js">
+  <script>
+    (() => {
+      let lang; try { lang = localStorage.getItem("wwn-lang"); } catch (e) {}
+      if (lang !== "ru" && lang !== "en") lang = (navigator.language || "ru").slice(0, 2).toLowerCase() === "ru" ? "ru" : "en";
+      const add = (rel, href, as, type) => {
+        const link = document.createElement("link");
+        link.rel = rel;
+        link.href = href;
+        if (as) link.as = as;
+        if (type) link.type = type;
+        if (rel === "preload") link.crossOrigin = "";
+        document.head.append(link);
+      };
+      add("modulepreload", "assets/js/i18n/home." + lang + ".js");
+      for (const font of lang === "ru" ? ["geist-cyrillic", "science-gothic-cyrillic"] : ["geist-latin", "science-gothic-latin"]) {
+        add("preload", "assets/fonts/" + font + ".woff2", "font", "font/woff2");
+      }
+    })();
+  </script>
   <script type="speculationrules">
     {"prefetch":[{"source":"document","where":{"href_matches":"wiki/*"},"eagerness":"moderate"}]}
   </script>
@@ -86,14 +105,14 @@
         <button type="button" data-lang-btn="RU">RU</button>
         <button type="button" data-lang-btn="EN">EN</button>
       </div>
-      <button class="icon-btn burger" id="burger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mobileNav">
+      <button class="icon-btn burger" id="burger" type="button" aria-label="Menu" aria-controls="mobileNav" popovertarget="mobileNav">
         <span></span>
       </button>
     </div>
   </div>
 </header>
 
-<div class="mobile-nav" id="mobileNav" inert>
+<div class="mobile-nav" id="mobileNav" popover="auto">
   <a href="#features" data-i18n="nav.features"></a>
   <a href="#factions" data-i18n="nav.factions"></a>
   <a href="#gallery" data-i18n="nav.gallery"></a>
@@ -111,8 +130,8 @@
 <main id="top">
   <section class="hero">
     <div class="hero__bg" aria-hidden="true">
-      <img class="hero__bg-img" src="assets/img/bg/banner-1440.webp" alt="" width="1440" height="576"
-        srcset="assets/img/bg/banner-960.webp 960w, assets/img/bg/banner-1440.webp 1440w"
+      <img class="hero__bg-img" src="assets/img/bg/banner-1440.avif" alt="" width="1440" height="576"
+        srcset="assets/img/bg/banner-960.avif 960w, assets/img/bg/banner-1440.avif 1440w"
         sizes="100vw" fetchpriority="high" decoding="async">
     </div>
     <div class="hero__grade" aria-hidden="true"></div>
@@ -431,9 +450,9 @@
   </div>
 </footer>
 
-<button class="to-top" id="toTop" type="button" data-i18n-aria="footer.backToTop">
+<a class="to-top" id="toTop" href="#top" data-i18n-aria="footer.backToTop">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6" /></svg>
-</button>
+</a>
 <dialog class="lightbox" id="lightbox" aria-label="Gallery">
   <button class="lightbox__close" id="lbClose" type="button" data-i18n-aria="gallery.close">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>

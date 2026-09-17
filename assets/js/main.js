@@ -1,18 +1,18 @@
 /* ============================================================================
    WWN — главная страница: только сборка блоков. Логика — в assets/js/home/*.
-   Сначала рисуются каркас и переводы; тяжёлые блоки (hero, галерея, новости,
-   FAQ, счётчики) подтягиваются асинхронно и не задерживают первый экран.
    ============================================================================ */
 
 import { WWN_CONFIG } from "./site-config.js";
-import { bootI18n, onLangChange, registerI18n, t } from "./i18n.js";
-import { HOME_I18N } from "./i18n/home.js";
+import { bootI18n, initLangSwitch, onLangChange, registerDictLoaders, t } from "./i18n.js";
 import { debounce } from "./utils.js";
 import { initHeader, initReveal, initYear, resolveLinks } from "./ui.js";
 
-registerI18n(HOME_I18N);
+registerDictLoaders({
+  ru: () => import("./i18n/home.ru.js"),
+  en: () => import("./i18n/home.en.js")
+});
 
-const cfg = WWN_CONFIG;
+let cfg = WWN_CONFIG;
 let mods = null;
 
 function applyLang(lang) {
@@ -25,10 +25,12 @@ function applyLang(lang) {
 }
 
 async function boot() {
-  const lang = bootI18n();
   initHeader();
   initYear();
   initReveal();
+  initLangSwitch();
+
+  const lang = await bootI18n();
   applyLang(lang);
 
   onLangChange((next) => {
@@ -37,20 +39,25 @@ async function boot() {
   });
   window.addEventListener("resize", debounce(() => mods?.faq.syncFaqHeights(), 150));
 
-  const [hero, gallery, news, faq, stats] = await Promise.all([
+  const [siteData, hero, gallery, news, faq, stats] = await Promise.all([
+    import("./site-data.js"),
     import("./home/hero.js"),
     import("./home/gallery.js"),
     import("./home/news.js"),
     import("./home/faq.js"),
     import("./home/stats.js")
   ]);
+  cfg = { ...WWN_CONFIG, ...siteData.SITE_DATA };
   mods = { gallery, news, faq, stats };
 
   hero.initHero();
   gallery.initGalleryUi();
   faq.initFaq();
   stats.initStats(cfg);
-  applyLang(lang);
+
+  const render = () => applyLang(lang);
+  if ("requestIdleCallback" in window) requestIdleCallback(render, { timeout: 300 });
+  else setTimeout(render, 60);
 }
 
 boot();

@@ -68,6 +68,26 @@ export const escapeHtml = (value) =>
 export const safeColor = (value, fallback) =>
   typeof value === "string" && /^#([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(value) ? value : fallback;
 
+/* Индекс для клавиатурной навигации по списку (стрелки, Home/End).
+   axis: "y" — вверх/вниз, "x" — влево/вправо; wrap — по кругу. -1, если клавиша не наша. */
+export function nextFocusIndex(items, event, { wrap = true, axis = "y" } = {}) {
+  if (!items.length) return -1;
+  const last = items.length - 1;
+  const index = items.indexOf(document.activeElement);
+  const [prevKey, nextKey] = axis === "x" ? ["ArrowLeft", "ArrowRight"] : ["ArrowUp", "ArrowDown"];
+  if (event.key === nextKey) {
+    if (index === -1) return 0;
+    return wrap ? (index === last ? 0 : index + 1) : Math.min(index + 1, last);
+  }
+  if (event.key === prevKey) {
+    if (index === -1) return last;
+    return wrap ? (index === 0 ? last : index - 1) : Math.max(index - 1, 0);
+  }
+  if (event.key === "Home") return 0;
+  if (event.key === "End") return last;
+  return -1;
+}
+
 export function debounce(fn, delay = 150) {
   let timer = null;
   return (...args) => {

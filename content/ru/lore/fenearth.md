@@ -45,7 +45,7 @@ updated: 2026-09-15
 
 ## Карта и герб
 
-![Карта Фенземской Республики](../assets/img/lore/map-fenearth.webp)
+![Карта Фенземской Республики](../assets/img/lore/map-fenearth.avif)
 
 ![Герб Фенземской Республики](../assets/img/factions/faction-fer.svg)
 

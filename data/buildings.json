@@ -1,7 +1,7 @@
 {
   "_schema": [
     "Компактный формат строений. Поля:",
-    "id — строковый идентификатор (картинка: assets/img/database/<id>.webp);",
+    "id — строковый идентификатор (картинка: assets/img/database/<id>.avif);",
     "name, desc — { ru, en }; если перевод совпадает, en можно не писать;",
     "faction — id из factions.json;",
     "type — economy | defense | structure;",
@@ -12,18 +12,6 @@
     "Необязательные поля карточки: role, strongVs, weakVs, draft."
   ],
   "buildings": [
-    {
-      "id": "0sfacfzr",
-      "name": { "ru": "Орбитальная суперверфь", "en": "Orbital supershipyard" },
-      "faction": "fenearth",
-      "type": "structure",
-      "desc": {
-        "ru": "Производит космические суперкорабли • Космические корабли многозадачны, имеют хорошую прочность и урон, могут перемещаться по всей карте, но очень дорогие • Верфи могут достаточно быстро перемещаться своим ходом или быть транспортированы Броненосцем • Большая часть кораблей имеет возможность спуска в атмосферу для поддержки и выгрузки наземных сил • Малые космические корабли зачастую могут обслуживаться в некоторых юнитах как вертолёты или самолёты",
-        "en": "Produces space superspaceships • Spaceships are multi-purpose, have good durability and damage, can move across the whole map, but are very expensive • Shipyards can move fairly fast under their own power or be transported by the Armour-clad • Most ships can descend into the atmosphere to support and unload ground forces • Small spaceships can often be serviced in some units like helicopters or aircraft"
-      },
-      "tags": ["T1", "building", "AIR"],
-      "cost": 3500, "hp": 3500, "buildTime": 120
-    },
 
     {
       "id": "aafzr",
@@ -721,6 +709,19 @@
       },
       "tags": ["T1", "building", "BUILDING"],
       "cost": 400, "hp": 950, "range": 150, "buildTime": 24
+    },
+
+    {
+      "id": "suppe2",
+      "name": { "ru": "Штаб снабжения T2", "en": "Supply headquarters T2" },
+      "faction": "proton",
+      "type": "economy",
+      "desc": {
+        "ru": "Производит спецаилизированные мобильные установки • Лечит пехоту и установки в среднем радиусе вокруг • Хороший радиус обзора, есть радар",
+        "en": "Produces specialised mobile installations • Heals infantry and installations in a medium radius around it • Good view radius, has radar"
+      },
+      "tags": ["T1", "building", "BUILDING"],
+      "cost": 800, "hp": 1800, "range": 180, "buildTime": 55
     },
 
     {

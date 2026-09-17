@@ -1,0 +1,28 @@
+/* WWN — тексты вики (RU). */
+
+export const DICT = {
+  "wiki.title": "Вики WWN",
+  "wiki.subtitle": "Справочник по моду: лор, фракции, расы, юниты, строения, механики и гайды.",
+  "wiki.sidebar": "Разделы вики",
+  "wiki.search.title": "Поиск по вики",
+  "wiki.search.placeholder": "Поиск по вики…",
+  "wiki.search.empty": "Ничего не найдено в вики",
+  "wiki.search.hint": "Введи минимум 2 символа",
+  "wiki.search.found": "Найдено: {n}",
+  "wiki.articles": "статей",
+  "wiki.help": "Нужна помощь с установкой? Загляни в вики или напиши в сообщество.",
+  "wiki.stats.sections": "разделов",
+  "wiki.stats.factions": "фракции",
+  "wiki.back": "Назад в вики",
+  "wiki.toc": "На этой странице",
+  "wiki.updated": "Обновлено",
+  "wiki.draft": "Черновик",
+  "wiki.readingTime": "мин чтения",
+  "wiki.copy": "Копировать",
+  "wiki.copied": "Скопировано",
+  "wiki.prev": "Предыдущая",
+  "wiki.next": "Следующая",
+  "wiki.notFound.title": "Статья не найдена",
+  "wiki.notFound.desc": "Проверь ссылку или вернись к списку статей.",
+  "wiki.loadError.desc": "Скорее всего, сайт открыт как файл. Запусти локальный сервер (например, python3 -m http.server) или открой сайт на GitHub Pages.",
+};

@@ -1,15 +1,16 @@
 /* ============================================================================
    WWN — живые числа сайта: единственный источник — data/stats.json.
-   Значения из site-config.js используются как запас, если файл недоступен.
+   Значения из site-data.js используются как запас, если файл недоступен.
    ============================================================================ */
 
 import { WWN_CONFIG } from "./site-config.js";
+import { SITE_DATA } from "./site-data.js";
 import { abs } from "./utils.js";
 
 const KEYS = ["units", "factions", "maps"];
 
 export async function loadStats() {
-  const stats = { ...(WWN_CONFIG.stats || {}) };
+  const stats = { ...(SITE_DATA.stats || {}) };
   try {
     const res = await fetch(abs(`data/stats.json?v=${WWN_CONFIG.version}`));
     if (!res.ok) return stats;

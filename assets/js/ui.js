@@ -19,24 +19,14 @@ export function initHeader() {
   const burger = $("#burger");
   const mobileNav = $("#mobileNav");
   if (burger && mobileNav) {
-    const setOpen = (open) => {
-      mobileNav.classList.toggle("is-open", open);
-      burger.classList.toggle("is-open", open);
-      burger.setAttribute("aria-expanded", String(open));
-      mobileNav.inert = !open;
-      document.body.classList.toggle("is-locked", open);
-    };
-    setOpen(false);
-    burger.addEventListener("click", () => setOpen(!mobileNav.classList.contains("is-open")));
-    $$("a", mobileNav).forEach((link) => link.addEventListener("click", () => setOpen(false)));
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && mobileNav.classList.contains("is-open")) {
-        setOpen(false);
-        burger.focus();
-      }
+    mobileNav.addEventListener("click", (event) => {
+      if (event.target.closest("a")) mobileNav.hidePopover();
+    });
+    mobileNav.addEventListener("toggle", (event) => {
+      burger.setAttribute("aria-expanded", String(event.newState === "open"));
     });
     window.matchMedia("(min-width: 901px)").addEventListener("change", (event) => {
-      if (event.matches) setOpen(false);
+      if (event.matches) mobileNav.hidePopover();
     });
   }
 
@@ -63,10 +53,8 @@ export function initHeader() {
   const measureScroll = () => {
     maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
   };
-  if (progress) {
-    measureScroll();
-    new ResizeObserver(measureScroll).observe(document.body);
-  }
+  measureScroll();
+  new ResizeObserver(measureScroll).observe(document.body);
 
   let ticking = false;
   const update = () => {
@@ -85,7 +73,7 @@ export function initHeader() {
       for (const target of spyOffsets) target.link.classList.toggle("is-active", target === current);
     }
 
-    if (toTop) toTop.classList.toggle("is-visible", y > 700);
+    if (toTop) toTop.classList.toggle("is-visible", y > Math.min(700, maxScroll * 0.5));
   };
   const schedule = () => {
     if (ticking) return;
@@ -97,9 +85,10 @@ export function initHeader() {
   window.addEventListener("scroll", schedule, { passive: true });
 
   if (toTop) {
-    toTop.addEventListener("click", () =>
-      window.scrollTo({ top: 0, behavior: prefersReduced ? "auto" : "smooth" })
-    );
+    toTop.addEventListener("click", (event) => {
+      event.preventDefault();
+      window.scrollTo({ top: 0, behavior: prefersReduced ? "auto" : "smooth" });
+    });
   }
 }
 export function resolveLinks(config) {

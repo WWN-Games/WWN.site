@@ -35,15 +35,15 @@ Thanks to the technologies of the Luripo race, they have long experimented with 
 
 The most common appearance of a Vasst (shown in the standard uniform of the United Proton Liberation Army):
 
-![Portrait of a Vasst in uniform](../assets/img/lore/vasst-portrait.webp)
+![Portrait of a Vasst in uniform](../assets/img/lore/vasst-portrait.avif)
 
 One of the Vasst subspecies in armour, with a commander's golden chain and a clan mark on the face:
 
-![A Vasst subspecies in armour with a commander's golden chain](../assets/img/lore/vasst-subspecies.webp)
+![A Vasst subspecies in armour with a commander's golden chain](../assets/img/lore/vasst-subspecies.avif)
 
 In-game appearance:
 
-![Vasst in the game](../assets/img/lore/vasst-ingame.webp)
+![Vasst in the game](../assets/img/lore/vasst-ingame.avif)
 
 ### Example of Protonian speech
 

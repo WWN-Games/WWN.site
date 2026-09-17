@@ -45,7 +45,7 @@ The standard of living in the Republic remains acceptable, although it varies de
 
 ## Map and emblem
 
-![Map of the Fenearth Republic](../assets/img/lore/map-fenearth.webp)
+![Map of the Fenearth Republic](../assets/img/lore/map-fenearth.avif)
 
 ![Emblem of the Fenearth Republic](../assets/img/factions/faction-fer.svg)
 

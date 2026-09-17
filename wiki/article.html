@@ -29,6 +29,26 @@
   <link rel="stylesheet" href="../assets/css/style.css">
   <link rel="stylesheet" href="../assets/css/wiki.css">
   <link rel="modulepreload" href="../assets/js/wiki.js">
+  <link rel="modulepreload" href="../assets/js/wiki-shell.js">
+  <script>
+    (() => {
+      let lang; try { lang = localStorage.getItem("wwn-lang"); } catch (e) {}
+      if (lang !== "ru" && lang !== "en") lang = (navigator.language || "ru").slice(0, 2).toLowerCase() === "ru" ? "ru" : "en";
+      const add = (rel, href, as, type) => {
+        const link = document.createElement("link");
+        link.rel = rel;
+        link.href = href;
+        if (as) link.as = as;
+        if (type) link.type = type;
+        if (rel === "preload") link.crossOrigin = "";
+        document.head.append(link);
+      };
+      add("modulepreload", "../assets/js/i18n/wiki." + lang + ".js");
+      for (const font of lang === "ru" ? ["geist-cyrillic", "science-gothic-cyrillic"] : ["geist-latin", "science-gothic-latin"]) {
+        add("preload", "../assets/fonts/" + font + ".woff2", "font", "font/woff2");
+      }
+    })();
+  </script>
 </head>
 <body class="wiki-body">
 <a class="skip-link" href="#main-content" data-i18n="a11y.skip"></a>
@@ -53,12 +73,12 @@
         <button type="button" data-lang-btn="RU">RU</button>
         <button type="button" data-lang-btn="EN">EN</button>
       </div>
-      <button class="icon-btn burger" id="burger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mobileNav"><span></span></button>
+      <button class="icon-btn burger" id="burger" type="button" aria-label="Menu" aria-controls="mobileNav" popovertarget="mobileNav"><span></span></button>
     </div>
   </div>
 </header>
 
-<div class="mobile-nav" id="mobileNav" inert>
+<div class="mobile-nav" id="mobileNav" popover="auto">
   <a href="../index.html" data-i18n="nav.home"></a>
   <a href="../index.html#features" data-i18n="nav.features"></a>
   <a href="../index.html#factions" data-i18n="nav.factions"></a>
@@ -121,6 +141,8 @@
     <a class="btn btn--sm" href="./" data-i18n="wiki.back"></a>
   </div>
 </footer>
+
+<a class="to-top" id="toTop" href="#top" data-i18n-aria="footer.backToTop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6" /></svg></a>
 
 <script type="module" src="../assets/js/wiki.js"></script>
 </body>

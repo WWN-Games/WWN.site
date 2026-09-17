@@ -1,7 +1,7 @@
 {
   "_schema": [
     "Компактный формат юнитов. Поля:",
-    "id — строковый идентификатор (картинка: assets/img/database/<id>.webp);",
+    "id — строковый идентификатор (картинка: assets/img/database/<id>.avif);",
     "name, desc — { ru, en }; если перевод совпадает, en можно не писать;",
     "faction — id из factions.json;",
     "type — ground | air | naval | space | support;",

@@ -69,15 +69,9 @@
   --reveal-stagger: .08s;
 }
 
-@view-transition { navigation: auto; }
-::view-transition-old(root),
-::view-transition-new(root) { animation-duration: .3s; }
-@media (prefers-reduced-motion: reduce) {
-  @view-transition { navigation: none; }
-}
-
 *, *::before, *::after { box-sizing: border-box; }
 * { margin: 0; padding: 0; }
+*, *::before, *::after { -webkit-tap-highlight-color: transparent; }
 [hidden] { display: none !important; }
 
 html {
@@ -356,34 +350,42 @@ body:has(dialog[open]) { overflow: hidden; }
 }
 .icon-btn svg { width: 19px; height: 19px; }
 .icon-btn:hover { color: #fff; background: var(--surface-2); border-color: var(--border-2); }
+.icon-btn:focus { outline: none; }
+.icon-btn:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--bg-0), 0 0 0 4px var(--cyan-hi); }
 
 .burger { display: none; }
 .burger span { display: block; width: 20px; height: 2px; background: #fff; position: relative; transition: .25s; }
 .burger span::before, .burger span::after { content: ""; position: absolute; left: 0; width: 20px; height: 2px; background: #fff; transition: .25s; }
 .burger span::before { top: -6px; }
 .burger span::after { top: 6px; }
-.burger.is-open span { background: transparent; }
-.burger.is-open span::before { transform: translateY(6px) rotate(45deg); }
-.burger.is-open span::after { transform: translateY(-6px) rotate(-45deg); }
+body:has(.mobile-nav:popover-open) .burger span { background: transparent; }
+body:has(.mobile-nav:popover-open) .burger span::before { transform: translateY(6px) rotate(45deg); }
+body:has(.mobile-nav:popover-open) .burger span::after { transform: translateY(-6px) rotate(-45deg); }
 
 .mobile-nav {
   position: fixed;
   inset: calc(var(--header-h) + var(--safe-top)) 0 auto 0;
   z-index: 89;
-  display: none;
+  margin: 0;
+  width: auto;
+  color: inherit;
   flex-direction: column;
   gap: 2px;
   max-height: calc(100dvh - var(--header-h) - var(--safe-top));
   overflow-y: auto;
   padding: 16px 22px calc(26px + var(--safe-bottom));
   background: rgba(4, 9, 17, 0.97);
+  border: 0;
   border-bottom: 1px solid var(--line);
-  transform: translateY(-10px);
   opacity: 0;
-  pointer-events: none;
-  transition: .28s;
+  transform: translateY(-10px);
+  transition: opacity .28s var(--ease-out), transform .28s var(--ease-out), overlay .28s allow-discrete, display .28s allow-discrete;
 }
-.mobile-nav.is-open { transform: none; opacity: 1; pointer-events: auto; }
+.mobile-nav:popover-open { display: flex; opacity: 1; transform: none; }
+@starting-style {
+  .mobile-nav:popover-open { opacity: 0; transform: translateY(-10px); }
+}
+body:has(.mobile-nav:popover-open) { overflow: hidden; }
 .mobile-nav a {
   padding: 14px 10px;
   font-family: var(--font-display);
@@ -789,20 +791,27 @@ body:has(dialog[open]) { overflow: hidden; }
   border: 0;
   background: transparent;
   overflow: auto;
+  opacity: 0;
+  transition: opacity .25s var(--ease-out), overlay .25s allow-discrete, display .25s allow-discrete;
 }
 .lightbox[open] {
   display: grid;
   place-items: center;
-  animation: lightboxIn .25s ease;
+  opacity: 1;
 }
 .lightbox::backdrop {
   background: rgba(2, 4, 9, .96);
-  animation: lightboxIn .25s ease;
+  opacity: 0;
+  transition: opacity .25s var(--ease-out), overlay .25s allow-discrete, display .25s allow-discrete;
 }
+.lightbox[open]::backdrop { opacity: 1; }
 @media (hover: hover) and (pointer: fine) {
   .lightbox::backdrop { backdrop-filter: blur(14px); }
 }
-@keyframes lightboxIn { from { opacity: 0; } to { opacity: 1; } }
+@starting-style {
+  .lightbox[open] { opacity: 0; }
+  .lightbox[open]::backdrop { opacity: 0; }
+}
 .lightbox__body { display: grid; justify-items: center; }
 .lightbox img {
   max-width: min(1240px, 94vw);
@@ -970,6 +979,8 @@ body:has(dialog[open]) { overflow: hidden; }
 }
 .to-top.is-visible { opacity: 1; pointer-events: auto; transform: none; }
 .to-top:hover { color: #fff; background: var(--surface-3); border-color: var(--border-2); }
+.to-top:focus { outline: none; }
+.to-top:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--bg-0), 0 0 0 4px var(--cyan-hi); }
 .to-top svg { width: 20px; height: 20px; }
 
 .empty-block {
@@ -1026,7 +1037,6 @@ body:has(dialog[open]) { overflow: hidden; }
   :root { --header-h: 64px; }
   .nav { display: none; }
   .burger { display: inline-grid; }
-  .mobile-nav { display: flex; }
   .download-grid, .steps, .factions-showcase { grid-template-columns: 1fr; }
   .gallery { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 176px; }
   .hero__dock { display: none; }
@@ -1058,5 +1068,3 @@ body:has(dialog[open]) { overflow: hidden; }
   .lightbox__next { right: max(8px, var(--safe-right)); }
   .to-top { right: max(14px, var(--safe-right)); bottom: max(14px, var(--safe-bottom)); }
 }
-
-body.is-locked { overflow: hidden; }

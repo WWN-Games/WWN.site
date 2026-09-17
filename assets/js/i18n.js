@@ -1,8 +1,9 @@
 /* ============================================================================
    WWN — локализация интерфейса (RU / EN). Движок + общие строки.
    ----------------------------------------------------------------------------
-   Страничные словари лежат в assets/js/i18n/*.js и подключаются на странице:
-     registerI18n(HOME_I18N) — до вызова bootI18n().
+   Страничные словари — assets/js/i18n/<page>.ru.js / <page>.en.js; грузится
+   только активный язык, которому в <head> заранее ставится modulepreload:
+     registerDictLoaders({ ru: () => import("./i18n/home.ru.js"), en: ... });
    В разметке: data-i18n="ключ", data-i18n-html / -placeholder / -title / -aria.
    В HTML текстов нет — только пустые привязки: единственный источник строк — словари.
    (Сайт рассчитан на работу с JS: подложек для no-JS в разметке не держим.)
@@ -24,7 +25,7 @@ const CORE_I18N = {
     "nav.faq": "FAQ",
     "database.title": "База данных",
     "brand.sub": "Мод для Rusted Warfare",
-    "siteTagline": "Мод WWN для Rusted Warfare. Космические флоты, наземные сражения и живая лига игроков.",
+    "siteTagline": "WWN — мод для Rusted Warfare с космическими флотами и масштабными наземными сражениями.",
     "footer.nav": "Навигация",
     "footer.community": "Сообщество",
     "footer.download": "Скачать",
@@ -51,7 +52,7 @@ const CORE_I18N = {
     "nav.faq": "FAQ",
     "database.title": "Database",
     "brand.sub": "A Rusted Warfare mod",
-    "siteTagline": "The WWN mod for Rusted Warfare. Space fleets, ground battles and a living players' league.",
+    "siteTagline": "WWN — a mod for Rusted Warfare featuring space fleets and large-scale ground battles.",
     "footer.nav": "Navigation",
     "footer.community": "Community",
     "footer.download": "Download",
@@ -70,13 +71,21 @@ const CORE_I18N = {
 };
 
 const dicts = { ru: { ...CORE_I18N.ru }, en: { ...CORE_I18N.en } };
+const pageLoaded = { ru: false, en: false };
+const pageLoaders = { ru: null, en: null };
 
-/** Добавить строки страницы в общий словарь (ru/en). */
-export function registerI18n(dict) {
-  if (!dict) return;
+/** Зарегистрировать ленивые загрузчики словаря страницы: { ru: () => import(...), en: ... }. */
+export function registerDictLoaders(loaders) {
   for (const lang of ["ru", "en"]) {
-    if (dict[lang]) Object.assign(dicts[lang], dict[lang]);
+    if (typeof loaders[lang] === "function") pageLoaders[lang] = loaders[lang];
   }
+}
+
+async function ensureDict(lang) {
+  if (pageLoaded[lang] || !pageLoaders[lang]) return;
+  const mod = await pageLoaders[lang]();
+  Object.assign(dicts[lang], mod.DICT);
+  pageLoaded[lang] = true;
 }
 export function getLang() {
   try {
@@ -87,8 +96,9 @@ export function getLang() {
   return nav === "ru" ? "ru" : "en";
 }
 
-function setLang(lang) {
-  if (!dicts[lang] || document.documentElement.lang === lang) return;
+async function setLang(lang) {
+  if (document.documentElement.lang === lang) return;
+  await ensureDict(lang);
   try { localStorage.setItem(LANG_KEY, lang); } catch {}
   document.documentElement.lang = lang;
   applyI18n(lang);
@@ -131,7 +141,9 @@ export function initLangSwitch() {
   if (langSwitchBound) return;
   langSwitchBound = true;
   $$("[data-lang-btn]").forEach((btn) =>
-    btn.addEventListener("click", () => setLang(btn.getAttribute("data-lang-btn").toLowerCase()))
+    btn.addEventListener("click", () => {
+      setLang(btn.getAttribute("data-lang-btn").toLowerCase()).catch(() => {});
+    })
   );
 }
 
@@ -140,9 +152,10 @@ export function onLangChange(handler) {
   document.addEventListener("wwn:langchange", (event) => handler(event.detail.lang));
 }
 
-/** Стартовая локализация страницы. */
-export function bootI18n() {
+/** Стартовая локализация страницы: догружает словарь активного языка. */
+export async function bootI18n() {
   const lang = getLang();
+  await ensureDict(lang);
   document.documentElement.lang = lang;
   applyI18n(lang);
   initLangSwitch();

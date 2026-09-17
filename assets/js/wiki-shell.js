@@ -3,13 +3,12 @@
    ============================================================================ */
 
 import { WWN_CONFIG } from "./site-config.js";
-import { bootI18n, onLangChange, registerI18n, t } from "./i18n.js";
-import { WIKI_I18N } from "./i18n/wiki.js";
-import { $, abs, debounce, emptyBlock, escapeHtml, loc } from "./utils.js";
-import { initHeader, initReveal, initYear } from "./ui.js";
+import { SITE_DATA } from "./site-data.js";
+import { bootI18n, onLangChange, t } from "./i18n.js";
+import { $, abs, debounce, emptyBlock, escapeHtml, loc, nextFocusIndex } from "./utils.js";
+import { initReveal } from "./ui.js";
 import { loadStats } from "./stats-data.js";
 
-registerI18n(WIKI_I18N);
 
 const ICONS = {
   book: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
@@ -134,7 +133,7 @@ export function buildHome(lang) {
     stats.replaceChildren(
       ...[[navData.categories.length, t("wiki.stats.sections", lang)],
         [flatArticles.length, t("wiki.articles", lang)],
-        [liveStats?.factions ?? WWN_CONFIG.stats?.factions ?? 0, t("wiki.stats.factions", lang)]].map(([value, label]) => {
+        [liveStats?.factions ?? SITE_DATA.stats?.factions ?? 0, t("wiki.stats.factions", lang)]].map(([value, label]) => {
         const span = document.createElement("span");
         const strong = document.createElement("b");
         strong.textContent = String(value);
@@ -391,16 +390,18 @@ function initSearch() {
 
   results?.addEventListener("keydown", (event) => {
     const items = [...results.querySelectorAll(".search-result")];
+    if (!items.length) return;
     const index = items.indexOf(document.activeElement);
     if (index === -1) return;
-    if (event.key === "ArrowDown") {
+    if (event.key === "ArrowUp" && index === 0) {
       event.preventDefault();
-      items[Math.min(index + 1, items.length - 1)].focus();
-    } else if (event.key === "ArrowUp") {
-      event.preventDefault();
-      if (index === 0) input.focus();
-      else items[index - 1].focus();
+      input.focus();
+      return;
     }
+    const next = nextFocusIndex(items, event, { wrap: false });
+    if (next === -1) return;
+    event.preventDefault();
+    items[next].focus();
   });
 
   panel.addEventListener("click", (event) => {
@@ -419,7 +420,7 @@ function initSearch() {
   return (lang) => { searchLang = lang; };
 }
 function applyLangVisuals(lang) {
-  document.body.style.setProperty("--wiki-hero-img", `url("${abs(`assets/img/lore/tc-${lang === "en" ? "en" : "ru"}.webp`)}")`);
+  document.body.style.setProperty("--wiki-hero-img", `url("${abs(`assets/img/lore/tc-${lang === "en" ? "en" : "ru"}.avif`)}")`);
 }
 
 function showNavError(lang) {
@@ -433,12 +434,10 @@ function showNavError(lang) {
 /** Общий запуск страниц вики/каталога: шапка, сайдбар, поиск, подписка на язык.
  *  onRender(lang) вызывается на старте и при каждой смене языка. */
 export async function initShell({ slug = null, onRender } = {}) {
-  let lang = bootI18n();
+  let lang = await bootI18n();
   let navReady = false;
   let navFailed = false;
   let renderQueue = Promise.resolve();
-  initHeader();
-  initYear();
   const setSearchLang = initSearch();
 
   const rerender = () => {

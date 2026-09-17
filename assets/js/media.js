@@ -24,7 +24,7 @@ function entryFor(src) {
 function imageData(src) {
   const entry = entryFor(src);
   if (!entry) return null;
-  const parts = entry.variants.map((w) => `${abs(entry.key.replace(/\.webp$/, `-${w}.webp`))} ${w}w`);
+  const parts = entry.variants.map((w) => `${abs(entry.key.replace(/\.avif$/, `-${w}.avif`))} ${w}w`);
   parts.push(`${abs(entry.key)} ${entry.w}w`);
   return {
     src: abs(entry.key),

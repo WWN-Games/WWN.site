@@ -34,7 +34,7 @@ For a long time, like the whole galaxy, the Proton Movement used the old equipme
 
 ## Map and emblem
 
-![Map of the Proton Movement](../assets/img/lore/map-proton.webp)
+![Map of the Proton Movement](../assets/img/lore/map-proton.avif)
 
 ![Emblem of the Proton Movement](../assets/img/factions/faction-proton.svg)
 

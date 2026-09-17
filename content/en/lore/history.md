@@ -19,17 +19,17 @@ One of the quarantined galaxies was the Milky Way. This galaxy, recently discove
 
 Time passed, but the Wanderers never made contact again, and the nanites seemed to be suppressed. The Keepers began to decline and deviate from their purpose, and in the eyes of most races, they became mere mad fungi, ready to destroy them at any moment under their single pretext of "Purification."
 
-![Map of the galaxy in the era of the Distant Past](../assets/img/lore/dp-en.webp)
+![Map of the galaxy in the era of the Distant Past](../assets/img/lore/dp-en.avif)
 
 ## Period of Gii
 
 Races began to block and press the Keepers. Minel — one of the oldest and strongest empires — took upon itself the sacred duty of eradicating this Central Scourge. After more than twenty Crusades, it finally managed to defeat the Keepers and take a dominant position in the galaxy. However, the rapidly developing Olympian Empire was ready to challenge this power.
 
-![Map of the galaxy in the Period of Gii](../assets/img/lore/pg-en.webp)
+![Map of the galaxy in the Period of Gii](../assets/img/lore/pg-en.avif)
 
 Amidst the growing tension and a series of minor conflicts, Minel and the Olympian Empire created some of the most advanced fleets and armies, which ultimately saved them.
 
-![Confrontation of Minel and the Olympian Empire in the Period of Gii](../assets/img/lore/pg2-en.webp)
+![Confrontation of Minel and the Olympian Empire in the Period of Gii](../assets/img/lore/pg2-en.avif)
 
 ## War of Purification
 
@@ -37,17 +37,17 @@ Unexpectedly, the isolationist state of Ren-Acha attacked... the entire galaxy. 
 
 Minel and the Olympian Empire were the first to face the attack. Setting aside their past differences, they formed a defensive alliance — the Star Confederation — which was soon joined by the Fenkar Federation, the Clans of Oten, and other states. Thus began the War of Purification.
 
-![Map of the galaxy in the era of the War of Purification](../assets/img/lore/vo-en.webp)
+![Map of the galaxy in the era of the War of Purification](../assets/img/lore/vo-en.avif)
 
 During the war, Minel and Olympia lost most of their territories, industries, and troops, which were gradually replaced by the technology of the Fenkar Federation. It took almost a century to defeat the Enslavers. In the end, more than half of the galaxy was destroyed, countless worlds, populations, and races were infected and subsequently Purified.
 
-![The galaxy at the final stage of the War of Purification](../assets/img/lore/vo2-en.webp)
+![The galaxy at the final stage of the War of Purification](../assets/img/lore/vo2-en.avif)
 
 ## Period of Calm
 
 To cope with the widespread grief and problems, the states unanimously voted to reform the Star Confederation into the Galactic Federation. The galaxy began to recover and address internal issues collectively. Troops were conserved and reduced. Many purified and uninhabited planets were terraformed and resettled, and the standard of living began to improve.
 
-![Map of the galaxy in the Period of Calm](../assets/img/lore/pz-en.webp)
+![Map of the galaxy in the Period of Calm](../assets/img/lore/pz-en.avif)
 
 ## Galactic Turmoil
 
@@ -55,13 +55,13 @@ Unfortunately, the management apparatus was imperfect, bureaucratic, and corrupt
 
 During the Turmoil (1995-2077 CE), humans from Earth managed to venture into space and defeat their first enemies. Together with Fenkar, they formed the Fenearth Republic (2061 CE), which became a self-sufficient state on the new political map.
 
-![Map of the galaxy during the Galactic Turmoil](../assets/img/lore/gs-en.webp)
+![Map of the galaxy during the Galactic Turmoil](../assets/img/lore/gs-en.avif)
 
 ## Recent History
 
 After the end of the Turmoil, the following states emerged on the galactic scene: the Fenearth Republic, the Proton Movement, Minel, Aun, and the Black Market Territory. They all agreed to an unspoken truce to deal with the problems following the dissolution of the GF. During this time, several local conflicts and events occurred. The most significant were the secession of the Olympian Sector from Aun (which became NAun) followed by a civil war, and the creation of Minel's Incorporation of Independent Regions (essentially creating vassals from nearby small states).
 
-![Map of the galaxy in Recent History](../assets/img/lore/ni-en.webp)
+![Map of the galaxy in Recent History](../assets/img/lore/ni-en.avif)
 
 ## Triple Conflict
 
@@ -69,4 +69,4 @@ Then, in 2121 PZLI, after a long-prepared plan to sequentially subjugate the gal
 
 This is when the events of the mod take place when playing as different factions — the [Fenearth Republic](fenearth.md) and the [Proton Movement](proton.md).
 
-![Map of the galaxy during the Triple Conflict](../assets/img/lore/tc-en.webp)
+![Map of the galaxy during the Triple Conflict](../assets/img/lore/tc-en.avif)

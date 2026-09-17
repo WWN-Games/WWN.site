@@ -346,6 +346,7 @@
   color: var(--cyan-hi);
 }
 .article__body pre {
+  position: relative;
   padding: 20px;
   overflow-x: auto;
   border: 1px solid var(--line);
@@ -353,7 +354,6 @@
   background: rgba(4, 10, 19, .92);
   line-height: 1.6;
 }
-.article__body pre { position: relative; }
 .article__body pre code { background: none; border: 0; padding: 0; color: var(--text-soft); font-size: 14px; }
 .article__copy {
   position: absolute;
@@ -536,6 +536,9 @@
   padding: calc(12vh + var(--safe-top)) 20px calc(40px + var(--safe-bottom));
   background: rgba(2, 4, 9, .96);
   overflow-y: auto;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity .22s var(--ease-out), transform .22s var(--ease-out), overlay .22s allow-discrete, display .22s allow-discrete;
 }
 @media (hover: hover) and (pointer: fine) {
   .search-panel { background: rgba(2, 4, 9, .92); backdrop-filter: blur(14px); }
@@ -544,10 +547,13 @@
   display: grid;
   align-content: start;
   justify-items: center;
-  animation: searchIn .22s ease;
+  opacity: 1;
+  transform: none;
 }
 .search-panel::backdrop { background: transparent; }
-@keyframes searchIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+@starting-style {
+  .search-panel[open] { opacity: 0; transform: translateY(-8px); }
+}
 .search-panel__box { width: min(740px, 100%); }
 .search-panel__input {
   width: 100%;
