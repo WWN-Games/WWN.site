@@ -105,11 +105,7 @@
         "ru": "Чёрный рынок",
         "en": "Чёрный рынок"
       },
-      "motto": {
-        "ru": "PHATHOU — Первый порядок",
-        "en": "PHATHOU — the First Order"
-      },
-      "color": "#805209",
+      "color": "#777506",
       "emblem": "assets/img/factions/faction-darkmarket.svg",
       "lore": "lore/darkmarket",
       "desc": {
@@ -122,10 +118,6 @@
       "name": {
         "ru": "Животные",
         "en": "Животные"
-      },
-      "motto": {
-        "ru": "PHATHOU — Первый порядок",
-        "en": "PHATHOU — the First Order"
       },
       "color": "#688a69",
       "emblem": "assets/img/factions/faction-animals.svg",
