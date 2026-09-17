@@ -25,7 +25,7 @@ export const SITE_DATA = {
   news: [
     {
       date: "2026-09-17",
-      tag: "news",
+      tag: "update",
       link: "wiki/",
       ru: {
         title: "Вики WWN: лор, фракции и гайды",
