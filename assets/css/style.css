@@ -66,7 +66,6 @@
   /* параметры появления блоков [data-reveal] */
   --reveal-duration: .5s;
   --reveal-shift: 16px;
-  --reveal-stagger: .08s;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -228,6 +227,14 @@ body:has(dialog[open]) { overflow: hidden; }
 .chip--faction { color: var(--faction-color, var(--cyan)); border-color: color-mix(in srgb, var(--faction-color, var(--cyan)) 42%, transparent); }
 .chip--tag { color: #b3e9ff; border-color: rgba(88, 168, 255, .38); background: rgba(88, 168, 255, .08); }
 .chip--draft { color: var(--gold); border-color: rgba(var(--gold-rgb), .35); }
+/* подфракция: метка рядом с названием фракции; видна при любом цвете фракции */
+.chip--sub {
+  padding: 3px 8px;
+  color: color-mix(in srgb, var(--faction-color, var(--cyan)) 50%, #dbe8fb);
+  border-style: dashed;
+  border-color: color-mix(in srgb, var(--faction-color, var(--cyan)) 45%, var(--line));
+  background: transparent;
+}
 
 .header {
   position: fixed;
@@ -1003,15 +1010,12 @@ body:has(.mobile-nav:popover-open) { overflow: hidden; }
   opacity: 1;
   transform: none;
   /* анимация, а не transition: не конфликтует с transition-правилами карточек */
-  animation: reveal-in var(--reveal-duration) var(--ease-out) var(--reveal-delay, 0s) backwards;
+  animation: reveal-in var(--reveal-duration) var(--ease-out) backwards;
 }
 @keyframes reveal-in {
   from { opacity: 0; transform: translateY(var(--reveal-shift)); }
   to { opacity: 1; transform: none; }
 }
-[data-reveal-delay="1"] { --reveal-delay: var(--reveal-stagger); }
-[data-reveal-delay="2"] { --reveal-delay: calc(var(--reveal-stagger) * 2); }
-[data-reveal-delay="3"] { --reveal-delay: calc(var(--reveal-stagger) * 3); }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

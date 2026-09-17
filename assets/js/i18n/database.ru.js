@@ -38,6 +38,7 @@ export const DICT = {
   "database.strong": "Сильно против",
   "database.weak": "Слабо против",
   "database.draft": "Черновик",
+  "database.subfaction": "Подфракция",
   "database.faction.playstyle": "Стиль игры",
   "database.faction.specialty": "Специализация",
   "database.openLore": "Статья в вики",

@@ -1,14 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Black Market">
   <defs>
     <linearGradient id="bm-ring" x1="70" y1="60" x2="450" y2="460" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#9a6a16"/>
-      <stop offset=".5" stop-color="#805209"/>
-      <stop offset="1" stop-color="#603d06"/>
+      <stop offset="0" stop-color="#6e6e6e"/>
+      <stop offset=".5" stop-color="#1c1c1c"/>
+      <stop offset="1" stop-color="#040404"/>
     </linearGradient>
     <linearGradient id="bm-gem" x1="150" y1="120" x2="360" y2="400" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#a8741f"/>
-      <stop offset=".55" stop-color="#805209"/>
-      <stop offset="1" stop-color="#63410a"/>
+      <stop offset="0" stop-color="#4a4a4a"/>
+      <stop offset=".55" stop-color="#0e0e0e"/>
+      <stop offset="1" stop-color="#040404"/>
     </linearGradient>
   </defs>
 
@@ -16,15 +16,15 @@
   <rect x="60" y="60" width="392" height="392" rx="74" fill="none" stroke="url(#bm-ring)" stroke-width="30"/>
 
   <!-- тень кристалла -->
-  <g transform="translate(4 5)" opacity=".55">
-    <path d="M 176 150 L 336 150 L 380 218 L 256 398 L 132 218 Z" fill="#432b05" stroke="#432b05" stroke-width="14" stroke-linejoin="round"/>
+  <g transform="translate(4 5)" opacity=".6">
+    <path d="M 176 150 L 336 150 L 380 218 L 256 398 L 132 218 Z" fill="#000" stroke="#000" stroke-width="14" stroke-linejoin="round"/>
   </g>
 
   <!-- кристалл -->
   <path d="M 176 150 L 336 150 L 380 218 L 256 398 L 132 218 Z" fill="url(#bm-gem)"/>
 
   <!-- сколы по бокам: верхние углы и нижние грани -->
-  <g fill="#6f4708" opacity=".55">
+  <g fill="#000" opacity=".55">
     <path d="M 176 150 L 214 218 L 132 218 Z"/>
     <path d="M 336 150 L 380 218 L 298 218 Z"/>
     <path d="M 132 218 L 214 218 L 256 398 Z"/>
@@ -32,8 +32,8 @@
   </g>
 
   <!-- светлая площадка -->
-  <path d="M 176 150 L 336 150 L 298 218 L 214 218 Z" fill="#bd8f3d" opacity=".35"/>
+  <path d="M 176 150 L 336 150 L 298 218 L 214 218 Z" fill="#b0b0b0" opacity=".32"/>
 
   <!-- блик на грани: сужается ровно к острию кристалла -->
-  <path d="M 214 218 L 236 218 L 256 398 Z" fill="#bd8f3d" opacity=".18"/>
+  <path d="M 214 218 L 236 218 L 256 398 Z" fill="#cfcfcf" opacity=".2"/>
 </svg>

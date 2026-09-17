@@ -158,9 +158,6 @@
 
 .database-count { display: block; font-size: 13px; color: var(--muted); margin-bottom: 20px; letter-spacing: .05em; min-height: 1.2em; }
 .database-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; min-height: 72vh; }
-/* каскад появления — только для первых двух рядов, дальше карточки проявляются сразу */
-.database-grid > :nth-child(-n + 6):nth-child(3n + 2) { --reveal-delay: var(--reveal-stagger); }
-.database-grid > :nth-child(-n + 6):nth-child(3n) { --reveal-delay: calc(var(--reveal-stagger) * 2); }
 .database-grid[data-mode="factions"] { grid-template-columns: repeat(2, 1fr); }
 
 /* рамка, фон, полоса и свечение карточек — общий стандарт из style.css */
@@ -334,6 +331,7 @@
 }
 .faction-card__emblem img { width: 100%; height: 100%; object-fit: contain; padding: 7px; }
 .faction-card__name { font-family: var(--font-display); font-size: 21px; color: #fff; }
+.faction-card__namerow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
 .faction-card__blocks { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .faction-block { padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: rgba(9, 19, 34, .55); }
 .faction-block h5 { font-family: var(--font-display); font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--faction-color, var(--cyan)); margin-bottom: 8px; }

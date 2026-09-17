@@ -6,7 +6,6 @@ import { WWN_CONFIG } from "./site-config.js";
 import { bootI18n, getLang, onLangChange, t } from "./i18n.js";
 import { $, abs, collator, debounce, emptyBlock, escapeHtml, foldSearch, loc, nextFocusIndex, plural } from "./utils.js";
 import { initReveal } from "./ui.js";
-import { loadStats } from "./stats-data.js";
 
 
 const ICONS = {
@@ -138,10 +137,14 @@ export function buildHome(lang) {
 
   const stats = $("#wikiHeroStats");
   if (stats) {
+    const rows = [
+      [navData.categories.length, t("wiki.stats.sections", lang)],
+      [flatArticles.length, articleWord(flatArticles.length, lang)]
+    ];
+    // число фракций приходит из данных позже — не показываем «0», просто ждём
+    if (liveStats) rows.push([liveStats.factions, t("wiki.stats.factions", lang)]);
     stats.replaceChildren(
-      ...[[navData.categories.length, t("wiki.stats.sections", lang)],
-        [flatArticles.length, articleWord(flatArticles.length, lang)],
-        [liveStats?.factions ?? 0, t("wiki.stats.factions", lang)]].map(([value, label]) => {
+      ...rows.map(([value, label]) => {
         const span = document.createElement("span");
         const strong = document.createElement("b");
         strong.textContent = String(value);
@@ -496,9 +499,20 @@ export async function initShell({ slug = null, onRender } = {}) {
 
   const lang = await bootI18n();
 
+  // Числа hero вики-хаба грузим отдельно и НЕ держим на них первый рендер;
+  // страницам статей статистика не нужна вовсе (там нет #wikiHeroStats).
+  if ($("#wikiHeroStats")) {
+    import("./stats-data.js")
+      .then(({ loadStats }) => loadStats())
+      .then((stats) => {
+        liveStats = stats;
+        renderQueue = renderQueue.then(rerender).catch(() => {});
+      })
+      .catch(() => {});
+  }
+
   try {
-    const [, stats] = await Promise.all([loadNav(), loadStats()]);
-    liveStats = stats;
+    await loadNav();
     navReady = true;
   } catch {
     navFailed = true;

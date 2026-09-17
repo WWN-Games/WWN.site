@@ -821,6 +821,12 @@ function factionCardHtml(faction, counts) {
     : `<span style="color:${color};font-family:var(--font-display)">${escapeHtml(name.slice(0, 2))}</span>`;
   const strengths = list(faction.strengths, lang);
   const weaknesses = list(faction.weaknesses, lang);
+  // подфракция: true — просто плашка; строка — id родителя (его имя уйдёт в подсказку)
+  const parent = typeof faction.subfaction === "string" ? factionMap.get(faction.subfaction) : null;
+  const subfactionLabel = t("database.subfaction", lang);
+  const subfaction = faction.subfaction
+    ? `<span class="chip chip--sub"${parent ? ` title="${escapeHtml(`${subfactionLabel}: ${loc(parent.name, lang)}`)}"` : ""}>${escapeHtml(subfactionLabel)}</span>`
+    : "";
   const counters = counts
     ? `<div class="unit-card__sub" style="margin-top:8px">
          ${chip(`${t("database.tab.units", lang)}: ${counts.units}`)}
@@ -840,7 +846,10 @@ function factionCardHtml(faction, counts) {
        <div class="faction-card__head">
          <div class="faction-card__emblem">${emblem}</div>
          <div>
-           <div class="faction-card__name">${escapeHtml(name)}</div>
+           <div class="faction-card__namerow">
+             <span class="faction-card__name">${escapeHtml(name)}</span>
+             ${subfaction}
+           </div>
            <div class="faction-card__motto">${escapeHtml(loc(faction.motto, lang))}</div>
            ${counters}
          </div>

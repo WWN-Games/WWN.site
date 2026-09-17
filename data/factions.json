@@ -101,11 +101,12 @@
     },
     {
       "id": "darkmarket",
+      "subfaction": true,
       "name": {
         "ru": "Чёрный рынок",
         "en": "Чёрный рынок"
       },
-      "color": "#777506",
+      "color": "#646464",
       "emblem": "assets/img/factions/faction-darkmarket.svg",
       "lore": "lore/darkmarket",
       "desc": {
@@ -114,14 +115,30 @@
       }
     },
     {
-      "id": "animals",
+      "id": "bioforms",
+      "subfaction": true,
       "name": {
-        "ru": "Животные",
-        "en": "Животные"
+        "ru": "Биоформы",
+        "en": "Bioforms"
       },
       "color": "#688a69",
-      "emblem": "assets/img/factions/faction-animals.svg",
-      "lore": "lore/animals",
+      "emblem": "assets/img/factions/faction-bioforms.svg",
+      "lore": "lore/bioforms",
+      "desc": {
+        "ru": "ТЕСТ",
+        "en": "ТЕСТ"
+        }
+      },
+      {
+      "id": "aborigines",
+      "subfaction": true,
+      "name": {
+        "ru": "Аборигены",
+        "en": "Аборигены"
+      },
+      "color": "#907434",
+      "emblem": "assets/img/factions/faction-aborigines.svg",
+      "lore": "lore/aborigines",
       "desc": {
         "ru": "ТЕСТ",
         "en": "ТЕСТ"

@@ -4,7 +4,7 @@
    ============================================================================ */
 
 import { WWN_CONFIG } from "./site-config.js";
-import { bootI18n, initLangSwitch, registerDictLoaders, t } from "./i18n.js";
+import { bootI18n, getLang, initLangSwitch, registerDictLoaders, t } from "./i18n.js";
 import { $, abs, emptyBlock, formatDate, loc } from "./utils.js";
 import { initHeader, initYear } from "./ui.js";
 import { applyResponsiveImages } from "./media.js";
@@ -57,6 +57,22 @@ function processFootnotes(markdown) {
   const items = [...defs.entries()].map(([id, text]) => ({ id, text, number: numbers.get(id) || 0 }));
   items.sort((a, b) => a.number - b.number);
   return { body: withRefs, items };
+}
+
+/* Предзагрузка статьи: slug и язык известны сразу, поэтому markdown можно
+   тянуть параллельно со словарём и оболочкой, а не после них. */
+const SLUG_PATTERN = /^[\w-]+(?:\/[\w-]+)*$/;
+const safeSlug = (value) => Boolean(value) && SLUG_PATTERN.test(value) && !value.includes("..");
+
+let articlePrefetch = null;
+
+function prefetchArticle(slug, lang) {
+  if (!safeSlug(slug)) return;
+  articlePrefetch = {
+    slug,
+    lang,
+    promise: fetch(abs(`content/${lang}/${slug}.md?v=${WWN_CONFIG.version}`))
+  };
 }
 
 function renderMarkdown(markdown, slug, lang, { marked, DOMPurify }) {
@@ -376,16 +392,19 @@ async function loadArticle(slug, lang) {
 
   // Защита от path traversal: slug допускается только из реестра статей,
   // а если реестр недоступен — только по строгой маске пути (без «..»).
-  const slugPattern = /^[\w-]+(?:\/[\w-]+)*$/;
-  const allowed = slugPattern.test(slug) && !slug.includes("..");
-  if (!allowed || (articles.length && !article)) {
+  if (!safeSlug(slug) || (articles.length && !article)) {
     renderNotFound(body, lang, titleEl, crumbs, metaEl, pager);
     return;
   }
 
   let raw;
   try {
-    const res = await fetch(abs(`content/${lang}/${slug}.md?v=${WWN_CONFIG.version}`));
+    const prefetched = articlePrefetch;
+    articlePrefetch = null;
+    const res =
+      prefetched && prefetched.slug === slug && prefetched.lang === lang
+        ? await prefetched.promise
+        : await fetch(abs(`content/${lang}/${slug}.md?v=${WWN_CONFIG.version}`));
     if (!res.ok) throw new Error(String(res.status));
     raw = await res.text();
   } catch {
@@ -396,6 +415,13 @@ async function loadArticle(slug, lang) {
   if (seq !== articleSeq) return;
 
   const { meta, body: markdown } = parseFrontMatter(raw);
+  const title = meta.title || loc(article?.title, lang) || slug;
+
+  // Заголовок и мета показываем сразу после front matter, не дожидаясь вендора.
+  if (titleEl) titleEl.textContent = title;
+  applyArticleMeta(title, loc(article?.desc, lang) || t("wiki.subtitle", lang), lang);
+  if (crumbs && article) buildCrumbs(crumbs, article, lang);
+
   let vendor;
   try {
     vendor = await loadVendor();
@@ -407,12 +433,6 @@ async function loadArticle(slug, lang) {
   }
   if (seq !== articleSeq) return;
   const holder = renderMarkdown(markdown, slug, lang, vendor);
-  const title = meta.title || loc(article?.title, lang) || slug;
-
-  if (titleEl) titleEl.textContent = title;
-  applyArticleMeta(title, loc(article?.desc, lang) || t("wiki.subtitle", lang), lang);
-
-  if (crumbs && article) buildCrumbs(crumbs, article, lang);
 
   if (metaEl) {
     const words = markdown.split(/\s+/).length;
@@ -488,13 +508,20 @@ async function boot() {
   initHeader();
   initYear();
   initLangSwitch();
-  await bootI18n();
+
   const slug = new URLSearchParams(location.search).get("p");
   const isArticlePage = Boolean($("#articleBody"));
   if (isArticlePage && !slug) {
     location.replace("./");
     return;
   }
+  if (isArticlePage) {
+    // стартуем сразу: статья и вендор не зависят от словаря и оболочки
+    prefetchArticle(slug, getLang());
+    loadVendor();
+  }
+
+  await bootI18n();
 
   ({ buildHome, getFlatArticles, initShell, parseFrontMatter } = await import("./wiki-shell.js"));
 
