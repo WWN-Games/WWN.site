@@ -111,42 +111,10 @@
       },
       "color": "#805209",
       "emblem": "assets/img/factions/faction-darkmarket.svg",
-      "lore": "lore/proton",
+      "lore": "lore/darkmarket",
       "desc": {
         "ru": "ТЕСТ",
         "en": "ТЕСТ"
-      },
-      "playstyle": {
-        "ru": "Масса, давление и постоянный полевой ремонт.",
-        "en": "Mass, pressure and constant field repairs."
-      },
-      "specialty": {
-        "ru": "Массовая армия и импровизированное оружие",
-        "en": "Mass army and improvised weapons"
-      },
-      "strengths": {
-        "ru": [
-          "Дешёвая и многочисленная армия",
-          "Неприхотливая техника",
-          "Ярость и мобильность васттов"
-        ],
-        "en": [
-          "Cheap and numerous army",
-          "Rugged hardware",
-          "Vasst ferocity and mobility"
-        ]
-      },
-      "weaknesses": {
-        "ru": [
-          "Хрупкая техника",
-          "Большие потери",
-          "Внутренние конфликты кланов"
-        ],
-        "en": [
-          "Fragile hardware",
-          "High casualties",
-          "Clan infighting"
-        ]
       }
     },
     {
@@ -161,42 +129,10 @@
       },
       "color": "#688a69",
       "emblem": "assets/img/factions/faction-animals.svg",
-      "lore": "lore/proton",
+      "lore": "lore/animals",
       "desc": {
         "ru": "ТЕСТ",
         "en": "ТЕСТ"
-      },
-      "playstyle": {
-        "ru": "Масса, давление и постоянный полевой ремонт.",
-        "en": "Mass, pressure and constant field repairs."
-      },
-      "specialty": {
-        "ru": "Массовая армия и импровизированное оружие",
-        "en": "Mass army and improvised weapons"
-      },
-      "strengths": {
-        "ru": [
-          "Дешёвая и многочисленная армия",
-          "Неприхотливая техника",
-          "Ярость и мобильность васттов"
-        ],
-        "en": [
-          "Cheap and numerous army",
-          "Rugged hardware",
-          "Vasst ferocity and mobility"
-        ]
-      },
-      "weaknesses": {
-        "ru": [
-          "Хрупкая техника",
-          "Большие потери",
-          "Внутренние конфликты кланов"
-        ],
-        "en": [
-          "Fragile hardware",
-          "High casualties",
-          "Clan infighting"
-        ]
       }
     }
   ]
