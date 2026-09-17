@@ -37,19 +37,6 @@ export const SITE_DATA = {
       }
     },
     {
-      date: "2026-08-20",
-      tag: "news",
-      link: "https://steamcommunity.com/sharedfiles/filedetails/?id=3247893564",
-      ru: {
-        title: "Мод в Steam Workshop",
-        text: "Подпишись на WWN в мастерской Steam — обновления будут приходить автоматически."
-      },
-      en: {
-        title: "The mod is on Steam Workshop",
-        text: "Subscribe to WWN on Steam Workshop — updates arrive automatically."
-      }
-    },
-    {
       date: "2026-08-16",
       tag: "news",
       ru: {
