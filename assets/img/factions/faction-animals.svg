@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Animals">
+  <defs>
+    <linearGradient id="an-ring" x1="70" y1="60" x2="450" y2="460" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#a8c9a4"/>
+      <stop offset=".5" stop-color="#688a69"/>
+      <stop offset="1" stop-color="#3f5f42"/>
+    </linearGradient>
+    <linearGradient id="an-paw" x1="150" y1="120" x2="360" y2="400" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#b6d6b2"/>
+      <stop offset=".55" stop-color="#6f9270"/>
+      <stop offset="1" stop-color="#446647"/>
+    </linearGradient>
+
+    <!-- отпечаток лапы: четыре подушечки пальцев и основная -->
+    <g id="paw">
+      <ellipse cx="178" cy="238" rx="30" ry="41" transform="rotate(-22 178 238)"/>
+      <ellipse cx="222" cy="176" rx="31" ry="43" transform="rotate(-8 222 176)"/>
+      <ellipse cx="292" cy="176" rx="31" ry="43" transform="rotate(8 292 176)"/>
+      <ellipse cx="336" cy="238" rx="30" ry="41" transform="rotate(22 336 238)"/>
+      <path d="M 186 314 C 186 276 214 250 256 250 C 298 250 326 276 326 314 C 326 352 296 382 256 382 C 216 382 186 352 186 314 Z"/>
+    </g>
+  </defs>
+
+  <!-- рамка -->
+  <rect x="60" y="60" width="392" height="392" rx="74" fill="none" stroke="url(#an-ring)" stroke-width="30"/>
+
+  <!-- след: маленький отпечаток впереди -->
+  <g transform="translate(152 168) rotate(-12) scale(0.4) translate(-257 -258)">
+    <use href="#paw" fill="#33502f" opacity=".3" transform="translate(6 8)"/>
+    <use href="#paw" fill="url(#an-paw)" opacity=".55"/>
+  </g>
+
+  <!-- след: основной отпечаток -->
+  <g transform="translate(268 296) scale(0.88) translate(-257 -258)">
+    <use href="#paw" fill="#33502f" opacity=".55" transform="translate(4 5)"/>
+    <use href="#paw" fill="url(#an-paw)"/>
+  </g>
+</svg>

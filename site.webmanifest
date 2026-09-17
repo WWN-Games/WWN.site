@@ -2,7 +2,7 @@
   "name": "WWN — a Rusted Warfare mod",
   "short_name": "WWN",
   "description": "Official WWN mod site for Rusted Warfare: download, wiki, lore, database.",
-  "lang": "en",
+  "lang": "ru",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

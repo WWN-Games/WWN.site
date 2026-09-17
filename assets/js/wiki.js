@@ -5,7 +5,7 @@
 
 import { WWN_CONFIG } from "./site-config.js";
 import { bootI18n, initLangSwitch, registerDictLoaders, t } from "./i18n.js";
-import { $, abs, formatDate, loc, prefersReduced } from "./utils.js";
+import { $, abs, emptyBlock, formatDate, loc } from "./utils.js";
 import { initHeader, initYear } from "./ui.js";
 import { applyResponsiveImages } from "./media.js";
 
@@ -24,11 +24,44 @@ const loadVendor = () => {
   vendorPromise ||= Promise.all([
     import("../vendor/marked.esm.js"),
     import("../vendor/purify.esm.js")
-  ]).then(([markedMod, purifyMod]) => ({ marked: markedMod.marked, DOMPurify: purifyMod.default }));
+  ])
+    .then(([markedMod, purifyMod]) => ({ marked: markedMod.marked, DOMPurify: purifyMod.default }))
+    .catch((error) => {
+      vendorPromise = null; // следующий вызов попробует загрузить заново
+      throw error;
+    });
   return vendorPromise;
 };
+/** Сноски в стиле вики: `текст[^1]` + определения `[^1]: пояснение`.
+ *  Определения вырезаются до markdown-разбора, ссылки заменяются верхними
+ *  индексами; сам блок примечаний собирается в renderMarkdown. */
+function processFootnotes(markdown) {
+  const defs = new Map();
+  const body = markdown.replace(/^\[\^([\w.-]+)\]:[ \t]*(.+?)[ \t]*$/gm, (match, id, text) => {
+    defs.set(id, text);
+    return "";
+  });
+  if (!defs.size) return { body: markdown, items: [] };
+
+  const numbers = new Map();
+  const used = new Map();
+  const withRefs = body.replace(/\[\^([\w.-]+)\]/g, (match, id) => {
+    if (!defs.has(id)) return match;
+    if (!numbers.has(id)) numbers.set(id, numbers.size + 1);
+    const count = (used.get(id) || 0) + 1;
+    used.set(id, count);
+    const refId = count === 1 ? `fnref-${id}` : `fnref-${id}-${count}`;
+    return `<sup class="article__ref"><a href="#fn-${id}" id="${refId}" role="doc-noteref">[${numbers.get(id)}]</a></sup>`;
+  });
+
+  const items = [...defs.entries()].map(([id, text]) => ({ id, text, number: numbers.get(id) || 0 }));
+  items.sort((a, b) => a.number - b.number);
+  return { body: withRefs, items };
+}
+
 function renderMarkdown(markdown, slug, lang, { marked, DOMPurify }) {
-  const sanitized = DOMPurify.sanitize(marked.parse(markdown, { gfm: true }), {
+  const { body, items: footnotes } = processFootnotes(markdown);
+  const sanitized = DOMPurify.sanitize(marked.parse(body, { gfm: true }), {
     ADD_ATTR: ["target", "rel", "id", "controls", "preload"]
   });
   const holder = document.createElement("div");
@@ -45,9 +78,56 @@ function renderMarkdown(markdown, slug, lang, { marked, DOMPurify }) {
     heading.id = id;
   });
 
+  // «Источники» / «См. также» — компактный блок со списком в конце статьи
+  const SOURCES_TITLES = ["источники", "ссылки", "внешние ссылки", "см. также", "sources", "links", "external links", "see also", "references"];
+  holder.querySelectorAll("h2, h3").forEach((heading) => {
+    if (!SOURCES_TITLES.includes(heading.textContent.trim().toLowerCase())) return;
+    heading.classList.add("article__sources-title");
+    let node = heading.nextElementSibling;
+    while (node && !/^H[1-6]$/.test(node.tagName)) {
+      if (node.tagName === "UL" || node.tagName === "OL") node.classList.add("article__sources");
+      node = node.nextElementSibling;
+    }
+  });
+
+  // Примечания к сноскам [^id] — с обратными ссылками к тексту
+  if (footnotes.length) {
+    const section = document.createElement("section");
+    section.className = "article__refs";
+    const title = document.createElement("h2");
+    title.id = "refs";
+    title.textContent = t("wiki.notes", lang);
+    const list = document.createElement("ol");
+    footnotes.forEach((note) => {
+      const item = document.createElement("li");
+      item.id = `fn-${note.id}`;
+      item.innerHTML = DOMPurify.sanitize(marked.parseInline(note.text));
+      const back = document.createElement("a");
+      back.className = "article__ref-back";
+      back.href = `#fnref-${note.id}`;
+      back.setAttribute("role", "doc-backlink");
+      back.setAttribute("aria-label", t("wiki.refBack", lang));
+      back.textContent = "↑";
+      item.append(" ", back);
+      list.append(item);
+    });
+    section.append(title, list);
+    holder.append(section);
+  }
+
+  const articles = getFlatArticles();
+  const knownSlugs = new Set(articles.map((article) => article.slug));
+
   holder.querySelectorAll("a").forEach((link) => {
     const href = link.getAttribute("href") || "";
-    if (/^(https?:)?\/\//i.test(href) || href.startsWith("mailto:")) {
+    if (/^(https?:)?\/\//i.test(href)) {
+      // внешний источник — помечаем, чтобы отличался от ссылок по вики
+      link.target = "_blank";
+      link.rel = "noopener";
+      link.classList.add("wiki-link--external");
+      return;
+    }
+    if (href.startsWith("mailto:")) {
       link.target = "_blank";
       link.rel = "noopener";
       return;
@@ -60,7 +140,12 @@ function renderMarkdown(markdown, slug, lang, { marked, DOMPurify }) {
     // резолвим относительно адреса markdown-файла, поэтому работают любые ../
     const resolved = new URL(pathPart, `https://wwn.local/content/${lang}/${slug}.md`);
     const target = resolved.pathname.replace(/^\/content\/[^/]+\//, "").replace(/\.md$/i, "");
-    link.href = `article.html?p=${encodeURIComponent(target)}${hashPart}`;
+    link.href = `article.html?p=${target}${hashPart}`;
+    // «красная ссылка» — статьи ещё нет в реестре вики
+    if (knownSlugs.size && !knownSlugs.has(target)) {
+      link.classList.add("wiki-link--missing");
+      link.title = t("wiki.linkMissing", lang);
+    }
   });
 
   // одиночные картинки — в фигуры с подписью из alt
@@ -105,8 +190,8 @@ function scrollToHash() {
     target = document.getElementById(hash);
   }
   if (!target) return;
-  const top = target.getBoundingClientRect().top + window.scrollY - 96;
-  window.scrollTo({ top, behavior: prefersReduced ? "auto" : "smooth" });
+  // смещение задаёт CSS scroll-padding-top (высота шапки + safe-area)
+  target.scrollIntoView({ block: "start" });
 }
 
 function buildToc(holder, lang) {
@@ -266,19 +351,15 @@ function buildCrumbs(crumbs, article, lang) {
   );
 }
 
-/** Актуальные canonical/OG для конкретной статьи (в HTML они статические, общие). */
-function applyArticleMeta(slug, title, description, lang) {
-  const url = `${location.origin}${location.pathname}?p=${encodeURIComponent(slug)}`;
+/** Заголовок и описание статьи; canonical/og:url/hreflang обновляет i18n.applyMeta. */
+function applyArticleMeta(title, description, lang) {
   document.title = `${title} — ${t("meta.title.wiki", lang)}`;
   const setContent = (selector, value) => document.querySelector(selector)?.setAttribute("content", value);
   setContent('meta[name="description"]', description);
   setContent('meta[property="og:title"]', title);
   setContent('meta[property="og:description"]', description);
-  setContent('meta[property="og:url"]', url);
   setContent('meta[name="twitter:title"]', title);
   setContent('meta[name="twitter:description"]', description);
-  const canonical = document.querySelector('link[rel="canonical"]');
-  if (canonical) canonical.href = url;
 }
 
 async function loadArticle(slug, lang) {
@@ -315,13 +396,21 @@ async function loadArticle(slug, lang) {
   if (seq !== articleSeq) return;
 
   const { meta, body: markdown } = parseFrontMatter(raw);
-  const vendor = await loadVendor();
+  let vendor;
+  try {
+    vendor = await loadVendor();
+  } catch {
+    if (seq !== articleSeq) return;
+    body.classList.remove("is-ready");
+    body.replaceChildren(emptyBlock(t("wiki.loadError.desc", lang)));
+    return;
+  }
   if (seq !== articleSeq) return;
   const holder = renderMarkdown(markdown, slug, lang, vendor);
   const title = meta.title || loc(article?.title, lang) || slug;
 
   if (titleEl) titleEl.textContent = title;
-  applyArticleMeta(slug, title, loc(article?.desc, lang) || t("wiki.subtitle", lang), lang);
+  applyArticleMeta(title, loc(article?.desc, lang) || t("wiki.subtitle", lang), lang);
 
   if (crumbs && article) buildCrumbs(crumbs, article, lang);
 
@@ -379,7 +468,7 @@ async function loadArticle(slug, lang) {
     const pagerLink = (item, className, label, arrow) => {
       const link = document.createElement("a");
       if (className) link.className = className;
-      link.href = `article.html?p=${encodeURIComponent(item.slug)}`;
+      link.href = `article.html?p=${item.slug}`;
       const small = document.createElement("small");
       small.textContent = arrow === "left" ? `← ${label}` : `${label} →`;
       const strong = document.createElement("b");

@@ -13,11 +13,20 @@ export const WWN_CONFIG = {
 
   // ---------------------------------------------------------------------------
   // LINKS — ссылки проекта; пустая строка "" скрывает кнопку или пункт меню.
+  // Значением может быть объект { ru, en } — тогда ссылка зависит от языка
+  // страницы (см. resolveLinks в assets/js/ui.js).
   // ---------------------------------------------------------------------------
   links: {
     steam: "https://steamcommunity.com/sharedfiles/filedetails/?id=3247893564",
     drive: "https://drive.google.com/file/d/1a3r6f3GG2pORNaqzCVBrsTKvrXs_ctYg/view?usp=sharing",
     discord: "https://discord.gg/sRwKDGrbDy",
-    youtube: "https://www.youtube.com/@shykinc4860"
+    // YouTube: англоязычный канал и русскоязычный (Вашиан)
+    youtube: "https://www.youtube.com/@shykinc4860",
+    youtubeRu: "https://www.youtube.com/@%D0%92%D0%B0%D1%88%D0%B8%D0%B0%D0%BD",
+    // иконка в подвале: RU-языку — русский канал, EN — английский
+    youtubeByLang: {
+      ru: "https://www.youtube.com/@%D0%92%D0%B0%D1%88%D0%B8%D0%B0%D0%BD",
+      en: "https://www.youtube.com/@shykinc4860"
+    }
   }
 };

@@ -3,8 +3,14 @@
   "factions": [
     {
       "id": "fenearth",
-      "name": { "ru": "Фенземская Республика", "en": "Fenearth Republic" },
-      "motto": { "ru": "Наследница Всегалактической Федерации", "en": "Heir of the Galactic Federation" },
+      "name": {
+        "ru": "Фенземская Республика",
+        "en": "Fenearth Republic"
+      },
+      "motto": {
+        "ru": "Наследница Всегалактической Федерации",
+        "en": "Heir of the Galactic Federation"
+      },
       "color": "#3b9bff",
       "emblem": "assets/img/factions/faction-fer.svg",
       "lore": "lore/fenearth",
@@ -21,18 +27,38 @@
         "en": "Fleet and heavy GF hardware"
       },
       "strengths": {
-        "ru": ["Развитая промышленность", "Технологии ВГФ", "Сильная экономика (2-е место в галактике)"],
-        "en": ["Developed industry", "GF technology", "Strong economy (2nd in the galaxy)"]
+        "ru": [
+          "Развитая промышленность",
+          "Технологии ВГФ",
+          "Сильная экономика (2-е место в галактике)"
+        ],
+        "en": [
+          "Developed industry",
+          "GF technology",
+          "Strong economy (2nd in the galaxy)"
+        ]
       },
       "weaknesses": {
-        "ru": ["Растянутые границы", "Зависимость от промышленных миров"],
-        "en": ["Stretched borders", "Reliance on industrial worlds"]
+        "ru": [
+          "Растянутые границы",
+          "Зависимость от промышленных миров"
+        ],
+        "en": [
+          "Stretched borders",
+          "Reliance on industrial worlds"
+        ]
       }
     },
     {
       "id": "proton",
-      "name": { "ru": "Движение Протон", "en": "Proton Movement" },
-      "motto": { "ru": "PHATHOU — Первый порядок", "en": "PHATHOU — the First Order" },
+      "name": {
+        "ru": "Движение Протон",
+        "en": "Proton Movement"
+      },
+      "motto": {
+        "ru": "PHATHOU — Первый порядок",
+        "en": "PHATHOU — the First Order"
+      },
       "color": "#ff4157",
       "emblem": "assets/img/factions/faction-proton.svg",
       "lore": "lore/proton",
@@ -49,12 +75,128 @@
         "en": "Mass army and improvised weapons"
       },
       "strengths": {
-        "ru": ["Дешёвая и многочисленная армия", "Неприхотливая техника", "Ярость и мобильность васттов"],
-        "en": ["Cheap and numerous army", "Rugged hardware", "Vasst ferocity and mobility"]
+        "ru": [
+          "Дешёвая и многочисленная армия",
+          "Неприхотливая техника",
+          "Ярость и мобильность васттов"
+        ],
+        "en": [
+          "Cheap and numerous army",
+          "Rugged hardware",
+          "Vasst ferocity and mobility"
+        ]
       },
       "weaknesses": {
-        "ru": ["Хрупкая техника", "Большие потери", "Внутренние конфликты кланов"],
-        "en": ["Fragile hardware", "High casualties", "Clan infighting"]
+        "ru": [
+          "Хрупкая техника",
+          "Большие потери",
+          "Внутренние конфликты кланов"
+        ],
+        "en": [
+          "Fragile hardware",
+          "High casualties",
+          "Clan infighting"
+        ]
+      }
+    },
+    {
+      "id": "darkmarket",
+      "name": {
+        "ru": "Чёрный рынок",
+        "en": "Чёрный рынок"
+      },
+      "motto": {
+        "ru": "PHATHOU — Первый порядок",
+        "en": "PHATHOU — the First Order"
+      },
+      "color": "#805209",
+      "emblem": "assets/img/factions/faction-darkmarket.svg",
+      "lore": "lore/proton",
+      "desc": {
+        "ru": "ТЕСТ",
+        "en": "ТЕСТ"
+      },
+      "playstyle": {
+        "ru": "Масса, давление и постоянный полевой ремонт.",
+        "en": "Mass, pressure and constant field repairs."
+      },
+      "specialty": {
+        "ru": "Массовая армия и импровизированное оружие",
+        "en": "Mass army and improvised weapons"
+      },
+      "strengths": {
+        "ru": [
+          "Дешёвая и многочисленная армия",
+          "Неприхотливая техника",
+          "Ярость и мобильность васттов"
+        ],
+        "en": [
+          "Cheap and numerous army",
+          "Rugged hardware",
+          "Vasst ferocity and mobility"
+        ]
+      },
+      "weaknesses": {
+        "ru": [
+          "Хрупкая техника",
+          "Большие потери",
+          "Внутренние конфликты кланов"
+        ],
+        "en": [
+          "Fragile hardware",
+          "High casualties",
+          "Clan infighting"
+        ]
+      }
+    },
+    {
+      "id": "animals",
+      "name": {
+        "ru": "Животные",
+        "en": "Животные"
+      },
+      "motto": {
+        "ru": "PHATHOU — Первый порядок",
+        "en": "PHATHOU — the First Order"
+      },
+      "color": "#688a69",
+      "emblem": "assets/img/factions/faction-animals.svg",
+      "lore": "lore/proton",
+      "desc": {
+        "ru": "ТЕСТ",
+        "en": "ТЕСТ"
+      },
+      "playstyle": {
+        "ru": "Масса, давление и постоянный полевой ремонт.",
+        "en": "Mass, pressure and constant field repairs."
+      },
+      "specialty": {
+        "ru": "Массовая армия и импровизированное оружие",
+        "en": "Mass army and improvised weapons"
+      },
+      "strengths": {
+        "ru": [
+          "Дешёвая и многочисленная армия",
+          "Неприхотливая техника",
+          "Ярость и мобильность васттов"
+        ],
+        "en": [
+          "Cheap and numerous army",
+          "Rugged hardware",
+          "Vasst ferocity and mobility"
+        ]
+      },
+      "weaknesses": {
+        "ru": [
+          "Хрупкая техника",
+          "Большие потери",
+          "Внутренние конфликты кланов"
+        ],
+        "en": [
+          "Fragile hardware",
+          "High casualties",
+          "Clan infighting"
+        ]
       }
     }
   ]

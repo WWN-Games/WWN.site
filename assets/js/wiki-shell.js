@@ -3,9 +3,8 @@
    ============================================================================ */
 
 import { WWN_CONFIG } from "./site-config.js";
-import { SITE_DATA } from "./site-data.js";
-import { bootI18n, onLangChange, t } from "./i18n.js";
-import { $, abs, debounce, emptyBlock, escapeHtml, loc, nextFocusIndex } from "./utils.js";
+import { bootI18n, getLang, onLangChange, t } from "./i18n.js";
+import { $, abs, collator, debounce, emptyBlock, escapeHtml, foldSearch, loc, nextFocusIndex, plural } from "./utils.js";
 import { initReveal } from "./ui.js";
 import { loadStats } from "./stats-data.js";
 
@@ -26,11 +25,20 @@ let liveStats = null;
 
 export const getFlatArticles = () => flatArticles;
 function indexNav() {
-  flatArticles = [];
-  navData.categories.forEach((cat) => {
-    cat.articles.forEach((article) => flatArticles.push({ ...article, category: cat }));
-  });
+  flatArticles = navData.categories.flatMap((cat) =>
+    cat.articles.map((article) => ({ ...article, category: cat }))
+  );
 }
+
+/** Форма слова «статья» по числу: «1 статья», «2 статьи», «5 статей». */
+const articleWord = (n, lang) =>
+  plural(lang, n, {
+    one: t("wiki.articles.one", lang),
+    few: t("wiki.articles.few", lang),
+    many: t("wiki.articles.many", lang),
+    other: t("wiki.articles.other", lang)
+  });
+const articleCount = (n, lang) => `${n} ${articleWord(n, lang)}`;
 
 async function loadNav() {
   try {
@@ -110,7 +118,7 @@ function buildSidebar(lang, activeSlug) {
       cat.articles.forEach((article) => {
         const li = document.createElement("li");
         const link = document.createElement("a");
-        link.href = `article.html?p=${encodeURIComponent(article.slug)}`;
+        link.href = `article.html?p=${article.slug}`;
         link.textContent = loc(article.title, lang);
         if (article.slug === activeSlug) {
           link.className = "is-active";
@@ -132,8 +140,8 @@ export function buildHome(lang) {
   if (stats) {
     stats.replaceChildren(
       ...[[navData.categories.length, t("wiki.stats.sections", lang)],
-        [flatArticles.length, t("wiki.articles", lang)],
-        [liveStats?.factions ?? SITE_DATA.stats?.factions ?? 0, t("wiki.stats.factions", lang)]].map(([value, label]) => {
+        [flatArticles.length, articleWord(flatArticles.length, lang)],
+        [liveStats?.factions ?? 0, t("wiki.stats.factions", lang)]].map(([value, label]) => {
         const span = document.createElement("span");
         const strong = document.createElement("b");
         strong.textContent = String(value);
@@ -169,7 +177,7 @@ export function buildHome(lang) {
 
       const count = document.createElement("span");
       count.className = "wiki-cat__count";
-      count.textContent = `${cat.articles.length} ${t("wiki.articles", lang)}`;
+      count.textContent = articleCount(cat.articles.length, lang);
 
       head.append(icon, text, count);
       card.setAttribute("aria-labelledby", `wiki-cat-${cat.id}-title`);
@@ -179,7 +187,7 @@ export function buildHome(lang) {
       cat.articles.forEach((article) => {
         const li = document.createElement("li");
         const link = document.createElement("a");
-        link.href = `article.html?p=${encodeURIComponent(article.slug)}`;
+        link.href = `article.html?p=${article.slug}`;
         link.textContent = loc(article.title, lang);
         li.append(link);
         list.append(li);
@@ -207,6 +215,8 @@ export function parseFrontMatter(raw) {
 
 const stripMd = (markdown) =>
   parseFrontMatter(markdown).body
+    .replace(/^\[\^[\w.-]+\]:[ \t]*/gm, "")
+    .replace(/\[\^[\w.-]+\]/g, " ")
     .replace(/```[\s\S]*?```/g, " ")
     .replace(/`[^`]*`/g, " ")
     .replace(/!?\[([^\]]*)\]\([^)]*\)/g, "$1")
@@ -214,14 +224,24 @@ const stripMd = (markdown) =>
     .replace(/\s+/g, " ")
     .trim();
 
-const highlight = (text, query) =>
-  escapeHtml(text).replace(
-    new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "gi"),
-    "<mark>$1</mark>"
-  );
+const highlight = (text, query) => {
+  const fold = foldSearch(text);
+  const needle = foldSearch(query);
+  if (!needle) return escapeHtml(text);
+  const parts = [];
+  let pos = 0;
+  let index = fold.indexOf(needle);
+  while (index !== -1) {
+    parts.push(escapeHtml(text.slice(pos, index)), "<mark>", escapeHtml(text.slice(index, index + needle.length)), "</mark>");
+    pos = index + needle.length;
+    index = fold.indexOf(needle, pos);
+  }
+  parts.push(escapeHtml(text.slice(pos)));
+  return parts.join("");
+};
 
-function snippet(text, query) {
-  const index = text.toLowerCase().indexOf(query.toLowerCase());
+function snippet(text, fold, query) {
+  const index = fold.indexOf(query);
   if (index === -1) return `${text.slice(0, 130)}…`;
   const from = Math.max(0, index - 55);
   const to = Math.min(text.length, index + 90);
@@ -249,7 +269,9 @@ async function fetchSearchIndex(lang) {
   return entries
     .map((entry) => {
       const article = bySlug.get(entry.slug);
-      return article ? { ...article, text: entry.text || "" } : null;
+      if (!article) return null;
+      const text = entry.text || "";
+      return { ...article, text, fold: foldSearch(text) };
     })
     .filter(Boolean);
 }
@@ -260,9 +282,10 @@ async function buildSearchIndexFromMarkdown(lang) {
       try {
         const res = await fetch(abs(`content/${lang}/${article.slug}.md?v=${WWN_CONFIG.version}`));
         const raw = res.ok ? await res.text() : "";
-        return { ...article, text: stripMd(raw) };
+        const text = stripMd(raw);
+        return { ...article, text, fold: foldSearch(text) };
       } catch {
-        return { ...article, text: "" };
+        return { ...article, text: "", fold: "" };
       }
     })
   );
@@ -297,7 +320,7 @@ async function runSearch(query, lang) {
   if (!results) return;
   const seq = ++searchSeq;
 
-  const needle = query.trim().toLowerCase();
+  const needle = foldSearch(query.trim());
   if (needle.length < 2) {
     results.replaceChildren();
     if (hint) {
@@ -314,12 +337,12 @@ async function runSearch(query, lang) {
     .map((item) => {
       const title = loc(item.title, lang);
       const category = loc(item.category.title, lang);
-      const inTitle = title.toLowerCase().includes(needle) || category.toLowerCase().includes(needle);
-      const inText = item.text.toLowerCase().includes(needle);
+      const inTitle = foldSearch(title).includes(needle) || foldSearch(category).includes(needle);
+      const inText = item.fold.includes(needle);
       return inTitle || inText ? { item, title, category, inTitle } : null;
     })
     .filter(Boolean)
-    .sort((a, b) => Number(b.inTitle) - Number(a.inTitle) || a.title.localeCompare(b.title));
+    .sort((a, b) => Number(b.inTitle) - Number(a.inTitle) || collator(lang).compare(a.title, b.title));
 
   if (seq !== searchSeq) return;
 
@@ -337,7 +360,7 @@ async function runSearch(query, lang) {
     ...found.slice(0, 12).map(({ item, title, category }) => {
       const link = document.createElement("a");
       link.className = "search-result";
-      link.href = `article.html?p=${encodeURIComponent(item.slug)}`;
+      link.href = `article.html?p=${item.slug}`;
       const top = document.createElement("span");
       top.className = "search-result__top";
       const tag = document.createElement("span");
@@ -347,7 +370,7 @@ async function runSearch(query, lang) {
       strong.innerHTML = highlight(title, query.trim());
       top.append(tag, strong);
       const text = document.createElement("p");
-      text.innerHTML = highlight(snippet(item.text, needle), query.trim());
+      text.innerHTML = highlight(snippet(item.text, item.fold, needle), query.trim());
       link.append(top, text);
       return link;
     })
@@ -361,7 +384,7 @@ function initSearch() {
   const sideInput = $("#searchInput");
   if (!panel || !input) return () => {};
 
-  let searchLang = document.documentElement.lang;
+  let searchLang = getLang();
 
   const openPanel = (seed = "") => {
     if (!panel.open) panel.showModal();
@@ -420,7 +443,11 @@ function initSearch() {
   return (lang) => { searchLang = lang; };
 }
 function applyLangVisuals(lang) {
-  document.body.style.setProperty("--wiki-hero-img", `url("${abs(`assets/img/lore/tc-${lang === "en" ? "en" : "ru"}.avif`)}")`);
+  const suffix = lang === "en" ? "en" : "ru";
+  document.documentElement.style.setProperty(
+    "--wiki-hero-img",
+    `image-set(url("${abs(`assets/img/lore/tc-${suffix}-960.avif`)}") 1x, url("${abs(`assets/img/lore/tc-${suffix}.avif`)}") 2x)`
+  );
 }
 
 function showNavError(lang) {
@@ -434,13 +461,13 @@ function showNavError(lang) {
 /** Общий запуск страниц вики/каталога: шапка, сайдбар, поиск, подписка на язык.
  *  onRender(lang) вызывается на старте и при каждой смене языка. */
 export async function initShell({ slug = null, onRender } = {}) {
-  let lang = await bootI18n();
+  const setSearchLang = initSearch();
   let navReady = false;
   let navFailed = false;
   let renderQueue = Promise.resolve();
-  const setSearchLang = initSearch();
 
   const rerender = () => {
+    const lang = getLang();
     applyLangVisuals(lang);
     setSearchLang(lang);
     if (navReady) {
@@ -452,8 +479,7 @@ export async function initShell({ slug = null, onRender } = {}) {
     return onRender?.(lang);
   };
 
-  onLangChange((nextLang) => {
-    lang = nextLang;
+  onLangChange(() => {
     resetSearchIndex();
     renderQueue = renderQueue.then(rerender).catch(() => {});
   });
@@ -468,16 +494,18 @@ export async function initShell({ slug = null, onRender } = {}) {
     }, 150);
   });
 
+  const lang = await bootI18n();
+
   try {
     const [, stats] = await Promise.all([loadNav(), loadStats()]);
     liveStats = stats;
     navReady = true;
   } catch {
     navFailed = true;
-    showNavError(lang);
+    showNavError(getLang());
   }
 
   renderQueue = renderQueue.then(rerender).catch(() => {});
   await renderQueue;
-  return lang;
+  return getLang() || lang;
 }

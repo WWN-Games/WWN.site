@@ -4,6 +4,7 @@
    ============================================================================ */
 
 import { $, $$, prefersReduced } from "./utils.js";
+import { getLang } from "./i18n.js";
 
 /** Актуальный год в подвале — на всех страницах. */
 export function initYear() {
@@ -93,14 +94,18 @@ export function initHeader() {
 }
 export function resolveLinks(config) {
   const links = config?.links || {};
+  const lang = getLang();
+  // значение может быть объектом { ru, en } — берём язык страницы
+  const pick = (value) =>
+    value && typeof value === "object" ? value[lang] ?? value.ru ?? value.en ?? "" : value;
   $$("[data-link]").forEach((el) => {
-    const url = links[el.getAttribute("data-link")];
+    const url = pick(links[el.getAttribute("data-link")]);
     if (url) {
       el.setAttribute("href", url);
       el.setAttribute("target", "_blank");
       el.setAttribute("rel", "noopener");
-    } else if (["steam", "drive"].includes(el.getAttribute("data-link"))) {
-      el.setAttribute("href", "#download");
+    } else if (el.hasAttribute("data-link-fallback")) {
+      el.setAttribute("href", el.getAttribute("data-link-fallback"));
     } else {
       // ссылки нет в конфиге — убираем кнопку целиком (или её пункт меню)
       const li = el.closest("li");
@@ -109,7 +114,7 @@ export function resolveLinks(config) {
     }
   });
   $$("[data-link-note]").forEach((el) => {
-    el.style.display = links[el.getAttribute("data-link-note")] ? "none" : "";
+    el.style.display = pick(links[el.getAttribute("data-link-note")]) ? "none" : "";
   });
 }
 /* Единый эффект появления (главная, вики, база): стартует ровно на крае окна. */
@@ -136,4 +141,10 @@ export function initReveal(root = document) {
     REVEAL
   );
   els.forEach((el) => revealObserver.observe(el));
+}
+
+/** Снять наблюдение с элементов перед заменой содержимого контейнера. */
+export function unreveal(root = document) {
+  if (!revealObserver) return;
+  $$("[data-reveal]", root).forEach((el) => revealObserver.unobserve(el));
 }

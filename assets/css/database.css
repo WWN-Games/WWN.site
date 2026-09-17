@@ -173,7 +173,7 @@
   transition: transform .25s, border-color .25s, box-shadow .25s;
   contain: content;
   content-visibility: auto;
-  contain-intrinsic-size: auto 420px;
+  contain-intrinsic-size: auto 458px;
 }
 .unit-card:hover,
 .faction-card:hover { transform: translateY(-4px); }

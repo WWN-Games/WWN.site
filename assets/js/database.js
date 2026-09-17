@@ -6,8 +6,8 @@
 
 import { WWN_CONFIG } from "./site-config.js";
 import { bootI18n, getLang, initLangSwitch, onLangChange, registerDictLoaders, t } from "./i18n.js";
-import { $, $$, abs, debounce, emptyBlock, escapeHtml, loc, locObj, nextFocusIndex, safeColor } from "./utils.js";
-import { initHeader, initReveal, initYear } from "./ui.js";
+import { $, $$, abs, collator, debounce, emptyBlock, escapeHtml, foldSearch, loc, locObj, nextFocusIndex, safeColor } from "./utils.js";
+import { initHeader, initReveal, initYear, unreveal } from "./ui.js";
 
 registerDictLoaders({
   ru: () => import("./i18n/database.ru.js"),
@@ -28,8 +28,11 @@ const currentText = (select) => select.options[select.selectedIndex]?.textConten
 
 function syncButton(btn, select) {
   if (!btn) return;
+  const text = currentText(select);
   const value = btn.querySelector(".wwn-select__value");
-  if (value) value.textContent = currentText(select);
+  if (value) value.textContent = text;
+  const label = select.dataset.wwnLabel;
+  if (label) btn.setAttribute("aria-label", text && text !== label ? `${label}: ${text}` : label);
   btn.disabled = select.disabled;
 }
 
@@ -92,7 +95,8 @@ function enhance(select) {
   btn.setAttribute("aria-haspopup", "listbox");
   btn.setAttribute("aria-expanded", "false");
   const label = select.getAttribute("aria-label") || select.getAttribute("title");
-  if (label) btn.setAttribute("aria-label", label);
+  if (label) select.dataset.wwnLabel = label;
+  select.setAttribute("aria-hidden", "true");
   btn.innerHTML = `<span class="wwn-select__value"></span>${ARROW}`;
   wrap.append(btn);
 
@@ -413,7 +417,7 @@ function tagOptions() {
     })
     .sort((a, b) =>
       (TAG_GROUP_ORDER[a.group] ?? 9) - (TAG_GROUP_ORDER[b.group] ?? 9) ||
-      a.label.localeCompare(b.label)
+      collator(state.lang).compare(a.label, b.label)
     );
 }
 
@@ -477,9 +481,10 @@ function renderTagPanel() {
 function updateTagButton() {
   if (!tagButton) return;
   const label = t("database.filter.tag", state.lang);
+  const text = state.tags.size ? `${label}: ${state.tags.size}` : label;
   const value = tagButton.querySelector(".wwn-select__value");
-  if (value) value.textContent = state.tags.size ? `${label}: ${state.tags.size}` : label;
-  tagButton.setAttribute("aria-label", label);
+  if (value) value.textContent = text;
+  tagButton.setAttribute("aria-label", text);
 }
 
 function closeTagPanel() {
@@ -538,7 +543,10 @@ function initTagFilter() {
     listeners = new AbortController();
     window.addEventListener("scroll", reposition, { passive: true, signal: listeners.signal });
     window.addEventListener("resize", reposition, { signal: listeners.signal });
-    requestAnimationFrame(() => placeMenu(tagPanel, tagButton, 420, panelWidth()));
+    requestAnimationFrame(() => {
+      placeMenu(tagPanel, tagButton, 420, panelWidth());
+      tagPanel.querySelector(".tag-chip")?.focus({ preventScroll: true });
+    });
   });
 
   tagPanel.addEventListener("toggle", (event) => {
@@ -658,7 +666,8 @@ const MIN_BAR = 10;
 
 const scale = { hp: null, shield: null, dps: null, speed: null, range: null };
 /** Показываем полосу только если характеристика есть хотя бы у кого-то
- *  (например, у строений нет скорости — полосу не рисуем). */
+ *  (например, у строений нет скорости — полосу не рисуем). Считается один
+ *  раз по всей базе, чтобы раскладка карточек не менялась от фильтров. */
 const hasStat = { hp: false, shield: false, dps: false, speed: false, range: false };
 
 const median = (sorted) => {
@@ -666,14 +675,21 @@ const median = (sorted) => {
   return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
 };
 
-function computeScale() {
+function computeHasStat() {
   const all = [...data.units, ...data.buildings];
+  Object.keys(hasStat).forEach((key) => {
+    hasStat[key] = all.some((item) => typeof item[key] === "number" && item[key] > 0);
+  });
+}
+
+/** Шкала полос — по текущей выборке: когда список сужен фильтрами, поиском
+ *  или вкладкой, полосы сравнивают только оставшиеся карточки. */
+function computeScale(items) {
   Object.keys(scale).forEach((key) => {
-    const values = all
+    const values = items
       .map((item) => item[key])
       .filter((value) => typeof value === "number" && value > 0)
       .sort((a, b) => a - b);
-    hasStat[key] = values.length > 0;
     if (!values.length) {
       scale[key] = null;
       return;
@@ -685,6 +701,16 @@ function computeScale() {
     scale[key] = { lo, hi: max > p95 * 3 ? p95 : max, median: median(values) };
   });
 }
+
+/* Подпись шкалы: меняется — сбрасываем кэш собранных карточек. */
+let scaleToken = "";
+const scaleSignature = () =>
+  Object.keys(scale)
+    .map((key) => {
+      const s = scale[key];
+      return s ? `${key}:${s.lo}/${s.hi}/${s.median}` : `${key}:`;
+    })
+    .join("|");
 
 const formatValue = (value) => {
   if (!Number.isFinite(value) || value === 0) return 0;
@@ -726,7 +752,7 @@ function unitCardHtml(item) {
   const imageSrc = item.image === "" ? "" : item.image || `assets/img/database/${item.id}.avif`;
   const initials = name.slice(0, 2).toUpperCase();
   const image = imageSrc
-    ? `<img src="${escapeHtml(abs(imageSrc))}" alt="${escapeHtml(name)}" data-initials="${escapeHtml(initials)}" loading="lazy">`
+    ? `<img src="${escapeHtml(abs(imageSrc))}" alt="${escapeHtml(name)}" data-initials="${escapeHtml(initials)}" loading="lazy" decoding="async">`
     : `<span>${escapeHtml(initials)}</span>`;
 
   const chips = [
@@ -791,7 +817,7 @@ function factionCardHtml(faction, counts) {
   const color = safeColor(faction.color, "#29b8ff");
   const name = loc(faction.name, lang);
   const emblem = faction.emblem
-    ? `<img src="${escapeHtml(abs(faction.emblem))}" alt="${escapeHtml(name)}" loading="lazy">`
+    ? `<img src="${escapeHtml(abs(faction.emblem))}" alt="${escapeHtml(name)}" loading="lazy" decoding="async">`
     : `<span style="color:${color};font-family:var(--font-display)">${escapeHtml(name.slice(0, 2))}</span>`;
   const strengths = list(faction.strengths, lang);
   const weaknesses = list(faction.weaknesses, lang);
@@ -826,7 +852,7 @@ function factionCardHtml(faction, counts) {
          ${blockList(t("database.strong", lang), strengths)}
          ${blockList(t("database.weak", lang), weaknesses)}
        </div>
-       ${faction.lore ? `<a class="btn btn--sm faction-card__link" href="wiki/article.html?p=${encodeURIComponent(faction.lore)}">${escapeHtml(t("database.openLore", lang))}</a>` : ""}
+       ${faction.lore ? `<a class="btn btn--sm faction-card__link" href="wiki/article.html?p=${faction.lore}">${escapeHtml(t("database.openLore", lang))}</a>` : ""}
      </article>`;
   cardCache.set(cacheKey, html);
   return html;
@@ -834,7 +860,7 @@ function factionCardHtml(faction, counts) {
 const matches = (item, lang) => {
   if (!state.search) return true;
   const tags = (item.tags || []).map((id) => `${id} ${tagLabel(id, lang)}`).join(" ");
-  const haystack = `${loc(item.name, lang)} ${loc(item.role, lang)} ${loc(item.desc, lang)} ${tags}`.toLowerCase();
+  const haystack = foldSearch(`${loc(item.name, lang)} ${loc(item.role, lang)} ${loc(item.desc, lang)} ${tags}`);
   return haystack.includes(state.search);
 };
 
@@ -870,13 +896,21 @@ function render() {
       })
       .sort((a, b) =>
         state.sort === "name"
-          ? loc(a.name, lang).localeCompare(loc(b.name, lang))
+          ? collator(lang).compare(loc(a.name, lang), loc(b.name, lang))
           : (b[state.sort] || 0) - (a[state.sort] || 0)
       );
+    // шкала полос — по текущей выборке; при смене выборки кэш карточек сбрасываем
+    computeScale(items);
+    const signature = scaleSignature();
+    if (signature !== scaleToken) {
+      scaleToken = signature;
+      cardCache.clear();
+    }
     html = items.map((item) => unitCardHtml(item)).join("");
   }
 
   grid.classList.remove("is-shown");
+  unreveal(grid);
   if (!items.length) {
     grid.replaceChildren(emptyBlock(t("database.empty", lang)));
   } else {
@@ -928,28 +962,33 @@ async function boot() {
   initHeader();
   initYear();
   initLangSwitch();
-  const lang = await bootI18n();
+
+  // данные грузятся параллельно словарю — рендер всё равно ждёт оба
+  const dataPromise = loadAll();
+
+  await bootI18n();
   initDropdowns();
   initTabs();
   initImageFallback();
 
   const debouncedRender = debounce(scheduleRender, 140);
   $("#databaseSearch")?.addEventListener("input", (event) => {
-    state.search = event.target.value.trim().toLowerCase();
+    state.search = foldSearch(event.target.value.trim());
     debouncedRender();
   });
 
+  onLangChange(() => renderPage(getLang()));
+
   try {
-    await loadAll();
+    await dataPromise;
     buildLookups();
-    computeScale();
+    computeHasStat();
     dataReady = data.factions.length > 0 || data.units.length > 0 || data.buildings.length > 0;
   } catch {
     // при неожиданной ошибке шапка, меню и язык всё равно работают
   }
 
-  renderPage(lang);
-  onLangChange(renderPage);
+  renderPage(getLang());
   initReveal();
 }
 

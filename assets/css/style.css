@@ -56,9 +56,9 @@
 
   --glow-cyan: 0 0 26px rgba(var(--cyan-rgb), 0.45);
   --glow-cyan-soft: 0 0 46px rgba(var(--cyan-rgb), 0.2);
-  --shadow-sm: 0 8px 22px rgba(0, 0, 0, 0.35);
-  --shadow-card: 0 26px 60px rgba(0, 0, 0, 0.5);
-  --shadow-deep: 0 40px 110px rgba(0, 0, 0, 0.65);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.18), 0 6px 16px rgba(0, 0, 0, 0.2);
+  --shadow-card: 0 2px 6px rgba(0, 0, 0, 0.16), 0 14px 34px rgba(0, 0, 0, 0.24);
+  --shadow-deep: 0 6px 16px rgba(0, 0, 0, 0.28), 0 30px 70px rgba(0, 0, 0, 0.42);
 
   --grad-cyan: linear-gradient(135deg, #38c3ff, #1a7fd4 60%, #0d4f92);
   --grad-text: linear-gradient(100deg, #b6ecff, #47b6ff 45%, #d9f3ff);
@@ -92,38 +92,6 @@ body {
   overflow-x: hidden;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
-}
-
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -3;
-  background:
-    radial-gradient(1200px 700px at 82% -12%, rgba(31, 104, 190, 0.4), transparent 60%),
-    radial-gradient(900px 620px at 4% 8%, rgba(12, 66, 138, 0.32), transparent 58%),
-    radial-gradient(800px 800px at 50% 115%, rgba(120, 32, 60, 0.14), transparent 60%),
-    linear-gradient(180deg, #03060d 0%, #050b16 45%, #02040a 100%);
-}
-
-/* точечный слой только на десктопе: mask-image дорог при скролле */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -2;
-  pointer-events: none;
-  opacity: .5;
-  display: none;
-  background-image:
-    radial-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px),
-    radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px);
-  background-size: 220px 220px, 140px 140px;
-  background-position: 0 0, 70px 90px;
-  mask-image: radial-gradient(ellipse 120% 90% at 50% 0%, #000 10%, transparent 70%);
-}
-@media (hover: hover) and (pointer: fine) {
-  body::after { display: block; }
 }
 
 img { max-width: 100%; display: block; }
@@ -500,6 +468,27 @@ body:has(.mobile-nav:popover-open) { overflow: hidden; }
 
 .hero__inner { position: relative; z-index: 2; display: grid; justify-items: center; gap: 24px; text-align: center; }
 
+/* Резерв высоты контента hero до подстановки словаря: значения — замеры
+   финальной высоты (обе локали) при узких экранах + небольшой запас; без
+   резерва hero растёт и сдвигает содержимое ниже (CLS). На широких экранах
+   контент помещается в 100svh, поэтому резерв не нужен. */
+@media (max-width: 359px) { .hero__inner { min-height: 647px; } }
+@media (min-width: 360px) and (max-width: 399px) { .hero__inner { min-height: 617px; } }
+@media (min-width: 400px) and (max-width: 539px) { .hero__inner { min-height: 560px; } }
+@media (min-width: 540px) and (max-width: 599px) { .hero__inner { min-height: 493px; } }
+
+/* Резерв высоты заголовка: Science Gothic шире системного шрифта, из-за чего
+   после подмены заголовок занимает больше строк. Значения — замеры финальной
+   высоты при font-size 32px (до 599px он фиксирован) + запас. */
+@media (max-width: 599px) { .hero__title { min-height: 99px; } }
+@media (max-width: 539px) { .hero__title { min-height: 126px; } }
+@media (max-width: 399px) { .hero__title { min-height: 154px; } }
+@media (max-width: 359px) { .hero__title { min-height: 159px; } }
+@media (max-width: 599px) { :root:lang(en) .hero__title { min-height: 99px; } }
+@media (max-width: 539px) { :root:lang(en) .hero__title { min-height: 122px; } }
+@media (max-width: 399px) { :root:lang(en) .hero__title { min-height: 140px; } }
+@media (max-width: 359px) { :root:lang(en) .hero__title { min-height: 140px; } }
+
 .hero__badge {
   display: inline-flex;
   align-items: center;
@@ -544,7 +533,7 @@ body:has(.mobile-nav:popover-open) { overflow: hidden; }
   background: linear-gradient(90deg, transparent, rgba(168, 228, 255, .7), transparent);
   box-shadow: 0 1px 6px rgba(2, 6, 12, .9), 0 0 10px rgba(var(--cyan-rgb), .35);
 }
-.hero__divider i { font-style: normal; white-space: nowrap; }
+.hero__divider i { font-style: normal; white-space: nowrap; min-width: 178px; text-align: center; }
 @keyframes dividerPulse { 0%, 100% { opacity: .75; } 50% { opacity: 1; } }
 
 .hero__title {
@@ -634,6 +623,8 @@ body:has(.mobile-nav:popover-open) { overflow: hidden; }
   color: var(--muted);
   text-shadow: 0 1px 6px rgba(2, 6, 12, .7);
 }
+/* пока словарь не загружен, пустая подпись всё равно держит свою строку */
+.stat__label:empty { min-height: 1.68em; }
 
 .cards, .news, .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
 
@@ -641,7 +632,7 @@ body:has(.mobile-nav:popover-open) { overflow: hidden; }
 :is(.card, .news__card, .dl-card, .step, .faq__item, .fac) { contain: content; }
 
 /* Контентные карточки: один стиль для возможностей, новостей, вики, загрузки и шагов. */
-:is(.card, .news__card, .wiki-cat, .dl-card, .step) {
+:is(.card, .news__card, .wiki-cat, .dl-card, .step, .article__pager a) {
   position: relative;
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -649,7 +640,7 @@ body:has(.mobile-nav:popover-open) { overflow: hidden; }
   overflow: hidden;
   transition: transform .28s var(--ease-out), border-color .28s, box-shadow .28s;
 }
-:is(.card, .news__card, .wiki-cat, .dl-card, .step)::after {
+:is(.card, .news__card, .wiki-cat, .dl-card, .step, .article__pager a)::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -658,12 +649,12 @@ body:has(.mobile-nav:popover-open) { overflow: hidden; }
   transition: opacity .3s;
   pointer-events: none;
 }
-:is(.card, .news__card, .wiki-cat, .dl-card, .step):hover {
+:is(.card, .news__card, .wiki-cat, .dl-card, .step, .article__pager a):hover {
   transform: translateY(-4px);
   border-color: var(--line-strong);
   box-shadow: var(--shadow-card);
 }
-:is(.card, .news__card, .wiki-cat, .dl-card, .step):hover::after { opacity: 1; }
+:is(.card, .news__card, .wiki-cat, .dl-card, .step, .article__pager a):hover::after { opacity: 1; }
 
 .card {
   display: grid;
@@ -973,11 +964,12 @@ body:has(.mobile-nav:popover-open) { overflow: hidden; }
   background: var(--surface-2);
   color: var(--text-soft);
   opacity: 0;
+  visibility: hidden;
   pointer-events: none;
   transform: translateY(10px);
   transition: .3s;
 }
-.to-top.is-visible { opacity: 1; pointer-events: auto; transform: none; }
+.to-top.is-visible { opacity: 1; visibility: visible; pointer-events: auto; transform: none; }
 .to-top:hover { color: #fff; background: var(--surface-3); border-color: var(--border-2); }
 .to-top:focus { outline: none; }
 .to-top:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--bg-0), 0 0 0 4px var(--cyan-hi); }
@@ -1023,7 +1015,12 @@ body:has(.mobile-nav:popover-open) { overflow: hidden; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0s !important;
+    transition-duration: .001ms !important;
+  }
   [data-reveal] { opacity: 1; transform: none; }
 }
 

@@ -1,105 +1,171 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://wwn-games.github.io/WWN.site/</loc>
+    <lastmod>2026-09-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://wwn-games.github.io/WWN.site/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wwn-games.github.io/WWN.site/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://wwn-games.github.io/WWN.site/"/>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://wwn-games.github.io/WWN.site/wiki/</loc>
+    <lastmod>2026-09-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://wwn-games.github.io/WWN.site/wiki/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wwn-games.github.io/WWN.site/wiki/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://wwn-games.github.io/WWN.site/wiki/"/>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://wwn-games.github.io/WWN.site/database.html</loc>
+    <lastmod>2026-09-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://wwn-games.github.io/WWN.site/database.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wwn-games.github.io/WWN.site/database.html?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://wwn-games.github.io/WWN.site/database.html"/>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://wwn-games.github.io/WWN.site/wiki/article.html?p=lore/overview</loc>
     <lastmod>2026-09-15</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=lore/overview"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=lore/overview&amp;lang=en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=lore/overview"/>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://wwn-games.github.io/WWN.site/wiki/article.html?p=lore/history</loc>
     <lastmod>2026-09-15</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=lore/history"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=lore/history&amp;lang=en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=lore/history"/>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://wwn-games.github.io/WWN.site/wiki/article.html?p=lore/fenearth</loc>
     <lastmod>2026-09-15</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=lore/fenearth"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=lore/fenearth&amp;lang=en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=lore/fenearth"/>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://wwn-games.github.io/WWN.site/wiki/article.html?p=lore/proton</loc>
     <lastmod>2026-09-15</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=lore/proton"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=lore/proton&amp;lang=en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=lore/proton"/>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://wwn-games.github.io/WWN.site/wiki/article.html?p=lore/vasst</loc>
     <lastmod>2026-09-15</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=lore/vasst"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=lore/vasst&amp;lang=en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=lore/vasst"/>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://wwn-games.github.io/WWN.site/wiki/article.html?p=units/roles</loc>
     <lastmod>2026-09-01</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=units/roles"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=units/roles&amp;lang=en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=units/roles"/>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://wwn-games.github.io/WWN.site/wiki/article.html?p=buildings/overview</loc>
     <lastmod>2026-09-01</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=buildings/overview"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=buildings/overview&amp;lang=en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=buildings/overview"/>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://wwn-games.github.io/WWN.site/wiki/article.html?p=mechanics/overview</loc>
     <lastmod>2026-09-01</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=mechanics/overview"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=mechanics/overview&amp;lang=en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=mechanics/overview"/>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://wwn-games.github.io/WWN.site/wiki/article.html?p=mechanics/economy</loc>
     <lastmod>2026-09-01</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=mechanics/economy"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=mechanics/economy&amp;lang=en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=mechanics/economy"/>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://wwn-games.github.io/WWN.site/wiki/article.html?p=mechanics/warfare</loc>
     <lastmod>2026-09-01</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=mechanics/warfare"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=mechanics/warfare&amp;lang=en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=mechanics/warfare"/>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://wwn-games.github.io/WWN.site/wiki/article.html?p=mechanics/league</loc>
     <lastmod>2026-09-01</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=mechanics/league"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=mechanics/league&amp;lang=en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=mechanics/league"/>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://wwn-games.github.io/WWN.site/wiki/article.html?p=guides/installation</loc>
-    <lastmod>2026-09-15</lastmod>
+    <lastmod>2026-09-16</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=guides/installation"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=guides/installation&amp;lang=en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=guides/installation"/>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://wwn-games.github.io/WWN.site/wiki/article.html?p=guides/start</loc>
     <lastmod>2026-09-01</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=guides/start"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=guides/start&amp;lang=en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=guides/start"/>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://wwn-games.github.io/WWN.site/wiki/article.html?p=guides/economy</loc>
     <lastmod>2026-09-01</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=guides/economy"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=guides/economy&amp;lang=en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=guides/economy"/>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://wwn-games.github.io/WWN.site/wiki/article.html?p=guides/combat</loc>
     <lastmod>2026-09-01</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=guides/combat"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=guides/combat&amp;lang=en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=guides/combat"/>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://wwn-games.github.io/WWN.site/wiki/article.html?p=changelog</loc>
     <lastmod>2026-09-15</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=changelog"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=changelog&amp;lang=en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=changelog"/>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://wwn-games.github.io/WWN.site/wiki/article.html?p=misc/contact</loc>
-    <lastmod>2026-09-15</lastmod>
+    <lastmod>2026-09-16</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=misc/contact"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=misc/contact&amp;lang=en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=misc/contact"/>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://wwn-games.github.io/WWN.site/wiki/article.html?p=misc/contributing</loc>
     <lastmod>2026-09-15</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=misc/contributing"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=misc/contributing&amp;lang=en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://wwn-games.github.io/WWN.site/wiki/article.html?p=misc/contributing"/>
     <priority>0.6</priority>
   </url>
 </urlset>

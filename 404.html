@@ -6,9 +6,9 @@
   <title>404 — WWN</title>
   <meta name="robots" content="noindex">
   <meta name="theme-color" content="#050b16">
-  <link rel="icon" type="image/svg+xml" href="assets/img/brand/favicon.svg" data-base>
-  <link rel="apple-touch-icon" href="assets/img/brand/icon-192.png" data-base>
-  <link rel="manifest" href="site.webmanifest" data-base>
+  <link rel="icon" type="image/svg+xml" href="assets/img/brand/favicon.svg" data-base="assets/img/brand/favicon.svg">
+  <link rel="apple-touch-icon" href="assets/img/brand/icon-192.png" data-base="assets/img/brand/icon-192.png">
+  <link rel="manifest" href="site.webmanifest" data-base="site.webmanifest">
   <style>
     html { color-scheme: dark; }
     body.notfound-page {
@@ -57,7 +57,7 @@
 </head>
 <body class="notfound-page">
   <main class="notfound">
-    <img class="notfound__logo" src="assets/img/brand/logo.svg" alt="WWN" width="190" height="56" data-base>
+    <img class="notfound__logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTAiIGhlaWdodD0iNTYiLz4=" alt="WWN" width="190" height="56" data-base="assets/img/brand/logo.svg">
     <div class="notfound__code">404</div>
     <h1 data-i18n="notfound.title"></h1>
     <p data-i18n="notfound.desc"></p>
@@ -65,7 +65,7 @@
       <a class="btn" id="homeLink" href="./" data-i18n="notfound.home"></a>
       <a class="btn" id="wikiLink" href="wiki/" data-i18n="notfound.wiki"></a>
     </div>
-    <div class="lang" role="group" aria-label="Language">
+    <div class="lang" role="group" aria-label="Language" data-i18n-aria="a11y.lang">
       <button type="button" data-lang-btn="RU">RU</button>
       <button type="button" data-lang-btn="EN">EN</button>
     </div>
@@ -75,7 +75,7 @@
     // 404 может открываться на любой глубине пути (dev-сервер или GitHub Pages),
     // поэтому корень сайта ищем перебором, а тексты подгружаем из i18n.
     const STORED = (() => { try { return localStorage.getItem("wwn-lang"); } catch (e) { return null; } })();
-    const browserLang = (navigator.language || "en").slice(0, 2).toLowerCase() === "ru" ? "ru" : "en";
+    const browserLang = (navigator.language || "ru").slice(0, 2).toLowerCase() === "ru" ? "ru" : "en";
     const lang = STORED === "ru" || STORED === "en" ? STORED : browserLang;
     document.documentElement.lang = lang;
 
@@ -101,7 +101,7 @@
     document.head.append(fonts, theme);
 
     document.querySelectorAll("[data-base]").forEach((el) => {
-      const path = `${base}${el.getAttribute("href") || el.getAttribute("src")}`;
+      const path = `${base}${el.getAttribute("data-base")}`;
       if (el.tagName === "IMG") el.src = path;
       else el.href = path;
     });

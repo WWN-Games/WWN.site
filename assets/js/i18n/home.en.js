@@ -73,4 +73,5 @@ export const DICT = {
   "faq.a5": "All news about new versions and development progress appears in <a href=\"#\" data-link=\"discord\">Discord</a>.",
   "faq.q6": "Where to discuss balance and find opponents?",
   "faq.a6": "In <a href=\"#\" data-link=\"discord\">Discord</a> — that's where balance is discussed and opponents are found.",
+  "meta.desc": "Official site of the WWN mod for Rusted Warfare: space fleets, ground battles, two factions, its own universe and a living players' league. Download for free on Steam Workshop; full wiki with lore.",
 };

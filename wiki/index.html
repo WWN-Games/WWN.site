@@ -1,18 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>WWN Wiki — lore, factions, units, mechanics and guides</title>
-  <meta name="description" content="The complete WWN wiki for Rusted Warfare: universe lore, factions, unit and structure database, mechanics, guides and releases.">
+  <title>Вики WWN — лор, фракции, юниты, механики и гайды</title>
+  <meta name="description" content="Полная вики WWN для Rusted Warfare: лор вселенной, фракции, база юнитов и строений, механики, гайды и релизы." data-i18n-content="meta.desc">
   <meta name="theme-color" content="#050b16">
   <link rel="canonical" href="https://wwn-games.github.io/WWN.site/wiki/">
+  <link rel="alternate" hreflang="ru" href="https://wwn-games.github.io/WWN.site/wiki/">
+  <link rel="alternate" hreflang="en" href="https://wwn-games.github.io/WWN.site/wiki/?lang=en">
+  <link rel="alternate" hreflang="x-default" href="https://wwn-games.github.io/WWN.site/wiki/">
   <meta property="og:type" content="website">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:locale:alternate" content="en_US">
   <meta property="og:url" content="https://wwn-games.github.io/WWN.site/wiki/">
-  <meta property="og:title" content="WWN Wiki">
-  <meta property="og:description" content="Lore, factions, units, structures, mechanics and guides of the WWN mod.">
+  <meta property="og:title" content="Вики WWN" data-i18n-content="meta.title.wikiHome">
+  <meta property="og:description" content="Лор, фракции, юниты, строения, механики и гайды мода WWN." data-i18n-content="meta.desc">
   <meta property="og:image" content="https://wwn-games.github.io/WWN.site/assets/img/bg/og-banner.webp">
+  <meta property="og:image:alt" content="WWN Wiki">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Вики WWN" data-i18n-content="meta.title.wikiHome">
+  <meta name="twitter:description" content="Лор, фракции, юниты, строения, механики и гайды мода WWN." data-i18n-content="meta.desc">
+  <meta name="twitter:image" content="https://wwn-games.github.io/WWN.site/assets/img/bg/og-banner.webp">
 
   <link rel="icon" type="image/svg+xml" href="../assets/img/brand/favicon.svg">
   <link rel="apple-touch-icon" href="../assets/img/brand/icon-192.png">
@@ -22,10 +31,28 @@
   <link rel="stylesheet" href="../assets/css/wiki.css">
   <link rel="modulepreload" href="../assets/js/wiki.js">
   <link rel="modulepreload" href="../assets/js/wiki-shell.js">
+  <link rel="modulepreload" href="../assets/js/site-config.js">
+  <link rel="modulepreload" href="../assets/js/i18n.js">
+  <link rel="modulepreload" href="../assets/js/utils.js">
+  <link rel="modulepreload" href="../assets/js/ui.js">
   <script>
     (() => {
+      const param = new URLSearchParams(location.search).get("lang");
       let lang; try { lang = localStorage.getItem("wwn-lang"); } catch (e) {}
+      if (param === "ru" || param === "en") lang = param;
       if (lang !== "ru" && lang !== "en") lang = (navigator.language || "ru").slice(0, 2).toLowerCase() === "ru" ? "ru" : "en";
+      document.documentElement.lang = lang;
+      // фон hero — сразу, чтобы картинка нашлась до инициализации модулей
+      const heroUrl = (file) => new URL(`../assets/img/lore/${file}`, location.href).href;
+      document.documentElement.style.setProperty(
+        "--wiki-hero-img",
+        `image-set(url("${heroUrl(`tc-${lang}-960.avif`)}") 1x, url("${heroUrl(`tc-${lang}.avif`)}") 2x)`
+      );
+      if (!param && lang === "en") {
+        const url = new URL(location.href);
+        url.searchParams.set("lang", "en");
+        history.replaceState(null, "", url);
+      }
       const add = (rel, href, as, type) => {
         const link = document.createElement("link");
         link.rel = rel;
@@ -52,7 +79,7 @@
       <img src="../assets/img/brand/logo.svg" alt="WWN">
       <span class="brand__sub" data-i18n="brand.sub"></span>
     </a>
-    <nav class="nav" aria-label="Main">
+    <nav class="nav" aria-label="Main" data-i18n-aria="a11y.nav">
       <a href="../index.html#features" data-i18n="nav.features"></a>
       <a href="../index.html#factions" data-i18n="nav.factions"></a>
       <a href="../index.html#gallery" data-i18n="nav.gallery"></a>
@@ -61,11 +88,11 @@
       <a href="../database.html" data-i18n="database.title"></a>
     </nav>
     <div class="header__side">
-      <div class="lang" role="group" aria-label="Language">
+      <div class="lang" role="group" aria-label="Language" data-i18n-aria="a11y.lang">
         <button type="button" data-lang-btn="RU">RU</button>
         <button type="button" data-lang-btn="EN">EN</button>
       </div>
-      <button class="icon-btn burger" id="burger" type="button" aria-label="Menu" aria-controls="mobileNav" popovertarget="mobileNav"><span></span></button>
+      <button class="icon-btn burger" id="burger" type="button" aria-label="Menu" data-i18n-aria="a11y.menu" aria-controls="mobileNav" popovertarget="mobileNav"><span></span></button>
     </div>
   </div>
 </header>
@@ -78,7 +105,7 @@
   <a href="../index.html#download" data-i18n="nav.download"></a>
   <a href="./" class="is-active" data-i18n="nav.wiki"></a>
   <a href="../database.html" data-i18n="database.title"></a>
-  <div class="lang" role="group" aria-label="Language">
+  <div class="lang" role="group" aria-label="Language" data-i18n-aria="a11y.lang">
     <button type="button" data-lang-btn="RU">RU</button>
     <button type="button" data-lang-btn="EN">EN</button>
   </div>

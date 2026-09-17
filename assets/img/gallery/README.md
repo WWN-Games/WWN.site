@@ -4,8 +4,8 @@
 
 ## Как добавить фото
 
-1. Положите файл в эту папку, например `screenshot-1.avif` или `art-1.webp`.
-2. Откройте `assets/js/site-config.js` и добавьте запись в массив `gallery`:
+1. Положите файл в эту папку, например `screenshot-1.avif`.
+2. Откройте `assets/js/site-data.js` и добавьте запись в массив `gallery`:
 
 ```js
 gallery: [

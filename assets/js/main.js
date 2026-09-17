@@ -3,7 +3,7 @@
    ============================================================================ */
 
 import { WWN_CONFIG } from "./site-config.js";
-import { bootI18n, initLangSwitch, onLangChange, registerDictLoaders, t } from "./i18n.js";
+import { bootI18n, getLang, initLangSwitch, onLangChange, registerDictLoaders, t } from "./i18n.js";
 import { debounce } from "./utils.js";
 import { initHeader, initReveal, initYear, resolveLinks } from "./ui.js";
 
@@ -15,7 +15,8 @@ registerDictLoaders({
 let cfg = WWN_CONFIG;
 let mods = null;
 
-function applyLang(lang) {
+function renderAll() {
+  const lang = getLang();
   document.title = t("meta.title.home", lang);
   resolveLinks(cfg);
   if (!mods) return;
@@ -29,35 +30,39 @@ async function boot() {
   initYear();
   initReveal();
   initLangSwitch();
-
-  const lang = await bootI18n();
-  applyLang(lang);
-
-  onLangChange((next) => {
-    applyLang(next);
-    mods?.stats.syncStats(next);
+  onLangChange((lang) => {
+    renderAll();
+    mods?.stats.syncStats(lang);
   });
+
+  await bootI18n();
+  renderAll();
+
   window.addEventListener("resize", debounce(() => mods?.faq.syncFaqHeights(), 150));
 
-  const [siteData, hero, gallery, news, faq, stats] = await Promise.all([
-    import("./site-data.js"),
-    import("./home/hero.js"),
-    import("./home/gallery.js"),
-    import("./home/news.js"),
-    import("./home/faq.js"),
-    import("./home/stats.js")
-  ]);
-  cfg = { ...WWN_CONFIG, ...siteData.SITE_DATA };
-  mods = { gallery, news, faq, stats };
+  try {
+    const [siteData, hero, gallery, news, faq, stats] = await Promise.all([
+      import("./site-data.js"),
+      import("./home/hero.js"),
+      import("./home/gallery.js"),
+      import("./home/news.js"),
+      import("./home/faq.js"),
+      import("./home/stats.js")
+    ]);
+    cfg = { ...WWN_CONFIG, ...siteData.SITE_DATA };
+    mods = { gallery, news, faq, stats };
 
-  hero.initHero();
-  gallery.initGalleryUi();
-  faq.initFaq();
-  stats.initStats(cfg);
+    hero.initHero();
+    gallery.initGalleryUi();
+    faq.initFaq();
+    stats.initStats();
+  } catch (error) {
+    console.error("[wwn] блоки главной не загрузились:", error);
+    return;
+  }
 
-  const render = () => applyLang(lang);
-  if ("requestIdleCallback" in window) requestIdleCallback(render, { timeout: 300 });
-  else setTimeout(render, 60);
+  if ("requestIdleCallback" in window) requestIdleCallback(renderAll, { timeout: 300 });
+  else setTimeout(renderAll, 60);
 }
 
 boot();

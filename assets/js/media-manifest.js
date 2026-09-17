@@ -1,10 +1,10 @@
-/* Размеры картинок и их адаптивных вариантов <name>-<width>.avif.
-   Ключ — путь от корня сайта. Заполняется вручную при добавлении картинок;
-   если записи нет, страница покажет картинку как есть (без srcset). */
+/* Размеры картинок: ключ — путь от корня сайта, значения — ширина/высота.
+   Заполняется вручную при добавлении картинок; нужен, чтобы <img> получал
+   width/height и место под картинку резервировалось до её загрузки. */
 export const MEDIA = {
-  "assets/img/gallery/screenshot-1.avif": { w: 1600, h: 844, variants: [640, 960] },
-  "assets/img/gallery/screenshot-2.avif": { w: 1072, h: 916, variants: [640, 960] },
-  "assets/img/gallery/screenshot-3.avif": { w: 820, h: 673, variants: [640] },
+  "assets/img/gallery/screenshot-1.avif": { w: 1600, h: 844, variants: [] },
+  "assets/img/gallery/screenshot-2.avif": { w: 1072, h: 916, variants: [] },
+  "assets/img/gallery/screenshot-3.avif": { w: 820, h: 673, variants: [] },
   "assets/img/lore/dp-en.avif": { w: 1500, h: 1500, variants: [] },
   "assets/img/lore/dp-ru.avif": { w: 1500, h: 1500, variants: [] },
   "assets/img/lore/gs-en.avif": { w: 1500, h: 1500, variants: [] },

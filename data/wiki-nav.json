@@ -33,6 +33,17 @@
             "ru": "Все эпохи: от Странников до Тройственного Конфликта.",
             "en": "All eras: from the Wanderers to the Triple Conflict."
           }
+        },
+        {
+          "slug": "lore/markup",
+          "title": {
+            "ru": "Проверка разметки",
+            "en": "Markup check"
+          },
+          "desc": {
+            "ru": "Тестовая статья: все элементы оформления вики.",
+            "en": "Test article: every wiki formatting element."
+          }
         }
       ]
     },

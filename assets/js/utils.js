@@ -54,6 +54,33 @@ export const formatNumber = (value, lang) => {
   if (!numberFormatters.has(locale)) numberFormatters.set(locale, new Intl.NumberFormat(locale));
   return numberFormatters.get(locale).format(value);
 };
+/* Поиск: свёртка регистра и диакритики выполняется посимвольно (1:1),
+   поэтому длина строки не меняется и подсветка идёт по исходному тексту. */
+const FOLD_GROUPS = [
+  "aàáâãäåāăą", "cçćĉċč", "dďđ", "eèéêëēĕėęě", "gĝğġģ", "hĥħ",
+  "iìíîïĩīĭįı", "jĵ", "kķ", "lĺļľŀł", "nñńņň", "oòóôõöøōŏő",
+  "rŕŗř", "sśŝşš", "tţťŧ", "uùúûüũūŭůűų", "wŵ", "yýÿŷ", "zźżž"
+];
+const FOLD_MAP = {};
+for (const group of FOLD_GROUPS) {
+  const [base, ...rest] = [...group];
+  for (const char of rest) FOLD_MAP[char] = base;
+}
+const FOLD_RE = new RegExp(`[${Object.keys(FOLD_MAP).join("")}]`, "g");
+
+/** Свёртка текста для поиска: регистр, ё→е, латинская диакритика. */
+export const foldSearch = (text) =>
+  String(text).toLowerCase().replace(/ё/g, "е").replace(FOLD_RE, (char) => FOLD_MAP[char]);
+
+/* Формы слова по числу: plural(lang, n, { one, few, many, other }). */
+const pluralRules = new Map();
+export function plural(lang, n, forms) {
+  const locale = lang === "en" ? "en" : "ru";
+  if (!pluralRules.has(locale)) pluralRules.set(locale, new Intl.PluralRules(locale));
+  const category = pluralRules.get(locale).select(n);
+  return forms[category] ?? forms.other ?? "";
+}
+
 /** Экранирование текста для вставки в HTML. */
 export const escapeHtml = (value) =>
   String(value).replace(/[&<>"']/g, (char) => ({
@@ -67,6 +94,14 @@ export const escapeHtml = (value) =>
 /** Цвет из данных — только валидный hex, иначе фолбэк. */
 export const safeColor = (value, fallback) =>
   typeof value === "string" && /^#([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(value) ? value : fallback;
+
+const collators = new Map();
+/** Кэшированный коллатор языка сайта — для сортировки названий. */
+export const collator = (lang) => {
+  const locale = lang === "en" ? "en" : "ru";
+  if (!collators.has(locale)) collators.set(locale, new Intl.Collator(locale, { numeric: true }));
+  return collators.get(locale);
+};
 
 /* Индекс для клавиатурной навигации по списку (стрелки, Home/End).
    axis: "y" — вверх/вниз, "x" — влево/вправо; wrap — по кругу. -1, если клавиша не наша. */

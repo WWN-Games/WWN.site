@@ -50,4 +50,5 @@ export const DICT = {
   "database.type.economy": "Economy",
   "database.type.defense": "Defense",
   "database.count": "Found: {n}",
+  "meta.desc": "WWN database: factions, units and structures with stats, roles and filters.",
 };

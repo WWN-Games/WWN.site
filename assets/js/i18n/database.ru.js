@@ -50,4 +50,5 @@ export const DICT = {
   "database.type.economy": "Экономика",
   "database.type.defense": "Оборона",
   "database.count": "Найдено: {n}",
+  "meta.desc": "База данных WWN: фракции, юниты и строения с характеристиками, ролями и фильтрами.",
 };

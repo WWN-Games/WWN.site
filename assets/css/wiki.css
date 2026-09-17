@@ -67,7 +67,7 @@
 }
 .wiki-sidebar__kbd {
   padding: 3px 7px;
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 10px;
   letter-spacing: .04em;
   color: var(--muted-2);
@@ -323,6 +323,52 @@
 .article__body p { line-height: 1.78; }
 .article__body a { color: var(--cyan-hi); border-bottom: 1px solid rgba(var(--cyan-rgb), .35); }
 .article__body a:hover { border-bottom-color: var(--cyan); color: #fff; }
+/* «красная ссылка»: статьи в вики ещё нет */
+.article__body a.wiki-link--missing { color: #ff9d9d; border-bottom-color: rgba(255, 157, 157, .45); }
+.article__body a.wiki-link--missing:hover { color: #ffd2d2; border-bottom-color: #ff9d9d; }
+/* внешний источник — помечаем стрелкой, как в вики */
+.article__body a.wiki-link--external::after {
+  content: "↗";
+  display: inline-block;
+  margin-left: 3px;
+  font-size: .78em;
+  line-height: 1;
+  transform: translateY(-.28em);
+  opacity: .7;
+}
+.article__body a.wiki-link--external:hover::after { opacity: 1; }
+
+/* Блок «Источники» / «См. также»: компактный список в конце статьи */
+.article__body .article__sources-title {
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 16px;
+}
+.article__body .article__sources {
+  font-size: 14.5px;
+  color: var(--muted);
+  padding-left: 22px;
+  gap: 8px;
+}
+.article__body .article__sources li::marker { color: var(--line-strong); }
+.article__body .article__sources a { border-bottom-color: rgba(var(--cyan-rgb), .22); }
+
+/* Сноски [^1]: верхний индекс в тексте + блок «Примечания» с обратными ссылками */
+.article__body .article__ref { font-size: .8em; line-height: 1; }
+.article__body .article__ref a { color: var(--cyan-hi); border-bottom: 0; padding: 0 1px; }
+.article__body .article__ref a:hover { color: #fff; }
+.article__refs {
+  margin-top: 48px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+  font-size: 14.5px;
+  color: var(--muted);
+}
+.article__refs ol { margin-top: 14px; padding-left: 26px; gap: 8px; }
+.article__refs li::marker { color: var(--cyan); }
+.article__refs a { border-bottom-color: rgba(var(--cyan-rgb), .22); }
+.article__ref-back { margin-left: 6px; color: var(--cyan-hi); border-bottom: 0 !important; }
+.article__ref-back:hover { color: #fff; }
 .article__body ul, .article__body ol { padding-left: 26px; display: grid; gap: 9px; }
 .article__body li::marker { color: var(--cyan); }
 .article__body strong { color: #fff; }
@@ -431,7 +477,7 @@
   gap: 10px;
   justify-items: center;
 }
-.article__figure img { max-width: 100%; max-height: 620px; width: auto; }
+.article__figure img { max-width: 100%; max-height: 620px; height: auto; object-fit: contain; }
 .article__figure figcaption {
   font-size: 13px;
   color: var(--muted);
@@ -494,30 +540,14 @@
 .article__toc .lvl-3 a { padding-left: 24px; font-size: 12.5px; }
 
 .article__pager { display: flex; justify-content: space-between; gap: 16px; margin-top: 58px; padding-top: 28px; border-top: 1px solid var(--line); }
+/* Карточки-переходы — тот же стиль, что у карточек сайта (:is(...) в style.css). */
 .article__pager a {
-  position: relative;
   display: grid;
   gap: 5px;
   max-width: 48%;
-  padding: 16px 20px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  background: linear-gradient(165deg, rgba(15, 31, 54, .78), rgba(5, 11, 21, .94));
-  transition: border-color .22s, box-shadow .22s, transform .22s;
-  overflow: hidden;
+  padding: 22px 24px;
 }
-.article__pager a::after {
-  content: "";
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 2px;
-  background: linear-gradient(180deg, var(--cyan), transparent);
-  opacity: 0;
-  transition: opacity .25s;
-}
-.article__pager a:hover,
 .search-result:hover { border-color: var(--line-strong); box-shadow: var(--shadow-sm); transform: translateY(-2px); }
-.article__pager a:hover::after { opacity: 1; }
 .article__pager small { font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
 .article__pager-cat { font-size: 11.5px; color: var(--muted-2); }
 .article__pager b,
@@ -639,6 +669,7 @@
   .article__title { min-height: 2.3em; }
   .article__pager { flex-direction: column; }
   .article__pager a { max-width: 100%; }
+  .article__pager .pager-next { margin-left: 0; text-align: left; }
   .article__body table { display: block; overflow-x: auto; }
   .wiki-hero { padding: 30px 22px 26px; }
   .wiki-cat { padding: 18px; }
