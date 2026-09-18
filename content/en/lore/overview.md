@@ -1,6 +1,6 @@
 ---
-title: The WWN Universe
-desc: An overview of the setting and the galaxy.
+title: "The WWN Universe"
+desc: "An overview of the setting and the galaxy."
 order: 1
 updated: 2026-09-15
 ---

@@ -1,6 +1,6 @@
 ---
-title: С чего начать
-desc: Первые шаги в WWN.
+title: "С чего начать"
+desc: "Первые шаги в WWN."
 order: 3
 updated: 2026-09-01
 draft: true

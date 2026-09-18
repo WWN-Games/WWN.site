@@ -1,6 +1,6 @@
 ---
-title: Vasst
-desc: The crocodile-like Protonians — the most numerous race.
+title: "Vasst"
+desc: "The crocodile-like Protonians — the most numerous race."
 order: 1
 updated: 2026-09-15
 ---

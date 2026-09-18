@@ -1,6 +1,6 @@
 ---
-title: Getting started
-desc: Your first steps in WWN.
+title: "Getting started"
+desc: "Your first steps in WWN."
 order: 3
 draft: true
 updated: 2026-09-15

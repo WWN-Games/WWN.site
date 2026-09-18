@@ -1,6 +1,6 @@
 ---
-title: History of the Galaxy
-desc: All eras: from the Wanderers to the Triple Conflict.
+title: "History of the Galaxy"
+desc: "All eras: from the Wanderers to the Triple Conflict."
 order: 2
 updated: 2026-09-15
 ---

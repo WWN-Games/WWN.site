@@ -36,6 +36,25 @@ const sections = JSON.parse(readFileSync("data/wiki-sections.json", "utf8")).sec
 
 const sectionIds = new Set(sections.map((s) => s.id));
 
+/** Шапка статьи: title/desc обязаны быть в кавычках — иначе любой YAML-парсер
+    (редактор, утилита) спотыкается о двоеточие или решётку внутри значения. */
+function checkQuotedFields(slug, lang, raw) {
+  const block = raw.match(/^---\s*\n([\s\S]*?)\n---\s*\n?/);
+  if (!block) return;
+  for (const line of block[1].split("\n")) {
+    const match = line.match(/^(title|desc):[ \t]*(.*)$/);
+    if (!match) continue;
+    const [, key, value] = match;
+    if (!/^(["']).*\1$/.test(value)) {
+      error(`${slug} (${lang}): ${key} без кавычек — возьмите значение в двойные кавычки`);
+      continue;
+    }
+    const inner = value.slice(1, -1);
+    if (value[0] === '"' && inner.includes('"')) error(`${slug} (${lang}): в ${key} есть кавычка — используйте одинарные`);
+    if (value[0] === "'" && inner.includes("'")) error(`${slug} (${lang}): в ${key} есть апостроф — используйте двойные`);
+  }
+}
+
 // content/<язык>/<раздел>/<файл>.md → { slug → { ru: {meta, body, raw}, en: {...} } }
 const parsed = new Map();
 for (const section of sections) {
@@ -48,6 +67,7 @@ for (const section of sections) {
     for (const name of readdirSync(dir).filter((n) => n.endsWith(".md")).sort()) {
       const slug = `${section.id}/${name.slice(0, -3)}`;
       const raw = readFileSync(join(dir, name), "utf8");
+      checkQuotedFields(slug, lang, raw);
       if (!parsed.has(slug)) parsed.set(slug, {});
       parsed.get(slug)[lang] = { ...parseFrontMatter(raw), raw };
     }

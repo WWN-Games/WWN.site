@@ -1,6 +1,6 @@
 ---
-title: Markup check
-desc: Test article: every wiki formatting element.
+title: "Markup check"
+desc: "Test article: every wiki formatting element."
 order: 3
 updated: 2026-09-17
 draft: true

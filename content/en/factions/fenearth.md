@@ -1,6 +1,6 @@
 ---
-title: Fenearth Republic
-desc: The industrial heir of the GF and its fleet.
+title: "Fenearth Republic"
+desc: "The industrial heir of the GF and its fleet."
 order: 1
 updated: 2026-09-15
 ---

@@ -1,6 +1,6 @@
 ---
-title: Installation & updates
-desc: Steam Workshop, manual install, troubleshooting.
+title: "Installation & updates"
+desc: "Steam Workshop, manual install, troubleshooting."
 order: 2
 updated: 2026-09-16
 ---

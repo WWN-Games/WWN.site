@@ -1,6 +1,6 @@
 ---
-title: Proton Movement
-desc: The clan union of Oten and its United Proton Liberation Army.
+title: "Proton Movement"
+desc: "The clan union of Oten and its United Proton Liberation Army."
 order: 2
 updated: 2026-09-15
 ---
