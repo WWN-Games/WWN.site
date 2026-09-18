@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Neutrals">
+  <defs>
+    <linearGradient id="nl-ring" x1="70" y1="60" x2="450" y2="460" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#c2c8ce"/>
+      <stop offset=".45" stop-color="#8b939b"/>
+      <stop offset="1" stop-color="#4a5057"/>
+    </linearGradient>
+    <radialGradient id="nl-glow" cx="50%" cy="50%" r="60%">
+      <stop offset="0" stop-color="#ffd95e" stop-opacity=".3"/>
+      <stop offset=".5" stop-color="#ffd95e" stop-opacity=".12"/>
+      <stop offset="1" stop-color="#ffd95e" stop-opacity="0"/>
+    </radialGradient>
+    <clipPath id="nl-clip"><path d="M110 19.5L109.5 20L109.5 39L109 39.5L90 39.5L89.5 40L89.5 119L89 119.5L80 119.5L79.5 119L79.5 100L79 99.5L70 99.5L69.5 100L69.5 119L69 119.5L60 119.5L59.5 119L59.5 110L59 109.5L50 109.5L49.5 110L49.5 119L49 119.5L40 119.5L39.5 120L39.5 209L40 209.5L199 209.5L199.5 209L199.5 100L199 99.5L180 99.5L179.5 99L179.5 90L179 89.5L160 89.5L159.5 90L159.5 99L159 99.5L150 99.5L149.5 99L149.5 40L149 39.5L120 39.5L119.5 39L119.5 20L119 19.5Z"/></clipPath>
+  </defs>
+
+  <!-- рамка -->
+  <rect x="60" y="60" width="392" height="392" rx="74" fill="none" stroke="url(#nl-ring)" stroke-width="30"/>
+
+  <!-- город: серые дома, тёмный контур только по силуэту, мягко светящиеся окна -->
+  <g transform="translate(66.53 74.42) scale(1.58)">
+    <path d="M110 19.5L109.5 20L109.5 39L109 39.5L90 39.5L89.5 40L89.5 119L89 119.5L80 119.5L79.5 119L79.5 100L79 99.5L70 99.5L69.5 100L69.5 119L69 119.5L60 119.5L59.5 119L59.5 110L59 109.5L50 109.5L49.5 110L49.5 119L49 119.5L40 119.5L39.5 120L39.5 209L40 209.5L199 209.5L199.5 209L199.5 100L199 99.5L180 99.5L179.5 99L179.5 90L179 89.5L160 89.5L159.5 90L159.5 99L159 99.5L150 99.5L149.5 99L149.5 40L149 39.5L120 39.5L119.5 39L119.5 20L119 19.5ZM100 49.5L99.5 50L99.5 59L100 59.5L139 59.5L139.5 59L139.5 50L139 49.5ZM100 69.5L99.5 70L99.5 79L100 79.5L139 79.5L139.5 79L139.5 70L139 69.5ZM100 89.5L99.5 90L99.5 99L100 99.5L139 99.5L139.5 99L139.5 90L139 89.5ZM100 109.5L99.5 110L99.5 119L100 119.5L139 119.5L139.5 119L139.5 110L139 109.5ZM150 109.5L149.5 110L149.5 119L150 119.5L189 119.5L189.5 119L189.5 110L189 109.5ZM50 129.5L49.5 130L49.5 139L50 139.5L89 139.5L89.5 139L89.5 130L89 129.5ZM100 129.5L99.5 130L99.5 139L100 139.5L139 139.5L139.5 139L139.5 130L139 129.5ZM150 129.5L149.5 130L149.5 139L150 139.5L189 139.5L189.5 139L189.5 130L189 129.5ZM50 149.5L49.5 150L49.5 159L50 159.5L89 159.5L89.5 159L89.5 150L89 149.5ZM100 149.5L99.5 150L99.5 159L100 159.5L139 159.5L139.5 159L139.5 150L139 149.5ZM150 159.5L149.5 160L149.5 169L150 169.5L189 169.5L189.5 169L189.5 160L189 159.5ZM50 169.5L49.5 170L49.5 179L50 179.5L89 179.5L89.5 179L89.5 170L89 169.5Z" fill="#8b939b" fill-rule="evenodd"/>
+    <g clip-path="url(#nl-clip)">
+      <rect x="93.6" y="45" width="52.800000000000004" height="20" fill="url(#nl-glow)"/>
+      <rect x="93.6" y="65" width="52.800000000000004" height="20" fill="url(#nl-glow)"/>
+      <rect x="93.6" y="85" width="52.800000000000004" height="20" fill="url(#nl-glow)"/>
+      <rect x="93.6" y="105" width="52.800000000000004" height="20" fill="url(#nl-glow)"/>
+      <rect x="143.6" y="105" width="52.800000000000004" height="20" fill="url(#nl-glow)"/>
+      <rect x="43.6" y="125" width="52.800000000000004" height="20" fill="url(#nl-glow)"/>
+      <rect x="93.6" y="125" width="52.800000000000004" height="20" fill="url(#nl-glow)"/>
+      <rect x="143.6" y="125" width="52.800000000000004" height="20" fill="url(#nl-glow)"/>
+      <rect x="43.6" y="145" width="52.800000000000004" height="20" fill="url(#nl-glow)"/>
+      <rect x="93.6" y="145" width="52.800000000000004" height="20" fill="url(#nl-glow)"/>
+      <rect x="143.6" y="155" width="52.800000000000004" height="20" fill="url(#nl-glow)"/>
+      <rect x="43.6" y="165" width="52.800000000000004" height="20" fill="url(#nl-glow)"/>
+      <rect x="100" y="50" width="40" height="10" fill="#ffd34a"/>
+      <rect x="100" y="70" width="40" height="10" fill="#ffd34a"/>
+      <rect x="100" y="90" width="40" height="10" fill="#ffd34a"/>
+      <rect x="100" y="110" width="40" height="10" fill="#ffd34a"/>
+      <rect x="150" y="110" width="40" height="10" fill="#ffd34a"/>
+      <rect x="50" y="130" width="40" height="10" fill="#ffd34a"/>
+      <rect x="100" y="130" width="40" height="10" fill="#ffd34a"/>
+      <rect x="150" y="130" width="40" height="10" fill="#ffd34a"/>
+      <rect x="50" y="150" width="40" height="10" fill="#ffd34a"/>
+      <rect x="100" y="150" width="40" height="10" fill="#ffd34a"/>
+      <rect x="150" y="160" width="40" height="10" fill="#ffd34a"/>
+      <rect x="50" y="170" width="40" height="10" fill="#ffd34a"/>
+    </g>
+    <path d="M110 19.5L109.5 20L109.5 39L109 39.5L90 39.5L89.5 40L89.5 119L89 119.5L80 119.5L79.5 119L79.5 100L79 99.5L70 99.5L69.5 100L69.5 119L69 119.5L60 119.5L59.5 119L59.5 110L59 109.5L50 109.5L49.5 110L49.5 119L49 119.5L40 119.5L39.5 120L39.5 209L40 209.5L199 209.5L199.5 209L199.5 100L199 99.5L180 99.5L179.5 99L179.5 90L179 89.5L160 89.5L159.5 90L159.5 99L159 99.5L150 99.5L149.5 99L149.5 40L149 39.5L120 39.5L119.5 39L119.5 20L119 19.5Z" fill="none" stroke="#3f464c" stroke-width="2.4"/>
+  </g>
+</svg>

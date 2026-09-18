@@ -127,9 +127,9 @@
       "desc": {
         "ru": "ТЕСТ",
         "en": "ТЕСТ"
-        }
-      },
-      {
+      }
+    },
+    {
       "id": "aborigines",
       "subfaction": true,
       "name": {
@@ -139,6 +139,21 @@
       "color": "#907434",
       "emblem": "assets/img/factions/faction-aborigines.svg",
       "lore": "lore/aborigines",
+      "desc": {
+        "ru": "ТЕСТ",
+        "en": "ТЕСТ"
+      }
+    },
+    {
+      "id": "neutrals",
+      "subfaction": true,
+      "name": {
+        "ru": "Нейтралы",
+        "en": "Neutrals"
+      },
+      "color": "#e5e5e5",
+      "emblem": "assets/img/factions/faction-neutrals.svg",
+      "lore": "lore/neutrals",
       "desc": {
         "ru": "ТЕСТ",
         "en": "ТЕСТ"
