@@ -1,0 +1,100 @@
+{
+  "_schema": [
+    "Разделы вики. id — папка в content/<язык>/ и якорь раздела на хабе (#wiki-cat-<id>).",
+    "Статьи внутри раздела не перечисляются: они берутся из front matter самих статей",
+    "(title, desc, order, updated, draft). Собирается tools/build-wiki.mjs в data/wiki-nav.json.",
+    "icon — из набора в assets/js/wiki-shell.js: book | shield | cube | gear | compass | users | clock | rocket | chat."
+  ],
+  "sections": [
+    {
+      "id": "start",
+      "icon": "rocket",
+      "order": 1,
+      "title": { "ru": "Начало", "en": "Getting started" },
+      "desc": {
+        "ru": "Что такое WWN, установка и первый запуск.",
+        "en": "What WWN is, installation and your first game."
+      }
+    },
+    {
+      "id": "lore",
+      "icon": "book",
+      "order": 2,
+      "title": { "ru": "Лор", "en": "Lore" },
+      "desc": {
+        "ru": "История галактики WWN: Странники и Хранители, Война Очищения, Тройственный Конфликт.",
+        "en": "History of the WWN galaxy: Wanderers and Keepers, the War of Purification, the Triple Conflict."
+      }
+    },
+    {
+      "id": "factions",
+      "icon": "shield",
+      "order": 3,
+      "title": { "ru": "Фракции", "en": "Factions" },
+      "desc": {
+        "ru": "Стороны Тройственного Конфликта: Фенземская Республика и Движение Протон.",
+        "en": "The sides of the Triple Conflict: the Fenearth Republic and the Proton Movement."
+      }
+    },
+    {
+      "id": "races",
+      "icon": "users",
+      "order": 4,
+      "title": { "ru": "Расы", "en": "Races" },
+      "desc": {
+        "ru": "Народы галактики: культура, биология и история.",
+        "en": "Peoples of the galaxy: culture, biology and history."
+      }
+    },
+    {
+      "id": "units",
+      "icon": "cube",
+      "order": 5,
+      "title": { "ru": "Юниты и строения", "en": "Units & structures" },
+      "desc": {
+        "ru": "Классы юнитов, роли и как читать характеристики.",
+        "en": "Unit classes, roles and how to read the stats."
+      }
+    },
+    {
+      "id": "mechanics",
+      "icon": "gear",
+      "order": 6,
+      "title": { "ru": "Механики", "en": "Mechanics" },
+      "desc": {
+        "ru": "Как устроен геймплей WWN: космос, экономика, лига.",
+        "en": "How WWN gameplay works: space, economy, the league."
+      }
+    },
+    {
+      "id": "guides",
+      "icon": "compass",
+      "order": 7,
+      "title": { "ru": "Гайды и стратегии", "en": "Guides & strategy" },
+      "desc": {
+        "ru": "Практика: старт партии, билды, тактики и контрмеры.",
+        "en": "Practice: openings, build orders, tactics and counters."
+      }
+    },
+    {
+      "id": "releases",
+      "icon": "clock",
+      "order": 8,
+      "title": { "ru": "Релизы", "en": "Releases" },
+      "desc": {
+        "ru": "История обновлений и изменения баланса.",
+        "en": "Update history and balance changes."
+      }
+    },
+    {
+      "id": "misc",
+      "icon": "chat",
+      "order": 9,
+      "title": { "ru": "Мод и сообщество", "en": "Mod & community" },
+      "desc": {
+        "ru": "Как помочь моду и где нас найти.",
+        "en": "How to help the mod and where to find us."
+      }
+    }
+  ]
+}

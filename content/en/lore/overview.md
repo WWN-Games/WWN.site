@@ -1,5 +1,7 @@
 ---
 title: The WWN Universe
+desc: An overview of the setting and the galaxy.
+order: 1
 updated: 2026-09-15
 ---
 
@@ -27,6 +29,6 @@ One of the quarantined galaxies was the Milky Way — recently discovered by the
 ## What's next
 
 - [History of the Galaxy](history.md) — eight eras from the Wanderers to the Triple Conflict.
-- [Fenearth Republic](fenearth.md) — the state of humans and Fenkars.
-- [Proton Movement](proton.md) — the union of clans of the Oten Territory.
-- [Vasst](vasst.md) — the race of crocodile-like amphibians known as Protonians.
+- [Fenearth Republic](../factions/fenearth.md) — the state of humans and Fenkars.
+- [Proton Movement](../factions/proton.md) — the union of clans of the Oten Territory.
+- [Vasst](../races/vasst.md) — the race of crocodile-like amphibians known as Protonians.

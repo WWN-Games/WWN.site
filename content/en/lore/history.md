@@ -1,5 +1,7 @@
 ---
 title: History of the Galaxy
+desc: All eras: from the Wanderers to the Triple Conflict.
+order: 2
 updated: 2026-09-15
 ---
 
@@ -67,6 +69,6 @@ After the end of the Turmoil, the following states emerged on the galactic scene
 
 Then, in 2121 PZLI, after a long-prepared plan to sequentially subjugate the galaxy and provoke conflict, Minel attacked Fenearth and went to war with it. And after some time, Proton decided to establish historical justice, avenge the eternal enmity and mutual hatred between Minel and Oten, and attacked Minel, and soon after, Fenearth. Thus began the Triple Conflict.
 
-This is when the events of the mod take place when playing as different factions — the [Fenearth Republic](fenearth.md) and the [Proton Movement](proton.md).
+This is when the events of the mod take place when playing as different factions — the [Fenearth Republic](../factions/fenearth.md) and the [Proton Movement](../factions/proton.md).
 
 ![Map of the galaxy during the Triple Conflict](../assets/img/lore/tc-en.avif)

@@ -1,5 +1,7 @@
 ---
 title: Основные механики
+desc: Что отличает WWN от ванили.
+order: 1
 updated: 2026-09-01
 draft: true
 ---

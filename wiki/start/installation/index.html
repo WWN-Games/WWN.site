@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Установка и обновление — Вики WWN</title>
+  <meta name="description" content="Steam Workshop, ручная установка, решение проблем.">
+  <meta name="theme-color" content="#050b16">
+  <link rel="canonical" href="https://wwn-games.github.io/WWN.site/wiki/start/installation/">
+  <link rel="alternate" hreflang="ru" href="https://wwn-games.github.io/WWN.site/wiki/start/installation/">
+  <link rel="alternate" hreflang="en" href="https://wwn-games.github.io/WWN.site/wiki/start/installation/?lang=en">
+  <link rel="alternate" hreflang="x-default" href="https://wwn-games.github.io/WWN.site/wiki/start/installation/">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="WWN">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta property="og:url" content="https://wwn-games.github.io/WWN.site/wiki/start/installation/">
+  <meta property="og:title" content="Установка и обновление">
+  <meta property="og:description" content="Steam Workshop, ручная установка, решение проблем.">
+  <meta property="og:image" content="https://wwn-games.github.io/WWN.site/assets/img/bg/og-banner.webp">
+  <meta property="og:image:alt" content="WWN Wiki">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Установка и обновление">
+  <meta name="twitter:description" content="Steam Workshop, ручная установка, решение проблем.">
+  <meta name="twitter:image" content="https://wwn-games.github.io/WWN.site/assets/img/bg/og-banner.webp">
+
+  <link rel="icon" type="image/svg+xml" href="../../../assets/img/brand/favicon.svg">
+  <link rel="apple-touch-icon" href="../../../assets/img/brand/icon-192.png">
+  <link rel="manifest" href="../../../site.webmanifest">
+  <link rel="stylesheet" href="../../../assets/css/fonts.css">
+  <link rel="stylesheet" href="../../../assets/css/style.css">
+  <link rel="stylesheet" href="../../../assets/css/wiki.css">
+  <link rel="modulepreload" href="../../../assets/js/wiki.js">
+  <link rel="modulepreload" href="../../../assets/js/wiki-shell.js">
+  <link rel="modulepreload" href="../../../assets/js/md-text.js">
+  <link rel="modulepreload" href="../../../assets/js/site-config.js">
+  <link rel="modulepreload" href="../../../assets/js/i18n.js">
+  <link rel="modulepreload" href="../../../assets/js/utils.js">
+  <link rel="modulepreload" href="../../../assets/js/ui.js">
+  <link rel="modulepreload" href="../../../assets/js/media.js">
+  <link rel="modulepreload" href="../../../assets/js/media-manifest.js">
+  <link rel="modulepreload" href="../../../assets/vendor/marked.esm.js">
+  <link rel="modulepreload" href="../../../assets/vendor/purify.esm.js">
+  <script>
+    (() => {
+      const param = new URLSearchParams(location.search).get("lang");
+      let lang; try { lang = localStorage.getItem("wwn-lang"); } catch (e) {}
+      if (param === "ru" || param === "en") lang = param;
+      if (lang !== "ru" && lang !== "en") lang = (navigator.language || "ru").slice(0, 2).toLowerCase() === "ru" ? "ru" : "en";
+      document.documentElement.lang = lang;
+      if (!param && lang === "en") {
+        const url = new URL(location.href);
+        url.searchParams.set("lang", "en");
+        history.replaceState(null, "", url);
+      }
+      const add = (rel, href, as, type) => {
+        const link = document.createElement("link");
+        link.rel = rel;
+        link.href = href;
+        if (as) link.as = as;
+        if (type) link.type = type;
+        if (rel === "preload") link.crossOrigin = "";
+        document.head.append(link);
+      };
+      add("modulepreload", "../../../assets/js/i18n/wiki." + lang + ".js");
+      for (const font of lang === "ru" ? ["geist-cyrillic", "science-gothic-cyrillic"] : ["geist-latin", "science-gothic-latin"]) {
+        add("preload", "../../../assets/fonts/" + font + ".woff2", "font", "font/woff2");
+      }
+    })();
+  </script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"Установка и обновление","description":"Steam Workshop, ручная установка, решение проблем.","inLanguage":"ru","dateModified":"2026-09-16","mainEntityOfPage":"https://wwn-games.github.io/WWN.site/wiki/start/installation/","isPartOf":{"@type":"WebSite","name":"WWN","url":"https://wwn-games.github.io/WWN.site/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Вики WWN","item":"https://wwn-games.github.io/WWN.site/wiki/"},{"@type":"ListItem","position":2,"name":"Начало","item":"https://wwn-games.github.io/WWN.site/wiki/#wiki-cat-start"},{"@type":"ListItem","position":3,"name":"Установка и обновление"}]}]}</script>
+
+</head>
+<body class="wiki-body">
+<a class="skip-link" href="#main-content" data-i18n="a11y.skip"></a>
+<div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+<header class="header" id="header">
+  <div class="header__inner">
+    <a class="brand" href="../../../" aria-label="WWN">
+      <img src="../../../assets/img/brand/logo.svg" alt="WWN" width="862" height="252">
+      <span class="brand__sub" data-i18n="brand.sub"></span>
+    </a>
+    <nav class="nav" aria-label="Main" data-i18n-aria="a11y.nav">
+      <a href="../../../#features" data-i18n="nav.features"></a>
+      <a href="../../../#factions" data-i18n="nav.factions"></a>
+      <a href="../../../#gallery" data-i18n="nav.gallery"></a>
+      <a href="../../../#download" data-i18n="nav.download"></a>
+      <a href="../../../wiki/" class="is-active" data-i18n="nav.wiki"></a>
+      <a href="../../../database/" data-i18n="database.title"></a>
+    </nav>
+    <div class="header__side">
+      <div class="lang" role="group" aria-label="Language" data-i18n-aria="a11y.lang">
+        <button type="button" data-lang-btn="RU">RU</button>
+        <button type="button" data-lang-btn="EN">EN</button>
+      </div>
+      <button class="icon-btn burger" id="burger" type="button" aria-label="Menu" data-i18n-aria="a11y.menu" aria-controls="mobileNav" popovertarget="mobileNav"><span></span></button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-nav" id="mobileNav" popover="auto">
+  <a href="../../../" data-i18n="nav.home"></a>
+  <a href="../../../#features" data-i18n="nav.features"></a>
+  <a href="../../../#factions" data-i18n="nav.factions"></a>
+  <a href="../../../#gallery" data-i18n="nav.gallery"></a>
+  <a href="../../../#download" data-i18n="nav.download"></a>
+  <a href="../../../wiki/" class="is-active" data-i18n="nav.wiki"></a>
+  <a href="../../../database/" data-i18n="database.title"></a>
+  <div class="lang" role="group" aria-label="Language" data-i18n-aria="a11y.lang">
+    <button type="button" data-lang-btn="RU">RU</button>
+    <button type="button" data-lang-btn="EN">EN</button>
+  </div>
+</div>
+
+<div class="wiki-shell">
+  <aside class="wiki-sidebar" data-i18n-aria="wiki.sidebar">
+    <div class="wiki-sidebar__search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+      <input type="search" id="searchInput" data-i18n-placeholder="wiki.search.placeholder" data-i18n-aria="wiki.search.placeholder">
+      <kbd class="wiki-sidebar__kbd">Ctrl K</kbd>
+    </div>
+    <button type="button" id="wikiNavToggle" class="wiki-nav__toggle" aria-controls="wikiNav" data-i18n="wiki.sidebar"></button>
+    <nav class="wiki-nav" id="wikiNav" data-i18n-aria="wiki.title"></nav>
+    <div class="wiki-sidebar__cta">
+      <p data-i18n="wiki.help"></p>
+      <a class="btn btn--sm" href="../../../#download" data-i18n="nav.download"></a>
+    </div>
+  </aside>
+
+  <main id="main-content">
+    <div class="article-layout">
+      <article class="article">
+        <div class="article__head">
+          <div class="article__crumbs" id="crumbs"></div>
+          <h1 class="article__title" id="articleTitle">…</h1>
+          <div class="article__meta" id="articleMeta"></div>
+          <div class="article__actions" id="articleActions"></div>
+        </div>
+        <div class="article__body" id="articleBody">
+          <p data-i18n="wiki.subtitle"></p>
+        </div>
+        <div class="article__related" id="articleRelated"></div>
+        <div class="article__pager" id="articlePager"></div>
+      </article>
+      <aside class="article__aside" id="articleAside" data-i18n-aria="wiki.toc"></aside>
+    </div>
+  </main>
+</div>
+
+<dialog class="search-panel" id="searchPanel" data-i18n-aria="wiki.search.title">
+  <div class="search-panel__box">
+    <search>
+      <input class="search-panel__input" id="searchPanelInput" type="search" autocomplete="off" data-i18n-placeholder="wiki.search.placeholder" data-i18n-aria="wiki.search.title">
+    </search>
+    <div class="search-filters" id="searchFilters" role="group"></div>
+    <p class="search-panel__hint" id="searchHint" role="status" data-i18n="wiki.search.hint"></p>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</dialog>
+
+<footer class="footer footer--compact">
+  <div class="wrap footer__bottom">
+    <p>© <span id="year"></span> WWN. <span data-i18n="footer.disclaimer"></span></p>
+    <a class="btn btn--sm" href="../../../wiki/" data-i18n="wiki.back"></a>
+  </div>
+</footer>
+
+<a class="to-top" id="toTop" href="#top" data-i18n-aria="footer.backToTop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6" /></svg></a>
+
+<script type="module" src="../../../assets/js/wiki.js"></script>
+</body>
+</html>

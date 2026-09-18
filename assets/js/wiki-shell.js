@@ -4,7 +4,7 @@
 
 import { WWN_CONFIG } from "./site-config.js";
 import { bootI18n, getLang, onLangChange, t } from "./i18n.js";
-import { $, abs, collator, debounce, emptyBlock, escapeHtml, foldSearch, loc, nextFocusIndex, plural } from "./utils.js";
+import { $, abs, collator, debounce, emptyBlock, escapeHtml, foldSearch, formatDate, loc, nextFocusIndex, plural } from "./utils.js";
 import { initReveal } from "./ui.js";
 import { stripMd } from "./md-text.js";
 
@@ -16,18 +16,36 @@ const ICONS = {
   gear: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.56V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 8.9 19.3a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.56-1.03H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.7 8.9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1.03-1.56V3a2 2 0 1 1 4 0v.09A1.7 1.7 0 0 0 15.1 4.7a1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9c.63.24 1.05.85 1.03 1.56V11a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.54 1.03z"/></svg>',
   compass: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m16.2 7.8-2.5 6.4-6.4 2.5 2.5-6.4z"/></svg>',
   users: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
-  clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>'
+  clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>',
+  rocket: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>',
+  chat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'
 };
 
 let navData = null;
 let flatArticles = [];
 let liveStats = null;
+/* Прямая ссылка на раздел (крошки статьи ведут на ./#wiki-cat-<id>) —
+   скроллим сами, но только один раз: при смене языка хаб перерисовывается,
+   и повторный прыжок к разделу был бы лишним. */
+let hashScrolled = false;
+
+/* Префикс к корню вики: на статье «../../», на хабе — пусто. */
+let pagePrefix = "";
+
+/* Свёрнутость разделов в сайдбаре (запоминается на десктопе). */
+const NAV_STATE_KEY = "wwn-wiki-nav";
+let navState = {};
+try { navState = JSON.parse(localStorage.getItem(NAV_STATE_KEY) || "{}"); } catch {}
 
 export const getFlatArticles = () => flatArticles;
 function indexNav() {
-  flatArticles = navData.categories.flatMap((cat) =>
-    cat.articles.map((article) => ({ ...article, category: cat }))
-  );
+  flatArticles = [
+    ...navData.categories.flatMap((cat) =>
+      cat.articles.map((article) => ({ ...article, category: cat }))
+    ),
+    // черновики открываются по прямой ссылке, но в интерфейсе их нет
+    ...(navData.drafts || [])
+  ];
 }
 
 /** Форма слова «статья» по числу: «1 статья», «2 статьи», «5 статей». */
@@ -99,7 +117,12 @@ function buildSidebar(lang, activeSlug) {
       const group = document.createElement("details");
       group.className = "wiki-nav__group";
       const hasActive = cat.articles.some((article) => article.slug === activeSlug);
-      group.open = !mobile || hasActive;
+      group.open = mobile ? hasActive : navState[cat.id] !== false;
+      group.addEventListener("toggle", () => {
+        if (mobileSidebar()) return;
+        navState[cat.id] = group.open;
+        try { localStorage.setItem(NAV_STATE_KEY, JSON.stringify(navState)); } catch {}
+      });
 
       const summary = document.createElement("summary");
       summary.className = "wiki-nav__summary";
@@ -118,7 +141,7 @@ function buildSidebar(lang, activeSlug) {
       cat.articles.forEach((article) => {
         const li = document.createElement("li");
         const link = document.createElement("a");
-        link.href = `article.html?p=${article.slug}`;
+        link.href = `${pagePrefix}${article.slug}/`;
         link.textContent = loc(article.title, lang);
         if (article.slug === activeSlug) {
           link.className = "is-active";
@@ -131,6 +154,8 @@ function buildSidebar(lang, activeSlug) {
       return group;
     })
   );
+  // активная статья может оказаться ниже прокрутки сайдбара
+  nav.querySelector("a.is-active")?.scrollIntoView({ block: "nearest" });
 }
 export function buildHome(lang) {
   const grid = $("#wikiCategories");
@@ -138,9 +163,10 @@ export function buildHome(lang) {
 
   const stats = $("#wikiHeroStats");
   if (stats) {
+    const published = flatArticles.filter((article) => !article.draft);
     const rows = [
       [navData.categories.length, t("wiki.stats.sections", lang)],
-      [flatArticles.length, articleWord(flatArticles.length, lang)]
+      [published.length, articleWord(published.length, lang)]
     ];
     // число фракций приходит из данных позже — не показываем «0», просто ждём
     if (liveStats) rows.push([liveStats.factions, t("wiki.stats.factions", lang)]);
@@ -155,12 +181,57 @@ export function buildHome(lang) {
     );
   }
 
+  const quick = $("#wikiQuickLinks");
+  if (quick) {
+    // быстрые ссылки — статьи раздела «Начало» (данные, а не хардкод)
+    const start = navData.categories.find((cat) => cat.id === "start");
+    quick.replaceChildren(
+      ...(start?.articles || []).slice(0, 3).map((article) => {
+        const link = document.createElement("a");
+        link.className = "wiki-hero__chip";
+        link.href = `${pagePrefix}${article.slug}/`;
+        link.textContent = loc(article.title, lang);
+        return link;
+      })
+    );
+  }
+
+  const recent = $("#wikiRecent");
+  if (recent) {
+    const all = navData.categories.flatMap((cat) => cat.articles.map((article) => ({ ...article, category: cat })));
+    const latest = all
+      .filter((article) => article.updated)
+      .sort((a, b) => b.updated.localeCompare(a.updated))
+      .slice(0, 4);
+    if (latest.length) {
+      const title = document.createElement("h2");
+      title.textContent = t("wiki.recent", lang);
+      const row = document.createElement("div");
+      row.className = "wiki-recent__row";
+      for (const article of latest) {
+        const link = document.createElement("a");
+        link.className = "wiki-recent__card";
+        link.href = `${pagePrefix}${article.slug}/`;
+        const strong = document.createElement("b");
+        strong.textContent = loc(article.title, lang);
+        const small = document.createElement("span");
+        small.textContent = `${loc(article.category.title, lang)} · ${formatDate(article.updated, lang)}`;
+        link.append(strong, small);
+        row.append(link);
+      }
+      recent.replaceChildren(title, row);
+      recent.hidden = false;
+    } else {
+      recent.replaceChildren();
+      recent.hidden = true;
+    }
+  }
+
   grid.replaceChildren(
-    ...navData.categories.map((cat, i) => {
+    ...navData.categories.map((cat) => {
       const card = document.createElement("section");
       card.className = "wiki-cat";
       card.dataset.reveal = "";
-      card.dataset.revealDelay = String(Math.min(i, 2));
       card.id = `wiki-cat-${cat.id}`;
 
       const head = document.createElement("header");
@@ -191,7 +262,7 @@ export function buildHome(lang) {
       cat.articles.forEach((article) => {
         const li = document.createElement("li");
         const link = document.createElement("a");
-        link.href = `article.html?p=${article.slug}`;
+        link.href = `${pagePrefix}${article.slug}/`;
         link.textContent = loc(article.title, lang);
         li.append(link);
         list.append(li);
@@ -202,6 +273,13 @@ export function buildHome(lang) {
     })
   );
   initReveal(grid);
+
+  // секции рисуются после загрузки страницы — браузер до них не доскролливает сам
+  if (!hashScrolled) {
+    hashScrolled = true;
+    const id = location.hash.match(/^#(wiki-cat-[\w-]+)$/)?.[1];
+    if (id) document.getElementById(id)?.scrollIntoView({ block: "start" });
+  }
 }
 const highlight = (text, query) => {
   const fold = foldSearch(text);
@@ -257,7 +335,9 @@ async function fetchSearchIndex(lang) {
 
 async function buildSearchIndexFromMarkdown(lang) {
   return Promise.all(
-    flatArticles.map(async (article) => {
+    flatArticles
+      .filter((article) => !article.draft)
+      .map(async (article) => {
       try {
         const res = await fetch(abs(`content/${lang}/${article.slug}.md?v=${WWN_CONFIG.version}`));
         const raw = res.ok ? await res.text() : "";
@@ -293,67 +373,198 @@ async function buildSearchIndex(lang) {
   return searchLoading;
 }
 
-async function runSearch(query, lang) {
+/* Состояние панели поиска: фильтр по разделу, «показать все», недавние запросы. */
+let searchSection = "";
+let searchExpanded = false;
+let searchItems = [];
+let searchQuery = "";
+const RECENT_KEY = "wwn-wiki-search";
+let recentQueries = [];
+try { recentQueries = JSON.parse(localStorage.getItem(RECENT_KEY) || "[]").slice(0, 5); } catch {}
+
+/** Совпадение в заголовке важнее описания, описание — важнее текста статьи. */
+function scoreOf(item, needle, lang) {
+  const title = foldSearch(loc(item.title, lang));
+  const desc = foldSearch(loc(item.desc, lang));
+  const category = foldSearch(loc(item.category.title, lang));
+  if (title === needle) return 0;
+  if (title.startsWith(needle)) return 1;
+  if (title.includes(needle)) return 2;
+  if (category.includes(needle)) return 3;
+  if (desc.includes(needle)) return 4;
+  const at = item.fold.indexOf(needle);
+  return at === -1 ? null : 5 + Math.min(9, Math.floor(at / 400));
+}
+
+/** Чипы-фильтры по разделам с числом совпадений. */
+function renderFilters(lang) {
+  const box = $("#searchFilters");
+  if (!box) return;
+  const counts = new Map();
+  for (const found of searchItems) {
+    const id = found.item.category.id;
+    counts.set(id, (counts.get(id) || 0) + 1);
+  }
+  const chip = (label, active, onClick) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = `search-chip${active ? " is-active" : ""}`;
+    button.textContent = label;
+    button.addEventListener("click", onClick);
+    return button;
+  };
+  box.replaceChildren(
+    chip(t("wiki.search.all", lang), !searchSection, () => {
+      searchSection = "";
+      renderFound(lang);
+    }),
+    ...(navData?.categories || [])
+      .filter((cat) => counts.has(cat.id))
+      .map((cat) =>
+        chip(`${loc(cat.title, lang)} · ${counts.get(cat.id)}`, searchSection === cat.id, () => {
+          searchSection = searchSection === cat.id ? "" : cat.id;
+          renderFound(lang);
+        })
+      )
+  );
+}
+
+/** Результаты поиска с учётом фильтра и «показать все». */
+function renderFound(lang) {
   const results = $("#searchResults");
   const hint = $("#searchHint");
   if (!results) return;
-  const seq = ++searchSeq;
+  const found = searchSection ? searchItems.filter((f) => f.item.category.id === searchSection) : searchItems;
 
-  const needle = foldSearch(query.trim());
-  if (needle.length < 2) {
+  if (hint) {
+    hint.style.display = "";
+    hint.textContent = t("wiki.search.found", lang, { n: found.length });
+  }
+  renderFilters(lang);
+
+  if (!found.length) {
+    const sections = document.createElement("div");
+    sections.className = "search-sections";
+    for (const cat of navData?.categories || []) {
+      const link = document.createElement("a");
+      link.href = `${pagePrefix}#wiki-cat-${cat.id}`;
+      link.textContent = loc(cat.title, lang);
+      sections.append(link);
+    }
+    results.replaceChildren(emptyBlock(t("wiki.search.empty", lang)), sections);
+    return;
+  }
+
+  const limit = searchExpanded ? found.length : 12;
+  const nodes = found.slice(0, limit).map(({ item, title, category }) => {
+    const link = document.createElement("a");
+    link.className = "search-result";
+    link.href = `${pagePrefix}${item.slug}/`;
+    const top = document.createElement("span");
+    top.className = "search-result__top";
+    const tag = document.createElement("span");
+    tag.className = "search-result__cat";
+    tag.textContent = category;
+    const strong = document.createElement("b");
+    strong.innerHTML = highlight(title, searchQuery);
+    top.append(tag, strong);
+    const text = document.createElement("p");
+    text.innerHTML = highlight(snippet(item.text, item.fold, foldSearch(searchQuery)), searchQuery);
+    link.append(top, text);
+    return link;
+  });
+
+  if (found.length > limit) {
+    const more = document.createElement("button");
+    more.type = "button";
+    more.className = "search-more";
+    more.textContent = t("wiki.search.more", lang, { n: found.length - limit });
+    more.addEventListener("click", () => {
+      searchExpanded = true;
+      renderFound(lang);
+    });
+    nodes.push(more);
+  }
+
+  results.replaceChildren(...nodes);
+}
+
+/** Недавние запросы — когда поле поиска пустое. */
+function renderRecent(lang) {
+  const results = $("#searchResults");
+  if (!results) return;
+  if (!recentQueries.length) {
     results.replaceChildren();
+    return;
+  }
+  const wrap = document.createElement("div");
+  wrap.className = "search-recent";
+  const title = document.createElement("p");
+  title.className = "search-recent__title";
+  title.textContent = t("wiki.search.recent", lang);
+  const row = document.createElement("div");
+  row.className = "search-recent__row";
+  for (const query of recentQueries) {
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "search-chip";
+    chip.textContent = query;
+    chip.addEventListener("click", () => {
+      const panelInput = $("#searchPanelInput");
+      if (!panelInput) return;
+      panelInput.value = query;
+      panelInput.focus();
+      runSearch(query, lang);
+    });
+    row.append(chip);
+  }
+  wrap.append(title, row);
+  results.replaceChildren(wrap);
+}
+
+function rememberQuery(query) {
+  const value = query.trim();
+  if (value.length < 2) return;
+  recentQueries = [value, ...recentQueries.filter((q) => q !== value)].slice(0, 5);
+  try { localStorage.setItem(RECENT_KEY, JSON.stringify(recentQueries)); } catch {}
+}
+
+async function runSearch(query, lang) {
+  const results = $("#searchResults");
+  const hint = $("#searchHint");
+  const filters = $("#searchFilters");
+  if (!results) return;
+  const seq = ++searchSeq;
+  searchQuery = query.trim();
+
+  const needle = foldSearch(searchQuery);
+  if (needle.length < 2) {
+    searchItems = [];
+    filters?.replaceChildren();
     if (hint) {
       hint.style.display = "";
       hint.textContent = t("wiki.search.hint", lang);
     }
+    renderRecent(lang);
     return;
   }
 
   const items = await buildSearchIndex(lang);
   if (seq !== searchSeq) return;
 
-  const found = items
+  searchItems = items
     .map((item) => {
-      const title = loc(item.title, lang);
-      const category = loc(item.category.title, lang);
-      const inTitle = foldSearch(title).includes(needle) || foldSearch(category).includes(needle);
-      const inText = item.fold.includes(needle);
-      return inTitle || inText ? { item, title, category, inTitle } : null;
+      const score = scoreOf(item, needle, lang);
+      return score === null
+        ? null
+        : { item, title: loc(item.title, lang), category: loc(item.category.title, lang), score };
     })
     .filter(Boolean)
-    .sort((a, b) => Number(b.inTitle) - Number(a.inTitle) || collator(lang).compare(a.title, b.title));
+    .sort((a, b) => a.score - b.score || collator(lang).compare(a.title, b.title));
 
   if (seq !== searchSeq) return;
-
-  if (hint) {
-    hint.style.display = "";
-    hint.textContent = t("wiki.search.found", lang, { n: found.length });
-  }
-
-  if (!found.length) {
-    results.replaceChildren(emptyBlock(t("wiki.search.empty", lang)));
-    return;
-  }
-
-  results.replaceChildren(
-    ...found.slice(0, 12).map(({ item, title, category }) => {
-      const link = document.createElement("a");
-      link.className = "search-result";
-      link.href = `article.html?p=${item.slug}`;
-      const top = document.createElement("span");
-      top.className = "search-result__top";
-      const tag = document.createElement("span");
-      tag.className = "search-result__cat";
-      tag.textContent = category;
-      const strong = document.createElement("b");
-      strong.innerHTML = highlight(title, query.trim());
-      top.append(tag, strong);
-      const text = document.createElement("p");
-      text.innerHTML = highlight(snippet(item.text, item.fold, needle), query.trim());
-      link.append(top, text);
-      return link;
-    })
-  );
+  searchExpanded = false;
+  renderFound(lang);
 }
 
 function initSearch() {
@@ -368,6 +579,8 @@ function initSearch() {
   const openPanel = (seed = "") => {
     if (!panel.open) panel.showModal();
     if (seed || input.value) input.value = seed;
+    searchSection = "";
+    searchExpanded = false;
     input.focus();
     input.select();
     runSearch(input.value, searchLang);
@@ -383,6 +596,11 @@ function initSearch() {
 
   input.addEventListener("input", debounce(() => runSearch(input.value, searchLang), 160));
   input.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      rememberQuery(input.value);
+      runSearch(input.value, searchLang);
+      return;
+    }
     if (event.key !== "ArrowDown") return;
     const first = results?.querySelector(".search-result");
     if (!first) return;
@@ -419,7 +637,10 @@ function initSearch() {
     }
   });
 
-  return (lang) => { searchLang = lang; };
+  return (lang) => {
+    searchLang = lang;
+    if (panel.open) runSearch(input.value, lang);
+  };
 }
 function applyLangVisuals(lang) {
   const suffix = lang === "en" ? "en" : "ru";
@@ -440,6 +661,8 @@ function showNavError(lang) {
 /** Общий запуск страниц вики/каталога: шапка, сайдбар, поиск, подписка на язык.
  *  onRender(lang) вызывается на старте и при каждой смене языка. */
 export async function initShell({ slug = null, onRender } = {}) {
+  // ссылки вики относительны: на статье «../../», на хабе — от текущей папки
+  pagePrefix = slug ? "../".repeat(slug.split("/").length) : "";
   const setSearchLang = initSearch();
   let navReady = false;
   let navFailed = false;

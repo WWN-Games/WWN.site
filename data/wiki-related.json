@@ -1,0 +1,34 @@
+{
+  "start/installation": [],
+  "lore/history": [
+    "factions/fenearth",
+    "factions/proton",
+    "lore/overview",
+    "races/vasst"
+  ],
+  "lore/overview": [
+    "lore/history",
+    "factions/fenearth",
+    "factions/proton",
+    "races/vasst"
+  ],
+  "factions/fenearth": [
+    "factions/proton",
+    "lore/history",
+    "races/vasst",
+    "lore/overview"
+  ],
+  "factions/proton": [
+    "factions/fenearth",
+    "races/vasst",
+    "lore/history",
+    "lore/overview"
+  ],
+  "races/vasst": [
+    "factions/proton",
+    "factions/fenearth",
+    "lore/history",
+    "lore/overview"
+  ],
+  "misc/contact": []
+}

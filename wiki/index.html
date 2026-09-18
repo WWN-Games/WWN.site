@@ -77,17 +77,17 @@
 
 <header class="header" id="header">
   <div class="header__inner">
-    <a class="brand" href="../index.html" aria-label="WWN">
-      <img src="../assets/img/brand/logo.svg" alt="WWN">
+    <a class="brand" href="../" aria-label="WWN">
+      <img src="../assets/img/brand/logo.svg" alt="WWN" width="862" height="252">
       <span class="brand__sub" data-i18n="brand.sub"></span>
     </a>
     <nav class="nav" aria-label="Main" data-i18n-aria="a11y.nav">
-      <a href="../index.html#features" data-i18n="nav.features"></a>
-      <a href="../index.html#factions" data-i18n="nav.factions"></a>
-      <a href="../index.html#gallery" data-i18n="nav.gallery"></a>
-      <a href="../index.html#download" data-i18n="nav.download"></a>
+      <a href="../#features" data-i18n="nav.features"></a>
+      <a href="../#factions" data-i18n="nav.factions"></a>
+      <a href="../#gallery" data-i18n="nav.gallery"></a>
+      <a href="../#download" data-i18n="nav.download"></a>
       <a href="./" class="is-active" data-i18n="nav.wiki"></a>
-      <a href="../database.html" data-i18n="database.title"></a>
+      <a href="../database/" data-i18n="database.title"></a>
     </nav>
     <div class="header__side">
       <div class="lang" role="group" aria-label="Language" data-i18n-aria="a11y.lang">
@@ -100,13 +100,13 @@
 </header>
 
 <div class="mobile-nav" id="mobileNav" popover="auto">
-  <a href="../index.html" data-i18n="nav.home"></a>
-  <a href="../index.html#features" data-i18n="nav.features"></a>
-  <a href="../index.html#factions" data-i18n="nav.factions"></a>
-  <a href="../index.html#gallery" data-i18n="nav.gallery"></a>
-  <a href="../index.html#download" data-i18n="nav.download"></a>
+  <a href="../" data-i18n="nav.home"></a>
+  <a href="../#features" data-i18n="nav.features"></a>
+  <a href="../#factions" data-i18n="nav.factions"></a>
+  <a href="../#gallery" data-i18n="nav.gallery"></a>
+  <a href="../#download" data-i18n="nav.download"></a>
   <a href="./" class="is-active" data-i18n="nav.wiki"></a>
-  <a href="../database.html" data-i18n="database.title"></a>
+  <a href="../database/" data-i18n="database.title"></a>
   <div class="lang" role="group" aria-label="Language" data-i18n-aria="a11y.lang">
     <button type="button" data-lang-btn="RU">RU</button>
     <button type="button" data-lang-btn="EN">EN</button>
@@ -124,7 +124,7 @@
     <nav class="wiki-nav" id="wikiNav" data-i18n-aria="wiki.title"></nav>
     <div class="wiki-sidebar__cta">
       <p data-i18n="wiki.help"></p>
-      <a class="btn btn--sm" href="../index.html#download" data-i18n="nav.download"></a>
+      <a class="btn btn--sm" href="../#download" data-i18n="nav.download"></a>
     </div>
   </aside>
 
@@ -134,9 +134,12 @@
         <span class="kicker" data-i18n="nav.wiki"></span>
         <h1 data-i18n="wiki.title"></h1>
         <p data-i18n="wiki.subtitle"></p>
+        <div class="wiki-hero__quick" id="wikiQuickLinks"></div>
         <div class="wiki-hero__stats" id="wikiHeroStats"></div>
       </div>
     </section>
+
+    <section class="wiki-recent" id="wikiRecent" hidden></section>
 
     <div class="wiki-cat-grid" id="wikiCategories"></div>
   </main>
@@ -147,6 +150,7 @@
     <search>
       <input class="search-panel__input" id="searchPanelInput" type="search" autocomplete="off" data-i18n-placeholder="wiki.search.placeholder" data-i18n-aria="wiki.search.title">
     </search>
+    <div class="search-filters" id="searchFilters" role="group"></div>
     <p class="search-panel__hint" id="searchHint" role="status" data-i18n="wiki.search.hint"></p>
     <div class="search-results" id="searchResults"></div>
   </div>
@@ -155,7 +159,7 @@
 <footer class="footer footer--compact">
   <div class="wrap footer__bottom">
     <p>© <span id="year"></span> WWN. <span data-i18n="footer.disclaimer"></span></p>
-    <a class="btn btn--sm" href="../index.html" data-i18n="nav.home"></a>
+    <a class="btn btn--sm" href="../" data-i18n="nav.home"></a>
   </div>
 </footer>
 

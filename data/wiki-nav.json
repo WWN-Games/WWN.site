@@ -1,6 +1,32 @@
 {
   "categories": [
     {
+      "id": "start",
+      "icon": "rocket",
+      "title": {
+        "ru": "Начало",
+        "en": "Getting started"
+      },
+      "desc": {
+        "ru": "Что такое WWN, установка и первый запуск.",
+        "en": "What WWN is, installation and your first game."
+      },
+      "articles": [
+        {
+          "slug": "start/installation",
+          "title": {
+            "ru": "Установка и обновление",
+            "en": "Installation & updates"
+          },
+          "desc": {
+            "ru": "Steam Workshop, ручная установка, решение проблем.",
+            "en": "Steam Workshop, manual install, troubleshooting."
+          },
+          "updated": "2026-09-16"
+        }
+      ]
+    },
+    {
       "id": "lore",
       "icon": "book",
       "title": {
@@ -21,7 +47,8 @@
           "desc": {
             "ru": "Общий обзор сеттинга и галактики.",
             "en": "An overview of the setting and the galaxy."
-          }
+          },
+          "updated": "2026-09-15"
         },
         {
           "slug": "lore/history",
@@ -32,18 +59,8 @@
           "desc": {
             "ru": "Все эпохи: от Странников до Тройственного Конфликта.",
             "en": "All eras: from the Wanderers to the Triple Conflict."
-          }
-        },
-        {
-          "slug": "lore/markup",
-          "title": {
-            "ru": "Проверка разметки",
-            "en": "Markup check"
           },
-          "desc": {
-            "ru": "Тестовая статья: все элементы оформления вики.",
-            "en": "Test article: every wiki formatting element."
-          }
+          "updated": "2026-09-15"
         }
       ]
     },
@@ -60,7 +77,7 @@
       },
       "articles": [
         {
-          "slug": "lore/fenearth",
+          "slug": "factions/fenearth",
           "title": {
             "ru": "Фенземская Республика",
             "en": "Fenearth Republic"
@@ -68,10 +85,11 @@
           "desc": {
             "ru": "Промышленный наследник ВГФ и его флот.",
             "en": "The industrial heir of the GF and its fleet."
-          }
+          },
+          "updated": "2026-09-15"
         },
         {
-          "slug": "lore/proton",
+          "slug": "factions/proton",
           "title": {
             "ru": "Движение Протон",
             "en": "Proton Movement"
@@ -79,7 +97,8 @@
           "desc": {
             "ru": "Союз кланов Отена и Единая Протонская Освободительная Армия.",
             "en": "The clan union of Oten and its United Proton Liberation Army."
-          }
+          },
+          "updated": "2026-09-15"
         }
       ]
     },
@@ -96,7 +115,7 @@
       },
       "articles": [
         {
-          "slug": "lore/vasst",
+          "slug": "races/vasst",
           "title": {
             "ru": "Вастт",
             "en": "Vasst"
@@ -104,190 +123,14 @@
           "desc": {
             "ru": "Крокодилоподобные протонцы — самая многочисленная раса.",
             "en": "The crocodile-like Protonians — the most numerous race."
-          }
-        }
-      ]
-    },
-    {
-      "id": "units",
-      "icon": "cube",
-      "title": {
-        "ru": "Юниты и строения",
-        "en": "Units & structures"
-      },
-      "desc": {
-        "ru": "Классы юнитов, роли и как читать характеристики.",
-        "en": "Unit classes, roles and how to read the stats."
-      },
-      "articles": [
-        {
-          "slug": "units/roles",
-          "title": {
-            "ru": "Классы и роли юнитов",
-            "en": "Unit classes & roles"
           },
-          "desc": {
-            "ru": "От разведчиков до линкоров.",
-            "en": "From scouts to battleships."
-          }
-        },
-        {
-          "slug": "buildings/overview",
-          "title": {
-            "ru": "Строения и оборона",
-            "en": "Structures & defense"
-          },
-          "desc": {
-            "ru": "Базы, экономика и фортификации.",
-            "en": "Bases, economy and fortifications."
-          }
-        }
-      ]
-    },
-    {
-      "id": "mechanics",
-      "icon": "gear",
-      "title": {
-        "ru": "Механики",
-        "en": "Mechanics"
-      },
-      "desc": {
-        "ru": "Как устроен геймплей WWN: космос, экономика, лига.",
-        "en": "How WWN gameplay works: space, economy, the league."
-      },
-      "articles": [
-        {
-          "slug": "mechanics/overview",
-          "title": {
-            "ru": "Основные механики",
-            "en": "Core mechanics"
-          },
-          "desc": {
-            "ru": "Что отличает WWN от ванилы.",
-            "en": "What sets WWN apart from vanilla."
-          }
-        },
-        {
-          "slug": "mechanics/economy",
-          "title": {
-            "ru": "Экономика и логистика",
-            "en": "Economy & logistics"
-          },
-          "desc": {
-            "ru": "Ресурсы, энергия, снабжение.",
-            "en": "Resources, energy, supply."
-          }
-        },
-        {
-          "slug": "mechanics/warfare",
-          "title": {
-            "ru": "Война на земле и в космосе",
-            "en": "Ground & space warfare"
-          },
-          "desc": {
-            "ru": "Взаимодействие двух театров.",
-            "en": "How the two theatres interact."
-          }
-        },
-        {
-          "slug": "mechanics/league",
-          "title": {
-            "ru": "WWN League",
-            "en": "WWN League"
-          },
-          "desc": {
-            "ru": "Правила, карты и регламент лиги.",
-            "en": "Rules, map pool and league format."
-          }
-        }
-      ]
-    },
-    {
-      "id": "guides",
-      "icon": "compass",
-      "title": {
-        "ru": "Гайды и стратегии",
-        "en": "Guides & strategy"
-      },
-      "desc": {
-        "ru": "Практика: старт партии, билды, тактики и контрмеры.",
-        "en": "Practice: openings, build orders, tactics and counters."
-      },
-      "articles": [
-        {
-          "slug": "guides/installation",
-          "title": {
-            "ru": "Установка и обновление",
-            "en": "Installation & updates"
-          },
-          "desc": {
-            "ru": "Steam Workshop, ручная установка, решение проблем.",
-            "en": "Steam Workshop, manual install, troubleshooting."
-          }
-        },
-        {
-          "slug": "guides/start",
-          "title": {
-            "ru": "С чего начать",
-            "en": "Getting started"
-          },
-          "desc": {
-            "ru": "Первые шаги в WWN.",
-            "en": "Your first steps in WWN."
-          }
-        },
-        {
-          "slug": "guides/economy",
-          "title": {
-            "ru": "Гайд по экономике",
-            "en": "Economy guide"
-          },
-          "desc": {
-            "ru": "Как не проиграть на макро.",
-            "en": "How not to lose in the macro game."
-          }
-        },
-        {
-          "slug": "guides/combat",
-          "title": {
-            "ru": "Боевые тактики",
-            "en": "Combat tactics"
-          },
-          "desc": {
-            "ru": "Позиционирование, фокус, осады.",
-            "en": "Positioning, focus fire, sieges."
-          }
-        }
-      ]
-    },
-    {
-      "id": "patch",
-      "icon": "clock",
-      "title": {
-        "ru": "Релизы",
-        "en": "Releases"
-      },
-      "desc": {
-        "ru": "История обновлений и изменения баланса.",
-        "en": "Update history and balance changes."
-      },
-      "articles": [
-        {
-          "slug": "changelog",
-          "title": {
-            "ru": "История релизов",
-            "en": "Release history"
-          },
-          "desc": {
-            "ru": "Версии мода и ссылки на релизы.",
-            "en": "Mod versions and release links."
-          }
+          "updated": "2026-09-15"
         }
       ]
     },
     {
       "id": "misc",
-      "icon": "users",
+      "icon": "chat",
       "title": {
         "ru": "Мод и сообщество",
         "en": "Mod & community"
@@ -306,20 +149,337 @@
           "desc": {
             "ru": "Discord, Steam Workshop.",
             "en": "Discord, Steam Workshop."
-          }
-        },
-        {
-          "slug": "misc/contributing",
-          "title": {
-            "ru": "Вклад в мод",
-            "en": "Contributing"
           },
-          "desc": {
-            "ru": "Как помочь WWN: баланс, карты, тексты.",
-            "en": "How to help WWN: balance, maps, writing."
-          }
+          "updated": "2026-09-16"
         }
       ]
+    }
+  ],
+  "drafts": [
+    {
+      "slug": "start/first-game",
+      "title": {
+        "ru": "С чего начать",
+        "en": "Getting started"
+      },
+      "desc": {
+        "ru": "Первые шаги в WWN.",
+        "en": "Your first steps in WWN."
+      },
+      "updated": "2026-09-01",
+      "draft": true,
+      "category": {
+        "id": "start",
+        "icon": "rocket",
+        "title": {
+          "ru": "Начало",
+          "en": "Getting started"
+        },
+        "desc": {
+          "ru": "Что такое WWN, установка и первый запуск.",
+          "en": "What WWN is, installation and your first game."
+        }
+      }
+    },
+    {
+      "slug": "start/what-is-wwn",
+      "title": {
+        "ru": "Что такое WWN",
+        "en": "What is WWN"
+      },
+      "desc": {
+        "ru": "Коротко о моде WWN и о том, что есть в вики.",
+        "en": "A brief look at the WWN mod and what the wiki covers."
+      },
+      "updated": "2026-09-18",
+      "draft": true,
+      "category": {
+        "id": "start",
+        "icon": "rocket",
+        "title": {
+          "ru": "Начало",
+          "en": "Getting started"
+        },
+        "desc": {
+          "ru": "Что такое WWN, установка и первый запуск.",
+          "en": "What WWN is, installation and your first game."
+        }
+      }
+    },
+    {
+      "slug": "units/buildings",
+      "title": {
+        "ru": "Строения и оборона",
+        "en": "Structures & defense"
+      },
+      "desc": {
+        "ru": "Базы, экономика и фортификации.",
+        "en": "Bases, economy and fortifications."
+      },
+      "updated": "2026-09-01",
+      "draft": true,
+      "category": {
+        "id": "units",
+        "icon": "cube",
+        "title": {
+          "ru": "Юниты и строения",
+          "en": "Units & structures"
+        },
+        "desc": {
+          "ru": "Классы юнитов, роли и как читать характеристики.",
+          "en": "Unit classes, roles and how to read the stats."
+        }
+      }
+    },
+    {
+      "slug": "units/roles",
+      "title": {
+        "ru": "Классы и роли юнитов",
+        "en": "Unit classes & roles"
+      },
+      "desc": {
+        "ru": "От разведчиков до линкоров.",
+        "en": "From scouts to battleships."
+      },
+      "updated": "2026-09-01",
+      "draft": true,
+      "category": {
+        "id": "units",
+        "icon": "cube",
+        "title": {
+          "ru": "Юниты и строения",
+          "en": "Units & structures"
+        },
+        "desc": {
+          "ru": "Классы юнитов, роли и как читать характеристики.",
+          "en": "Unit classes, roles and how to read the stats."
+        }
+      }
+    },
+    {
+      "slug": "mechanics/economy",
+      "title": {
+        "ru": "Экономика и логистика",
+        "en": "Economy & logistics"
+      },
+      "desc": {
+        "ru": "Ресурсы, энергия, снабжение.",
+        "en": "Resources, energy, supply."
+      },
+      "updated": "2026-09-01",
+      "draft": true,
+      "category": {
+        "id": "mechanics",
+        "icon": "gear",
+        "title": {
+          "ru": "Механики",
+          "en": "Mechanics"
+        },
+        "desc": {
+          "ru": "Как устроен геймплей WWN: космос, экономика, лига.",
+          "en": "How WWN gameplay works: space, economy, the league."
+        }
+      }
+    },
+    {
+      "slug": "mechanics/league",
+      "title": {
+        "ru": "WWN League",
+        "en": "WWN League"
+      },
+      "desc": {
+        "ru": "Правила, карты и регламент лиги.",
+        "en": "Rules, map pool and league format."
+      },
+      "updated": "2026-09-01",
+      "draft": true,
+      "category": {
+        "id": "mechanics",
+        "icon": "gear",
+        "title": {
+          "ru": "Механики",
+          "en": "Mechanics"
+        },
+        "desc": {
+          "ru": "Как устроен геймплей WWN: космос, экономика, лига.",
+          "en": "How WWN gameplay works: space, economy, the league."
+        }
+      }
+    },
+    {
+      "slug": "mechanics/overview",
+      "title": {
+        "ru": "Основные механики",
+        "en": "Core mechanics"
+      },
+      "desc": {
+        "ru": "Что отличает WWN от ванили.",
+        "en": "What sets WWN apart from vanilla."
+      },
+      "updated": "2026-09-01",
+      "draft": true,
+      "category": {
+        "id": "mechanics",
+        "icon": "gear",
+        "title": {
+          "ru": "Механики",
+          "en": "Mechanics"
+        },
+        "desc": {
+          "ru": "Как устроен геймплей WWN: космос, экономика, лига.",
+          "en": "How WWN gameplay works: space, economy, the league."
+        }
+      }
+    },
+    {
+      "slug": "mechanics/warfare",
+      "title": {
+        "ru": "Война на земле и в космосе",
+        "en": "Ground & space warfare"
+      },
+      "desc": {
+        "ru": "Взаимодействие двух театров.",
+        "en": "How the two theatres interact."
+      },
+      "updated": "2026-09-01",
+      "draft": true,
+      "category": {
+        "id": "mechanics",
+        "icon": "gear",
+        "title": {
+          "ru": "Механики",
+          "en": "Mechanics"
+        },
+        "desc": {
+          "ru": "Как устроен геймплей WWN: космос, экономика, лига.",
+          "en": "How WWN gameplay works: space, economy, the league."
+        }
+      }
+    },
+    {
+      "slug": "guides/combat",
+      "title": {
+        "ru": "Боевые тактики",
+        "en": "Combat tactics"
+      },
+      "desc": {
+        "ru": "Позиционирование, фокус, осады.",
+        "en": "Positioning, focus fire, sieges."
+      },
+      "updated": "2026-09-01",
+      "draft": true,
+      "category": {
+        "id": "guides",
+        "icon": "compass",
+        "title": {
+          "ru": "Гайды и стратегии",
+          "en": "Guides & strategy"
+        },
+        "desc": {
+          "ru": "Практика: старт партии, билды, тактики и контрмеры.",
+          "en": "Practice: openings, build orders, tactics and counters."
+        }
+      }
+    },
+    {
+      "slug": "guides/economy",
+      "title": {
+        "ru": "Гайд по экономике",
+        "en": "Economy guide"
+      },
+      "desc": {
+        "ru": "Как не проиграть на макро.",
+        "en": "How not to lose in the macro game."
+      },
+      "updated": "2026-09-01",
+      "draft": true,
+      "category": {
+        "id": "guides",
+        "icon": "compass",
+        "title": {
+          "ru": "Гайды и стратегии",
+          "en": "Guides & strategy"
+        },
+        "desc": {
+          "ru": "Практика: старт партии, билды, тактики и контрмеры.",
+          "en": "Practice: openings, build orders, tactics and counters."
+        }
+      }
+    },
+    {
+      "slug": "releases/changelog",
+      "title": {
+        "ru": "История релизов",
+        "en": "Release history"
+      },
+      "desc": {
+        "ru": "Версии мода и ссылки на релизы.",
+        "en": "Mod versions and release links."
+      },
+      "updated": "2026-09-15",
+      "draft": true,
+      "category": {
+        "id": "releases",
+        "icon": "clock",
+        "title": {
+          "ru": "Релизы",
+          "en": "Releases"
+        },
+        "desc": {
+          "ru": "История обновлений и изменения баланса.",
+          "en": "Update history and balance changes."
+        }
+      }
+    },
+    {
+      "slug": "misc/contributing",
+      "title": {
+        "ru": "Вклад в мод",
+        "en": "Contributing"
+      },
+      "desc": {
+        "ru": "Как помочь WWN: баланс, карты, тексты.",
+        "en": "How to help WWN: balance, maps, writing."
+      },
+      "updated": "2026-09-15",
+      "draft": true,
+      "category": {
+        "id": "misc",
+        "icon": "chat",
+        "title": {
+          "ru": "Мод и сообщество",
+          "en": "Mod & community"
+        },
+        "desc": {
+          "ru": "Как помочь моду и где нас найти.",
+          "en": "How to help the mod and where to find us."
+        }
+      }
+    },
+    {
+      "slug": "misc/markup",
+      "title": {
+        "ru": "Проверка разметки",
+        "en": "Markup check"
+      },
+      "desc": {
+        "ru": "Тестовая статья: все элементы оформления вики.",
+        "en": "Test article: every wiki formatting element."
+      },
+      "updated": "2026-09-17",
+      "draft": true,
+      "category": {
+        "id": "misc",
+        "icon": "chat",
+        "title": {
+          "ru": "Мод и сообщество",
+          "en": "Mod & community"
+        },
+        "desc": {
+          "ru": "Как помочь моду и где нас найти.",
+          "en": "How to help the mod and where to find us."
+        }
+      }
     }
   ]
 }

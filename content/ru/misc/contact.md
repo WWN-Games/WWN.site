@@ -1,5 +1,7 @@
 ---
 title: Контакты
+desc: Discord, Steam Workshop.
+order: 1
 updated: 2026-09-16
 ---
 

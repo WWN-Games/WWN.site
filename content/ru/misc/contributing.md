@@ -1,5 +1,7 @@
 ---
 title: Вклад в мод
+desc: Как помочь WWN: баланс, карты, тексты.
+order: 2
 updated: 2026-09-15
 draft: true
 ---

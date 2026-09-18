@@ -65,6 +65,28 @@ function processFootnotes(markdown) {
 const SLUG_PATTERN = /^[\w-]+(?:\/[\w-]+)*$/;
 const safeSlug = (value) => Boolean(value) && SLUG_PATTERN.test(value) && !value.includes("..");
 
+/** Slug статьи из адреса: /wiki/<раздел>/<статья>/ → «раздел/статья». */
+function slugFromPath() {
+  const path = location.pathname.replace(/\/index\.html$/, "/");
+  const marker = "/wiki/";
+  const at = path.lastIndexOf(marker);
+  if (at === -1) return "";
+  let slug = path.slice(at + marker.length).replace(/\/+$/, "");
+  try { slug = decodeURIComponent(slug); } catch {}
+  return slug;
+}
+
+/** Относительный адрес статьи вики с текущей страницы. */
+const relativeTo = (slug, target) => `${"../".repeat(slug.split("/").length)}${target}/`;
+
+/* Корень сайта: пути к файлам в статьях считались от /wiki/ (как на старой
+   странице статьи), поэтому их нужно пересчитывать под глубину страницы. */
+const SITE_ROOT_PATH = new URL(abs("")).pathname;
+
+/* Ссылки проекта для страницы статьи. */
+const GITHUB_SITE = "https://github.com/WWN-Games/WWN.site";
+const GITHUB_ISSUES = "https://github.com/WWN-Games/WWN.issues/issues/new/choose";
+
 let articlePrefetch = null;
 
 function prefetchArticle(slug, lang) {
@@ -135,6 +157,22 @@ function renderMarkdown(markdown, slug, lang, { marked, DOMPurify }) {
   const articles = getFlatArticles();
   const knownSlugs = new Set(articles.map((article) => article.slug));
 
+  /* Путь к файлу из статьи: `../assets/...` писалось от /wiki/ — превращаем
+     в путь от текущей страницы («../../../assets/...»). Внешние схемы, «/» и
+     «#» не трогаем. */
+  const fileHref = (href) => {
+    if (!href || /^(?:[a-z][a-z0-9+.-]*:|\/\/|\/|#)/i.test(href)) return null;
+    let target;
+    try {
+      target = new URL(href, abs("wiki/"));
+    } catch {
+      return null;
+    }
+    if (!target.pathname.startsWith(SITE_ROOT_PATH)) return null;
+    const depth = slug.split("/").length + 1;
+    return `${"../".repeat(depth)}${target.pathname.slice(SITE_ROOT_PATH.length)}${target.search}${target.hash}`;
+  };
+
   holder.querySelectorAll("a").forEach((link) => {
     const href = link.getAttribute("href") || "";
     if (/^(https?:)?\/\//i.test(href)) {
@@ -153,16 +191,27 @@ function renderMarkdown(markdown, slug, lang, { marked, DOMPurify }) {
     const hashAt = href.indexOf("#");
     const pathPart = hashAt === -1 ? href : href.slice(0, hashAt);
     const hashPart = hashAt === -1 ? "" : href.slice(hashAt);
-    if (!/\.md$/i.test(pathPart)) return; // не статья — оставляем ссылку как есть
+    if (!/\.md$/i.test(pathPart)) {
+      // не статья: файл (картинка, аудио, вложение) — пересчитываем путь
+      const file = fileHref(href);
+      if (file) link.setAttribute("href", file);
+      return;
+    }
     // резолвим относительно адреса markdown-файла, поэтому работают любые ../
     const resolved = new URL(pathPart, `https://wwn.local/content/${lang}/${slug}.md`);
     const target = resolved.pathname.replace(/^\/content\/[^/]+\//, "").replace(/\.md$/i, "");
-    link.href = `article.html?p=${target}${hashPart}`;
+    link.href = `${relativeTo(slug, target)}${hashPart}`;
     // «красная ссылка» — статьи ещё нет в реестре вики
     if (knownSlugs.size && !knownSlugs.has(target)) {
       link.classList.add("wiki-link--missing");
       link.title = t("wiki.linkMissing", lang);
     }
+  });
+
+  // файлы в разметке (img, audio, video): те же пути, что писались от /wiki/
+  holder.querySelectorAll("[src]").forEach((node) => {
+    const file = fileHref(node.getAttribute("src"));
+    if (file) node.setAttribute("src", file);
   });
 
   // одиночные картинки — в фигуры с подписью из alt
@@ -319,6 +368,8 @@ function renderNotFound(body, lang, titleEl, crumbs, metaEl, pager) {
   body.classList.remove("is-ready");
   body.replaceChildren();
   $("#articleAside")?.replaceChildren();
+  $("#articleActions")?.replaceChildren();
+  $("#articleRelated")?.replaceChildren();
 
   const callout = document.createElement("div");
   callout.className = "callout";
@@ -359,13 +410,91 @@ function buildCrumbs(crumbs, article, lang) {
     link.textContent = text;
     return link;
   };
+  const base = "../".repeat(article.slug.split("/").length);
   crumbs.replaceChildren(
-    item(t("nav.wiki", lang), "./"),
+    item(t("nav.wiki", lang), base),
     separator(),
-    item(loc(article.category.title, lang), "../database.html"),
+    item(loc(article.category.title, lang), `${base}#wiki-cat-${article.category.id}`),
     separator(),
     item(loc(article.title, lang))
   );
+}
+
+/* «Читать также» — карта связей, собранная tools/build-wiki.mjs. */
+let relatedPromise = null;
+function loadRelated() {
+  relatedPromise ||= fetch(abs(`data/wiki-related.json?v=${WWN_CONFIG.version}`))
+    .then((res) => (res.ok ? res.json() : {}))
+    .catch(() => ({}));
+  return relatedPromise;
+}
+
+/** Кнопки статьи: скопировать ссылку, исходник на GitHub, сообщить об ошибке. */
+function renderActions(holder, lang, slug) {
+  if (!holder) return;
+  const action = (text, href) => {
+    const node = href ? document.createElement("a") : document.createElement("button");
+    node.className = "article__action";
+    node.textContent = text;
+    if (href) {
+      node.href = href;
+      node.target = "_blank";
+      node.rel = "noopener";
+    } else {
+      node.type = "button";
+    }
+    return node;
+  };
+
+  const copy = action(t("wiki.copyLink", lang));
+  copy.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(location.href);
+      copy.textContent = t("wiki.copied", lang);
+      copy.classList.add("is-done");
+      setTimeout(() => {
+        copy.textContent = t("wiki.copyLink", lang);
+        copy.classList.remove("is-done");
+      }, 1600);
+    } catch {}
+  });
+
+  holder.replaceChildren(
+    copy,
+    action(t("wiki.edit", lang), `${GITHUB_SITE}/blob/main/content/${lang}/${slug}.md`),
+    action(t("wiki.report", lang), GITHUB_ISSUES)
+  );
+}
+
+/** Блок «Читать также»: статьи, связанные ссылками (см. data/wiki-related.json). */
+async function renderRelated(holder, article, lang, slug) {
+  if (!holder) return;
+  const map = await loadRelated();
+  const related = (map[article.slug] || []).filter((item) => item !== article.slug);
+  if (!related.length) return;
+
+  const articles = getFlatArticles();
+  const items = related.map((item) => articles.find((a) => a.slug === item)).filter(Boolean);
+  if (!items.length) return;
+
+  const title = document.createElement("h2");
+  title.className = "article__related-title";
+  title.textContent = t("wiki.related", lang);
+  const list = document.createElement("ul");
+  list.className = "article__related-list";
+  items.forEach((item) => {
+    const li = document.createElement("li");
+    const link = document.createElement("a");
+    link.href = relativeTo(slug, item.slug);
+    const strong = document.createElement("b");
+    strong.textContent = loc(item.title, lang);
+    const small = document.createElement("span");
+    small.textContent = loc(item.desc, lang);
+    link.append(strong, small);
+    li.append(link);
+    list.append(li);
+  });
+  holder.replaceChildren(title, list);
 }
 
 /** Заголовок и описание статьи; canonical/og:url/hreflang обновляет i18n.applyMeta. */
@@ -473,6 +602,9 @@ async function loadArticle(slug, lang) {
   }
   initTocSpy(toc ? [...toc.querySelectorAll("a")] : [], [...holder.querySelectorAll("h2, h3")], holder);
 
+  renderActions($("#articleActions"), lang, slug);
+  if (article) renderRelated($("#articleRelated"), article, lang, slug);
+
   requestAnimationFrame(() => {
     body.classList.add("is-ready");
     scrollToHash();
@@ -481,15 +613,16 @@ async function loadArticle(slug, lang) {
   });
 
   if (pager) {
-    const index = articles.findIndex((item) => item.slug === slug);
-    const prev = index > 0 ? articles[index - 1] : null;
-    const next = index > -1 && index < articles.length - 1 ? articles[index + 1] : null;
+    const pagerArticles = articles.filter((item) => !item.draft);
+    const index = pagerArticles.findIndex((item) => item.slug === slug);
+    const prev = index > 0 ? pagerArticles[index - 1] : null;
+    const next = index > -1 && index < pagerArticles.length - 1 ? pagerArticles[index + 1] : null;
     pager.replaceChildren();
 
     const pagerLink = (item, className, label, arrow) => {
       const link = document.createElement("a");
       if (className) link.className = className;
-      link.href = `article.html?p=${item.slug}`;
+      link.href = relativeTo(slug, item.slug);
       const small = document.createElement("small");
       small.textContent = arrow === "left" ? `← ${label}` : `${label} →`;
       const strong = document.createElement("b");
@@ -510,7 +643,7 @@ async function boot() {
   initYear();
   initLangSwitch();
 
-  const slug = new URLSearchParams(location.search).get("p");
+  const slug = slugFromPath();
   const isArticlePage = Boolean($("#articleBody"));
   if (isArticlePage && !slug) {
     location.replace("./");

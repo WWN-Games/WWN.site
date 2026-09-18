@@ -64,6 +64,7 @@
     <div class="notfound__actions">
       <a class="btn" id="homeLink" href="./" data-i18n="notfound.home"></a>
       <a class="btn" id="wikiLink" href="wiki/" data-i18n="notfound.wiki"></a>
+      <a class="btn" id="createLink" href="#" target="_blank" rel="noopener" data-i18n="notfound.article.create" hidden></a>
     </div>
     <div class="lang" role="group" aria-label="Language" data-i18n-aria="a11y.lang">
       <button type="button" data-lang-btn="RU">RU</button>
@@ -105,8 +106,18 @@
       if (el.tagName === "IMG") el.src = path;
       else el.href = path;
     });
-    document.getElementById("homeLink").href = `${base}index.html`;
+    document.getElementById("homeLink").href = base;
     document.getElementById("wikiLink").href = `${base}wiki/`;
+
+    // Красная ссылка из вики: путь похож на статью — предлагаем её написать.
+    const article = location.pathname.match(/\/wiki\/([\w-]+)\/([\w-]+)\/?$/);
+    if (article) {
+      document.querySelector(".notfound h1")?.setAttribute("data-i18n", "notfound.article.title");
+      document.querySelector(".notfound p")?.setAttribute("data-i18n", "notfound.article.desc");
+      const create = document.getElementById("createLink");
+      create.hidden = false;
+      create.href = `https://github.com/WWN-Games/WWN.site/new/main/content/ru/${article[1]}/${article[2]}.md`;
+    }
 
     try {
       const i18n = await import(`${base}assets/js/i18n.js`);

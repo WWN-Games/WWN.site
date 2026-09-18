@@ -261,7 +261,10 @@ body:has(dialog[open]) { overflow: hidden; }
 }
 .header__inner { display: flex; align-items: center; gap: 20px; width: min(100% - 40px, 1400px); margin-inline: auto; }
 
-.brand { display: inline-grid; justify-items: center; text-align: center; gap: 5px; flex: none; }
+/* Подпись приходит из словаря позже, чем логотип: резервируем ширину блока,
+   иначе центрированный логотип прыгает вправо, когда текст появится.
+   176px — самая длинная подпись («Мод для Rusted Warfare», RU) с запасом. */
+.brand { display: inline-grid; justify-items: center; text-align: center; gap: 5px; flex: none; min-width: 176px; }
 .brand img { height: 32px; width: auto; filter: drop-shadow(0 0 14px rgba(var(--cyan-rgb), .55)); }
 .brand__sub { font-size: 9.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); transition: color .2s; }
 .brand:hover .brand__sub { color: var(--cyan-hi); }

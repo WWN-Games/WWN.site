@@ -1,5 +1,5 @@
 /* ============================================================================
-   WWN — база данных (database.html): фракции, юниты, строения.
+   WWN — база данных (database/): фракции, юниты, строения.
    Страница не зависит от вики: своего сайдбара и поиска здесь нет.
    Фильтры: поиск, фракция, тип, сортировка (стилизованные выпадающие списки).
    ============================================================================ */
@@ -208,7 +208,7 @@ const state = {
 };
 if (!["factions", "units", "buildings"].includes(state.tab)) state.tab = "factions";
 
-const data = { factions: [], units: [], buildings: [], tags: [] };
+const data = { factions: [], units: [], buildings: [], tags: [], wikiLinks: {} };
 
 const tagMap = new Map();
 const factionMap = new Map();
@@ -253,7 +253,7 @@ function scheduleRender() {
   });
 }
 async function loadAll() {
-  const names = ["factions", "units", "buildings", "tags"];
+  const names = ["factions", "units", "buildings", "tags", "wiki-links"];
   const results = await Promise.allSettled(
     names.map((name) =>
       fetch(abs(`data/${name}.json?v=${WWN_CONFIG.version}`)).then((res) => {
@@ -262,13 +262,14 @@ async function loadAll() {
       })
     )
   );
-  const [factions, units, buildings, tags] = results.map((result) =>
+  const [factions, units, buildings, tags, links] = results.map((result) =>
     result.status === "fulfilled" ? result.value : null
   );
   data.factions = factions?.factions || [];
   data.units = units?.units || [];
   data.buildings = buildings?.buildings || [];
   data.tags = tags?.tags || [];
+  data.wikiLinks = links || {};
 }
 
 function buildLookups() {
@@ -862,7 +863,7 @@ function factionCardHtml(faction, counts) {
          ${blockList(t("database.strong", lang), strengths)}
          ${blockList(t("database.weak", lang), weaknesses)}
        </div>
-       ${faction.lore ? `<a class="btn btn--sm faction-card__link" href="wiki/article.html?p=${faction.lore}">${escapeHtml(t("database.openLore", lang))}</a>` : ""}
+       ${faction.lore && data.wikiLinks[faction.lore] ? `<a class="btn btn--sm faction-card__link" href="${data.wikiLinks[faction.lore]}">${escapeHtml(t("database.openLore", lang))}</a>` : ""}
      </article>`;
   cardCache.set(cacheKey, html);
   return html;
