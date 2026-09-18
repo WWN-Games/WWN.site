@@ -38,6 +38,7 @@ export const DICT = {
   "database.strong": "Плюсы",
   "database.weak": "Минусы",
   "database.draft": "Черновик",
+  "database.new": "Новое",
   "database.subfaction": "Подфракция",
   "database.subfactionOf": "Подфракция: {name}",
   "database.faction.playstyle": "Стиль игры",

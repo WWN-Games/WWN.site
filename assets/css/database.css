@@ -192,6 +192,25 @@
 .unit-card__img img { width: 100%; height: 100%; object-fit: contain; border-radius: inherit; padding: 3px; }
 .unit-card__img span { font-family: var(--font-display); font-size: 20px; color: var(--faction-color, var(--cyan)); }
 .unit-card__name { font-family: var(--font-display); font-size: 15.5px; color: #fff; line-height: 1.3; }
+/* «Новое» — золотая плашка в правом верхнем углу карточки */
+.unit-card__new {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 1;
+  padding: 4px 10px;
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  border: 1px solid rgba(var(--gold-rgb), .45);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(var(--gold-rgb), .2), rgba(var(--gold-rgb), .08)), rgba(11, 22, 39, .9);
+  box-shadow: 0 0 16px rgba(var(--gold-rgb), .18);
+}
+/* место под плашку, чтобы длинное имя не заезжало под неё */
+.unit-card:has(.unit-card__new) .unit-card__top { padding-right: 58px; }
 .unit-card__sub { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 7px; }
 .unit-card__tags { display: flex; flex-wrap: wrap; gap: 6px; }
 .tag-filter { position: relative; flex: 1 1 150px; min-width: 120px; max-width: 220px; }

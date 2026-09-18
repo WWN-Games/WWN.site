@@ -9,7 +9,7 @@
     "tags — id тегов из data/tags.json (например, [\"T2\", \"ship\", \"WATER\"]); свои теги добавляются в этот файл.",
     "shield, dps, speed, range можно не писать, если значение 0.",
     "Необязательное поле image переопределяет картинку, image: \"\" — показать инициалы.",
-    "Необязательные поля карточки: role, strongVs, weakVs, draft."
+    "Необязательные поля карточки: role, strongVs, weakVs, draft, new (new: true — плашка «Новое»)."
   ],
   "buildings": [
 

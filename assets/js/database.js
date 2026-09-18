@@ -795,6 +795,7 @@ function unitCardHtml(item) {
 
   const html =
     `<article class="unit-card" data-reveal style="--faction-color:${color}">
+       ${item.new ? `<span class="unit-card__new">${escapeHtml(t("database.new", lang))}</span>` : ""}
        <div class="unit-card__top">
          <div class="unit-card__img">${image}</div>
          <div class="unit-card__name">${escapeHtml(name)}</div>
