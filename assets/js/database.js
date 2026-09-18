@@ -864,7 +864,7 @@ function factionCardHtml(faction, counts) {
          ${blockList(t("database.strong", lang), strengths)}
          ${blockList(t("database.weak", lang), weaknesses)}
        </div>
-       ${faction.lore && data.wikiLinks[faction.lore] ? `<a class="btn btn--sm faction-card__link" href="${data.wikiLinks[faction.lore]}">${escapeHtml(t("database.openLore", lang))}</a>` : ""}
+       ${faction.lore && data.wikiLinks[faction.lore] ? `<a class="btn btn--sm faction-card__link" href="${escapeHtml(abs(data.wikiLinks[faction.lore]))}">${escapeHtml(t("database.openLore", lang))}</a>` : ""}
      </article>`;
   cardCache.set(cacheKey, html);
   return html;
