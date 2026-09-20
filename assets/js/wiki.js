@@ -85,7 +85,8 @@ const SITE_ROOT_PATH = new URL(abs("")).pathname;
 
 /* Ссылки проекта для страницы статьи. */
 const GITHUB_SITE = "https://github.com/WWN-Games/WWN.site";
-const GITHUB_ISSUES = "https://github.com/WWN-Games/WWN.issues/issues/new/choose";
+/* «Сообщить об ошибке» под статьёй ведёт сразу на форму ошибок вики, минуя выбор шаблона. */
+const GITHUB_ISSUES = "https://github.com/WWN-Games/WWN.issues/issues/new?template=wiki_report.yml";
 
 let articlePrefetch = null;
 
