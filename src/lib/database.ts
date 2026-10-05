@@ -14,26 +14,26 @@ import { entrySlug, getPublished } from "./wiki";
 
 /* — константы и базовые типы — */
 
-export const TABS = ["factions", "units", "buildings"] as const;
+const TABS = ["factions", "units", "buildings"] as const;
 export type TabId = (typeof TABS)[number];
 
-export const CARD_TABS = ["units", "buildings"] as const;
-export type CardTab = (typeof CARD_TABS)[number];
+const CARD_TABS = ["units", "buildings"] as const;
+type CardTab = (typeof CARD_TABS)[number];
 
-export const SORT_KEYS = ["name", "cost", "hp", "shield", "dps", "speed", "range"] as const;
+const SORT_KEYS = ["name", "cost", "hp", "shield", "dps", "speed", "range"] as const;
 export type SortKey = (typeof SORT_KEYS)[number];
 
-export const STAT_KEYS = ["hp", "shield", "dps", "speed", "range"] as const;
-export type StatKey = (typeof STAT_KEYS)[number];
+const STAT_KEYS = ["hp", "shield", "dps", "speed", "range"] as const;
+type StatKey = (typeof STAT_KEYS)[number];
 
-export type TagGroup = Tag["group"];
+type TagGroup = Tag["group"];
 
 const FALLBACK_COLOR = "#29b8ff";
 const MIN_BAR = 10;
 
 /* — шкала статов — */
 
-export interface StatScaleEntry {
+interface StatScaleEntry {
   lo: number;
   hi: number;
   median: number;
@@ -119,7 +119,7 @@ export interface ExplorerFaction {
   searchText: string;
 }
 
-export interface ExplorerTypeOption {
+interface ExplorerTypeOption {
   value: string;
   label: string;
 }
@@ -145,11 +145,10 @@ export interface ExplorerLabels {
   tagApply: string;
   tagClear: string;
   tagGroups: Record<TagGroup, string>;
-  empty: string;
   count: string;
 }
 
-export interface ExplorerData {
+interface ExplorerData {
   items: ExplorerItem[];
   factions: ExplorerFaction[];
   types: ExplorerTypes;
@@ -157,7 +156,7 @@ export interface ExplorerData {
   labels: ExplorerLabels;
 }
 
-export interface DatabaseData {
+interface DatabaseData {
   cards: DatabaseCard[];
   factions: DatabaseFaction[];
   scale: StatScale;
@@ -244,7 +243,7 @@ function medianOf(values: number[]): number {
 }
 
 /** Шкала считается один раз по всей базе, чтобы раскладка не зависела от фильтров. */
-export function computeScale(cards: DatabaseCard[]): StatScale {
+function computeScale(cards: DatabaseCard[]): StatScale {
   const scale = {} as Record<StatKey, StatScaleEntry | null>;
   for (const key of STAT_KEYS) {
     const values = cards
@@ -263,7 +262,7 @@ export function computeScale(cards: DatabaseCard[]): StatScale {
   return scale;
 }
 
-export function barPercent(value: number, key: StatKey, scale: StatScale): number {
+function barPercent(value: number, key: StatKey, scale: StatScale): number {
   const entry = scale[key];
   if (!(value > 0) || !entry) return 0;
   const span = Math.log(entry.hi / entry.lo);
@@ -273,7 +272,7 @@ export function barPercent(value: number, key: StatKey, scale: StatScale): numbe
 }
 
 /** Компактный формат значения полосы: 2 знака < 10, 1 знак < 1000, дальше целое. */
-export function formatStat(value: number): string {
+function formatStat(value: number): string {
   if (!Number.isFinite(value) || value === 0) return "0";
   const magnitude = Math.abs(value);
   if (magnitude < 10) return String(Math.round(value * 100) / 100);
@@ -354,7 +353,6 @@ function explorerLabels(lang: Lang): ExplorerLabels {
       movement: t(lang, "database.tagGroup.movement"),
       mod: t(lang, "database.tagGroup.mod"),
     },
-    empty: t(lang, "database.empty"),
     count: t(lang, "database.count"),
   };
 }

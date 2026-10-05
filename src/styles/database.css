@@ -66,8 +66,10 @@
   gap: 8px;
   margin-bottom: 20px;
 }
+/* контролы тулбара — один вид: паддинг, радиус, фон, рамка, переходы */
 .database-toolbar input,
-.database-toolbar select {
+.database-toolbar select,
+.wwn-select__btn {
   padding: 9px 12px;
   font: inherit;
   font-size: 13.5px;
@@ -99,71 +101,63 @@
 .database-toolbar input::placeholder {
   color: var(--muted-2);
 }
-.database-toolbar select {
-  flex: 1 1 150px;
-  min-width: 120px;
-  max-width: 220px;
-  appearance: none;
-  cursor: pointer;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238ba6c9' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  background-size: 15px;
-  padding-right: 32px;
-}
 .database-toolbar select option {
   background: #0a1729;
   color: var(--text);
 }
-.database-toolbar select.is-hidden,
-.database-toolbar .wwn-select.is-hidden {
-  display: none;
-}
 
-/* — кастомный выпадающий список (Popover API) — */
-.wwn-select {
+/* Нативный select с шевроном: при открытии стрелка поворачивается, как у кнопки тегов.
+   :open поддержан не везде, но нативный пикер держит фокус — страхует :focus-within. */
+.select-field,
+.tag-filter {
   position: relative;
   flex: 1 1 150px;
   min-width: 120px;
   max-width: 220px;
 }
-.database-toolbar .wwn-select__native {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  pointer-events: none;
+.select-field {
+  display: block;
 }
+.select-field select {
+  width: 100%;
+  appearance: none;
+  padding-right: 34px;
+  background-image: none;
+  cursor: pointer;
+}
+.select-field__chevron {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  translate: 0 -50%;
+  width: 15px;
+  height: 15px;
+  color: var(--muted);
+  pointer-events: none;
+  transition:
+    transform 0.25s,
+    color 0.25s;
+}
+.select-field:has(select:open) .select-field__chevron,
+.select-field:focus-within .select-field__chevron {
+  transform: rotate(180deg);
+  color: var(--cyan);
+}
+
+/* — кнопка фильтра тегов (Popover API) — */
 .wwn-select__btn {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
   width: 100%;
-  padding: 9px 12px;
-  font: inherit;
-  font-size: 13.5px;
-  color: var(--text);
-  background-color: var(--surface-1);
-  border: 1px solid var(--border-1);
-  border-radius: var(--control-radius);
   text-align: left;
   cursor: pointer;
-  transition:
-    border-color 0.2s,
-    box-shadow 0.2s,
-    background 0.2s;
-}
-.wwn-select__btn:focus-visible {
-  outline: 2px solid var(--cyan-hi);
-  outline-offset: 3px;
 }
 .wwn-select__btn svg {
-  width: 16px;
-  height: 16px;
+  width: 15px;
+  height: 15px;
   color: var(--muted);
-  flex: none;
   transition:
     transform 0.25s,
     color 0.25s;
@@ -172,84 +166,10 @@
   transform: rotate(180deg);
   color: var(--cyan);
 }
-.wwn-select__value,
-.wwn-menu__label {
+.wwn-select__value {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.wwn-menu {
-  position: fixed;
-  inset: auto;
-  margin: 0;
-  max-height: min(330px, 62vh);
-  overflow-y: auto;
-  scrollbar-width: thin;
-  padding: 6px;
-  background: linear-gradient(180deg, rgba(13, 26, 46, 0.99), rgba(5, 11, 21, 0.995));
-  border: 1px solid var(--line-strong);
-  border-radius: 12px;
-  box-shadow:
-    0 26px 60px rgba(0, 0, 0, 0.6),
-    0 0 0 1px rgba(var(--cyan-rgb), 0.08) inset,
-    0 0 30px rgba(var(--cyan-rgb), 0.12);
-  opacity: 0;
-  transform: translateY(-6px);
-  transition:
-    opacity 0.16s ease,
-    transform 0.16s ease,
-    overlay 0.16s ease allow-discrete,
-    display 0.16s ease allow-discrete;
-}
-.wwn-menu:popover-open {
-  opacity: 1;
-  transform: none;
-}
-@starting-style {
-  .wwn-menu:popover-open {
-    opacity: 0;
-    transform: translateY(-6px);
-  }
-}
-.wwn-menu__item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  width: 100%;
-  padding: 10px 12px;
-  font: inherit;
-  font-size: 13.5px;
-  color: var(--text-soft);
-  background: none;
-  border: 0;
-  border-radius: 8px;
-  text-align: left;
-  cursor: pointer;
-  transition:
-    background 0.16s,
-    color 0.16s,
-    padding-left 0.16s;
-}
-.wwn-menu__item:hover,
-.wwn-menu__item:focus-visible {
-  background: rgba(var(--cyan-rgb), 0.15);
-  color: #fff;
-  padding-left: 15px;
-}
-.wwn-menu__item.is-selected {
-  color: #fff;
-  background: linear-gradient(90deg, rgba(var(--cyan-rgb), 0.22), transparent 88%);
-}
-.wwn-menu__item.is-selected::after {
-  content: "✓";
-  color: var(--cyan);
-  font-size: 12px;
-}
-.wwn-menu__item:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
 }
 
 .database-count {
@@ -362,12 +282,6 @@
   flex-wrap: wrap;
   gap: 6px;
 }
-.tag-filter {
-  position: relative;
-  flex: 1 1 150px;
-  min-width: 120px;
-  max-width: 220px;
-}
 .tag-filter .wwn-select__btn {
   width: 100%;
 }
@@ -392,6 +306,17 @@
 .tag-panel:popover-open {
   display: flex;
   animation: wwnMenuIn 0.16s ease;
+}
+/* появление панели: лёгкий fade со сдвигом; left/top из JS не задевает */
+@keyframes wwnMenuIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 .tag-panel__head {
   padding: 12px 14px;
@@ -637,8 +562,8 @@
 }
 @media (max-width: 720px) {
   .database-toolbar input[type="search"],
-  .database-toolbar select,
-  .database-toolbar .wwn-select {
+  .database-toolbar .select-field,
+  .database-toolbar .tag-filter {
     flex: 1 1 100%;
     max-width: none;
   }

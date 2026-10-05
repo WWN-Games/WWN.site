@@ -1,16 +1,16 @@
 ---
 import { getImage } from "astro:assets";
 
+import { Icon } from "astro-icon/components";
+import heroEn2x from "@/assets/img/lore/tc-en.avif";
+import heroEn1x from "@/assets/img/lore/tc-en-960.avif";
+import heroRu2x from "@/assets/img/lore/tc-ru.avif";
+import heroRu1x from "@/assets/img/lore/tc-ru-960.avif";
 import { plural, t } from "@/i18n";
 import type { Lang } from "@/lib/site";
 import { formatDate, formatNumber } from "@/lib/utils";
 import { entryHref, entrySection } from "@/lib/wiki";
-
-import heroEn1x from "@/assets/img/lore/tc-en-960.avif";
-import heroEn2x from "@/assets/img/lore/tc-en.avif";
-import heroRu1x from "@/assets/img/lore/tc-ru-960.avif";
-import heroRu2x from "@/assets/img/lore/tc-ru.avif";
-import { sectionIcon } from "./icons";
+import { sectionIconName } from "./icons";
 import type { WikiEntry, WikiNav, WikiStats } from "./types";
 
 interface Props {
@@ -104,7 +104,7 @@ const recent = [...articles]
         aria-labelledby={`wiki-cat-${section.id}-title`}
       >
         <header class="wiki-cat__head">
-          <div class="wiki-cat__icon" set:html={sectionIcon(section.icon)} />
+          <div class="wiki-cat__icon"><Icon name={sectionIconName(section.icon)} /></div>
           <div class="wiki-cat__text">
             <h3 id={`wiki-cat-${section.id}-title`}>{section.title[lang]}</h3>
             <p class="wiki-cat__desc">{section.desc[lang]}</p>

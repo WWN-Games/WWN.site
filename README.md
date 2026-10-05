@@ -36,6 +36,9 @@ src/
 ├─ scripts/         — клиентские скрипты (шапка, TOC, hero и т.п.)
 └─ styles/          — глобальный CSS
 public/             — robots, manifest, иконки базы, аудио, брендинг
+scripts/            — validate-content.ts, preview.mjs (для e2e)
+tests/              — unit (Vitest) и e2e (Playwright)
+docs/               — документация для редакторов контента
 ```
 
 ## Языки

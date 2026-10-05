@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { CaretLeft, CaretRight, X } from "phosphor-svelte";
+
   /* ============================================================================
      WWN — лайтбокс галереи главной: остров Svelte 5 (только лайтбокс).
      Клик по плиткам делегирован с документа ([data-gallery-index]); клавиши,
@@ -154,16 +156,7 @@ $effect(() => {
     aria-label={labels.close}
     onclick={() => dialog?.close()}
   >
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      aria-hidden="true"
-    >
-      <path d="M18 6 6 18M6 6l12 12" />
-    </svg>
+    <X />
   </button>
   <button
     class="lightbox__prev"
@@ -173,17 +166,7 @@ $effect(() => {
     hidden={!many}
     onclick={() => step(-1)}
   >
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      aria-hidden="true"
-    >
-      <path d="m15 18-6-6 6-6" />
-    </svg>
+    <CaretLeft />
   </button>
   <button
     class="lightbox__next"
@@ -193,17 +176,7 @@ $effect(() => {
     hidden={!many}
     onclick={() => step(1)}
   >
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      aria-hidden="true"
-    >
-      <path d="m9 18 6-6-6-6" />
-    </svg>
+    <CaretRight />
   </button>
   <div class="lightbox__body">
     <img id="lbImg" src={current?.src} alt={current?.caption ?? ""}>

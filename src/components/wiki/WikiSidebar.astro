@@ -1,11 +1,13 @@
 ---
+import { Icon } from "astro-icon/components";
+
 import WikiSearch from "@/components/search/WikiSearch.svelte";
 
 import { t } from "@/i18n";
-import { localeHref, type Lang } from "@/lib/site";
+import { type Lang, localeHref } from "@/lib/site";
 import { entryHref, entrySlug } from "@/lib/wiki";
 
-import { sectionIcon } from "./icons";
+import { sectionIconName } from "./icons";
 import type { WikiNav } from "./types";
 
 interface Props {
@@ -32,9 +34,7 @@ const searchLabels = {
 
 <aside class="wiki-sidebar" aria-label={t(lang, "wiki.sidebar")}>
   <div class="wiki-sidebar__search">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-      ><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg
-    >
+    <Icon name="ph:magnifying-glass" />
     <input
       type="text"
       id="searchInput"
@@ -55,7 +55,7 @@ const searchLabels = {
       sections.map((section) => (
         <details class="wiki-nav__group" data-section={section.id} open>
           <summary class="wiki-nav__summary">
-            <span class="wiki-nav__icon" set:html={sectionIcon(section.icon)} />
+            <span class="wiki-nav__icon"><Icon name={sectionIconName(section.icon)} /></span>
             <span class="wiki-nav__label">{section.title[lang]}</span>
             <span class="wiki-nav__count">{section.articles.length}</span>
           </summary>

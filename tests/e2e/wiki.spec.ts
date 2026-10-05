@@ -49,6 +49,20 @@ test.describe("Вики", () => {
     expect(response?.status()).toBe(404);
   });
 
+  test("картинки в статье получают figure и подпись", async ({ page }) => {
+    await page.goto("wiki/lore/history/");
+    const figure = page.locator("article.article figure.article__figure").first();
+    await expect(figure).toBeVisible();
+    await expect(figure.locator("figcaption")).not.toBeEmpty();
+  });
+
+  test("внешние ссылки открываются в новой вкладке", async ({ page }) => {
+    await page.goto("wiki/start/installation/");
+    const external = page.locator("article.article a.wiki-link--external").first();
+    await expect(external).toHaveAttribute("target", "_blank");
+    await expect(external).toHaveAttribute("rel", /noopener/);
+  });
+
   test("аудио в статье отдаётся по абсолютному URL", async ({ page, request }) => {
     await page.goto("wiki/factions/fenearth/");
     const audio = page.locator("audio").first();

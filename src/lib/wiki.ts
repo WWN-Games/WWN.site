@@ -1,6 +1,6 @@
 /* ============================================================================
    WWN — доступ к контенту вики на сборке.
-   Заменяет tools/build-wiki.mjs: навигация, «Читать также», пейджер, цифры.
+   Навигация, «Читать также», пейджер и цифры — поверх Content Collections.
    ============================================================================ */
 
 import { type CollectionEntry, getCollection } from "astro:content";
@@ -10,7 +10,7 @@ import { statsSchema } from "./schemas";
 import { type Lang, localeHref } from "./site";
 
 export type WikiEntry = CollectionEntry<"wiki">;
-export type PublishedWikiEntry = WikiEntry & { data: { draft: false } };
+type PublishedWikiEntry = WikiEntry & { data: { draft: false } };
 
 /** Черновики видны только в dev; в продакшене они не собираются вовсе. */
 const includeDrafts = import.meta.env.DEV;
@@ -53,12 +53,7 @@ export async function getPublished(lang: Lang): Promise<PublishedWikiEntry[]> {
   return entries.filter((entry): entry is PublishedWikiEntry => !entry.data.draft);
 }
 
-export async function getEntryBySlug(lang: Lang, slug: string): Promise<WikiEntry | undefined> {
-  const entries = await getEntries(lang);
-  return entries.find((entry) => entrySlug(entry) === slug);
-}
-
-export async function getSections() {
+async function getSections() {
   const sections = await getCollection("sections");
   return sections.sort((a, b) => a.data.order - b.data.order);
 }
@@ -75,7 +70,7 @@ export async function getNav(lang: Lang) {
 }
 
 /** Цели внутренних .md-ссылок в теле статьи: «../lore/history.md» → «lore/history». */
-export function linkTargets(body: string, slug: string, lang: Lang): string[] {
+function linkTargets(body: string, slug: string, lang: Lang): string[] {
   const targets = new Set<string>();
   for (const match of body.matchAll(/\]\(([^)\s]+\.md)(?:#[^)]*)?\)/g)) {
     const raw = match[1];

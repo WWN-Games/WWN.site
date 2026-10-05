@@ -29,12 +29,6 @@ export function canonical(path: string): string {
   return `${SITE}${href(path)}`;
 }
 
-/** Язык по URL. */
-export function langFromPath(pathname: string): Lang {
-  const clean = pathname.startsWith(BASE_PREFIX) ? pathname.slice(BASE_PREFIX.length) : pathname;
-  return clean === "/en" || clean.startsWith("/en/") ? "en" : DEFAULT_LOCALE;
-}
-
 /** Тот же путь на другом языке: /wiki/… ↔ /en/wiki/…. */
 export function switchLangPath(pathname: string, target: Lang): string {
   const clean = pathname.startsWith(BASE_PREFIX) ? pathname.slice(BASE_PREFIX.length) : pathname;

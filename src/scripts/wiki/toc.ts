@@ -39,7 +39,9 @@ function initToc(): void {
   if (!toc || !body) return;
 
   const links = [...toc.querySelectorAll<HTMLAnchorElement>("a[href^='#']")];
-  const headings = [...body.querySelectorAll<HTMLElement>("h2, h3")].filter((heading) => heading.id);
+  const headings = [...body.querySelectorAll<HTMLElement>("h2, h3")].filter(
+    (heading) => heading.id,
+  );
   if (!links.length || !headings.length) return;
 
   let offsets: number[] = [];
@@ -56,7 +58,9 @@ function initToc(): void {
       const offset = offsets[index];
       if (offset !== undefined && offset <= line) current = index;
     }
-    links.forEach((link, index) => link.classList.toggle("is-active", index === current));
+    links.forEach((link, index) => {
+      link.classList.toggle("is-active", index === current);
+    });
   };
   const schedule = (): void => {
     if (ticking) return;

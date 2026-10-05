@@ -7,11 +7,12 @@ import { unified } from "@astrojs/markdown-remark";
 import sitemap from "@astrojs/sitemap";
 import svelte from "@astrojs/svelte";
 import { defineConfig, fontProviders } from "astro/config";
+import icon from "astro-icon";
 import pagefind from "astro-pagefind";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeSlug from "rehype-slug";
-import remarkGfm from "remark-gfm";
 
+import { rehypeArticleFeatures } from "./src/lib/markdown/rehype-article";
 import { rehypeAssetUrls } from "./src/lib/markdown/rehype-asset-urls";
 import { remarkWikiLinks } from "./src/lib/markdown/remark-wiki-links";
 import { BASE, SITE } from "./src/lib/site";
@@ -42,13 +43,14 @@ export default defineConfig({
     }),
     svelte(),
     pagefind(),
+    icon(),
   ],
 
   prefetch: { prefetchAll: true, defaultStrategy: "hover" },
 
   markdown: {
     processor: unified({
-      remarkPlugins: [remarkGfm, remarkWikiLinks],
+      remarkPlugins: [remarkWikiLinks],
       rehypePlugins: [
         rehypeSlug,
         [
@@ -59,6 +61,7 @@ export default defineConfig({
           },
         ],
         rehypeAssetUrls,
+        rehypeArticleFeatures,
       ],
     }),
     shikiConfig: { theme: "github-dark" },

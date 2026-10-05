@@ -1,10 +1,9 @@
 /* ============================================================================
    WWN — русский словарь интерфейса (RU).
-   Источники: assets/js/i18n.js (CORE_I18N) + home/wiki/database.ru.js.
+   Базовый словарь: en.ts обязан повторять его набор ключей.
    ============================================================================ */
 
 export const ru = {
-  "nav.home": "Главная",
   "nav.features": "Возможности",
   "nav.factions": "Фракции",
   "nav.gallery": "Галерея",
@@ -30,13 +29,8 @@ export const ru = {
   "notfound.desc": "Такой страницы здесь нет. Возможно, она улетела на дальнюю орбиту.",
   "notfound.home": "На главную",
   "notfound.wiki": "В вики",
-  "notfound.article.title": "Статья ещё не написана",
-  "notfound.article.desc":
-    "Эта страница задумана, но текста пока нет. Можно вернуться в вики или открыть исходник и написать её.",
-  "notfound.article.create": "Создать статью на GitHub",
   "a11y.skip": "К содержимому",
   "a11y.nav": "Основная навигация",
-  "a11y.lang": "Язык",
   "a11y.menu": "Меню",
   "a11y.gallery": "Галерея",
   "hero.badge": "версия {version}",
@@ -105,7 +99,6 @@ export const ru = {
   "download.drive.desc":
     "Ручная установка: скачай rwmod, перенеси в папку mods/units игры и включи мод в меню.",
   "download.drive.btn": "Скачать с Drive",
-  "download.linkSoon": "Ссылка скоро появится",
   "download.steps.title": "Как установить",
   "download.step1.title": "Скачай мод",
   "download.step1.desc": "Подпишись на мод в Steam Workshop или скачай rwmod с Google Drive.",
@@ -147,7 +140,6 @@ export const ru = {
   "wiki.help": "Нужна помощь с установкой? Загляни в вики или напиши в сообщество.",
   "wiki.stats.sections": "разделов",
   "wiki.stats.factions": "фракции",
-  "wiki.back": "Назад в вики",
   "wiki.toc": "На этой странице",
   "wiki.updated": "Обновлено",
   "wiki.draft": "Черновик",
@@ -161,9 +153,6 @@ export const ru = {
   "wiki.recent": "Недавно обновлено",
   "wiki.prev": "Предыдущая",
   "wiki.next": "Следующая",
-  "wiki.notFound.title": "Статья не найдена",
-  "wiki.notFound.desc": "Проверь ссылку или вернись к списку статей.",
-  "wiki.linkMissing": "Статья ещё не написана",
   "wiki.notes": "Примечания",
   "wiki.refBack": "Вернуться к тексту",
   "wiki.loadError.desc":
@@ -193,7 +182,6 @@ export const ru = {
   "database.tag.clear": "Сбросить",
   "database.search.placeholder": "Поиск по названию…",
   "database.empty": "Ничего не найдено. Измени фильтры.",
-  "database.noData": "Данные не загрузились (нужен локальный сервер).",
   "database.cost": "Цена",
   "database.hp": "Прочность",
   "database.shield": "Щит",

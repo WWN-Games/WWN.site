@@ -3,14 +3,14 @@
    Все эндпоинты отдают: { schemaVersion, generatedAt, count, items }.
    ============================================================================ */
 
-export const API_SCHEMA_VERSION = 1;
+const API_SCHEMA_VERSION = 1;
 
-export const API_HEADERS = {
+const API_HEADERS = {
   "Content-Type": "application/json; charset=utf-8",
   "Cache-Control": "public, max-age=3600",
 } as const;
 
-export interface ApiEnvelope<T> {
+interface ApiEnvelope<T> {
   schemaVersion: number;
   generatedAt: string;
   count: number;

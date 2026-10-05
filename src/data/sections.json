@@ -2,8 +2,8 @@
   "_schema": [
     "Разделы вики. id — папка в content/<язык>/ и якорь раздела на хабе (#wiki-cat-<id>).",
     "Статьи внутри раздела не перечисляются: они берутся из front matter самих статей",
-    "(title, desc, order, updated, draft). Собирается tools/build-wiki.mjs в data/wiki-nav.json.",
-    "icon — из набора в assets/js/wiki-shell.js: book | shield | cube | gear | compass | users | clock | rocket | chat."
+    "(title, desc, order, updated, draft). Разделы читаются Content Collections (src/content.config.ts).",
+    "icon — id из набора в src/components/wiki/icons.ts: book | shield | cube | gear | compass | users | clock | rocket | chat."
   ],
   "sections": [
     {

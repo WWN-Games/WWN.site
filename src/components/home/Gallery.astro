@@ -35,7 +35,7 @@ const galleryImages = import.meta.glob<{ default: ImageMetadata }>(
 const resolved = (
   await Promise.all(
     gallery.map(async (item): Promise<ResolvedGalleryItem | null> => {
-      const file = lang === "en" && item.srcEn ? item.srcEn : item.src;
+      const file = item.src;
       const entry = galleryImages[`/src/assets/img/gallery/${file}`];
       if (!entry) return null;
       const lightbox = await getImage({

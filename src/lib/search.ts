@@ -9,7 +9,7 @@ import type { Lang } from "./site";
 import { escapeHtml, foldSearch } from "./utils";
 
 /** База сайта с хвостовым слэшем: "/WWN.site/". */
-export const BASE_URL: string = import.meta.env.BASE_URL;
+const BASE_URL: string = import.meta.env.BASE_URL;
 
 /** Данные одного результата, которые использует интерфейс. */
 export interface PagefindResultData {
@@ -20,14 +20,14 @@ export interface PagefindResultData {
 }
 
 /** Ссылка на результат до загрузки данных. */
-export interface PagefindResultRef {
+interface PagefindResultRef {
   id: string;
   score: number;
   data: () => Promise<PagefindResultData>;
 }
 
 /** Ответ pagefind.search(). */
-export interface PagefindSearchResponse {
+interface PagefindSearchResponse {
   results: PagefindResultRef[];
   unfilteredResultCount?: number;
   filters?: Record<string, Record<string, number>>;
@@ -35,7 +35,7 @@ export interface PagefindSearchResponse {
 }
 
 /** Минимум браузерного API Pagefind, который вызывает интерфейс. */
-export interface PagefindModule {
+interface PagefindModule {
   options?: (options: { baseUrl?: string }) => Promise<void>;
   search: (
     query: string,

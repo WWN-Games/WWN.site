@@ -21,9 +21,7 @@ export const wikiSchema = z.object({
   draft: z.boolean().default(false),
 });
 
-export type WikiData = z.infer<typeof wikiSchema>;
-
-export const sectionIcons = [
+const sectionIcons = [
   "book",
   "shield",
   "cube",
@@ -42,8 +40,6 @@ export const sectionSchema = z.object({
   title: text,
   desc: text,
 });
-
-export type Section = z.infer<typeof sectionSchema>;
 
 const stat = z.number().optional();
 
@@ -78,7 +74,6 @@ export const buildingSchema = cardBase.extend({
 
 export type Unit = z.infer<typeof unitSchema>;
 export type Building = z.infer<typeof buildingSchema>;
-export type Card = Unit | Building;
 
 export const factionSchema = z.object({
   id: z.string().min(1),

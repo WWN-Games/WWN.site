@@ -3,7 +3,7 @@ import { ru } from "./ru";
 
 export type Lang = "ru" | "en";
 export type DictKey = keyof typeof ru;
-export const dicts = { ru, en } as const satisfies Record<Lang, Record<DictKey, string>>;
+const dicts = { ru, en } as const satisfies Record<Lang, Record<DictKey, string>>;
 
 /** Подстановка {var}-плейсхолдеров: неизвестные имена остаются как есть. */
 function substitute(value: string, vars: Record<string, string | number>): string {

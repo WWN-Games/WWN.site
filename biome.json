@@ -11,12 +11,9 @@
       "!**/dist",
       "!**/.astro",
       "!**/src/content",
+      "!**/src/assets",
       "!**/public",
-      "!**/assets",
-      "!**/data",
-      "!**/content",
-      "!**/wiki",
-      "!**/tools"
+      "!**/src/data/*.json"
     ]
   },
   "formatter": {

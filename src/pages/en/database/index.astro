@@ -1,4 +1,6 @@
 ---
+import { Icon } from "astro-icon/components";
+
 import DatabaseExplorer from "@/components/database/DatabaseExplorer.svelte";
 import DatabaseGrid from "@/components/database/DatabaseGrid.astro";
 import FactionCard from "@/components/database/FactionCard.astro";
@@ -40,17 +42,7 @@ const emptyText = t(lang, "database.empty");
           aria-controls="databaseGrid-factions"
           data-tab="factions"
         >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.8"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M12 2 3 6v6c0 5 3.8 8.4 9 10 5.2-1.6 9-5 9-10V6z" />
-          </svg>
+          <Icon name="ph:shield" />
           <span>{t(lang, "database.tab.factions")}</span>
         </button>
         <button
@@ -63,17 +55,7 @@ const emptyText = t(lang, "database.empty");
           tabindex="-1"
           data-tab="units"
         >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.8"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M12 22V12M4 7l8 5 8-5M12 2 4 7v10l8 5 8-5V7z" />
-          </svg>
+          <Icon name="ph:cube" />
           <span>{t(lang, "database.tab.units")}</span>
         </button>
         <button
@@ -86,18 +68,7 @@ const emptyText = t(lang, "database.empty");
           tabindex="-1"
           data-tab="buildings"
         >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.8"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M3 21V8l6-4 6 4v13" />
-            <path d="M9 21v-6h4v6M15 12h6v9h-6" />
-          </svg>
+          <Icon name="ph:buildings" />
           <span>{t(lang, "database.tab.buildings")}</span>
         </button>
       </div>

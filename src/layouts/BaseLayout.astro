@@ -1,6 +1,7 @@
 ---
 import { Font, fontData } from "astro:assets";
 import { ClientRouter } from "astro:transitions";
+import { Icon } from "astro-icon/components";
 
 import Footer from "@/components/Footer.astro";
 import Header from "@/components/Header.astro";
@@ -87,8 +88,7 @@ const fontPreloads = (
 
     <a class="to-top" id="toTop" href="#top">
       <span class="visually-hidden">{t(lang, "footer.backToTop")}</span>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
-        ><path d="m18 15-6-6-6 6" /></svg>
+      <Icon name="ph:caret-up" />
     </a>
 
     <script>

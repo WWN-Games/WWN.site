@@ -1,5 +1,5 @@
 /* ============================================================================
-   WWN — новости главной (перенос из assets/js/site-data.js).
+   WWN — новости главной.
    ============================================================================ */
 
 import type { Lang } from "../lib/site";
@@ -10,7 +10,7 @@ export type LocalizedText = Record<Lang, string>;
 export interface NewsItem {
   /** Дата в формате ISO YYYY-MM-DD. */
   date: string;
-  /** id тега из newsTags. */
+  /** id тега из newsTagLabels. */
   tag: string;
   /** Внешняя (https://…) или внутренняя (wiki/<раздел>/<статья>/) ссылка: строкой либо { ru, en }. */
   link?: string | LocalizedText;
@@ -18,13 +18,7 @@ export interface NewsItem {
   text: LocalizedText;
 }
 
-/**
- * Доступные теги новостей: id + подпись в newsTagLabels.
- * Цвет задаётся классом .tag--<id> (для update отдельного класса нет — базовый .tag).
- */
-export const newsTags: readonly string[] = ["update", "news"];
-
-/** Подписи тегов новостей: id → { ru, en }. */
+/** Подписи тегов новостей: id → { ru, en }; цвет — класс .tag--<id>. */
 export const newsTagLabels: Record<string, LocalizedText> = {
   update: { ru: "Обновление", en: "Update" },
   news: { ru: "Новости", en: "News" },

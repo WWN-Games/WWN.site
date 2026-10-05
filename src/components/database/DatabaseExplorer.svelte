@@ -5,6 +5,7 @@
    переставляет готовый статический DOM по data-card-id.
    ============================================================================ */
 
+import { CaretDown } from "phosphor-svelte";
 import { onMount } from "svelte";
 
 import type {
@@ -320,20 +321,26 @@ function positionTagPanel(): void {
   >
 
   {#if tab !== "factions"}
-    <select bind:value={faction} aria-label={labels.faction}>
-      <option value="all">{labels.all}</option>
-      {#each factions as item (item.id)}
-        <option value={item.id}>{item.name[lang]}</option>
-      {/each}
-    </select>
-
-    {#if typeOptions.length > 0}
-      <select bind:value={type} aria-label={labels.type}>
+    <span class="select-field">
+      <select bind:value={faction} aria-label={labels.faction}>
         <option value="all">{labels.all}</option>
-        {#each typeOptions as option (option.value)}
-          <option value={option.value}>{option.label}</option>
+        {#each factions as item (item.id)}
+          <option value={item.id}>{item.name[lang]}</option>
         {/each}
       </select>
+      <CaretDown class="select-field__chevron" />
+    </span>
+
+    {#if typeOptions.length > 0}
+      <span class="select-field">
+        <select bind:value={type} aria-label={labels.type}>
+          <option value="all">{labels.all}</option>
+          {#each typeOptions as option (option.value)}
+            <option value={option.value}>{option.label}</option>
+          {/each}
+        </select>
+        <CaretDown class="select-field__chevron" />
+      </span>
     {/if}
 
     {#if tagOptions.length > 0}
@@ -350,26 +357,19 @@ function positionTagPanel(): void {
           aria-label={tagButtonLabel}
         >
           <span class="wwn-select__value">{tagButtonLabel}</span>
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path d="m6 9 6 6 6-6" />
-          </svg>
+          <CaretDown />
         </button>
       </div>
     {/if}
 
-    <select bind:value={sort} aria-label={labels.sortLabel}>
-      {#each SORT_KEYS as key (key)}
-        <option value={key}>{labels.sort[key]}</option>
-      {/each}
-    </select>
+    <span class="select-field">
+      <select bind:value={sort} aria-label={labels.sortLabel}>
+        {#each SORT_KEYS as key (key)}
+          <option value={key}>{labels.sort[key]}</option>
+        {/each}
+      </select>
+      <CaretDown class="select-field__chevron" />
+    </span>
   {/if}
 
   <output class="database-count database-explorer__count" aria-live="polite">{countText}</output>

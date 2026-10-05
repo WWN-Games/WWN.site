@@ -6,7 +6,6 @@ import type { ru } from "./ru.ts";
    ============================================================================ */
 
 export const en = {
-  "nav.home": "Home",
   "nav.features": "Features",
   "nav.factions": "Factions",
   "nav.gallery": "Gallery",
@@ -32,13 +31,8 @@ export const en = {
   "notfound.desc": "This page doesn't exist. It probably drifted to a far orbit.",
   "notfound.home": "Go home",
   "notfound.wiki": "Open the wiki",
-  "notfound.article.title": "Article not written yet",
-  "notfound.article.desc":
-    "This page is planned, but there is no text yet. Go back to the wiki or open the source and write it.",
-  "notfound.article.create": "Create the article on GitHub",
   "a11y.skip": "Skip to content",
   "a11y.nav": "Main navigation",
-  "a11y.lang": "Language",
   "a11y.menu": "Menu",
   "a11y.gallery": "Gallery",
   "hero.badge": "version {version}",
@@ -107,7 +101,6 @@ export const en = {
   "download.drive.desc":
     "Manual install: download rwmod, move it to the game's mods/units folder and enable the mod in the menu.",
   "download.drive.btn": "Download from Drive",
-  "download.linkSoon": "Link coming soon",
   "download.steps.title": "How to install",
   "download.step1.title": "Download the mod",
   "download.step1.desc": "Subscribe on Steam Workshop or download the rwmod from Google Drive.",
@@ -149,7 +142,6 @@ export const en = {
   "wiki.help": "Need install help? Check the wiki or ping the community.",
   "wiki.stats.sections": "sections",
   "wiki.stats.factions": "factions",
-  "wiki.back": "Back to wiki",
   "wiki.toc": "On this page",
   "wiki.updated": "Updated",
   "wiki.draft": "Draft",
@@ -163,9 +155,6 @@ export const en = {
   "wiki.recent": "Recently updated",
   "wiki.prev": "Previous",
   "wiki.next": "Next",
-  "wiki.notFound.title": "Article not found",
-  "wiki.notFound.desc": "Check the link or go back to the article list.",
-  "wiki.linkMissing": "Article not written yet",
   "wiki.notes": "Notes",
   "wiki.refBack": "Back to text",
   "wiki.loadError.desc":
@@ -195,7 +184,6 @@ export const en = {
   "database.tag.clear": "Reset",
   "database.search.placeholder": "Search by name…",
   "database.empty": "Nothing found. Try different filters.",
-  "database.noData": "Data failed to load (a local server is required).",
   "database.cost": "Cost",
   "database.hp": "Health",
   "database.shield": "Shield",

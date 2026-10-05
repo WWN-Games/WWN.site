@@ -1,9 +1,5 @@
 /* WWN — стили вики. */
 
-.wiki-body {
-  background: var(--bg-0);
-}
-
 .wiki-shell {
   display: grid;
   grid-template-columns: 292px minmax(0, 1fr);
@@ -192,10 +188,6 @@
 .wiki-nav__icon svg {
   width: 15px;
   height: 15px;
-}
-.wiki-nav__error {
-  color: var(--muted);
-  font-size: 13.5px;
 }
 .wiki-nav__group ul {
   list-style: none;
@@ -528,15 +520,6 @@
   border-bottom-color: var(--cyan);
   color: #fff;
 }
-/* «красная ссылка»: статьи в вики ещё нет */
-.article__body a.wiki-link--missing {
-  color: #ff9d9d;
-  border-bottom-color: rgba(255, 157, 157, 0.45);
-}
-.article__body a.wiki-link--missing:hover {
-  color: #ffd2d2;
-  border-bottom-color: #ff9d9d;
-}
 /* внешний источник — помечаем стрелкой, как в вики */
 .article__body a.wiki-link--external::after {
   content: "↗";
@@ -570,44 +553,55 @@
   border-bottom-color: rgba(var(--cyan-rgb), 0.22);
 }
 
-/* Сноски [^1]: верхний индекс в тексте + блок «Примечания» с обратными ссылками */
-.article__body .article__ref {
-  font-size: 0.8em;
-  line-height: 1;
-}
-.article__body .article__ref a {
+/* Сноски: remark-gfm рендерит section[data-footnotes], ссылки-якоря и обратные ссылки */
+.article__body [data-footnote-ref] {
+  font-size: 0.78em;
   color: var(--cyan-hi);
   border-bottom: 0;
   padding: 0 1px;
+  text-decoration: none;
 }
-.article__body .article__ref a:hover {
+.article__body [data-footnote-ref]:hover {
   color: #fff;
 }
-.article__refs {
+.article__body section[data-footnotes] {
   margin-top: 48px;
   padding-top: 22px;
   border-top: 1px solid var(--line);
   font-size: 14.5px;
   color: var(--muted);
 }
-.article__refs ol {
+.article__body section[data-footnotes] ol {
   margin-top: 14px;
   padding-left: 26px;
   gap: 8px;
 }
-.article__refs li::marker {
+.article__body section[data-footnotes] li::marker {
   color: var(--cyan);
 }
-.article__refs a {
+.article__body section[data-footnotes] a {
   border-bottom-color: rgba(var(--cyan-rgb), 0.22);
 }
-.article__ref-back {
+.article__body [data-footnote-backref] {
   margin-left: 6px;
   color: var(--cyan-hi);
-  border-bottom: 0 !important;
+  border-bottom: 0;
+  text-decoration: none;
 }
-.article__ref-back:hover {
+.article__body [data-footnote-backref]:hover {
   color: #fff;
+}
+/* Подпись блока сносок у remark-gfm скрыта классом sr-only */
+.article__body .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }
 .article__body ul,
 .article__body ol {

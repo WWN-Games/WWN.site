@@ -1,15 +1,13 @@
 /* ============================================================================
-   WWN — галерея главной (перенос из assets/js/site-data.js).
+   WWN — галерея главной.
    Картинки лежат в src/assets/img/gallery; src — только имя файла.
    ============================================================================ */
 
 import type { LocalizedText } from "./news";
 
-export interface GalleryItem {
+interface GalleryItem {
   /** Имя файла из src/assets/img/gallery, например "screenshot-1.avif". */
   src: string;
-  /** Отдельная картинка для EN (необязательно). */
-  srcEn?: string;
   caption: LocalizedText;
   /** Карточка шириной в 2 колонки. */
   wide?: boolean;

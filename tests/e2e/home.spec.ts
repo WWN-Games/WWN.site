@@ -17,6 +17,17 @@ test.describe("Главная", () => {
     );
   });
 
+  test("счётчики статистики анимируются до data-target", async ({ page }) => {
+    await page.goto("./");
+    const counter = page.locator(".hero__stats .stat__num").first();
+    const target = await counter.getAttribute("data-target");
+    expect(target).not.toBeNull();
+    const expected = new Intl.NumberFormat("ru-RU").format(Number(target));
+    await expect
+      .poll(async () => (await counter.textContent())?.trim(), { timeout: 5000 })
+      .toBe(expected);
+  });
+
   test("EN: главная на /en/", async ({ page }) => {
     await page.goto("en/");
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
