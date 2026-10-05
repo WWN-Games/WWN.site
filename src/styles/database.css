@@ -72,7 +72,7 @@
   font: inherit;
   font-size: 13.5px;
   color: var(--text);
-  background: var(--surface-1);
+  background-color: var(--surface-1);
   border: 1px solid var(--border-1);
   border-radius: var(--control-radius);
   transition:
@@ -88,7 +88,7 @@
 .database-toolbar select:hover,
 .wwn-select__btn:hover {
   border-color: var(--border-2);
-  background: var(--surface-2);
+  background-color: var(--surface-2);
 }
 .database-toolbar input:focus,
 .database-toolbar select:focus,
@@ -145,7 +145,7 @@
   font: inherit;
   font-size: 13.5px;
   color: var(--text);
-  background: var(--surface-1);
+  background-color: var(--surface-1);
   border: 1px solid var(--border-1);
   border-radius: var(--control-radius);
   text-align: left;

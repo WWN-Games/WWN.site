@@ -82,6 +82,7 @@ export type Card = Unit | Building;
 
 export const factionSchema = z.object({
   id: z.string().min(1),
+  order: z.number().int().positive(),
   name: text,
   color: z.string().regex(/^#[0-9a-f]{6}$/i),
   emblem: z.string().min(1),

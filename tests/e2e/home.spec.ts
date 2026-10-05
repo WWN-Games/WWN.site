@@ -31,12 +31,25 @@ test.describe("Главная", () => {
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
   });
 
+  test("preload только двух шрифтовых файлов", async ({ page }) => {
+    await page.goto("./");
+    await expect(page.locator('link[rel="preload"][as="font"]')).toHaveCount(2);
+    await page.goto("en/");
+    await expect(page.locator('link[rel="preload"][as="font"]')).toHaveCount(2);
+  });
+
   test("лайтбокс открывается кликом и закрывается Escape", async ({ page }) => {
     await page.goto("./");
-    await page.locator("#galleryGrid .gallery__item").first().click();
-    await expect(page.locator("#lightbox")).toBeVisible();
+    const item = page.locator("#galleryGrid .gallery__item").first();
+    const lightbox = page.locator("#lightbox");
+    await expect
+      .poll(async () => {
+        await item.click();
+        return lightbox.evaluate((el) => (el as HTMLDialogElement).open);
+      })
+      .toBe(true);
     await page.keyboard.press("Escape");
-    await expect(page.locator("#lightbox")).not.toBeVisible();
+    await expect(lightbox).not.toBeVisible();
   });
 
   test("навигация между страницами переживает View Transitions", async ({ page }) => {

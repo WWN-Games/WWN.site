@@ -259,6 +259,12 @@ function onSearchInput(event: Event): void {
   runSearch(input.value);
 }
 
+function onTagBeforeToggle(event: ToggleEvent): void {
+  // Позиционируем панель синхронно до показа: toggle-событие popover асинхронное,
+  // и без этого первый видимый кадр рисуется в [0, 0] и панель «прыгает».
+  if (event.newState === "open") positionTagPanel();
+}
+
 function onTagToggle(event: Event): void {
   const open = (event as ToggleEvent).newState === "open";
   tagOpen = open;
@@ -375,6 +381,7 @@ function positionTagPanel(): void {
     role="dialog"
     aria-label={labels.tag}
     bind:this={tagPanel}
+    onbeforetoggle={onTagBeforeToggle}
     ontoggle={onTagToggle}
   >
     <div class="tag-panel__head">

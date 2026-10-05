@@ -48,4 +48,12 @@ test.describe("Вики", () => {
     const response = await page.goto("wiki/misc/markup/");
     expect(response?.status()).toBe(404);
   });
+
+  test("аудио в статье отдаётся по абсолютному URL", async ({ page, request }) => {
+    await page.goto("wiki/factions/fenearth/");
+    const audio = page.locator("audio").first();
+    await expect(audio).toHaveAttribute("src", /\/WWN\.site\/audio\/fenearth-anthem\.mp3$/);
+    const response = await request.get("audio/fenearth-anthem.mp3");
+    expect(response.status()).toBe(200);
+  });
 });

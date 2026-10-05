@@ -1,5 +1,5 @@
 ---
-import { Font } from "astro:assets";
+import { Font, fontData } from "astro:assets";
 import { ClientRouter } from "astro:transitions";
 
 import Footer from "@/components/Footer.astro";
@@ -31,6 +31,22 @@ const {
   jsonLd,
   noindex = false,
 } = Astro.props;
+
+/* Локальные варианты в astro.config.ts объявлены в порядке [latin, cyrillic],
+   поэтому preload — ровно два файла активного сабсета: display и body. */
+const subsetIndex = lang === "ru" ? 1 : 0;
+const fontPreloads = (
+  await Promise.all(
+    (["--font-display", "--font-body"] as const).map(async (cssVariable) => {
+      const variants = fontData[cssVariable] ?? [];
+      const variant = variants[subsetIndex] ?? variants[0];
+      const src = variant?.src[0];
+      if (!src) return null;
+      // В статической сборке src.url — уже готовый публичный URL с base.
+      return { url: src.url, type: `font/${src.format ?? "woff2"}` };
+    }),
+  )
+).filter((preload): preload is { url: string; type: string } => preload !== null);
 ---
 
 <!doctype html>
@@ -46,8 +62,13 @@ const {
     <link rel="apple-touch-icon" href={href("img/brand/icon-192.png")} />
     <link rel="manifest" href={href("site.webmanifest")} />
 
-    <Font cssVariable="--font-display" preload />
-    <Font cssVariable="--font-body" preload />
+    {
+      fontPreloads.map((preload) => (
+        <link rel="preload" href={preload.url} as="font" type={preload.type} crossorigin="anonymous" />
+      ))
+    }
+    <Font cssVariable="--font-display" />
+    <Font cssVariable="--font-body" />
     <Font cssVariable="--font-mono" />
 
     <ClientRouter />

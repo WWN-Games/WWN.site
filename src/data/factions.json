@@ -3,6 +3,7 @@
   "factions": [
     {
       "id": "fenearth",
+      "order": 1,
       "name": {
         "ru": "Фенземская Республика",
         "en": "Fenearth Republic"
@@ -51,6 +52,7 @@
     },
     {
       "id": "proton",
+      "order": 2,
       "name": {
         "ru": "Движение Протон",
         "en": "Proton Movement"
@@ -101,6 +103,7 @@
     },
     {
       "id": "darkmarket",
+      "order": 3,
       "subfaction": true,
       "name": {
         "ru": "Чёрный рынок",
@@ -116,6 +119,7 @@
     },
     {
       "id": "bioforms",
+      "order": 4,
       "subfaction": true,
       "name": {
         "ru": "Биоформы",
@@ -131,6 +135,7 @@
     },
     {
       "id": "aborigines",
+      "order": 5,
       "subfaction": true,
       "name": {
         "ru": "Аборигены",
@@ -146,6 +151,7 @@
     },
     {
       "id": "neutrals",
+      "order": 6,
       "subfaction": true,
       "name": {
         "ru": "Нейтралы",

@@ -369,6 +369,10 @@ export async function loadDatabase(lang: Lang): Promise<DatabaseData> {
     getPublished(lang),
   ]);
 
+  // Порядок фракций задаётся полем order: сначала Фенземская Республика и
+  // Движение Протон, затем остальные (см. src/data/factions.json).
+  factionEntries.sort((a, b) => a.data.order - b.data.order);
+
   const tagMap = new Map(tagEntries.map((entry) => [entry.id, entry.data]));
   const factionMap = new Map(factionEntries.map((entry) => [entry.id, entry.data]));
 

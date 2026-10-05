@@ -33,4 +33,43 @@ test.describe("База данных", () => {
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
     await expect(page.locator("#databaseTabs")).toBeVisible();
   });
+
+  test("порядок фракций: Фензем, Протон, затем остальные", async ({ page }) => {
+    await page.goto("database/");
+    const ids = await page
+      .locator("#databaseGrid-factions [data-card-id]")
+      .evaluateAll((els) => els.map((el) => el.getAttribute("data-card-id")));
+    expect(ids).toEqual(["fenearth", "proton", "darkmarket", "bioforms", "aborigines", "neutrals"]);
+
+    await page.locator('#databaseTabs [data-tab="units"]').click();
+    const options = await page
+      .locator(".database-explorer select")
+      .first()
+      .locator("option")
+      .evaluateAll((els) => els.map((el) => el.getAttribute("value")));
+    expect(options).toEqual([
+      "all",
+      "fenearth",
+      "proton",
+      "darkmarket",
+      "bioforms",
+      "aborigines",
+      "neutrals",
+    ]);
+  });
+
+  test("тег-панель открывается у кнопки, без прыжка из угла", async ({ page }) => {
+    await page.goto("database/");
+    await page.locator('#databaseTabs [data-tab="units"]').click();
+    const button = page.locator('button[popovertarget="databaseTagPanel"]');
+    await button.click();
+    const panel = page.locator("#databaseTagPanel");
+    await expect(panel).toBeVisible();
+    const [panelBox, buttonBox] = await Promise.all([panel.boundingBox(), button.boundingBox()]);
+    expect(panelBox).not.toBeNull();
+    expect(buttonBox).not.toBeNull();
+    expect(panelBox?.x ?? 0).toBeGreaterThan(0);
+    expect(panelBox?.y ?? 0).toBeGreaterThan(0);
+    expect(Math.abs((panelBox?.x ?? 0) - (buttonBox?.x ?? 0))).toBeLessThan(80);
+  });
 });
