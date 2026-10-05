@@ -67,7 +67,7 @@ export default defineConfig({
   fonts: [
     {
       provider: fontProviders.local(),
-      name: "Geist",
+      name: "Onest",
       cssVariable: "--font-body",
       fallbacks: ["system-ui", "sans-serif"],
       options: {
@@ -75,15 +75,7 @@ export default defineConfig({
           {
             weight: "100 900",
             style: "normal",
-            src: ["./src/assets/fonts/geist-latin.woff2"],
-            unicodeRange: [LATIN],
-            display: "swap",
-          },
-          {
-            weight: "100 900",
-            style: "normal",
-            src: ["./src/assets/fonts/geist-cyrillic.woff2"],
-            unicodeRange: [CYRILLIC],
+            src: ["./src/assets/fonts/onest-wght.woff2"],
             display: "swap",
           },
         ],

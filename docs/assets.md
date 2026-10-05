@@ -6,7 +6,7 @@
 
 | Папка | Что внутри |
 | --- | --- |
-| `fonts/` | вариативные woff2-сабсеты latin/cyrillic: Geist, Geist Mono, Science Gothic, рядом лицензии `OFL-*.txt`. Подключаются через Fonts API в `astro.config.ts` (`cssVariable`: `--font-body`, `--font-mono`, `--font-display`), `<Font>` в `src/layouts/BaseLayout.astro` подключает их (display и body — с preload) |
+| `fonts/` | woff2: Onest (вариативный 100–900, полный набор — латиница и кириллица), Geist Mono (сабсеты latin/cyrillic), Science Gothic (сабсеты latin/cyrillic), рядом лицензии `OFL-*.txt`. Подключаются через Fonts API в `astro.config.ts` (`cssVariable`: `--font-body`, `--font-mono`, `--font-display`), `<Font>` в `src/layouts/BaseLayout.astro` подключает их (display и body — с preload) |
 | `img/lore/` | картинки статей вики (карты эпох, портреты, территории). Astro оптимизирует их в AVIF |
 | `img/gallery/` | скриншоты галереи главной; список и подписи — `src/data/gallery.ts` |
 | `img/bg/` | `banner-1440.avif` — фон первого экрана: `Hero.astro` импортирует его и через `<Image widths={[960, 1440]}>` получает оба размера. `banner-960.avif` — готовый узкий файл, в коде не используется |
@@ -51,6 +51,7 @@ ffmpeg -i in.png -c:v libwebp -quality 78 -compression_level 6 out.webp
 - `src/styles/wiki.css` — только страницы вики.
 - `src/styles/database.css` — только страница базы данных.
 - Трансформер — Lightning CSS (`vite.css.transformer: "lightningcss"` в `astro.config.ts`).
-- Переменные `--font-display`, `--font-body`, `--font-mono` создаёт Fonts API: локальные woff2 с unicode-range latin/cyrillic, `display: swap`. Меняете набор или веса — правьте блок `fonts` в `astro.config.ts`; внешние Google Fonts не используются.
+- Переменные `--font-display`, `--font-body`, `--font-mono` создаёт Fonts API: локальные woff2, `display: swap`. Onest — один вариативный файл 100–900 (latin + cyrillic), Geist Mono и Science Gothic — сабсеты latin/cyrillic с `unicode-range`. Меняете набор или веса — правьте блок `fonts` в `astro.config.ts`; внешние Google Fonts не используются.
+- Onest обновляется из релиза [simpals/onest](https://github.com/simpals/onest/releases) (файл `fonts/webfonts/Onest[wght].woff2` + `OFL.txt`), Geist Mono — из набора Geist, Science Gothic — из Google Fonts (сабсеты уже нарезаны и лежат в репозитории).
 
 Локальный просмотр — `pnpm dev` (см. `docs/wiki.md`).

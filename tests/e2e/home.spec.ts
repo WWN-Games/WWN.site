@@ -38,6 +38,16 @@ test.describe("Главная", () => {
     await expect(page.locator('link[rel="preload"][as="font"]')).toHaveCount(2);
   });
 
+  test("подключены Onest (текст) и Geist Mono (моно)", async ({ page }) => {
+    await page.goto("./");
+    const bodyFont = await page.evaluate(() => getComputedStyle(document.body).fontFamily);
+    expect(bodyFont).toContain("Onest");
+    const monoFont = await page.evaluate(() =>
+      getComputedStyle(document.documentElement).getPropertyValue("--font-mono"),
+    );
+    expect(monoFont).toContain("Geist Mono");
+  });
+
   test("лайтбокс открывается кликом и закрывается Escape", async ({ page }) => {
     await page.goto("./");
     const item = page.locator("#galleryGrid .gallery__item").first();
