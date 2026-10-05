@@ -1,0 +1,80 @@
+---
+import fer from "@/assets/img/factions/faction-fer.svg";
+import proton from "@/assets/img/factions/faction-proton.svg";
+import { type DictKey, t } from "@/i18n";
+import { type Lang, localeHref } from "@/lib/site";
+
+interface Props {
+  lang: Lang;
+}
+
+interface FactionShowcase {
+  color: string;
+  emblem: string;
+  name: DictKey;
+  motto: DictKey;
+  desc: DictKey;
+  chips: DictKey[];
+  href: string;
+}
+
+const { lang } = Astro.props;
+
+const factions: FactionShowcase[] = [
+  {
+    color: "#3b9bff",
+    emblem: fer.src,
+    name: "facsec.fenearth.name",
+    motto: "facsec.fenearth.motto",
+    desc: "facsec.fenearth.desc",
+    chips: ["factions.chip.industry", "factions.chip.fleet", "factions.chip.tech"],
+    href: "wiki/factions/fenearth/",
+  },
+  {
+    color: "#ff4157",
+    emblem: proton.src,
+    name: "facsec.proton.name",
+    motto: "facsec.proton.motto",
+    desc: "facsec.proton.desc",
+    chips: ["factions.chip.mass", "factions.chip.repair", "factions.chip.vasst"],
+    href: "wiki/factions/proton/",
+  },
+];
+---
+
+<section class="section section--bordered section--alt" id="factions">
+  <div class="wrap">
+    <div class="section__head" data-reveal>
+      <span class="kicker">{t(lang, "facsec.kicker")}</span>
+      <h2 class="section__title">{t(lang, "facsec.title")}</h2>
+      <p class="section__sub">{t(lang, "facsec.sub")}</p>
+    </div>
+
+    <div class="factions-showcase">
+      {
+        factions.map((faction) => (
+          <article class="fac" style={`--faction-color:${faction.color}`} data-reveal>
+            <div class="fac__top">
+              <div class="fac__emblem">
+                <img src={faction.emblem} alt={t(lang, faction.name)} loading="lazy" />
+              </div>
+              <div>
+                <div class="fac__name">{t(lang, faction.name)}</div>
+                <div class="fac__motto">{t(lang, faction.motto)}</div>
+              </div>
+            </div>
+            <p class="fac__desc">{t(lang, faction.desc)}</p>
+            <div class="fac__row">
+              {faction.chips.map((chip) => (
+                <span class="chip">{t(lang, chip)}</span>
+              ))}
+            </div>
+            <a class="btn btn--sm fac__link" href={localeHref(lang, faction.href)}>
+              {t(lang, "facsec.openLore")}
+            </a>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

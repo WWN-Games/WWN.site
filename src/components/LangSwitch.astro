@@ -1,0 +1,31 @@
+---
+import { type Lang, LOCALES, switchLangPath } from "@/lib/site";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const options = LOCALES.map((code) => ({
+  code,
+  label: code.toUpperCase(),
+  active: code === lang,
+  href: switchLangPath(Astro.url.pathname, code),
+}));
+---
+
+<!-- biome-ignore lint/a11y/useSemanticElements: role="group" is the right ARIA pattern for a language switcher; fieldset requires a legend and CSS resets -->
+<div class="lang" role="group" aria-label="Language">
+  {
+    options.map((option) => (
+      <a
+        href={option.href}
+        data-lang={option.code}
+        aria-current={option.active ? "true" : undefined}
+        class={option.active ? "is-active" : undefined}
+      >
+        {option.label}
+      </a>
+    ))
+  }
+</div>

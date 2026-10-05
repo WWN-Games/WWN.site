@@ -1,0 +1,36 @@
+---
+/* ============================================================================
+   WWN — сетка карточек одного таба. Все три сетки рендерятся статически,
+   неактивные скрыты атрибутом hidden (остров переключает его по hash).
+   ============================================================================ */
+
+import type { TabId } from "@/lib/database";
+
+interface Props {
+  tab: TabId;
+  hidden?: boolean;
+  emptyText: string;
+}
+
+const { tab, hidden = false, emptyText } = Astro.props;
+---
+
+<div
+  class="database-grid is-shown"
+  id={`databaseGrid-${tab}`}
+  data-grid={tab}
+  data-mode={tab}
+  role="tabpanel"
+  aria-labelledby={`tab-${tab}`}
+  hidden={hidden}
+>
+  <p class="empty-block" data-empty={tab} hidden>{emptyText}</p>
+  <slot />
+</div>
+
+<style>
+.database-grid[hidden],
+.empty-block[hidden] {
+  display: none;
+}
+</style>

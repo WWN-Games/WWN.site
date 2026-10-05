@@ -1,0 +1,69 @@
+---
+import { type DictKey, t } from "@/i18n";
+import { LINKS } from "@/lib/config";
+import type { Lang } from "@/lib/site";
+
+interface Props {
+  lang: Lang;
+}
+
+interface FaqItem {
+  id: string;
+  question: DictKey;
+  answer: DictKey;
+  html: boolean;
+}
+
+const { lang } = Astro.props;
+
+const items: FaqItem[] = [
+  { id: "faqA1", question: "faq.q1", answer: "faq.a1", html: false },
+  { id: "faqA2", question: "faq.q3", answer: "faq.a3", html: false },
+  { id: "faqA3", question: "faq.q5", answer: "faq.a5", html: true },
+  { id: "faqA4", question: "faq.q6", answer: "faq.a6", html: true },
+];
+
+/* Ответы a5/a6 приходят из словаря HTML-ом со старой data-link-разметкой:
+   на сборке подставляем прямую ссылку на Discord. */
+function withDiscordLink(html: string): string {
+  return html.replace(
+    /<a href="#" data-link="discord">/g,
+    `<a href="${LINKS.discord}" target="_blank" rel="noopener">`,
+  );
+}
+---
+
+<section class="section section--bordered section--alt" id="faq">
+  <div class="wrap">
+    <div class="section__head section__head--center" data-reveal>
+      <span class="kicker">{t(lang, "nav.faq")}</span>
+      <h2 class="section__title">{t(lang, "faq.title")}</h2>
+    </div>
+
+    <div class="faq">
+      {
+        items.map((item) => (
+          <div class="faq__item" data-reveal>
+            <button class="faq__q" type="button" aria-expanded="false" aria-controls={item.id}>
+              <span>{t(lang, item.question)}</span>
+              <i />
+            </button>
+            <div class="faq__a" id={item.id} inert aria-hidden="true">
+              {item.html ? (
+                <p>
+                  <Fragment set:html={withDiscordLink(t(lang, item.answer))} />
+                </p>
+              ) : (
+                <p>{t(lang, item.answer)}</p>
+              )}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  import "@/scripts/home/faq";
+</script>

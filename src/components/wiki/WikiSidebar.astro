@@ -1,0 +1,85 @@
+---
+import WikiSearch from "@/components/search/WikiSearch.svelte";
+
+import { t } from "@/i18n";
+import { localeHref, type Lang } from "@/lib/site";
+import { entryHref, entrySlug } from "@/lib/wiki";
+
+import { sectionIcon } from "./icons";
+import type { WikiNav } from "./types";
+
+interface Props {
+  lang: Lang;
+  sections: WikiNav;
+  activeSlug?: string | undefined;
+}
+
+const { lang, sections, activeSlug } = Astro.props;
+const searchSections = sections.map((section) => ({ id: section.id, title: section.title[lang] }));
+const searchLabels = {
+  title: t(lang, "wiki.search.title"),
+  placeholder: t(lang, "wiki.search.placeholder"),
+  close: t(lang, "gallery.close"),
+  hint: t(lang, "wiki.search.hint"),
+  found: t(lang, "wiki.search.found"),
+  all: t(lang, "wiki.search.all"),
+  recent: t(lang, "wiki.search.recent"),
+  empty: t(lang, "wiki.search.empty"),
+  more: t(lang, "wiki.search.more"),
+  loadError: t(lang, "wiki.loadError.desc"),
+};
+---
+
+<aside class="wiki-sidebar" aria-label={t(lang, "wiki.sidebar")}>
+  <div class="wiki-sidebar__search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+      ><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg
+    >
+    <input
+      type="text"
+      id="searchInput"
+      readonly
+      placeholder={t(lang, "wiki.search.placeholder")}
+      aria-label={t(lang, "wiki.search.title")}
+      data-search-open
+    />
+    <kbd class="wiki-sidebar__kbd">Ctrl K</kbd>
+  </div>
+
+  <button type="button" id="wikiNavToggle" class="wiki-nav__toggle" aria-controls="wikiNav" aria-expanded="false">
+    {t(lang, "wiki.sidebar")}
+  </button>
+
+  <nav class="wiki-nav" id="wikiNav" aria-label={t(lang, "wiki.title")}>
+    {
+      sections.map((section) => (
+        <details class="wiki-nav__group" data-section={section.id} open>
+          <summary class="wiki-nav__summary">
+            <span class="wiki-nav__icon" set:html={sectionIcon(section.icon)} />
+            <span class="wiki-nav__label">{section.title[lang]}</span>
+            <span class="wiki-nav__count">{section.articles.length}</span>
+          </summary>
+          <ul>
+            {section.articles.map((article) => {
+              const isActive = entrySlug(article) === activeSlug;
+              return (
+                <li>
+                  <a href={entryHref(article)} class={isActive ? "is-active" : undefined} aria-current={isActive ? "page" : undefined}>
+                    {article.data.title}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </details>
+      ))
+    }
+  </nav>
+
+  <div class="wiki-sidebar__cta">
+    <p>{t(lang, "wiki.help")}</p>
+    <a class="btn btn--sm" href={`${localeHref(lang, "")}#download`}>{t(lang, "nav.download")}</a>
+  </div>
+
+  <WikiSearch lang={lang} sections={searchSections} labels={searchLabels} client:load />
+</aside>

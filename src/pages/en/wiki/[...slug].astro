@@ -1,0 +1,146 @@
+---
+import { render } from "astro:content";
+
+import ArticleMeta from "@/components/wiki/ArticleMeta.astro";
+import Breadcrumbs from "@/components/wiki/Breadcrumbs.astro";
+import Pager from "@/components/wiki/Pager.astro";
+import Related from "@/components/wiki/Related.astro";
+import Toc from "@/components/wiki/Toc.astro";
+import WikiSidebar from "@/components/wiki/WikiSidebar.astro";
+import { t } from "@/i18n";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { SITE, href, localeHref } from "@/lib/site";
+import {
+  entryLang,
+  entrySection,
+  entrySlug,
+  getEntries,
+  getNav,
+  getPager,
+  getRelated,
+  type WikiEntry,
+} from "@/lib/wiki";
+import "@/styles/wiki.css";
+
+export async function getStaticPaths() {
+  const entries = await getEntries("en");
+  return entries.map((entry) => ({ params: { slug: entrySlug(entry) }, props: { entry } }));
+}
+
+interface Props {
+  entry: WikiEntry;
+}
+
+const { entry } = Astro.props;
+const lang = entryLang(entry);
+const slug = entrySlug(entry);
+const sectionId = entrySection(entry);
+
+const { Content, headings } = await render(entry);
+const [nav, related, pager] = await Promise.all([
+  getNav(lang),
+  getRelated(lang, slug),
+  getPager(lang, slug),
+]);
+
+const sectionTitle = nav.find((section) => section.id === sectionId)?.title[lang] ?? sectionId;
+const sectionTitles = Object.fromEntries(nav.map((section) => [section.id, section.title[lang]]));
+
+const body = entry.body ?? "";
+const words = body.split(/\s+/).filter(Boolean).length;
+const readingTime = Math.max(1, Math.round(words / 180));
+const updated = entry.data.updated.toISOString().slice(0, 10);
+
+const title = `${entry.data.title} — ${t(lang, "meta.title.wiki")}`;
+const description = entry.data.desc;
+const path = `wiki/${slug}/`;
+const pageUrl = `${SITE}${localeHref(lang, path)}`;
+const hubUrl = `${SITE}${localeHref(lang, "wiki/")}`;
+const siteUrl = `${SITE}${href("")}`;
+
+const GITHUB = "https://github.com/WWN-Games/WWN.site";
+const editUrl = `${GITHUB}/blob/main/src/content/wiki/${lang}/${slug}.md`;
+const issueUrl = `${GITHUB}/issues/new`;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      headline: entry.data.title,
+      description: entry.data.desc,
+      inLanguage: lang,
+      dateModified: entry.data.updated.toISOString(),
+      mainEntityOfPage: pageUrl,
+      isPartOf: { "@type": "WebSite", name: "WWN", url: siteUrl },
+    },
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: t(lang, "meta.title.wiki"), item: hubUrl },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: sectionTitle,
+          item: `${hubUrl}#wiki-cat-${sectionId}`,
+        },
+        { "@type": "ListItem", position: 3, name: entry.data.title },
+      ],
+    },
+  ],
+};
+---
+
+<BaseLayout lang={lang} title={title} description={description} path={path} type="article" jsonLd={jsonLd}>
+  <div class="wiki-shell">
+    <WikiSidebar lang={lang} sections={nav} activeSlug={slug} />
+
+    <div id="main-content">
+      <div class="article-layout">
+        <article
+          class="article"
+          data-pagefind-body
+          data-pagefind-filter={`section:${sectionId}`}
+          data-copy-labels
+          data-copy={t(lang, "wiki.copy")}
+          data-copied={t(lang, "wiki.copied")}
+          data-copy-link-label={t(lang, "wiki.copyLink")}
+        >
+          <div class="article__head">
+            <Breadcrumbs lang={lang} sectionId={sectionId} sectionTitle={sectionTitle} title={entry.data.title} />
+            <h1 class="article__title" data-pagefind-meta="title">{entry.data.title}</h1>
+            <ArticleMeta
+              lang={lang}
+              sectionTitle={sectionTitle}
+              readingTime={readingTime}
+              updated={updated}
+              draft={entry.data.draft}
+            />
+            <div class="article__actions" data-pagefind-ignore>
+              <button type="button" class="article__action" data-copy-link>{t(lang, "wiki.copyLink")}</button>
+              <a class="article__action" href={editUrl} target="_blank" rel="noopener">{t(lang, "wiki.edit")}</a>
+              <a class="article__action" href={issueUrl} target="_blank" rel="noopener">{t(lang, "wiki.report")}</a>
+            </div>
+          </div>
+
+          <div class="article__body is-ready">
+            <Content />
+          </div>
+
+          <Related lang={lang} items={related} />
+          <Pager lang={lang} prev={pager.prev} next={pager.next} sectionTitles={sectionTitles} />
+        </article>
+
+        <aside class="article__aside" aria-label={t(lang, "wiki.toc")}>
+          <Toc lang={lang} headings={headings} />
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    import "@/scripts/wiki/copy";
+    import "@/scripts/wiki/nav";
+    import "@/scripts/wiki/toc";
+  </script>
+</BaseLayout>

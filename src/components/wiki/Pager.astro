@@ -1,0 +1,39 @@
+---
+import { t } from "@/i18n";
+import type { Lang } from "@/lib/site";
+import { entryHref, entrySection, type WikiEntry } from "@/lib/wiki";
+
+interface Props {
+  lang: Lang;
+  prev?: WikiEntry | undefined;
+  next?: WikiEntry | undefined;
+  /** id раздела → локализованное название (для подписи под статьёй). */
+  sectionTitles: Record<string, string>;
+}
+
+const { lang, prev, next, sectionTitles } = Astro.props;
+const sectionOf = (entry: WikiEntry) => sectionTitles[entrySection(entry)] ?? "";
+const prevSection = prev ? sectionOf(prev) : "";
+const nextSection = next ? sectionOf(next) : "";
+---
+
+{
+  (prev || next) && (
+    <div class="article__pager" data-pagefind-ignore>
+      {prev && (
+        <a href={entryHref(prev)}>
+          <small>← {t(lang, "wiki.prev")}</small>
+          <b>{prev.data.title}</b>
+          {prevSection && <span class="article__pager-cat">{prevSection}</span>}
+        </a>
+      )}
+      {next && (
+        <a class="pager-next" href={entryHref(next)}>
+          <small>{t(lang, "wiki.next")} →</small>
+          <b>{next.data.title}</b>
+          {nextSection && <span class="article__pager-cat">{nextSection}</span>}
+        </a>
+      )}
+    </div>
+  )
+}

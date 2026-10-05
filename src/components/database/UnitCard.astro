@@ -1,0 +1,130 @@
+---
+/* ============================================================================
+   WWN — карточка юнита или строения. Рендерится статически на сборке;
+   остров только показывает/скрывает и переставляет готовый DOM.
+   ============================================================================ */
+
+import StatBars from "@/components/database/StatBars.astro";
+import { t } from "@/i18n";
+import {
+  buildBars,
+  type DatabaseCard,
+  factionColor,
+  factionName,
+  initialsOf,
+  pick,
+  pickList,
+  resolveImage,
+  type StatScale,
+  tagLabel,
+  typeLabel,
+} from "@/lib/database";
+import type { Faction, Tag } from "@/lib/schemas";
+import type { Lang } from "@/lib/site";
+import { formatNumber } from "@/lib/utils";
+
+interface Props {
+  card: DatabaseCard;
+  lang: Lang;
+  factions: Map<string, Faction>;
+  tags: Map<string, Tag>;
+  scale: StatScale;
+}
+
+const { card, lang, factions, tags, scale } = Astro.props;
+
+const color = factionColor(factions, card.faction);
+const name = pick(card.name, lang);
+const desc = pick(card.desc, lang);
+const role = pick(card.role, lang);
+const imageSrc = resolveImage(card.image, card.id);
+const initials = initialsOf(name);
+const bars = buildBars(card, lang, scale);
+const strongVs = pickList(card.strongVs, lang);
+const weakVs = pickList(card.weakVs, lang);
+const hasCosts = card.cost > 0 || card.buildTime > 0;
+---
+
+<article
+  class="unit-card"
+  data-card-id={card.id}
+  data-tab={card.tab}
+  data-reveal
+  style={`--faction-color:${color}`}
+>
+  {card.isNew && <span class="unit-card__new">{t(lang, "database.new")}</span>}
+
+  <div class="unit-card__top">
+    <div class="unit-card__img">
+      {
+        imageSrc ? (
+          <img
+            src={imageSrc}
+            alt={name}
+            data-initials={initials}
+            width="256"
+            height="256"
+            loading="lazy"
+            decoding="async"
+          />
+        ) : (
+          <span>{initials}</span>
+        )
+      }
+    </div>
+    <div class="unit-card__name">{name}</div>
+  </div>
+
+  <div class="unit-card__tags">
+    <span class="chip chip--faction">{factionName(factions, card.faction, lang)}</span>
+    {card.type && <span class="chip">{typeLabel(card.type, lang)}</span>}
+    {card.tags.map((id) => <span class="chip chip--tag">{tagLabel(tags, id, lang)}</span>)}
+    {role && <span class="chip">{role}</span>}
+    {card.draft && <span class="chip chip--draft">{t(lang, "database.draft")}</span>}
+  </div>
+
+  {
+    hasCosts && (
+      <div class="unit-card__sub">
+        {card.cost > 0 && (
+          <span class="chip">
+            {t(lang, "database.cost")}: {formatNumber(card.cost, lang)}
+          </span>
+        )}
+        {card.buildTime > 0 && (
+          <span class="chip">
+            {t(lang, "database.buildTime")}: {formatNumber(card.buildTime, lang)}
+            {t(lang, "database.seconds")} (1x)
+          </span>
+        )}
+      </div>
+    )
+  }
+
+  {desc && <p class="unit-card__desc">{desc}</p>}
+
+  {bars.length > 0 && <StatBars bars={bars} color={color} />}
+
+  {
+    (strongVs.length > 0 || weakVs.length > 0) && (
+      <div class="unit-card__lists">
+        {strongVs.length > 0 && (
+          <div>
+            <b>{t(lang, "database.strong")}:</b> <span class="vs-strong">{strongVs.join(", ")}</span>
+          </div>
+        )}
+        {weakVs.length > 0 && (
+          <div>
+            <b>{t(lang, "database.weak")}:</b> <span class="vs-weak">{weakVs.join(", ")}</span>
+          </div>
+        )}
+      </div>
+    )
+  }
+</article>
+
+<style>
+.unit-card[hidden] {
+  display: none;
+}
+</style>

@@ -1,0 +1,136 @@
+---
+/* ============================================================================
+   WWN — карточка фракции. Статический рендер; эмблема подключается через
+   import.meta.glob, ссылка на вики — только для опубликованных лор-статей.
+   ============================================================================ */
+
+import { t } from "@/i18n";
+import { type DatabaseFaction, pick } from "@/lib/database";
+import type { Lang } from "@/lib/site";
+import { formatNumber } from "@/lib/utils";
+
+interface Props {
+  faction: DatabaseFaction;
+  lang: Lang;
+}
+
+const { faction, lang } = Astro.props;
+
+const emblems = import.meta.glob<string>("/src/assets/img/factions/*.svg", {
+  eager: true,
+  query: "?url",
+  import: "default",
+});
+const emblemSrc = faction.emblemFile
+  ? (emblems[`/src/assets/img/factions/${faction.emblemFile}`] ?? null)
+  : null;
+
+const name = pick(faction.name, lang);
+const desc = pick(faction.desc, lang);
+const motto = pick(faction.motto, lang);
+const playstyle = pick(faction.playstyle, lang);
+const specialty = pick(faction.specialty, lang);
+const initials = name.slice(0, 2);
+---
+
+<article
+  class="faction-card"
+  data-card-id={faction.id}
+  data-tab="factions"
+  data-reveal
+  style={`--faction-color:${faction.color}`}
+>
+  <div class="faction-card__head">
+    <div class="faction-card__emblem">
+      {
+        emblemSrc ? (
+          <img
+            src={emblemSrc}
+            alt={name}
+            data-initials={initials}
+            width="74"
+            height="74"
+            loading="lazy"
+            decoding="async"
+          />
+        ) : (
+          <span style={`color:${faction.color};font-family:var(--font-display)`}>{initials}</span>
+        )
+      }
+    </div>
+    <div>
+      <div class="faction-card__namerow">
+        <span class="faction-card__name">{name}</span>
+        {faction.subfactionLabel && <span class="chip chip--sub">{faction.subfactionLabel}</span>}
+      </div>
+      {motto && <div class="faction-card__motto">{motto}</div>}
+      <div class="unit-card__sub" style="margin-top:8px">
+        <span class="chip">
+          {t(lang, "database.tab.units")}: {formatNumber(faction.counts.units, lang)}
+        </span>
+        <span class="chip">
+          {t(lang, "database.tab.buildings")}: {formatNumber(faction.counts.buildings, lang)}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  {desc && <p class="faction-card__desc">{desc}</p>}
+
+  <div class="faction-card__blocks">
+    {
+      playstyle && (
+        <div class="faction-block">
+          <h5>{t(lang, "database.faction.playstyle")}</h5>
+          <p>{playstyle}</p>
+        </div>
+      )
+    }
+    {
+      specialty && (
+        <div class="faction-block">
+          <h5>{t(lang, "database.faction.specialty")}</h5>
+          <p>{specialty}</p>
+        </div>
+      )
+    }
+    {
+      faction.strengths.length > 0 && (
+        <div class="faction-block">
+          <h5>{t(lang, "database.strong")}</h5>
+          <ul>
+            {faction.strengths.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+    {
+      faction.weaknesses.length > 0 && (
+        <div class="faction-block">
+          <h5>{t(lang, "database.weak")}</h5>
+          <ul>
+            {faction.weaknesses.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+  </div>
+
+  {
+    faction.wikiHref && (
+      <a class="btn btn--sm faction-card__link" href={faction.wikiHref}>
+        {t(lang, "database.openLore")}
+      </a>
+    )
+  }
+</article>
+
+<style>
+.faction-card[hidden] {
+  display: none;
+}
+</style>

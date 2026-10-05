@@ -1,0 +1,150 @@
+---
+import DatabaseExplorer from "@/components/database/DatabaseExplorer.svelte";
+import DatabaseGrid from "@/components/database/DatabaseGrid.astro";
+import FactionCard from "@/components/database/FactionCard.astro";
+import UnitCard from "@/components/database/UnitCard.astro";
+import { t } from "@/i18n";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { loadDatabase } from "@/lib/database";
+import type { Lang } from "@/lib/site";
+import "@/styles/database.css";
+
+const lang: Lang = "ru";
+const database = await loadDatabase(lang);
+const unitCards = database.cards.filter((card) => card.tab === "units");
+const buildingCards = database.cards.filter((card) => card.tab === "buildings");
+const emptyText = t(lang, "database.empty");
+---
+
+<BaseLayout
+  lang={lang}
+  title={t(lang, "meta.title.database")}
+  description={t(lang, "meta.desc")}
+  path="database/"
+>
+  <section class="database-page">
+    <div class="wrap">
+      <div class="database-head">
+        <span class="kicker">{t(lang, "database.title")}</span>
+        <h1>{t(lang, "database.title")}</h1>
+        <p>{t(lang, "database.subtitle")}</p>
+      </div>
+
+      <div class="tabs" id="databaseTabs" role="tablist" aria-label={t(lang, "database.title")}>
+        <button
+          class="tab is-active"
+          id="tab-factions"
+          type="button"
+          role="tab"
+          aria-selected="true"
+          aria-controls="databaseGrid-factions"
+          data-tab="factions"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M12 2 3 6v6c0 5 3.8 8.4 9 10 5.2-1.6 9-5 9-10V6z" />
+          </svg>
+          <span>{t(lang, "database.tab.factions")}</span>
+        </button>
+        <button
+          class="tab"
+          id="tab-units"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="databaseGrid-units"
+          tabindex="-1"
+          data-tab="units"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M12 22V12M4 7l8 5 8-5M12 2 4 7v10l8 5 8-5V7z" />
+          </svg>
+          <span>{t(lang, "database.tab.units")}</span>
+        </button>
+        <button
+          class="tab"
+          id="tab-buildings"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="databaseGrid-buildings"
+          tabindex="-1"
+          data-tab="buildings"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M3 21V8l6-4 6 4v13" />
+            <path d="M9 21v-6h4v6M15 12h6v9h-6" />
+          </svg>
+          <span>{t(lang, "database.tab.buildings")}</span>
+        </button>
+      </div>
+
+      <div class="database-toolbar" id="databaseToolbar">
+        <DatabaseExplorer
+          client:load
+          lang={lang}
+          items={database.explorer.items}
+          factions={database.explorer.factions}
+          types={database.explorer.types}
+          tags={database.explorer.tags}
+          labels={database.explorer.labels}
+        />
+      </div>
+
+      <DatabaseGrid tab="factions" emptyText={emptyText}>
+        {database.factions.map((faction) => <FactionCard faction={faction} lang={lang} />)}
+      </DatabaseGrid>
+
+      <DatabaseGrid tab="units" hidden emptyText={emptyText}>
+        {
+          unitCards.map((card) => (
+            <UnitCard
+              card={card}
+              lang={lang}
+              factions={database.factionMap}
+              tags={database.tagMap}
+              scale={database.scale}
+            />
+          ))
+        }
+      </DatabaseGrid>
+
+      <DatabaseGrid tab="buildings" hidden emptyText={emptyText}>
+        {
+          buildingCards.map((card) => (
+            <UnitCard
+              card={card}
+              lang={lang}
+              factions={database.factionMap}
+              tags={database.tagMap}
+              scale={database.scale}
+            />
+          ))
+        }
+      </DatabaseGrid>
+    </div>
+  </section>
+</BaseLayout>

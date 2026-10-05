@@ -1,0 +1,23 @@
+---
+import { t } from "@/i18n";
+import type { Lang } from "@/lib/site";
+import { formatDate } from "@/lib/utils";
+
+interface Props {
+  lang: Lang;
+  sectionTitle: string;
+  readingTime: number;
+  /** Дата обновления в формате YYYY-MM-DD. */
+  updated: string;
+  draft: boolean;
+}
+
+const { lang, sectionTitle, readingTime, updated, draft } = Astro.props;
+---
+
+<div class="article__meta" data-pagefind-ignore>
+  <span>{sectionTitle}</span>
+  <span>{readingTime} {t(lang, "wiki.readingTime")}</span>
+  <span>{t(lang, "wiki.updated")}: {formatDate(updated, lang)}</span>
+  {draft && <span class="badge-draft">{t(lang, "wiki.draft")}</span>}
+</div>

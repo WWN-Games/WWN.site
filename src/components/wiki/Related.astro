@@ -1,0 +1,30 @@
+---
+import { t } from "@/i18n";
+import type { Lang } from "@/lib/site";
+import { entryHref, type WikiEntry } from "@/lib/wiki";
+
+interface Props {
+  lang: Lang;
+  items: WikiEntry[];
+}
+
+const { lang, items } = Astro.props;
+---
+
+{
+  items.length > 0 && (
+    <div class="article__related" data-pagefind-ignore>
+      <h2 class="article__related-title">{t(lang, "wiki.related")}</h2>
+      <ul class="article__related-list">
+        {items.map((item) => (
+          <li>
+            <a href={entryHref(item)}>
+              <b>{item.data.title}</b>
+              <span>{item.data.desc}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}

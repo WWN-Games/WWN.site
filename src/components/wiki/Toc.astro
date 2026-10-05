@@ -1,0 +1,30 @@
+---
+import type { MarkdownHeading } from "astro";
+
+import { t } from "@/i18n";
+import type { Lang } from "@/lib/site";
+
+interface Props {
+  lang: Lang;
+  headings: MarkdownHeading[];
+}
+
+const { lang, headings } = Astro.props;
+/* В оглавление попадают только h2/h3 — как в legacy wiki.js. */
+const items = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+---
+
+{
+  items.length >= 3 && (
+    <details class="article__toc" id="articleToc">
+      <summary>{t(lang, "wiki.toc")}</summary>
+      <ol>
+        {items.map((heading) => (
+          <li class={heading.depth === 3 ? "lvl-3" : undefined}>
+            <a href={`#${heading.slug}`}>{heading.text}</a>
+          </li>
+        ))}
+      </ol>
+    </details>
+  )
+}

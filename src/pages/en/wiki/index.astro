@@ -1,0 +1,49 @@
+---
+import WikiHub from "@/components/wiki/WikiHub.astro";
+import WikiSidebar from "@/components/wiki/WikiSidebar.astro";
+import { t } from "@/i18n";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { SITE, href, localeHref } from "@/lib/site";
+import { getNav, getPublished, getStats } from "@/lib/wiki";
+import "@/styles/wiki.css";
+
+const lang = "en";
+const [sections, articles, stats] = await Promise.all([
+  getNav(lang),
+  getPublished(lang),
+  getStats(),
+]);
+
+const title = t(lang, "meta.title.wikiHome");
+const description = t(lang, "wiki.subtitle");
+const siteUrl = `${SITE}${href("")}`;
+const hubUrl = `${SITE}${localeHref(lang, "wiki/")}`;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    { "@type": "WebSite", name: "WWN", url: siteUrl, inLanguage: lang },
+    {
+      "@type": "CollectionPage",
+      name: title,
+      description,
+      url: hubUrl,
+      inLanguage: lang,
+      isPartOf: { "@type": "WebSite", name: "WWN", url: siteUrl },
+    },
+  ],
+};
+---
+
+<BaseLayout lang={lang} title={title} description={description} path="wiki/" jsonLd={jsonLd}>
+  <div class="wiki-shell">
+    <WikiSidebar lang={lang} sections={sections} />
+    <div id="main-content">
+      <WikiHub lang={lang} sections={sections} articles={articles} stats={stats} />
+    </div>
+  </div>
+
+  <script>
+    import "@/scripts/wiki/nav";
+  </script>
+</BaseLayout>

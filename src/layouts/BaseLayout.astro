@@ -1,0 +1,77 @@
+---
+import { Font } from "astro:assets";
+import { ClientRouter } from "astro:transitions";
+
+import Footer from "@/components/Footer.astro";
+import Header from "@/components/Header.astro";
+import SEO from "@/components/SEO.astro";
+import { t } from "@/i18n";
+import { DEFAULT_LOCALE, href, type Lang } from "@/lib/site";
+import "@/styles/style.css";
+
+interface Props {
+  lang?: Lang;
+  title: string;
+  description: string;
+  /** Путь без base и языка: "", "wiki/", "wiki/lore/history/", "database/". */
+  path: string;
+  type?: "website" | "article";
+  image?: string;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  noindex?: boolean;
+}
+
+const {
+  lang = DEFAULT_LOCALE,
+  title,
+  description,
+  path,
+  type = "website",
+  image,
+  jsonLd,
+  noindex = false,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#050b16" />
+
+    <SEO lang={lang} title={title} description={description} path={path} type={type} image={image} jsonLd={jsonLd} noindex={noindex} />
+
+    <link rel="icon" type="image/svg+xml" href={href("img/brand/favicon.svg")} />
+    <link rel="apple-touch-icon" href={href("img/brand/icon-192.png")} />
+    <link rel="manifest" href={href("site.webmanifest")} />
+
+    <Font cssVariable="--font-display" preload />
+    <Font cssVariable="--font-body" preload />
+    <Font cssVariable="--font-mono" />
+
+    <ClientRouter />
+  </head>
+  <body>
+    <a class="skip-link" href="#top">{t(lang, "a11y.skip")}</a>
+    <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+    <Header lang={lang} path={path} />
+
+    <main id="top">
+      <slot />
+    </main>
+
+    <Footer lang={lang} />
+
+    <a class="to-top" id="toTop" href="#top">
+      <span class="visually-hidden">{t(lang, "footer.backToTop")}</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
+        ><path d="m18 15-6-6-6 6" /></svg>
+    </a>
+
+    <script>
+      import "../scripts/ui";
+    </script>
+  </body>
+</html>

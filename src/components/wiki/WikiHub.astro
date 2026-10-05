@@ -1,0 +1,124 @@
+---
+import { getImage } from "astro:assets";
+
+import { plural, t } from "@/i18n";
+import type { Lang } from "@/lib/site";
+import { formatDate, formatNumber } from "@/lib/utils";
+import { entryHref, entrySection } from "@/lib/wiki";
+
+import heroEn1x from "@/assets/img/lore/tc-en-960.avif";
+import heroEn2x from "@/assets/img/lore/tc-en.avif";
+import heroRu1x from "@/assets/img/lore/tc-ru-960.avif";
+import heroRu2x from "@/assets/img/lore/tc-ru.avif";
+import { sectionIcon } from "./icons";
+import type { WikiEntry, WikiNav, WikiStats } from "./types";
+
+interface Props {
+  lang: Lang;
+  sections: WikiNav;
+  articles: WikiEntry[];
+  stats: WikiStats;
+}
+
+const { lang, sections, articles, stats } = Astro.props;
+
+const hero = lang === "ru" ? { x1: heroRu1x, x2: heroRu2x } : { x1: heroEn1x, x2: heroEn2x };
+const [hero1x, hero2x] = await Promise.all([getImage({ src: hero.x1 }), getImage({ src: hero.x2 })]);
+const heroStyle = `--wiki-hero-img: image-set(url("${hero1x.src}") 1x, url("${hero2x.src}") 2x);`;
+
+const articleWord = plural(lang, articles.length, {
+  one: t(lang, "wiki.articles.one"),
+  few: t(lang, "wiki.articles.few"),
+  many: t(lang, "wiki.articles.many"),
+  other: t(lang, "wiki.articles.other"),
+});
+const articleCount = (count: number) =>
+  `${formatNumber(count, lang)} ${
+    plural(lang, count, {
+      one: t(lang, "wiki.articles.one"),
+      few: t(lang, "wiki.articles.few"),
+      many: t(lang, "wiki.articles.many"),
+      other: t(lang, "wiki.articles.other"),
+    })
+  }`;
+
+const quickLinks = sections.find((section) => section.id === "start")?.articles.slice(0, 3) ?? [];
+const sectionTitles = new Map(sections.map((section) => [section.id, section.title[lang]]));
+const recent = [...articles]
+  .sort((a, b) => b.data.updated.getTime() - a.data.updated.getTime())
+  .slice(0, 4)
+  .map((article) => ({
+    article,
+    label: `${sectionTitles.get(entrySection(article)) ?? ""} · ${formatDate(
+      article.data.updated.toISOString().slice(0, 10),
+      lang,
+    )}`,
+  }));
+---
+
+<section class="wiki-hero" style={heroStyle}>
+  <div class="wiki-hero__content">
+    <span class="kicker">{t(lang, "nav.wiki")}</span>
+    <h1>{t(lang, "wiki.title")}</h1>
+    <p>{t(lang, "wiki.subtitle")}</p>
+    {
+      quickLinks.length > 0 && (
+        <div class="wiki-hero__quick">
+          {quickLinks.map((article) => (
+            <a class="wiki-hero__chip" href={entryHref(article)}>{article.data.title}</a>
+          ))}
+        </div>
+      )
+    }
+    <div class="wiki-hero__stats">
+      <span><b>{formatNumber(sections.length, lang)}</b>{t(lang, "wiki.stats.sections")}</span>
+      <span><b>{formatNumber(articles.length, lang)}</b>{articleWord}</span>
+      <span><b>{formatNumber(stats.factions, lang)}</b>{t(lang, "wiki.stats.factions")}</span>
+    </div>
+  </div>
+</section>
+
+{
+  recent.length > 0 && (
+    <section class="wiki-recent" id="wikiRecent">
+      <h2>{t(lang, "wiki.recent")}</h2>
+      <div class="wiki-recent__row">
+        {recent.map((item) => (
+          <a class="wiki-recent__card" href={entryHref(item.article)}>
+            <b>{item.article.data.title}</b>
+            <span>{item.label}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+<div class="wiki-cat-grid" id="wikiCategories">
+  {
+    sections.map((section) => (
+      <section
+        class="wiki-cat"
+        id={`wiki-cat-${section.id}`}
+        data-reveal
+        aria-labelledby={`wiki-cat-${section.id}-title`}
+      >
+        <header class="wiki-cat__head">
+          <div class="wiki-cat__icon" set:html={sectionIcon(section.icon)} />
+          <div class="wiki-cat__text">
+            <h3 id={`wiki-cat-${section.id}-title`}>{section.title[lang]}</h3>
+            <p class="wiki-cat__desc">{section.desc[lang]}</p>
+          </div>
+          <span class="wiki-cat__count">{articleCount(section.articles.length)}</span>
+        </header>
+        <ul>
+          {section.articles.map((article) => (
+            <li>
+              <a href={entryHref(article)}>{article.data.title}</a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+</div>

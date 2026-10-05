@@ -1,0 +1,76 @@
+---
+import { t } from "@/i18n";
+import { href, type Lang, localeHref } from "@/lib/site";
+import LangSwitch from "./LangSwitch.astro";
+
+interface Props {
+  lang: Lang;
+  /** Путь без base и языка; "" — главная. */
+  path: string;
+}
+
+const { lang, path } = Astro.props;
+const home = localeHref(lang, "");
+const isHome = path === "";
+const anchor = (id: string) => (isHome ? `#${id}` : `${home}#${id}`);
+
+const navItems = [
+  { key: "nav.features", href: anchor("features") },
+  { key: "nav.factions", href: anchor("factions") },
+  { key: "nav.gallery", href: anchor("gallery") },
+  { key: "nav.download", href: anchor("download") },
+  { key: "nav.wiki", href: localeHref(lang, "wiki/"), section: "wiki" },
+  { key: "database.title", href: localeHref(lang, "database/"), section: "database" },
+] as const;
+
+const mobileItems = [
+  navItems[0],
+  navItems[1],
+  navItems[2],
+  { key: "nav.news", href: anchor("news") },
+  navItems[3],
+  navItems[4],
+  navItems[5],
+  { key: "nav.faq", href: anchor("faq") },
+] as const;
+
+const isActive = (section?: string) => Boolean(section && path.startsWith(section));
+---
+
+<header class="header" id="header">
+  <div class="header__inner">
+    <a class="brand" href={home} aria-label="WWN">
+      <img src={href("img/brand/logo.svg")} alt="WWN" width="862" height="252" />
+      <span class="brand__sub">{t(lang, "brand.sub")}</span>
+    </a>
+
+    <nav class="nav" id="mainNav" aria-label={t(lang, "a11y.nav")}>
+      {
+        navItems.map((item) => (
+          <a href={item.href} class={isActive("section" in item ? item.section : undefined) ? "is-active" : undefined}>
+            {t(lang, item.key)}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="header__side">
+      <LangSwitch lang={lang} />
+      <button
+        class="icon-btn burger"
+        id="burger"
+        type="button"
+        aria-label={t(lang, "a11y.menu")}
+        aria-controls="mobileNav"
+        popovertarget="mobileNav"
+      >
+        <span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-nav" id="mobileNav" popover="auto">
+  {mobileItems.map((item) => <a href={item.href}>{t(lang, item.key)}</a>)}
+  <LangSwitch lang={lang} />
+</div>

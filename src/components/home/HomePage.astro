@@ -1,0 +1,59 @@
+---
+import { t } from "@/i18n";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { canonical, type Lang, localeHref, SITE } from "@/lib/site";
+
+import Download from "./Download.astro";
+import FactionsShowcase from "./FactionsShowcase.astro";
+import Faq from "./Faq.astro";
+import Features from "./Features.astro";
+import Gallery from "./Gallery.astro";
+import Hero from "./Hero.astro";
+import News from "./News.astro";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+const title = t(lang, "meta.title.home");
+const description = t(lang, "meta.desc");
+const url = `${SITE}${localeHref(lang, "")}`;
+
+/* JSON-LD из legacy index.html: WebSite + VideoGame, язык — по странице. */
+const jsonLd: Record<string, unknown> = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": `${url}#website`,
+      url,
+      name: "WWN",
+      inLanguage: lang,
+    },
+    {
+      "@type": "VideoGame",
+      "@id": `${url}#mod`,
+      name: "WWN — a Rusted Warfare mod",
+      url,
+      gamePlatform: "PC",
+      applicationCategory: "GameModification",
+      operatingSystem: "Windows, macOS, Linux, Android",
+      isAccessibleForFree: true,
+      image: canonical("img/bg/og-banner.webp"),
+      inLanguage: lang,
+    },
+  ],
+};
+---
+
+<BaseLayout lang={lang} title={title} description={description} path="" jsonLd={jsonLd}>
+  <Hero lang={lang} />
+  <Features lang={lang} />
+  <FactionsShowcase lang={lang} />
+  <Gallery lang={lang} />
+  <News lang={lang} />
+  <Download lang={lang} />
+  <Faq lang={lang} />
+</BaseLayout>

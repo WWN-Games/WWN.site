@@ -1,0 +1,29 @@
+---
+/* ============================================================================
+   WWN — полосы характеристик. Значения и проценты посчитаны на сборке
+   (см. src/lib/database.ts), компонент только раскладывает их по разметке.
+   ============================================================================ */
+
+import type { StatBarData } from "@/lib/database";
+
+interface Props {
+  bars: StatBarData[];
+  color: string;
+}
+
+const { bars, color } = Astro.props;
+---
+
+<div class="statbars">
+  {
+    bars.map((bar) => (
+      <div class="statbar" style={`--faction-color:${color};--median:${bar.medianPercent}%`}>
+        <span class="statbar__label">{bar.label}</span>
+        <span class="statbar__track">
+          <span class="statbar__fill" style={`--w:${bar.percent}%`} />
+        </span>
+        <span class="statbar__val">{bar.display}</span>
+      </div>
+    ))
+  }
+</div>

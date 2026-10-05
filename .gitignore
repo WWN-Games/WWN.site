@@ -12,5 +12,13 @@ desktop.ini
 node_modules/
 *.log
 
+# Сборка Astro
+dist/
+.astro/
+
+# Тесты
+test-results/
+playwright-report/
+
 # Временные файлы
 *.tmp

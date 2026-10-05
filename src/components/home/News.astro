@@ -1,0 +1,87 @@
+---
+import { type NewsItem, news, newsTagLabels } from "@/data/news";
+import { t } from "@/i18n";
+import { type Lang, localeHref } from "@/lib/site";
+import { formatDate } from "@/lib/utils";
+
+interface Props {
+  lang: Lang;
+}
+
+interface ResolvedLink {
+  href: string;
+  external: boolean;
+}
+
+const { lang } = Astro.props;
+
+/* Ссылка новости: строка или { ru, en }. Внешние — только http(s), всё
+   остальное считаем относительным путём; javascript:/data: отсекаем. */
+function resolveLink(link: NewsItem["link"], lang: Lang): ResolvedLink | null {
+  if (link === undefined) return null;
+  const raw = typeof link === "string" ? link : link[lang];
+  if (!raw) return null;
+  if (/^https?:\/\//i.test(raw)) return { href: raw, external: true };
+  if (/^[a-z][a-z0-9+.-]*:/i.test(raw)) return null;
+  return { href: localeHref(lang, raw), external: false };
+}
+
+const cards = news.map((item) => {
+  const tag = item.tag.replace(/[^\w-]/g, "") || "update";
+  return {
+    date: item.date,
+    tag,
+    tagLabel: newsTagLabels[tag]?.[lang] ?? tag,
+    title: item.title[lang],
+    text: item.text[lang],
+    link: resolveLink(item.link, lang),
+  };
+});
+---
+
+<section class="section" id="news">
+  <div class="wrap">
+    <div class="section__head" data-reveal>
+      <span class="kicker">{t(lang, "news.title")}</span>
+      <h2 class="section__title">{t(lang, "news.subtitle")}</h2>
+    </div>
+    <div class="news" id="newsGrid" data-reveal>
+      {
+        cards.map((card) => (
+          <article class="news__card">
+            <div class="news__meta">
+              <span class={card.tag === "update" ? "tag" : `tag tag--${card.tag}`}>
+                {card.tagLabel}
+              </span>
+              <time datetime={card.date}>{formatDate(card.date, lang)}</time>
+            </div>
+            <h3>
+              {card.link ? (
+                <a
+                  class={card.link.external ? "news__link news__link--external" : "news__link"}
+                  href={card.link.href}
+                  target={card.link.external ? "_blank" : undefined}
+                  rel={card.link.external ? "noopener" : undefined}
+                >
+                  {card.title}
+                  {card.link.external && (
+                    <span class="news__arrow" aria-hidden="true">
+                      ↗
+                    </span>
+                  )}
+                </a>
+              ) : (
+                card.title
+              )}
+            </h3>
+            <p>{card.text}</p>
+          </article>
+        ))
+      }
+    </div>
+
+    <div class="news__all" data-reveal>
+      <a class="btn" href={localeHref(lang, "wiki/releases/changelog/")}>{t(lang, "news.all")}</a>
+    </div>
+  </div>
+</section>
