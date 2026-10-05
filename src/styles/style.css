@@ -269,8 +269,8 @@ body:has(dialog[open]) {
   transform: translateY(0);
 }
 .btn svg {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
 }
 
 .btn--cyan {
@@ -292,8 +292,8 @@ body:has(dialog[open]) {
   font-size: 14px;
 }
 .btn--lg svg {
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
 }
 /* оптическая коррекция: заглавные сидят на ~1px выше центра */
 .btn--lg [data-i18n] {
@@ -499,8 +499,8 @@ select:focus-visible {
     color 0.2s;
 }
 .icon-btn svg {
-  width: 19px;
-  height: 19px;
+  width: 21px;
+  height: 21px;
 }
 .icon-btn:hover {
   color: #fff;
@@ -1173,8 +1173,8 @@ body:has(.mobile-nav:popover-open) {
   box-shadow: inset 0 0 26px rgba(var(--cyan-rgb), 0.14);
 }
 .card__icon svg {
-  width: 25px;
-  height: 25px;
+  width: 30px;
+  height: 30px;
 }
 .card__title {
   font-size: 17.5px;
@@ -1457,8 +1457,8 @@ body:has(.mobile-nav:popover-open) {
 .lightbox__close svg,
 .lightbox__prev svg,
 .lightbox__next svg {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
 }
 
 .news__card {
@@ -1563,8 +1563,8 @@ body:has(.mobile-nav:popover-open) {
   background: linear-gradient(135deg, #ffd08a, #e0912a);
 }
 .dl-card__icon svg {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
 }
 .dl-card h3 {
   font-size: 20px;
@@ -1771,8 +1771,8 @@ body:has(.mobile-nav:popover-open) {
     0 0 0 4px var(--cyan-hi);
 }
 .to-top svg {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
 }
 
 .empty-block {

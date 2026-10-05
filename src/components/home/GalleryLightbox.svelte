@@ -1,5 +1,7 @@
 <script lang="ts">
-  import { CaretLeft, CaretRight, X } from "phosphor-svelte";
+  import { Close, Left, Right } from "@icon-park/svg";
+
+import { iconSvg } from "@/components/ui/icon";
 
   /* ============================================================================
      WWN — лайтбокс галереи главной: остров Svelte 5 (только лайтбокс).
@@ -156,7 +158,7 @@ $effect(() => {
     aria-label={labels.close}
     onclick={() => dialog?.close()}
   >
-    <X />
+    {@html iconSvg(Close)}
   </button>
   <button
     class="lightbox__prev"
@@ -166,7 +168,7 @@ $effect(() => {
     hidden={!many}
     onclick={() => step(-1)}
   >
-    <CaretLeft />
+    {@html iconSvg(Left)}
   </button>
   <button
     class="lightbox__next"
@@ -176,7 +178,7 @@ $effect(() => {
     hidden={!many}
     onclick={() => step(1)}
   >
-    <CaretRight />
+    {@html iconSvg(Right)}
   </button>
   <div class="lightbox__body">
     <img id="lbImg" src={current?.src} alt={current?.caption ?? ""}>

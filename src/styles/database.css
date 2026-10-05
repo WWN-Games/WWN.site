@@ -46,8 +46,8 @@
     color 0.2s;
 }
 .tab svg {
-  width: 17px;
-  height: 17px;
+  width: 19px;
+  height: 19px;
 }
 .tab:hover {
   color: #fff;
@@ -130,16 +130,15 @@
   right: 10px;
   top: 50%;
   translate: 0 -50%;
-  width: 15px;
-  height: 15px;
+  width: 16px;
+  height: 16px;
   color: var(--muted);
   pointer-events: none;
   transition:
     transform 0.25s,
     color 0.25s;
 }
-.select-field:has(select:open) .select-field__chevron,
-.select-field:focus-within .select-field__chevron {
+.select-field:has(select:open) .select-field__chevron {
   transform: rotate(180deg);
   color: var(--cyan);
 }
@@ -155,8 +154,8 @@
   cursor: pointer;
 }
 .wwn-select__btn svg {
-  width: 15px;
-  height: 15px;
+  width: 16px;
+  height: 16px;
   color: var(--muted);
   transition:
     transform 0.25s,

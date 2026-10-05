@@ -186,8 +186,8 @@
   color: var(--muted);
 }
 .wiki-nav__icon svg {
-  width: 15px;
-  height: 15px;
+  width: 17px;
+  height: 17px;
 }
 .wiki-nav__group ul {
   list-style: none;
@@ -316,8 +316,8 @@
   background: rgba(18, 40, 68, 0.7);
 }
 .wiki-cat__icon svg {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
 }
 .wiki-cat h3 {
   font-size: 17px;

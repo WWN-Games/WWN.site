@@ -5,8 +5,9 @@
    переставляет готовый статический DOM по data-card-id.
    ============================================================================ */
 
-import { CaretDown } from "phosphor-svelte";
+import { Down } from "@icon-park/svg";
 import { onMount } from "svelte";
+import { iconSvg } from "@/components/ui/icon";
 
 import type {
   ExplorerFaction,
@@ -328,7 +329,7 @@ function positionTagPanel(): void {
           <option value={item.id}>{item.name[lang]}</option>
         {/each}
       </select>
-      <CaretDown class="select-field__chevron" />
+      {@html iconSvg(Down, "select-field__chevron")}
     </span>
 
     {#if typeOptions.length > 0}
@@ -339,7 +340,7 @@ function positionTagPanel(): void {
             <option value={option.value}>{option.label}</option>
           {/each}
         </select>
-        <CaretDown class="select-field__chevron" />
+        {@html iconSvg(Down, "select-field__chevron")}
       </span>
     {/if}
 
@@ -357,7 +358,7 @@ function positionTagPanel(): void {
           aria-label={tagButtonLabel}
         >
           <span class="wwn-select__value">{tagButtonLabel}</span>
-          <CaretDown />
+          {@html iconSvg(Down)}
         </button>
       </div>
     {/if}
@@ -368,7 +369,7 @@ function positionTagPanel(): void {
           <option value={key}>{labels.sort[key]}</option>
         {/each}
       </select>
-      <CaretDown class="select-field__chevron" />
+      {@html iconSvg(Down, "select-field__chevron")}
     </span>
   {/if}
 

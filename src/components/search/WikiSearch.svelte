@@ -1,6 +1,7 @@
 <script lang="ts">
-import { X } from "phosphor-svelte";
+import { Close } from "@icon-park/svg";
 import { onDestroy, onMount } from "svelte";
+import { iconSvg } from "@/components/ui/icon";
 import type { Lang } from "@/i18n";
 import {
   highlight,
@@ -308,7 +309,7 @@ $effect(() => {
       aria-label={labels.close}
       onclick={closeDialog}
     >
-      <X />
+      {@html iconSvg(Close)}
     </button>
 
     <search>
