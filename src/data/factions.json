@@ -141,7 +141,7 @@
         "ru": "Аборигены",
         "en": "Aborigines"
       },
-      "color": "#907434",
+      "color": "#46afac",
       "emblem": "assets/img/factions/faction-aborigines.svg",
       "lore": "factions/aborigines",
       "desc": {
