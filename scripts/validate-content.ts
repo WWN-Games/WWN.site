@@ -166,6 +166,12 @@ function resolveMarkdownLink(raw: string, lang: Lang, dir: string): string | nul
   return url.pathname.slice(prefix.length).replace(/\.md$/i, "");
 }
 
+/** Проверка, что путь не выходит за пределы базовой директории. */
+function isPathSafe(target: string, base: string): boolean {
+  const relative = path.relative(base, target);
+  return !relative.startsWith("..") && !path.isAbsolute(relative);
+}
+
 function loadJson(file: string, errors: string[]): unknown {
   const full = path.join(DATA_DIR, file);
   try {
@@ -335,13 +341,15 @@ export function validateContent(): string[] {
       if (raw === undefined) continue;
       if (/^[a-z][a-z0-9+.-]*:/i.test(raw) || raw.startsWith("/")) continue;
       const target = path.resolve(path.dirname(path.join(ROOT, article.file)), raw);
-      if (!existsSync(target)) errors.push(`${article.file}: картинка «${raw}» не найдена`);
+      if (!isPathSafe(target, ROOT)) {
+        errors.push(`${article.file}: картинка «${raw}» выходит за пределы проекта`);
+      } else if (!existsSync(target)) errors.push(`${article.file}: картинка «${raw}» не найдена`);
     }
     for (const match of article.body.matchAll(/(?:src|href)="(\.\.\/assets\/[^"]+)"/g)) {
       const raw = match[1];
       if (raw === undefined) continue;
       const target = path.resolve(PUBLIC_DIR, raw.replace(/^\.\.\/assets\//, ""));
-      if (!target.startsWith(`${PUBLIC_DIR}${path.sep}`)) {
+      if (!isPathSafe(target, PUBLIC_DIR)) {
         errors.push(`${article.file}: ассет «${raw}» выходит за пределы public/`);
       } else if (!existsSync(target)) {
         errors.push(`${article.file}: ассет «${raw}» не найден (ожидается ${relative(target)})`);
@@ -403,7 +411,7 @@ export function validateContent(): string[] {
       if (card.image === "") continue;
       const image = card.image ?? `img/database/${card.id}.avif`;
       const target = path.resolve(PUBLIC_DIR, image);
-      if (!target.startsWith(`${PUBLIC_DIR}${path.sep}`)) {
+      if (!isPathSafe(target, PUBLIC_DIR)) {
         errors.push(`src/data/${file}: ${card.id}: картинка «${image}» выходит за пределы public/`);
       } else if (!existsSync(target)) {
         errors.push(`src/data/${file}: ${card.id}: нет картинки public/${image}`);
@@ -422,7 +430,9 @@ export function validateContent(): string[] {
 }
 
 const invokedDirectly =
-  process.argv[1] !== undefined && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+  process.argv[1] !== undefined &&
+  path.resolve(process.argv[1]) === fileURLToPath(import.meta.url) &&
+  import.meta.url.startsWith("file:");
 
 if (invokedDirectly) {
   const errors = validateContent();

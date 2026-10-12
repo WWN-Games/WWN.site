@@ -129,6 +129,7 @@ export async function getStats() {
     getCollection("buildings"),
     getCollection("factions"),
   ]);
-  const { maps } = statsSchema.parse(statsJson);
+  const parsed = statsSchema.safeParse(statsJson);
+  const maps = parsed.success ? parsed.data.maps : 0;
   return { units: units.length + buildings.length, factions: factions.length, maps };
 }

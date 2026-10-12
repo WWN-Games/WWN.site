@@ -13,11 +13,13 @@ const text = z
 
 export type Text = { ru: string; en: string };
 
+const dateString = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
+
 export const wikiSchema = z.object({
   title: z.string().min(1),
   desc: z.string().min(1),
   order: z.number().int().positive(),
-  updated: z.coerce.date(),
+  updated: dateString,
   draft: z.boolean().default(false),
 });
 

@@ -265,9 +265,11 @@ function computeScale(cards: DatabaseCard[]): StatScale {
 function barPercent(value: number, key: StatKey, scale: StatScale): number {
   const entry = scale[key];
   if (!(value > 0) || !entry) return 0;
-  const span = Math.log(entry.hi / entry.lo);
+  const lo = Math.max(entry.lo, 1);
+  const hi = Math.max(entry.hi, lo + 1);
+  const span = Math.log(hi / lo);
   if (!(span > 0)) return 100;
-  const position = Math.log(value / entry.lo) / span;
+  const position = Math.log(Math.max(value, lo) / lo) / span;
   return Math.max(MIN_BAR, Math.min(100, Math.round(MIN_BAR + (100 - MIN_BAR) * position)));
 }
 
@@ -275,8 +277,14 @@ function barPercent(value: number, key: StatKey, scale: StatScale): number {
 function formatStat(value: number): string {
   if (!Number.isFinite(value) || value === 0) return "0";
   const magnitude = Math.abs(value);
-  if (magnitude < 10) return String(Math.round(value * 100) / 100);
-  if (magnitude < 1000) return String(Math.round(value * 10) / 10);
+  if (magnitude < 10) {
+    const rounded = Math.round(value * 100) / 100;
+    return String(rounded);
+  }
+  if (magnitude < 1000) {
+    const rounded = Math.round(value * 10) / 10;
+    return String(rounded);
+  }
   return String(Math.round(value));
 }
 

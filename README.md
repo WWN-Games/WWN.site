@@ -1,6 +1,6 @@
 # WWN — сайт мода для Rusted Warfare
 
-Статический сайт: Astro 7 + TypeScript, острова на Svelte 5, поиск на Pagefind,
+Статический сайт: Astro 7 + TypeScript 7 (tsgo), острова на Svelte 5, поиск на Pagefind,
 контент и данные — Content Collections с Zod-валидацией.
 Деплой — GitHub Pages (base `/WWN.site`), сборка артефакта через GitHub Actions.
 
@@ -8,6 +8,15 @@
 
 - Node.js 26 (`.nvmrc`), pnpm 12 (corepack: `corepack enable`)
 - `pnpm install`
+
+## Технологии
+
+- **TypeScript 7** — нативный компилятор на Go (стабильный релиз)
+- **Astro 7** — статическая сборка с Content Layer
+- **Svelte 5** — острова интерактивности (runes)
+- **Pagefind** — клиентский поиск по индексу
+- **Biome** — линтер и форматтер
+- **Vitest + Playwright** — unit и e2e-тесты
 
 ## Команды
 

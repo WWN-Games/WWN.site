@@ -14,7 +14,7 @@ import {
   stripBase,
   withBase,
 } from "@/lib/search";
-import { debounce, nextFocusIndex } from "@/lib/utils";
+import { debounce, escapeHtml, nextFocusIndex } from "@/lib/utils";
 
 interface Section {
   id: string;
@@ -118,9 +118,9 @@ function toFound(data: PagefindResultData, term: string): FoundItem {
   const sectionId = sectionOf(data);
   return {
     href: withBase(data.url),
-    title: highlight(data.meta?.title ?? stripBase(data.url), term),
+    title: highlight(escapeHtml(data.meta?.title ?? stripBase(data.url)), term),
     sectionTitle: sections.find((section) => section.id === sectionId)?.title ?? "",
-    excerpt: data.excerpt ?? "",
+    excerpt: escapeHtml(data.excerpt ?? ""),
   };
 }
 

@@ -6,7 +6,7 @@
    ============================================================================ */
 
 import type { Lang } from "./site";
-import { escapeHtml, foldSearch } from "./utils";
+import { foldSearch } from "./utils";
 
 /** База сайта с хвостовым слэшем: "/WWN.site/". */
 const BASE_URL: string = import.meta.env.BASE_URL;
@@ -145,24 +145,26 @@ export function sectionCounts(response: PagefindSearchResponse): Record<string, 
   return result;
 }
 
-/** Подсветка совпадений в заголовке: свёртка 1:1, поэтому позиции совпадают. */
+/** Подсветка совпадений в заголовке: свёртка 1:1, поэтому позиции совпадают.
+ *  ВАЖНО: text должен быть уже экранирован HTML (escapeHtml) перед вызовом,
+ *  иначе возможна XSS-уязвимость. */
 export function highlight(text: string, query: string): string {
   const needle = foldSearch(query.trim());
-  if (!needle) return escapeHtml(text);
+  if (!needle) return text;
   const fold = foldSearch(text);
   const parts: string[] = [];
   let pos = 0;
   let index = fold.indexOf(needle);
   while (index !== -1) {
     parts.push(
-      escapeHtml(text.slice(pos, index)),
+      text.slice(pos, index),
       "<mark>",
-      escapeHtml(text.slice(index, index + needle.length)),
+      text.slice(index, index + needle.length),
       "</mark>",
     );
     pos = index + needle.length;
     index = fold.indexOf(needle, pos);
   }
-  parts.push(escapeHtml(text.slice(pos)));
+  parts.push(text.slice(pos));
   return parts.join("");
 }
