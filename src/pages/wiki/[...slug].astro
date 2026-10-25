@@ -49,7 +49,7 @@ const sectionTitles = Object.fromEntries(nav.map((section) => [section.id, secti
 const body = entry.body ?? "";
 const words = body.split(/\s+/).filter(Boolean).length;
 const readingTime = Math.max(1, Math.round(words / 180));
-const updated = entry.data.updated.toISOString().slice(0, 10);
+const updated = entry.data.updated;
 
 const title = `${entry.data.title} — ${t(lang, "meta.title.wiki")}`;
 const description = entry.data.desc;
@@ -70,7 +70,7 @@ const jsonLd = {
       headline: entry.data.title,
       description: entry.data.desc,
       inLanguage: lang,
-      dateModified: entry.data.updated.toISOString(),
+      dateModified: new Date(entry.data.updated).toISOString(),
       mainEntityOfPage: pageUrl,
       isPartOf: { "@type": "WebSite", name: "WWN", url: siteUrl },
     },

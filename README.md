@@ -11,7 +11,7 @@
 
 ## Технологии
 
-- **TypeScript 7** — нативный компилятор на Go (стабильный релиз)
+- **TypeScript 7.1** — нативный компилятор на Go (beta), `.astro` проверяет content mapper
 - **Astro 7** — статическая сборка с Content Layer
 - **Svelte 5** — острова интерактивности (runes)
 - **Pagefind** — клиентский поиск по индексу
@@ -25,7 +25,7 @@
 | `pnpm dev` | dev-сервер Astro |
 | `pnpm build` | сборка в `dist/` (включая индекс Pagefind) |
 | `pnpm preview` | локальный предпросмотр сборки |
-| `pnpm check` | `astro check`: типы .astro/.ts + контент |
+| `pnpm check` | `tsc` (TypeScript 7) + content mapper: типы .astro/.ts |
 | `pnpm lint` / `pnpm lint:fix` | Biome: линт и формат |
 | `pnpm validate` | валидация контента и данных (паритет RU/EN, ссылки, схемы) |
 | `pnpm test` | unit-тесты (Vitest) |

@@ -5,7 +5,7 @@ test.describe("Вики", () => {
     const response = await page.goto("wiki/lore/history/");
     expect(response?.status()).toBe(200);
     await expect(page.locator("article.article h1")).toBeVisible();
-    const body = await page.locator(".article__body").innerText();
+    const body = (await page.locator(".article__body").textContent()) ?? "";
     expect(body.length).toBeGreaterThan(500);
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
       "href",

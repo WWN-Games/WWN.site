@@ -5,7 +5,14 @@
   "compilerOptions": {
     "ignoreDeprecations": "6.0",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@astrojs/svelte": ["./src/types/astrojs-svelte.d.ts"]
     }
-  }
+  },
+  "contentMappers": [
+    {
+      "package": "@astrojs/ts-content-mapper",
+      "extensions": [".astro"]
+    }
+  ]
 }

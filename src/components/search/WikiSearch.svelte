@@ -293,7 +293,6 @@ $effect(() => {
 });
 </script>
 
-<!-- biome-ignore lint/a11y/useKeyWithClickEvents: клик по фону закрывает диалог, Escape обрабатывает нативный dialog -->
 <dialog
   class="search-panel"
   id="searchPanel"

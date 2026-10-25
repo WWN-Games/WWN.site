@@ -45,12 +45,12 @@ const articleCount = (count: number) =>
 const quickLinks = sections.find((section) => section.id === "start")?.articles.slice(0, 3) ?? [];
 const sectionTitles = new Map(sections.map((section) => [section.id, section.title[lang]]));
 const recent = [...articles]
-  .sort((a, b) => b.data.updated.getTime() - a.data.updated.getTime())
+  .sort((a, b) => b.data.updated.localeCompare(a.data.updated))
   .slice(0, 4)
   .map((article) => ({
     article,
     label: `${sectionTitles.get(entrySection(article)) ?? ""} · ${formatDate(
-      article.data.updated.toISOString().slice(0, 10),
+      article.data.updated,
       lang,
     )}`,
   }));
