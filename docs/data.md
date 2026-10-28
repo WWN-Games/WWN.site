@@ -98,6 +98,17 @@
 
 Общий конверт: `{ schemaVersion, generatedAt, count, items }`, `schemaVersion: 1`, заголовок `Cache-Control: public, max-age=3600`. В `items` — данные коллекции, отсортированные по `id`; в `stats.json` элементы `{ id, value }`, в `index.json` — `{ id, url, count }`.
 
+## Сравнение карточек
+
+На странице базы можно выбрать до четырёх юнитов или строений и открыть сравнение. Выбор хранится раздельно для вкладок, в `localStorage` и в URL:
+
+```text
+/database/?compare=units:ahaosa,akula#units
+```
+
+Формат: `<units|buildings>:<id>,<id>,<id>,<id>`. Ссылка открывает нужную вкладку, восстанавливает выбор и сразу показывает диалог сравнения. Неизвестные id и карточки другой вкладки отбрасываются. Максимум — `MAX_COMPARE` в `src/lib/compare.ts`; чистая логика метрик и URL покрыта `tests/unit/database-view.test.ts`.
+
+
 ## Валидация
 
 ```bash

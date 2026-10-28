@@ -1,4 +1,5 @@
 ---
+import { t } from "@/i18n";
 import { type Lang, LOCALES, switchLangPath } from "@/lib/site";
 
 interface Props {
@@ -14,14 +15,40 @@ const options = LOCALES.map((code) => ({
 }));
 ---
 
+<script>
+  /* Статический HTML не знает runtime query/hash: переносим их на ссылки
+     переключателя, чтобы сравнение и якорь статьи не терялись при смене языка. */
+  function syncLanguageLinks(): void {
+    for (const link of document.querySelectorAll<HTMLAnchorElement>(".lang a[data-lang]")) {
+      const url = new URL(link.href, location.origin);
+      url.search = location.search;
+      url.hash = location.hash;
+      link.href = url.href;
+    }
+  }
+
+  syncLanguageLinks();
+  document.addEventListener("astro:page-load", syncLanguageLinks);
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const link = target.closest<HTMLAnchorElement>(".lang a[data-lang]");
+    if (!link) return;
+    const url = new URL(link.href, location.origin);
+    url.search = location.search;
+    url.hash = location.hash;
+    link.href = url.href;
+  });
+</script>
+
 <!-- biome-ignore lint/a11y/useSemanticElements: role="group" is the right ARIA pattern for a language switcher; fieldset requires a legend and CSS resets -->
-<div class="lang" role="group" aria-label="Language">
+<div class="lang" role="group" aria-label={t(lang, "a11y.language")}>
   {
     options.map((option) => (
       <a
         href={option.href}
         data-lang={option.code}
-        aria-current={option.active ? "true" : undefined}
+        aria-current={option.active ? "page" : undefined}
         class={option.active ? "is-active" : undefined}
       >
         {option.label}

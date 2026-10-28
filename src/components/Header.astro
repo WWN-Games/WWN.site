@@ -46,11 +46,14 @@ const isActive = (section?: string) => Boolean(section && path.startsWith(sectio
 
     <nav class="nav" id="mainNav" aria-label={t(lang, "a11y.nav")}>
       {
-        navItems.map((item) => (
-          <a href={item.href} class={isActive("section" in item ? item.section : undefined) ? "is-active" : undefined}>
-            {t(lang, item.key)}
-          </a>
-        ))
+        navItems.map((item) => {
+          const active = isActive("section" in item ? item.section : undefined);
+          return (
+            <a href={item.href} class={active ? "is-active" : undefined} aria-current={active ? "page" : undefined}>
+              {t(lang, item.key)}
+            </a>
+          );
+        })
       }
     </nav>
 

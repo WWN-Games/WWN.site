@@ -1182,8 +1182,7 @@ body:has(.mobile-nav:popover-open) {
 }
 .card__text,
 .fac__desc,
-.dl-card p,
-.faction-card__desc {
+.dl-card p {
   color: var(--muted);
   font-size: 14.5px;
 }
@@ -1193,8 +1192,8 @@ body:has(.mobile-nav:popover-open) {
   grid-template-columns: 1fr 1fr;
   gap: 22px;
 }
-/* единый стиль фракционных карточек: цвет — в --faction-color */
-:is(.fac, .faction-card, .unit-card) {
+/* единый стиль фракционных карточек главной: цвет — в --faction-color */
+.fac {
   position: relative;
   border: 1px solid color-mix(in srgb, var(--faction-color, var(--cyan)) 26%, var(--line));
   background: linear-gradient(
@@ -1204,7 +1203,7 @@ body:has(.mobile-nav:popover-open) {
   );
   overflow: hidden;
 }
-:is(.fac, .faction-card, .unit-card)::after {
+.fac::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -1217,18 +1216,18 @@ body:has(.mobile-nav:popover-open) {
   transition: opacity 0.3s;
   pointer-events: none;
 }
-:is(.fac, .faction-card, .unit-card):hover {
+.fac:hover {
   border-color: color-mix(in srgb, var(--faction-color, var(--cyan)) 52%, transparent);
   box-shadow: var(--shadow-sm);
 }
-:is(.fac, .faction-card, .unit-card):hover::after {
+.fac:hover::after {
   opacity: 1;
 }
-:is(.fac__emblem, .faction-card__emblem, .unit-card__img) {
+.fac__emblem {
   border: 1px solid color-mix(in srgb, var(--faction-color, var(--cyan)) 26%, transparent);
   background: color-mix(in srgb, var(--faction-color, var(--cyan)) 9%, rgba(6, 12, 22, 0.9));
 }
-:is(.fac__motto, .faction-card__motto) {
+.fac__motto {
   color: var(--faction-color, var(--cyan));
   font-size: 13px;
   margin-top: 4px;
@@ -1248,8 +1247,7 @@ body:has(.mobile-nav:popover-open) {
 .fac:hover {
   transform: translateY(-4px);
 }
-.fac__top,
-.faction-card__head {
+.fac__top {
   display: flex;
   align-items: center;
   gap: 18px;

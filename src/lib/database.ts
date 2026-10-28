@@ -7,21 +7,17 @@
 import { getCollection } from "astro:content";
 
 import { type DictKey, t } from "../i18n";
+import type { CompareGroup, CompareMetric } from "./compare";
+import type { CardTab, SortKey, TabId } from "./database-constants";
 import type { Building, Faction, Tag, Text, Unit } from "./schemas";
 import { href, type Lang, localeHref } from "./site";
 import { foldSearch } from "./utils";
 import { entrySlug, getPublished } from "./wiki";
 
+export type { CardTab, SortDirection, SortKey, TabId } from "./database-constants";
+export { CARD_TABS, SORT_KEYS, TABS } from "./database-constants";
+
 /* — константы и базовые типы — */
-
-const TABS = ["factions", "units", "buildings"] as const;
-export type TabId = (typeof TABS)[number];
-
-const CARD_TABS = ["units", "buildings"] as const;
-type CardTab = (typeof CARD_TABS)[number];
-
-const SORT_KEYS = ["name", "cost", "hp", "shield", "dps", "speed", "range"] as const;
-export type SortKey = (typeof SORT_KEYS)[number];
 
 const STAT_KEYS = ["hp", "shield", "dps", "speed", "range"] as const;
 type StatKey = (typeof STAT_KEYS)[number];
@@ -110,12 +106,20 @@ export interface ExplorerItem {
   buildTime: number;
   /** Свёрнутый foldSearch текст текущего языка: имя, роль, описание, теги. */
   searchText: string;
-  name: Text;
+  /** Локализованное имя: остров работает только с языком страницы. */
+  name: string;
+  factionName: string;
+  factionColor: string;
+  typeLabel: string;
+  image: string | null;
+  initials: string;
 }
 
 export interface ExplorerFaction {
   id: string;
   name: Text;
+  color: string;
+  counts: { units: number; buildings: number };
   searchText: string;
 }
 
@@ -135,17 +139,49 @@ export interface ExplorerTag {
 
 export interface ExplorerLabels {
   search: string;
+  clearSearch: string;
   all: string;
   faction: string;
   type: string;
   tag: string;
   sortLabel: string;
+  sortAsc: string;
+  sortDesc: string;
+  resetFilters: string;
   sort: Record<SortKey, string>;
   tagPanelTitle: string;
   tagApply: string;
   tagClear: string;
   tagGroups: Record<TagGroup, string>;
   count: string;
+  compare: {
+    title: string;
+    add: string;
+    addAria: string;
+    removeAria: string;
+    selected: string;
+    hint: string;
+    open: string;
+    clear: string;
+    limit: string;
+    dialogTitle: string;
+    close: string;
+    onlyDiff: string;
+    share: string;
+    shared: string;
+    shareError: string;
+    removeCard: string;
+    best: string;
+    noDiff: string;
+    addAnother: string;
+    trayLabel: string;
+    column: string;
+    faction: string;
+    type: string;
+    tags: string;
+    group: Record<CompareGroup, string>;
+    metric: Record<CompareMetric, string>;
+  };
 }
 
 interface ExplorerData {
@@ -229,6 +265,9 @@ export function typeLabel(type: string, lang: Lang): string {
   const key = TYPE_KEYS[type];
   return key ? t(lang, key) : type;
 }
+
+/** Канонический порядок типов в фильтре, а не порядок карточек в JSON. */
+const TYPE_ORDER = Object.keys(TYPE_KEYS);
 
 /* — шкала: логарифм с устойчивыми опорами p5/p95 и медианой — */
 
@@ -338,14 +377,19 @@ function toCard(id: string, tab: CardTab, data: CardData): DatabaseCard {
 function explorerLabels(lang: Lang): ExplorerLabels {
   return {
     search: t(lang, "database.search.placeholder"),
+    clearSearch: t(lang, "database.search.clear"),
     all: t(lang, "database.filter.all"),
     faction: t(lang, "database.filter.faction"),
     type: t(lang, "database.filter.type"),
     tag: t(lang, "database.filter.tag"),
     sortLabel: t(lang, "database.sort.label"),
+    sortAsc: t(lang, "database.sort.asc"),
+    sortDesc: t(lang, "database.sort.desc"),
+    resetFilters: t(lang, "database.filter.reset"),
     sort: {
       name: t(lang, "database.sort.name"),
       cost: t(lang, "database.sort.cost"),
+      buildTime: t(lang, "database.sort.buildTime"),
       hp: t(lang, "database.sort.hp"),
       shield: t(lang, "database.sort.shield"),
       dps: t(lang, "database.sort.dps"),
@@ -362,6 +406,52 @@ function explorerLabels(lang: Lang): ExplorerLabels {
       mod: t(lang, "database.tagGroup.mod"),
     },
     count: t(lang, "database.count"),
+    compare: {
+      title: t(lang, "database.compare.title"),
+      add: t(lang, "database.compare.add"),
+      addAria: t(lang, "database.compare.addAria"),
+      removeAria: t(lang, "database.compare.removeAria"),
+      selected: t(lang, "database.compare.selected"),
+      hint: t(lang, "database.compare.hint"),
+      open: t(lang, "database.compare.open"),
+      clear: t(lang, "database.compare.clear"),
+      limit: t(lang, "database.compare.limit"),
+      dialogTitle: t(lang, "database.compare.dialogTitle"),
+      close: t(lang, "database.compare.close"),
+      onlyDiff: t(lang, "database.compare.onlyDiff"),
+      share: t(lang, "database.compare.share"),
+      shared: t(lang, "database.compare.shared"),
+      shareError: t(lang, "database.compare.shareError"),
+      removeCard: t(lang, "database.compare.removeCard"),
+      best: t(lang, "database.compare.best"),
+      noDiff: t(lang, "database.compare.noDiff"),
+      addAnother: t(lang, "database.compare.addAnother"),
+      trayLabel: t(lang, "database.compare.trayLabel"),
+      column: t(lang, "database.compare.column"),
+      faction: t(lang, "database.compare.faction"),
+      type: t(lang, "database.compare.type"),
+      tags: t(lang, "database.compare.tags"),
+      group: {
+        identity: t(lang, "database.compare.group.identity"),
+        cost: t(lang, "database.compare.group.cost"),
+        survival: t(lang, "database.compare.group.survival"),
+        offense: t(lang, "database.compare.group.offense"),
+        mobility: t(lang, "database.compare.group.mobility"),
+        efficiency: t(lang, "database.compare.group.efficiency"),
+      },
+      metric: {
+        cost: t(lang, "database.compare.metric.cost"),
+        buildTime: t(lang, "database.compare.metric.buildTime"),
+        hp: t(lang, "database.compare.metric.hp"),
+        shield: t(lang, "database.compare.metric.shield"),
+        totalHp: t(lang, "database.compare.metric.totalHp"),
+        dps: t(lang, "database.compare.metric.dps"),
+        range: t(lang, "database.compare.metric.range"),
+        speed: t(lang, "database.compare.metric.speed"),
+        dpsPerCost: t(lang, "database.compare.metric.dpsPerCost"),
+        hpPerCost: t(lang, "database.compare.metric.hpPerCost"),
+      },
+    },
   };
 }
 
@@ -426,7 +516,12 @@ export async function loadDatabase(lang: Lang): Promise<DatabaseData> {
   });
 
   const items: ExplorerItem[] = cards.map((card) => {
-    const tagText = card.tags.map((id) => `${id} ${tagLabel(tagMap, id, lang)}`).join(" ");
+    const name = card.name[lang];
+    const cardFactionName = factionName(factionMap, card.faction, lang);
+    const cardTypeLabel = typeLabel(card.type, lang);
+    const tagText = [...new Set(card.tags.flatMap((id) => [id, tagLabel(tagMap, id, lang)]))].join(
+      " ",
+    );
     return {
       id: card.id,
       tab: card.tab,
@@ -441,27 +536,37 @@ export async function loadDatabase(lang: Lang): Promise<DatabaseData> {
       range: card.range,
       buildTime: card.buildTime,
       searchText: foldSearch(
-        `${card.name[lang]} ${card.role?.[lang] ?? ""} ${card.desc[lang]} ${tagText}`,
+        `${name} ${cardFactionName} ${cardTypeLabel} ${card.role?.[lang] ?? ""} ${card.desc[lang]} ${tagText}`,
       ),
-      name: card.name,
+      name,
+      factionName: cardFactionName,
+      factionColor: factionColor(factionMap, card.faction),
+      typeLabel: cardTypeLabel,
+      image: resolveImage(card.image, card.id),
+      initials: initialsOf(name),
     };
   });
 
   const explorerFactions: ExplorerFaction[] = factions.map((faction) => ({
     id: faction.id,
     name: faction.name,
+    color: faction.color,
+    counts: faction.counts,
     searchText: foldSearch(`${faction.name[lang]} ${faction.desc[lang]}`),
   }));
 
   const typeOptions = (tab: CardTab): ExplorerTypeOption[] => {
-    const seen = new Set<string>();
-    const options: ExplorerTypeOption[] = [];
+    const present = new Set<string>();
     for (const card of cards) {
-      if (card.tab !== tab || seen.has(card.type)) continue;
-      seen.add(card.type);
-      options.push({ value: card.type, label: typeLabel(card.type, lang) });
+      if (card.tab === tab) present.add(card.type);
     }
-    return options;
+    return [...present]
+      .sort(
+        (a, b) =>
+          TYPE_ORDER.indexOf(a) - TYPE_ORDER.indexOf(b) ||
+          typeLabel(a, lang).localeCompare(typeLabel(b, lang), lang),
+      )
+      .map((value) => ({ value, label: typeLabel(value, lang) }));
   };
 
   return {

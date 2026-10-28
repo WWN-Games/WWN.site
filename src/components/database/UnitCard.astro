@@ -43,16 +43,18 @@ const bars = buildBars(card, lang, scale);
 const strongVs = pickList(card.strongVs, lang);
 const weakVs = pickList(card.weakVs, lang);
 const hasCosts = card.cost > 0 || card.buildTime > 0;
+const canExpandDesc = desc.length > 220;
 ---
 
 <article
   class="unit-card"
   data-card-id={card.id}
   data-tab={card.tab}
-  data-reveal
   style={`--faction-color:${color}`}
 >
   {card.isNew && <span class="unit-card__new">{t(lang, "database.new")}</span>}
+
+  <button class="unit-card__compare" type="button" data-compare-id={card.id} hidden></button>
 
   <div class="unit-card__top">
     <div class="unit-card__img">
@@ -102,6 +104,21 @@ const hasCosts = card.cost > 0 || card.buildTime > 0;
   }
 
   {desc && <p class="unit-card__desc">{desc}</p>}
+  {
+    canExpandDesc && (
+      <button
+        class="unit-card__desc-toggle"
+        type="button"
+        data-desc-toggle
+        data-more={t(lang, "database.readMore")}
+        data-less={t(lang, "database.readLess")}
+        aria-expanded="false"
+        hidden
+      >
+        {t(lang, "database.readMore")}
+      </button>
+    )
+  }
 
   {bars.length > 0 && <StatBars bars={bars} color={color} />}
 
@@ -122,9 +139,3 @@ const hasCosts = card.cost > 0 || card.buildTime > 0;
     )
   }
 </article>
-
-<style>
-.unit-card[hidden] {
-  display: none;
-}
-</style>

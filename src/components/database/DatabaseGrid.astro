@@ -10,27 +10,23 @@ interface Props {
   tab: TabId;
   hidden?: boolean;
   emptyText: string;
+  resetLabel: string;
 }
 
-const { tab, hidden = false, emptyText } = Astro.props;
+const { tab, hidden = false, emptyText, resetLabel } = Astro.props;
 ---
 
 <div
   class="database-grid is-shown"
   id={`databaseGrid-${tab}`}
   data-grid={tab}
-  data-mode={tab}
   role="tabpanel"
   aria-labelledby={`tab-${tab}`}
   hidden={hidden}
 >
-  <p class="empty-block" data-empty={tab} hidden>{emptyText}</p>
+  <div class="empty-block" data-empty={tab} hidden>
+    <span>{emptyText}</span>
+    <button class="btn btn--sm" type="button" data-reset-filters hidden>{resetLabel}</button>
+  </div>
   <slot />
 </div>
-
-<style>
-.database-grid[hidden],
-.empty-block[hidden] {
-  display: none;
-}
-</style>

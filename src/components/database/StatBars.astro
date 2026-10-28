@@ -17,7 +17,7 @@ const { bars, color } = Astro.props;
 <div class="statbars">
   {
     bars.map((bar) => (
-      <div class="statbar" style={`--faction-color:${color};--median:${bar.medianPercent}%`}>
+      <div class="statbar" style={`--faction-color:${color};--median:${bar.medianPercent}%`} title={`${bar.label}: ${bar.display}`}>
         <span class="statbar__label">{bar.label}</span>
         <span class="statbar__track">
           <span class="statbar__fill" style={`--w:${bar.percent}%`} />

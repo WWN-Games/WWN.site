@@ -1,0 +1,151 @@
+---
+/* ============================================================================
+   WWN — страница базы данных. Один компонент на RU и EN: язык приходит
+   пропсом, вся разметка и данные собираются на сборке.
+   ============================================================================ */
+
+import { Icon } from "astro-icon/components";
+
+import DatabaseExplorer from "@/components/database/DatabaseExplorer.svelte";
+import DatabaseGrid from "@/components/database/DatabaseGrid.astro";
+import FactionCard from "@/components/database/FactionCard.astro";
+import UnitCard from "@/components/database/UnitCard.astro";
+import { t } from "@/i18n";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { loadDatabase } from "@/lib/database";
+import { href, type Lang, localeHref, SITE } from "@/lib/site";
+import "@/styles/database.css";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const database = await loadDatabase(lang);
+const unitCards = database.cards.filter((card) => card.tab === "units");
+const buildingCards = database.cards.filter((card) => card.tab === "buildings");
+const total = database.cards.length;
+
+const tabCounts = {
+  factions: database.factions.length,
+  units: unitCards.length,
+  buildings: buildingCards.length,
+} as const;
+
+const tabs = [
+  { id: "factions", icon: "icon-park-outline:shield", label: t(lang, "database.tab.factions") },
+  { id: "units", icon: "icon-park-outline:cube", label: t(lang, "database.tab.units") },
+  {
+    id: "buildings",
+    icon: "icon-park-outline:factory-building",
+    label: t(lang, "database.tab.buildings"),
+  },
+] as const;
+
+const emptyText = t(lang, "database.empty");
+const resetLabel = t(lang, "database.filter.reset");
+const description = t(lang, "meta.desc.database", {
+  units: unitCards.length,
+  buildings: buildingCards.length,
+  factions: database.factions.length,
+});
+const siteUrl = `${SITE}${href("")}`;
+const pageUrl = `${SITE}${localeHref(lang, "database/")}`;
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: t(lang, "meta.title.database"),
+  description,
+  url: pageUrl,
+  inLanguage: lang,
+  isPartOf: { "@type": "WebSite", name: "WWN", url: siteUrl },
+  mainEntity: {
+    "@type": "ItemList",
+    numberOfItems: total,
+    itemListOrder: "https://schema.org/ItemListOrderAscending",
+  },
+};
+---
+
+<BaseLayout
+  lang={lang}
+  title={t(lang, "meta.title.database")}
+  description={description}
+  path="database/"
+  jsonLd={jsonLd}
+>
+  <section class="database-page">
+    <div class="wrap">
+      <div class="database-head">
+        <span class="kicker">{t(lang, "database.kicker")}</span>
+        <h1>{t(lang, "database.title")}</h1>
+        <p>{t(lang, "database.subtitle")}</p>
+      </div>
+
+      <div class="tabs" id="databaseTabs" role="tablist" aria-label={t(lang, "database.title")}>
+        {
+          tabs.map((tab, index) => (
+            <button
+              class:list={["tab", { "is-active": index === 0 }]}
+              id={`tab-${tab.id}`}
+              type="button"
+              role="tab"
+              aria-selected={index === 0 ? "true" : "false"}
+              aria-controls={`databaseGrid-${tab.id}`}
+              tabindex={index === 0 ? 0 : -1}
+              data-tab={tab.id}
+            >
+              <Icon name={tab.icon} aria-hidden="true" />
+              <span>{tab.label}</span>
+              <span class="tab__count">{tabCounts[tab.id]}</span>
+            </button>
+          ))
+        }
+      </div>
+
+      <div class="database-toolbar" id="databaseToolbar">
+        <DatabaseExplorer
+          client:load
+          lang={lang}
+          items={database.explorer.items}
+          factions={database.explorer.factions}
+          types={database.explorer.types}
+          tags={database.explorer.tags}
+          labels={database.explorer.labels}
+        />
+      </div>
+
+      <DatabaseGrid tab="factions" emptyText={emptyText} resetLabel={resetLabel}>
+        {database.factions.map((faction) => <FactionCard faction={faction} lang={lang} />)}
+      </DatabaseGrid>
+
+      <DatabaseGrid tab="units" hidden emptyText={emptyText} resetLabel={resetLabel}>
+        {
+          unitCards.map((card) => (
+            <UnitCard
+              card={card}
+              lang={lang}
+              factions={database.factionMap}
+              tags={database.tagMap}
+              scale={database.scale}
+            />
+          ))
+        }
+      </DatabaseGrid>
+
+      <DatabaseGrid tab="buildings" hidden emptyText={emptyText} resetLabel={resetLabel}>
+        {
+          buildingCards.map((card) => (
+            <UnitCard
+              card={card}
+              lang={lang}
+              factions={database.factionMap}
+              tags={database.tagMap}
+              scale={database.scale}
+            />
+          ))
+        }
+      </DatabaseGrid>
+    </div>
+  </section>
+</BaseLayout>

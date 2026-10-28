@@ -37,7 +37,6 @@ const initials = name.slice(0, 2);
   class="faction-card"
   data-card-id={faction.id}
   data-tab="factions"
-  data-reveal
   style={`--faction-color:${faction.color}`}
 >
   <div class="faction-card__head">
@@ -128,9 +127,3 @@ const initials = name.slice(0, 2);
     )
   }
 </article>
-
-<style>
-.faction-card[hidden] {
-  display: none;
-}
-</style>
