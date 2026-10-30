@@ -22,3 +22,5 @@ export const SORT_KEYS = [
 export type SortKey = (typeof SORT_KEYS)[number];
 
 export type SortDirection = "asc" | "desc";
+
+export type TagMatchMode = "all" | "any";

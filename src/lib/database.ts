@@ -14,7 +14,7 @@ import { href, type Lang, localeHref } from "./site";
 import { foldSearch } from "./utils";
 import { entrySlug, getPublished } from "./wiki";
 
-export type { CardTab, SortDirection, SortKey, TabId } from "./database-constants";
+export type { CardTab, SortDirection, SortKey, TabId, TagMatchMode } from "./database-constants";
 export { CARD_TABS, SORT_KEYS, TABS } from "./database-constants";
 
 /* — константы и базовые типы — */
@@ -152,6 +152,15 @@ export interface ExplorerLabels {
   tagPanelTitle: string;
   tagApply: string;
   tagClear: string;
+  tagMode: {
+    label: string;
+    all: string;
+    any: string;
+    allHint: string;
+    anyHint: string;
+    preview: string;
+    emptyHint: string;
+  };
   tagGroups: Record<TagGroup, string>;
   count: string;
   compare: {
@@ -399,6 +408,15 @@ function explorerLabels(lang: Lang): ExplorerLabels {
     tagPanelTitle: t(lang, "database.tag.panelTitle"),
     tagApply: t(lang, "database.tag.apply"),
     tagClear: t(lang, "database.tag.clear"),
+    tagMode: {
+      label: t(lang, "database.tag.mode.label"),
+      all: t(lang, "database.tag.mode.all"),
+      any: t(lang, "database.tag.mode.any"),
+      allHint: t(lang, "database.tag.mode.allHint"),
+      anyHint: t(lang, "database.tag.mode.anyHint"),
+      preview: t(lang, "database.tag.mode.preview"),
+      emptyHint: t(lang, "database.tag.mode.emptyHint"),
+    },
     tagGroups: {
       tier: t(lang, "database.tagGroup.tier"),
       class: t(lang, "database.tagGroup.class"),

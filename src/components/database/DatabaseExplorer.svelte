@@ -26,6 +26,7 @@ import {
   type SortKey,
   TABS,
   type TabId,
+  type TagMatchMode,
 } from "@/lib/database-constants";
 import { filterItems, searchTokens, sortItems } from "@/lib/database-view";
 import type { Lang } from "@/lib/site";
@@ -62,6 +63,8 @@ let sort = $state<SortKey>("name");
 let direction = $state<SortDirection>("asc");
 let appliedTags = $state<string[]>([]);
 let tagDraft = $state<string[]>([]);
+let tagMode = $state<TagMatchMode>("all");
+let tagModeDraft = $state<TagMatchMode>("all");
 let tagOpen = $state(false);
 let tagButton = $state<HTMLButtonElement | null>(null);
 let tagPanel = $state<HTMLDivElement | null>(null);
@@ -141,6 +144,7 @@ const visibleIds = $derived.by(() => {
     faction,
     type,
     tags: appliedTags,
+    tagMode,
   });
   return sortItems(filtered, sort, direction, lang).map((item) => item.id);
 });
@@ -150,7 +154,22 @@ const countText = $derived(
   labels.count.replace("{n}", String(visibleIds.length)).replace("{total}", String(total)),
 );
 const tagButtonLabel = $derived(
-  appliedTags.length ? `${labels.tag}: ${appliedTags.length}` : labels.tag,
+  appliedTags.length
+    ? `${labels.tag}: ${appliedTags.length} · ${labels.tagMode[tagMode]}`
+    : labels.tag,
+);
+const draftPreviewCount = $derived.by(() => {
+  if (tab === "factions") return 0;
+  return filterItems(tabItems, {
+    query: searchQuery,
+    faction,
+    type,
+    tags: tagDraft,
+    tagMode: tagModeDraft,
+  }).length;
+});
+const showTagEmptyHint = $derived(
+  tagModeDraft === "all" && tagDraft.length > 1 && draftPreviewCount === 0,
 );
 
 interface ActiveFilter {
@@ -514,7 +533,17 @@ function resetFilters(): void {
   type = "all";
   appliedTags = [];
   tagDraft = [];
+  tagMode = "all";
+  tagModeDraft = "all";
   if (tagPanel?.matches(":popover-open")) tagPanel.hidePopover();
+}
+
+function toggleAppliedTagMode(): void {
+  tagMode = tagMode === "all" ? "any" : "all";
+}
+
+function setTagModeDraft(next: TagMatchMode): void {
+  tagModeDraft = next;
 }
 
 function onTagBeforeToggle(event: ToggleEvent): void {
@@ -528,6 +557,7 @@ function onTagToggle(event: Event): void {
   tagOpen = open;
   if (!open) return;
   tagDraft = [...appliedTags];
+  tagModeDraft = tagMode;
   positionTagPanel();
   requestAnimationFrame(positionTagPanel);
 }
@@ -538,6 +568,7 @@ function toggleTag(id: string): void {
 
 function applyTags(): void {
   appliedTags = [...tagDraft];
+  tagMode = tagModeDraft;
   tagPanel?.hidePopover();
 }
 
@@ -553,11 +584,15 @@ function positionTagPanel(): void {
   const rect = button.getBoundingClientRect();
   const width = Math.min(360, window.innerWidth - 24);
   const left = Math.max(8, Math.min(rect.left, window.innerWidth - width - 8));
-  const height = panel.getBoundingClientRect().height || 420;
-  const spaceBelow = window.innerHeight - rect.bottom;
-  const flip = spaceBelow < Math.min(height, 240) && rect.top > spaceBelow;
+  const gap = 8;
+  const preferredMax = Math.min(540, Math.round(window.innerHeight * 0.7));
+  const spaceBelow = Math.max(0, window.innerHeight - rect.bottom - gap);
+  const spaceAbove = Math.max(0, rect.top - gap);
+  const flip = spaceBelow < 260 && spaceAbove > spaceBelow;
+  const available = flip ? spaceAbove : spaceBelow;
   panel.style.left = `${Math.round(left)}px`;
   panel.style.width = `${Math.round(width)}px`;
+  panel.style.maxHeight = `${Math.round(Math.max(180, Math.min(preferredMax, available)))}px`;
   if (flip) {
     panel.style.top = "";
     panel.style.bottom = `${Math.round(window.innerHeight - rect.top + 6)}px`;
@@ -782,6 +817,17 @@ onDestroy(() => {
           <span aria-hidden="true">×</span>
         </button>
       {/each}
+      {#if appliedTags.length > 0}
+        <button
+          class="database-active__mode"
+          type="button"
+          title={labels.tagMode.label}
+          aria-label={`${labels.tagMode.label}: ${labels.tagMode[tagMode]}`}
+          onclick={toggleAppliedTagMode}
+        >
+          {labels.tagMode[tagMode]}
+        </button>
+      {/if}
       <button class="database-active__reset" type="button" onclick={resetFilters}>
         {labels.resetFilters}
       </button>
@@ -804,7 +850,31 @@ onDestroy(() => {
   >
     <div class="tag-panel__head">
       <span class="tag-panel__title">{labels.tagPanelTitle}</span>
+      <fieldset class="tag-mode">
+        <legend class="visually-hidden">{labels.tagMode.label}</legend>
+        <button
+          type="button"
+          class="tag-mode__btn"
+          class:is-active={tagModeDraft === "all"}
+          aria-pressed={tagModeDraft === "all"}
+          onclick={() => setTagModeDraft("all")}
+        >
+          {labels.tagMode.all}
+        </button>
+        <button
+          type="button"
+          class="tag-mode__btn"
+          class:is-active={tagModeDraft === "any"}
+          aria-pressed={tagModeDraft === "any"}
+          onclick={() => setTagModeDraft("any")}
+        >
+          {labels.tagMode.any}
+        </button>
+      </fieldset>
     </div>
+    <p class="tag-panel__mode-hint">
+      {tagModeDraft === "all" ? labels.tagMode.allHint : labels.tagMode.anyHint}
+    </p>
     <div class="tag-panel__body">
       {#each tagGroups as group (group.id)}
         <div class="tag-panel__group">
@@ -823,6 +893,14 @@ onDestroy(() => {
           </div>
         </div>
       {/each}
+    </div>
+    <div class="tag-panel__preview" role="status" aria-live="polite">
+      <span class:is-empty={showTagEmptyHint}>
+        {labels.tagMode.preview.replace("{n}", String(draftPreviewCount))}
+      </span>
+      {#if showTagEmptyHint}
+        <span class="tag-panel__warning">{labels.tagMode.emptyHint}</span>
+      {/if}
     </div>
     <div class="tag-panel__foot">
       <button

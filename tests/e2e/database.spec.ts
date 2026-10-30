@@ -97,6 +97,32 @@ test.describe("База данных", () => {
     await expect(page.locator("#databaseGrid-units [data-card-id]:not([hidden])")).toHaveCount(110);
   });
 
+  test("теги: режимы И и ИЛИ, предпросмотр и переключение", async ({ page }) => {
+    await page.goto("database/#units");
+    await page.locator('button[popovertarget="databaseTagPanel"]').click();
+    const panel = page.locator("#databaseTagPanel");
+    await panel.locator(".tag-chip").filter({ hasText: "T1" }).first().click();
+    await panel.locator(".tag-chip").filter({ hasText: "T2" }).first().click();
+
+    await expect(panel.locator(".tag-panel__preview")).toContainText(": 0");
+    await expect(panel.locator(".tag-panel__warning")).toBeVisible();
+
+    const orButton = panel.getByRole("button", { name: "ИЛИ", exact: true });
+    await orButton.click();
+    await expect(orButton).toHaveAttribute("aria-pressed", "true");
+    await expect(panel.locator(".tag-panel__preview")).not.toContainText(": 0");
+    await panel.getByRole("button", { name: /Применить/ }).click();
+
+    await expect(page.locator(".database-active__mode")).toHaveText("ИЛИ");
+    const visible = page.locator("#databaseGrid-units [data-card-id]:not([hidden])");
+    expect(await visible.count()).toBeGreaterThan(0);
+
+    await page.locator(".database-active__mode").click();
+    await expect(page.locator(".database-active__mode")).toHaveText("И");
+    await expect(visible).toHaveCount(0);
+    await expect(page.locator("#databaseGrid-units [data-empty]")).toBeVisible();
+  });
+
   test("выбор карточек, tray и сравнение с сохранением URL", async ({ page }) => {
     await page.goto("database/#units");
     const first = page.locator('[data-compare-id="ahaosa"]');

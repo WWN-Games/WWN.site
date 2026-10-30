@@ -40,20 +40,58 @@ describe("database view", () => {
     expect(searchTokens("  ТАНК   тестовый ")).toEqual(["танк", "тестовый"]);
     const items = [item(), item({ id: "b", searchText: "истребитель воздуха" })];
     expect(
-      filterItems(items, { query: "тестовый танк", faction: "all", type: "all", tags: [] }),
+      filterItems(items, {
+        query: "тестовый танк",
+        faction: "all",
+        type: "all",
+        tags: [],
+        tagMode: "all",
+      }),
     ).toHaveLength(1);
   });
 
-  it("фильтрует по фракции, типу и всем тегам", () => {
-    const items = [item(), item({ id: "b", faction: "proton", tags: ["T2"] })];
+  it("фильтрует по фракции и типу, а теги — по режиму И/ИЛИ", () => {
+    const items = [
+      item(),
+      item({ id: "b", faction: "proton", tags: ["T2"] }),
+      item({ id: "c", tags: ["T2", "ship"] }),
+    ];
     expect(
-      filterItems(items, { query: "", faction: "proton", type: "all", tags: ["T2"] }).map(
-        (entry) => entry.id,
-      ),
+      filterItems(items, {
+        query: "",
+        faction: "proton",
+        type: "all",
+        tags: ["T2"],
+        tagMode: "all",
+      }).map((entry) => entry.id),
     ).toEqual(["b"]);
     expect(
-      filterItems(items, { query: "", faction: "all", type: "all", tags: ["T1", "T2"] }),
+      filterItems(items, {
+        query: "",
+        faction: "all",
+        type: "all",
+        tags: ["T1", "T2"],
+        tagMode: "all",
+      }),
     ).toHaveLength(0);
+    expect(
+      filterItems(items, {
+        query: "",
+        faction: "all",
+        type: "all",
+        tags: ["T1", "T2"],
+        tagMode: "any",
+      }).map((entry) => entry.id),
+    ).toEqual(["unit-a", "b", "c"]);
+    expect(
+      filterItems(items, {
+        query: "",
+        faction: "all",
+        type: "all",
+        tags: ["T1", "T2"],
+        tagMode: "any",
+      }),
+    ).toHaveLength(3);
   });
 
   it("сортирует числом и направлением, имя — tie-breaker", () => {

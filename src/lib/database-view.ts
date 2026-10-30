@@ -4,6 +4,7 @@
    ============================================================================ */
 
 import type { ExplorerItem, SortDirection, SortKey } from "./database";
+import type { TagMatchMode } from "./database-constants";
 import { collator, foldSearch } from "./utils";
 
 export interface DatabaseFilters {
@@ -11,6 +12,7 @@ export interface DatabaseFilters {
   faction: string;
   type: string;
   tags: string[];
+  tagMode: TagMatchMode;
 }
 
 /** Поиск по токенам: «акула пво» находит карточку, где слова идут не подряд. */
@@ -31,7 +33,12 @@ export function filterItems(
     if (tokens.length && !matchesSearch(item, tokens)) return false;
     if (filters.faction !== "all" && item.faction !== filters.faction) return false;
     if (filters.type !== "all" && item.type !== filters.type) return false;
-    return filters.tags.every((id) => item.tags.includes(id));
+    if (filters.tags.length === 0) return true;
+    const matchesTags =
+      filters.tagMode === "any"
+        ? filters.tags.some((id) => item.tags.includes(id))
+        : filters.tags.every((id) => item.tags.includes(id));
+    return matchesTags;
   });
 }
 
