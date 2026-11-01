@@ -12,6 +12,9 @@ desktop.ini
 node_modules/
 *.log
 
+# Локальная сборка админки (если запустить vite build вручную)
+admin/dist/
+
 # Сборка Astro
 dist/
 .astro/
