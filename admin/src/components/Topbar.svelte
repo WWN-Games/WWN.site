@@ -46,9 +46,6 @@
     }
   });
 
-  const validationClass = $derived(
-    bootstrap.validation.ok ? "is-ok" : bootstrap.validation.errors.length > 0 ? "is-bad" : "",
-  );
 </script>
 
 <header class="topbar">

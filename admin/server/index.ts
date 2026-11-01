@@ -289,7 +289,7 @@ const vite = await createViteServer({
   configFile: path.join(ADMIN_ROOT, "vite.config.ts"),
   server: {
     middlewareMode: true,
-    hmr: { server: httpServer },
+    ws: { server: httpServer },
   },
   appType: "spa",
 });

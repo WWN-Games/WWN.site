@@ -174,11 +174,6 @@ export interface PreviewResult {
   sitePath: string;
 }
 
-export interface ApiError {
-  error: string;
-  details?: string[];
-}
-
 export interface ToastItem {
   id: number;
   message: string;

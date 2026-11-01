@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
 
-  import type { ArticleSummary, Bootstrap, Faction, LocalizedText, ToastFn } from "../../shared/types";
+  import type { ArticleSummary, Bootstrap, Faction, ToastFn } from "../../shared/types";
   import { api } from "../lib/api";
   import { lines } from "../lib/format";
   import ImagePicker from "./ImagePicker.svelte";
@@ -13,41 +13,43 @@
     toast: ToastFn;
   }
 
-  const { item, bootstrap, toast }: Props = $props();
+  const { item = $bindable(), bootstrap, toast }: Props = $props();
 
   let articles = $state<ArticleSummary[]>([]);
-  let isSub = $state(item.subfaction === true || typeof item.subfaction === "string");
-  let parent = $state(typeof item.subfaction === "string" ? item.subfaction : "");
-  let strengthsRu = $state(item.strengths?.ru.join("\n") ?? "");
-  let strengthsEn = $state(item.strengths?.en.join("\n") ?? "");
-  let weaknessesRu = $state(item.weaknesses?.ru.join("\n") ?? "");
-  let weaknessesEn = $state(item.weaknesses?.en.join("\n") ?? "");
-  let optional = $state({
-    motto: { ru: item.motto?.ru ?? "", en: item.motto?.en ?? "" },
-    playstyle: { ru: item.playstyle?.ru ?? "", en: item.playstyle?.en ?? "" },
-    specialty: { ru: item.specialty?.ru ?? "", en: item.specialty?.en ?? "" },
-  });
+
+  const isSub = $derived(item.subfaction === true || typeof item.subfaction === "string");
+  const parent = $derived(typeof item.subfaction === "string" ? item.subfaction : "");
+  const strengthsRu = $derived(item.strengths?.ru.join("\n") ?? "");
+  const strengthsEn = $derived(item.strengths?.en.join("\n") ?? "");
+  const weaknessesRu = $derived(item.weaknesses?.ru.join("\n") ?? "");
+  const weaknessesEn = $derived(item.weaknesses?.en.join("\n") ?? "");
+  const mottoRu = $derived(item.motto?.ru ?? "");
+  const mottoEn = $derived(item.motto?.en ?? "");
+  const playstyleRu = $derived(item.playstyle?.ru ?? "");
+  const playstyleEn = $derived(item.playstyle?.en ?? "");
+  const specialtyRu = $derived(item.specialty?.ru ?? "");
+  const specialtyEn = $derived(item.specialty?.en ?? "");
 
   const parentOptions = $derived(bootstrap.factions.filter((faction) => faction.id !== item.id));
 
-  function updateSub(): void {
-    item.subfaction = isSub ? (parent || true) : undefined;
+  function setSub(enabled: boolean, parentId: string): void {
+    item.subfaction = enabled ? (parentId || true) : undefined;
   }
 
-  function updateLists(): void {
-    item.strengths =
-      strengthsRu.trim() || strengthsEn.trim()
-        ? { ru: lines(strengthsRu), en: lines(strengthsEn) }
-        : undefined;
-    item.weaknesses =
-      weaknessesRu.trim() || weaknessesEn.trim()
-        ? { ru: lines(weaknessesRu), en: lines(weaknessesEn) }
-        : undefined;
+  function setList(kind: "strengths" | "weaknesses", lang: "ru" | "en", value: string): void {
+    const current = item[kind] ?? { ru: [], en: [] };
+    const next = { ...current, [lang]: lines(value) };
+    item[kind] = next.ru.length || next.en.length ? next : undefined;
   }
 
-  function updateOptional(key: "motto" | "playstyle" | "specialty", text: LocalizedText): void {
-    optional[key] = text;
-    item[key] = text.ru.trim() || text.en.trim() ? text : undefined;
+  function setOptional(
+    key: "motto" | "playstyle" | "specialty",
+    lang: "ru" | "en",
+    value: string,
+  ): void {
+    const current = item[key] ?? { ru: "", en: "" };
+    const next = { ...current, [lang]: value };
+    item[key] = next.ru.trim() || next.en.trim() ? next : undefined;
   }
 
   onMount(() => {
@@ -147,48 +149,48 @@
       <label for="faction-motto-ru">Девиз · RU</label>
       <input
         id="faction-motto-ru"
-        value={optional.motto.ru}
-        oninput={(event) => updateOptional("motto", { ...optional.motto, ru: event.currentTarget.value })}
+        value={mottoRu}
+        oninput={(event) => setOptional("motto", "ru", event.currentTarget.value)}
       />
     </div>
     <div class="field">
       <label for="faction-motto-en">Девиз · EN</label>
       <input
         id="faction-motto-en"
-        value={optional.motto.en}
-        oninput={(event) => updateOptional("motto", { ...optional.motto, en: event.currentTarget.value })}
+        value={mottoEn}
+        oninput={(event) => setOptional("motto", "en", event.currentTarget.value)}
       />
     </div>
     <div class="field">
       <label for="faction-style-ru">Стиль игры · RU</label>
       <input
         id="faction-style-ru"
-        value={optional.playstyle.ru}
-        oninput={(event) => updateOptional("playstyle", { ...optional.playstyle, ru: event.currentTarget.value })}
+        value={playstyleRu}
+        oninput={(event) => setOptional("playstyle", "ru", event.currentTarget.value)}
       />
     </div>
     <div class="field">
       <label for="faction-style-en">Стиль игры · EN</label>
       <input
         id="faction-style-en"
-        value={optional.playstyle.en}
-        oninput={(event) => updateOptional("playstyle", { ...optional.playstyle, en: event.currentTarget.value })}
+        value={playstyleEn}
+        oninput={(event) => setOptional("playstyle", "en", event.currentTarget.value)}
       />
     </div>
     <div class="field">
       <label for="faction-specialty-ru">Особенность · RU</label>
       <input
         id="faction-specialty-ru"
-        value={optional.specialty.ru}
-        oninput={(event) => updateOptional("specialty", { ...optional.specialty, ru: event.currentTarget.value })}
+        value={specialtyRu}
+        oninput={(event) => setOptional("specialty", "ru", event.currentTarget.value)}
       />
     </div>
     <div class="field">
       <label for="faction-specialty-en">Особенность · EN</label>
       <input
         id="faction-specialty-en"
-        value={optional.specialty.en}
-        oninput={(event) => updateOptional("specialty", { ...optional.specialty, en: event.currentTarget.value })}
+        value={specialtyEn}
+        oninput={(event) => setOptional("specialty", "en", event.currentTarget.value)}
       />
     </div>
   </div>
@@ -199,19 +201,19 @@
   <div class="form-grid">
     <div class="field">
       <label for="faction-strong-ru">Сильные · RU</label>
-      <textarea id="faction-strong-ru" rows="4" bind:value={strengthsRu} oninput={updateLists}></textarea>
+      <textarea id="faction-strong-ru" rows="4" value={strengthsRu} oninput={(event) => setList("strengths", "ru", event.currentTarget.value)}></textarea>
     </div>
     <div class="field">
       <label for="faction-strong-en">Сильные · EN</label>
-      <textarea id="faction-strong-en" rows="4" bind:value={strengthsEn} oninput={updateLists}></textarea>
+      <textarea id="faction-strong-en" rows="4" value={strengthsEn} oninput={(event) => setList("strengths", "en", event.currentTarget.value)}></textarea>
     </div>
     <div class="field">
       <label for="faction-weak-ru">Слабые · RU</label>
-      <textarea id="faction-weak-ru" rows="4" bind:value={weaknessesRu} oninput={updateLists}></textarea>
+      <textarea id="faction-weak-ru" rows="4" value={weaknessesRu} oninput={(event) => setList("weaknesses", "ru", event.currentTarget.value)}></textarea>
     </div>
     <div class="field">
       <label for="faction-weak-en">Слабые · EN</label>
-      <textarea id="faction-weak-en" rows="4" bind:value={weaknessesEn} oninput={updateLists}></textarea>
+      <textarea id="faction-weak-en" rows="4" value={weaknessesEn} oninput={(event) => setList("weaknesses", "en", event.currentTarget.value)}></textarea>
     </div>
   </div>
 </div>
@@ -222,10 +224,7 @@
     <input
       type="checkbox"
       checked={isSub}
-      onchange={(event) => {
-        isSub = event.currentTarget.checked;
-        updateSub();
-      }}
+      onchange={(event) => setSub(event.currentTarget.checked, parent)}
     />
     <span>Это подфракция</span>
   </label>
@@ -235,10 +234,7 @@
       <select
         id="faction-parent"
         value={parent}
-        onchange={(event) => {
-          parent = event.currentTarget.value;
-          updateSub();
-        }}
+        onchange={(event) => setSub(true, event.currentTarget.value)}
       >
         <option value="">Не указана (true)</option>
         {#each parentOptions as faction}

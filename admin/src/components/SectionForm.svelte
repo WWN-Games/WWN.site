@@ -6,7 +6,7 @@
     item: Section;
   }
 
-  const { item }: Props = $props();
+  const { item = $bindable() }: Props = $props();
 
   const icons = [
     { value: "book", label: "Книга" },

@@ -11,7 +11,7 @@
     toast: ToastFn;
   }
 
-  const { name, item, bootstrap, toast }: Props = $props();
+  const { name, item = $bindable(), bootstrap, toast }: Props = $props();
 
   const isUnit = $derived(name === "units");
   const typeOptions = $derived(
@@ -30,11 +30,10 @@
         ],
   );
 
-  let roleRu = $state(item.role?.ru ?? "");
-  let roleEn = $state(item.role?.en ?? "");
-
-  function updateRole(): void {
-    item.role = roleRu || roleEn ? { ru: roleRu, en: roleEn } : undefined;
+  function updateRole(lang: "ru" | "en", value: string): void {
+    const current = item.role ?? { ru: "", en: "" };
+    const next = { ...current, [lang]: value };
+    item.role = next.ru || next.en ? next : undefined;
   }
 
   function numberValue(key: keyof Card): string {
@@ -139,24 +138,18 @@
       <label for="card-role-ru">Роль · RU</label>
       <input
         id="card-role-ru"
-        value={roleRu}
+        value={item.role?.ru ?? ""}
         placeholder="Например: ПВО / поддержка"
-        oninput={(event) => {
-          roleRu = event.currentTarget.value;
-          updateRole();
-        }}
+        oninput={(event) => updateRole("ru", event.currentTarget.value)}
       />
     </div>
     <div class="field">
       <label for="card-role-en">Роль · EN</label>
       <input
         id="card-role-en"
-        value={roleEn}
+        value={item.role?.en ?? ""}
         placeholder="AA / support"
-        oninput={(event) => {
-          roleEn = event.currentTarget.value;
-          updateRole();
-        }}
+        oninput={(event) => updateRole("en", event.currentTarget.value)}
       />
     </div>
   </div>

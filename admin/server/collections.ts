@@ -12,7 +12,6 @@ import {
 import type { Card, CollectionItem, Faction, Section, Tag } from "../shared/types.ts";
 import { SITE_ROOT } from "./config.ts";
 import {
-  COLLECTION_FILES,
   type CollectionName,
   collectionPath,
   readFactions,
@@ -41,10 +40,13 @@ function localized(value: { ru?: string; en?: string } | undefined): { ru: strin
   return { ru: value?.ru?.trim() ?? "", en: value?.en?.trim() ?? "" };
 }
 
-function optionalLocalized(value: { ru?: string; en?: string } | undefined): { ru: string; en: string } | undefined {
+function optionalLocalized(
+  value: { ru?: string; en?: string } | undefined,
+): { ru: string; en?: string } | undefined {
   const text = localized(value);
   if (!text.ru && !text.en) return undefined;
-  return text;
+  const ru = text.ru || text.en;
+  return text.en ? { ru, en: text.en } : { ru };
 }
 
 function assertLocalized(value: { ru?: string; en?: string } | undefined, field: string): void {
@@ -143,6 +145,21 @@ function normalizeSection(item: Section): Record<string, unknown> {
     title: localized(item.title),
     desc: localized(item.desc),
   };
+}
+
+/** Сохраняет порядок ключей существующей записи, чтобы diff оставался маленьким. */
+function orderLike(
+  current: Record<string, unknown>,
+  next: Record<string, unknown>,
+): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
+  for (const key of Object.keys(current)) {
+    if (key in next) result[key] = next[key];
+  }
+  for (const key of Object.keys(next)) {
+    if (!(key in result)) result[key] = next[key];
+  }
+  return result;
 }
 
 async function validateCard(
@@ -354,27 +371,31 @@ export async function saveCollectionItem(
 
   const file = collectionPath(name);
   const raw = await readText(file);
+  const current = index >= 0 ? (items[index] as Record<string, unknown>) : undefined;
+  const payload = current ? orderLike(current, normalized) : normalized;
 
-  if (originalId && originalId === (normalized as { id: string }).id && index >= 0) {
-    const current = items[index];
-    if (isDeepStrictEqual(current, normalized)) {
-      return {
-        item: current,
-        validation: runValidation(),
-      };
-    }
+  if (
+    originalId &&
+    originalId === (payload as { id: string }).id &&
+    current &&
+    isDeepStrictEqual(current, payload)
+  ) {
+    return {
+      item: current as unknown as CollectionItem,
+      validation: runValidation(),
+    };
   }
 
   const nextRaw = updateJsonItem(
     raw,
     name,
-    normalized as unknown as { id: string },
+    payload as unknown as { id: string },
     originalId,
   );
   await atomicWrite(file, nextRaw);
 
   return {
-    item: normalized as unknown as CollectionItem,
+    item: payload as unknown as CollectionItem,
     validation: runValidation(),
   };
 }
@@ -422,14 +443,3 @@ export async function deleteCollectionItem(
 
   return runValidation();
 }
-
-export async function collectionFilePath(name: CollectionName): Promise<string> {
-  return COLLECTION_FILES[name];
-}
-
-export async function readCollectionRaw(name: CollectionName): Promise<unknown> {
-  const file = collectionPath(name);
-  return JSON.parse(await readText(file)) as unknown;
-}
-
-export { COLLECTION_FILES, collectionPath };

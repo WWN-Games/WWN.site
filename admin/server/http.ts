@@ -66,10 +66,6 @@ export async function atomicWrite(file: string, contents: string): Promise<void>
   await fs.rename(tmp, file);
 }
 
-export async function writeJson(file: string, value: unknown): Promise<void> {
-  await atomicWrite(file, `${JSON.stringify(value, null, 2)}\n`);
-}
-
 export async function fileExists(file: string): Promise<boolean> {
   try {
     await fs.access(file);

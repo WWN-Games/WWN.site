@@ -6,7 +6,7 @@
     item: Tag;
   }
 
-  const { item }: Props = $props();
+  const { item = $bindable() }: Props = $props();
 
   const groups = [
     { value: "tier", label: "Тир" },

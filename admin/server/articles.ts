@@ -9,7 +9,7 @@ import type {
   ArticleSummary,
   Lang,
 } from "../shared/types.ts";
-import { SITE_BASE, SITE_ROOT } from "./config.ts";
+import { SITE_ROOT } from "./config.ts";
 import { HttpError, atomicWrite, fileExists, isRealDate, readText, todayIso, toPosix } from "./http.ts";
 import { readSections } from "./data.ts";
 import { isSlug, slugify } from "./strings.ts";
@@ -400,9 +400,4 @@ export async function duplicateArticle(slug: string): Promise<{
 
 export function suggestSlug(title: string): string {
   return slugify(title) || "article";
-}
-
-export function sitePath(slug: string, lang: Lang): string {
-  const prefix = lang === "en" ? `${SITE_BASE}/en/wiki` : `${SITE_BASE}/wiki`;
-  return `${prefix}/${slug}/`;
 }

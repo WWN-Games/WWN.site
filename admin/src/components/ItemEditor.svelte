@@ -4,11 +4,7 @@
   import type {
     AskConfirm,
     Bootstrap,
-    Card,
     CollectionItem,
-    Faction,
-    Section,
-    Tag,
     ToastFn,
     ValidationState,
   } from "../../shared/types";
@@ -242,17 +238,13 @@
   <div class="editor-layout">
     <section class="panel" style="min-width: 0">
       {#if isCards}
-        {@const card = item as Card}
-        <CardForm name={name as "units" | "buildings"} item={card} {bootstrap} {toast} />
+        <CardForm name={name as "units" | "buildings"} bind:item={item} {bootstrap} {toast} />
       {:else if name === "factions"}
-        {@const faction = item as Faction}
-        <FactionForm item={faction} {bootstrap} {toast} />
+        <FactionForm bind:item={item} {bootstrap} {toast} />
       {:else if name === "tags"}
-        {@const tag = item as Tag}
-        <TagForm item={tag} />
+        <TagForm bind:item={item} />
       {:else}
-        {@const section = item as Section}
-        <SectionForm item={section} />
+        <SectionForm bind:item={item} />
       {/if}
     </section>
 
