@@ -325,16 +325,13 @@
           <select
             id="article-section"
             value={section}
-            disabled={!isNew}
             onchange={(event) => onSectionChange(event.currentTarget.value)}
           >
             {#each bootstrap.sections as item}
               <option value={item.id}>{item.title.ru} · {item.id}</option>
             {/each}
           </select>
-          {#if !isNew}
-            <span class="field__hint">Раздел меняется вместе со slug; для переноса создайте копию.</span>
-          {/if}
+          <span class="field__hint">Смена раздела переносит файлы статьи и меняет URL.</span>
         </div>
 
         <div class="field">
