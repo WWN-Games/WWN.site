@@ -9,6 +9,7 @@ import {
 } from "../../src/lib/compare";
 import type { ExplorerItem } from "../../src/lib/database";
 import { filterItems, searchTokens, sortItems } from "../../src/lib/database-view";
+import { withDerivedDps } from "../../src/pages/api/v1/_shared";
 
 function item(overrides: Partial<ExplorerItem> = {}): ExplorerItem {
   return {
@@ -20,7 +21,10 @@ function item(overrides: Partial<ExplorerItem> = {}): ExplorerItem {
     cost: 100,
     hp: 500,
     shield: 0,
+    selfRegen: 0,
+    shieldRegen: 0,
     dps: 50,
+    weapons: [],
     speed: 1,
     range: 200,
     buildTime: 10,
@@ -114,11 +118,24 @@ describe("compare", () => {
     const a = item({ id: "a", cost: 100, hp: 1000, dps: 100 });
     const b = item({ id: "b", cost: 200, hp: 1000, dps: 50 });
     expect(metricValue(a, "totalHp")).toBe(a.hp + a.shield);
+    expect(metricValue(item({ selfRegen: 3 }), "selfRegen")).toBe(3);
+    expect(metricValue(item({ shieldRegen: 4 }), "shieldRegen")).toBe(4);
     expect(metricValue(a, "dpsPerCost")).toBe(100);
     expect(metricValue(b, "hpPerCost")).toBe(500);
     expect(bestIndexes([100, 200, null], "lower")).toEqual([0]);
     expect(bestIndexes([100, 200, 100], "higher")).toEqual([1]);
     expect(bestIndexes([100, 100], "higher")).toEqual([]);
+  });
+
+  it("считает DPS по сумме урона орудий", () => {
+    expect(
+      withDerivedDps({
+        id: "a",
+        dps: 1,
+        weapons: [{ damage: 10 }, { damage: 5 }],
+      }).dps,
+    ).toBe(15);
+    expect(withDerivedDps({ id: "b", dps: 7 }).dps).toBe(7);
   });
 
   it("кодирует и разбирает URL, соблюдая лимит и вкладку", () => {

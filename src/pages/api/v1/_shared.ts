@@ -20,6 +20,18 @@ interface ApiEnvelope<T> {
 /** Идентификаторы живых цифр stats.json (см. src/lib/wiki.ts: getStats). */
 export const STAT_IDS = ["buildings", "cards", "factions", "maps", "tags", "units"] as const;
 
+/** DPS юнита считается по сумме урона всех орудий, если они заданы. */
+export function withDerivedDps<
+  T extends { id: string; dps?: number | undefined; weapons?: { damage: number }[] | undefined },
+>(item: T): T {
+  const weapons = item.weapons;
+  if (!weapons?.length) return item;
+  return {
+    ...item,
+    dps: weapons.reduce((sum, weapon) => sum + weapon.damage, 0),
+  };
+}
+
 /** Стабильный порядок по id. */
 export function byId<T extends { id: string }>(a: T, b: T): number {
   if (a.id < b.id) return -1;

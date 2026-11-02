@@ -13,6 +13,8 @@ export type CompareMetric =
   | "buildTime"
   | "hp"
   | "shield"
+  | "selfRegen"
+  | "shieldRegen"
   | "totalHp"
   | "dps"
   | "range"
@@ -20,7 +22,14 @@ export type CompareMetric =
   | "dpsPerCost"
   | "hpPerCost";
 
-export type CompareGroup = "identity" | "cost" | "survival" | "offense" | "mobility" | "efficiency";
+export type CompareGroup =
+  | "identity"
+  | "cost"
+  | "survival"
+  | "offense"
+  | "weapons"
+  | "mobility"
+  | "efficiency";
 
 export type CompareDirection = "higher" | "lower";
 
@@ -36,6 +45,8 @@ export const COMPARE_METRICS: readonly CompareMetricDef[] = [
   { key: "buildTime", group: "cost", direction: "lower" },
   { key: "hp", group: "survival", direction: "higher" },
   { key: "shield", group: "survival", direction: "higher" },
+  { key: "selfRegen", group: "survival", direction: "higher" },
+  { key: "shieldRegen", group: "survival", direction: "higher" },
   { key: "totalHp", group: "survival", direction: "higher" },
   { key: "dps", group: "offense", direction: "higher" },
   { key: "range", group: "offense", direction: "higher" },
@@ -49,6 +60,7 @@ export const COMPARE_GROUPS: readonly CompareGroup[] = [
   "cost",
   "survival",
   "offense",
+  "weapons",
   "mobility",
   "efficiency",
 ] as const;

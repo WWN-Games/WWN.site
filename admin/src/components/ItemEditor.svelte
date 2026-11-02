@@ -67,6 +67,7 @@
         cost: 0,
         hp: 0,
         buildTime: 0,
+        weapons: [],
         image: "",
         draft: false,
         new: true,

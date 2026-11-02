@@ -41,6 +41,11 @@ export interface Faction {
   subfaction?: boolean | string;
 }
 
+export interface Weapon {
+  name: LocalizedText;
+  damage: number;
+}
+
 export interface Card {
   id: string;
   name: LocalizedText;
@@ -52,7 +57,10 @@ export interface Card {
   hp: number;
   buildTime: number;
   shield?: number;
+  selfRegen?: number;
+  shieldRegen?: number;
   dps?: number;
+  weapons?: Weapon[];
   speed?: number;
   range?: number;
   image?: string;

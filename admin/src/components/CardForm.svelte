@@ -36,6 +36,35 @@
     item.role = next.ru || next.en ? next : undefined;
   }
 
+  const weapons = $derived(item.weapons ?? []);
+  const computedDps = $derived(
+    weapons.reduce((sum, weapon) => sum + (Number.isFinite(weapon.damage) ? weapon.damage : 0), 0),
+  );
+
+  function addWeapon(): void {
+    item.weapons = [...weapons, { name: { ru: "", en: "" }, damage: 0 }];
+  }
+
+  function removeWeapon(index: number): void {
+    item.weapons = weapons.filter((_, position) => position !== index);
+  }
+
+  function updateWeaponName(index: number, lang: "ru" | "en", value: string): void {
+    item.weapons = weapons.map((weapon, position) =>
+      position === index
+        ? { ...weapon, name: { ...weapon.name, [lang]: value } }
+        : weapon,
+    );
+  }
+
+  function updateWeaponDamage(index: number, value: string): void {
+    item.weapons = weapons.map((weapon, position) =>
+      position === index
+        ? { ...weapon, damage: value === "" ? 0 : Number(value) }
+        : weapon,
+    );
+  }
+
   function numberValue(key: keyof Card): string {
     const value = item[key];
     return typeof value === "number" ? String(value) : "";
@@ -97,6 +126,64 @@
   <LocalizedInput label="Описание" value={item.desc} multiline rows={3} placeholder="Короткое описание карточки" />
 </div>
 
+{#if isUnit}
+  <div class="form-section">
+    <div class="form-section__title">
+      Вооружение
+      <span>{weapons.length} шт. · DPS {computedDps}</span>
+    </div>
+    {#if weapons.length === 0}
+      <p class="field__hint">Орудий нет — DPS задаётся вручную ниже.</p>
+    {/if}
+    {#each weapons as weapon, index (index)}
+      <div class="weapon-card">
+        <div class="weapon-card__head">
+          <b>Орудие {index + 1}</b>
+          <button class="btn btn--ghost btn--small" type="button" onclick={() => removeWeapon(index)}>
+            Удалить
+          </button>
+        </div>
+        <div class="form-grid form-grid--three">
+          <div class="field">
+            <label for={`weapon-${index}-ru`}>Название · RU</label>
+            <input
+              id={`weapon-${index}-ru`}
+              value={weapon.name.ru}
+              placeholder="Например: Главный калибр"
+              oninput={(event) => updateWeaponName(index, "ru", event.currentTarget.value)}
+            />
+          </div>
+          <div class="field">
+            <label for={`weapon-${index}-en`}>Название · EN</label>
+            <input
+              id={`weapon-${index}-en`}
+              value={weapon.name.en}
+              placeholder="Main gun"
+              oninput={(event) => updateWeaponName(index, "en", event.currentTarget.value)}
+            />
+          </div>
+          <div class="field">
+            <label for={`weapon-${index}-damage`}>Урон</label>
+            <input
+              id={`weapon-${index}-damage`}
+              type="number"
+              min="0"
+              step="any"
+              value={weapon.damage}
+              oninput={(event) => updateWeaponDamage(index, event.currentTarget.value)}
+            />
+          </div>
+        </div>
+      </div>
+    {/each}
+    <div>
+      <button class="btn btn--ghost btn--small" type="button" onclick={addWeapon}>
+        Добавить орудие
+      </button>
+    </div>
+  </div>
+{/if}
+
 <div class="form-section">
   <div class="form-section__title">Характеристики</div>
   <div class="form-grid form-grid--four">
@@ -117,9 +204,25 @@
       <input id="card-shield" type="number" step="any" value={numberValue("shield")} placeholder="—" oninput={(event) => setOptionalNumber("shield", event.currentTarget.value)} />
     </div>
     <div class="field">
-      <label for="card-dps">DPS</label>
-      <input id="card-dps" type="number" step="any" value={numberValue("dps")} placeholder="—" oninput={(event) => setOptionalNumber("dps", event.currentTarget.value)} />
+      <label for="card-self-regen">Самореген</label>
+      <input id="card-self-regen" type="number" step="any" value={numberValue("selfRegen")} placeholder="—" oninput={(event) => setOptionalNumber("selfRegen", event.currentTarget.value)} />
     </div>
+    <div class="field">
+      <label for="card-shield-regen">Реген щита</label>
+      <input id="card-shield-regen" type="number" step="any" value={numberValue("shieldRegen")} placeholder="—" oninput={(event) => setOptionalNumber("shieldRegen", event.currentTarget.value)} />
+    </div>
+    {#if isUnit && weapons.length > 0}
+      <div class="field">
+        <label for="card-dps">DPS</label>
+        <input id="card-dps" value={computedDps} readonly />
+        <span class="field__hint">сумма урона орудий</span>
+      </div>
+    {:else}
+      <div class="field">
+        <label for="card-dps">DPS</label>
+        <input id="card-dps" type="number" step="any" value={numberValue("dps")} placeholder="—" oninput={(event) => setOptionalNumber("dps", event.currentTarget.value)} />
+      </div>
+    {/if}
     <div class="field">
       <label for="card-speed">Скорость</label>
       <input id="card-speed" type="number" step="any" value={numberValue("speed")} placeholder="—" oninput={(event) => setOptionalNumber("speed", event.currentTarget.value)} />

@@ -48,6 +48,13 @@ export const sectionSchema = z.object({
 
 const stat = z.number().optional();
 
+const weaponSchema = z.object({
+  name: text,
+  damage: z.number().nonnegative(),
+});
+
+export type Weapon = z.infer<typeof weaponSchema>;
+
 const cardBase = z.object({
   id: z.string().min(1),
   name: text,
@@ -58,7 +65,10 @@ const cardBase = z.object({
   hp: z.number(),
   buildTime: z.number(),
   shield: stat,
+  selfRegen: stat,
+  shieldRegen: stat,
   dps: stat,
+  weapons: z.array(weaponSchema).optional(),
   speed: stat,
   range: stat,
   image: z.string().optional(),

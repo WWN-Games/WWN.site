@@ -110,8 +110,29 @@ const metricRows = $derived.by(() => {
   });
 });
 
+const weaponRows = $derived.by(() => {
+  if (items.length < 2) return [];
+  const count = Math.max(...items.map((item) => item.weapons.length));
+  return Array.from({ length: count }, (_, index) => {
+    const cells = items.map((item) => {
+      const weapon = item.weapons[index];
+      return {
+        display: weapon ? `${weapon.name} · ${formatter.format(weapon.damage)}` : "—",
+        best: false,
+      };
+    });
+    if (onlyDiff && new Set(cells.map((cell) => cell.display)).size <= 1) return null;
+    return {
+      key: `weapon-${index}`,
+      group: "weapons" as const,
+      label: labels.weaponSlot.replace("{n}", String(index + 1)),
+      cells,
+    } satisfies Row;
+  }).filter((row): row is Row => row !== null);
+});
+
 const groups = $derived.by(() => {
-  const rows = [...identityRows, ...metricRows];
+  const rows = [...identityRows, ...metricRows, ...weaponRows];
   return COMPARE_GROUPS.map((group) => ({
     group,
     title: labels.group[group],
@@ -232,8 +253,13 @@ onDestroy(() => {
                         {item.initials}
                       {/if}
                     </span>
-                    <span class="compare-cardhead__name">{item.name}</span>
-                    <span class="compare-cardhead__faction">{item.factionName}</span>
+                    <span class="compare-cardhead__meta">
+                      <span class="compare-cardhead__name">{item.name}</span>
+                      <span class="compare-cardhead__badges">
+                        <span class="compare-cardhead__faction">{item.factionName}</span>
+                        <span class="compare-cardhead__type">{item.typeLabel}</span>
+                      </span>
+                    </span>
                   </div>
                 </th>
               {/each}

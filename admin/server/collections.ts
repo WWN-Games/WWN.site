@@ -76,10 +76,25 @@ function normalizeCard(item: Card): Record<string, unknown> {
     hp: item.hp,
     buildTime: item.buildTime,
   };
-  for (const key of ["shield", "dps", "speed", "range"] as const) {
+  for (const key of ["shield", "selfRegen", "shieldRegen", "speed", "range"] as const) {
     const value = item[key];
     if (typeof value === "number" && Number.isFinite(value)) result[key] = value;
   }
+  const weapons = (item.weapons ?? []).map((weapon, index) => {
+    const name = localized(weapon.name);
+    if (!name.ru && !name.en) {
+      throw new HttpError(400, `weapons[${index}].name: не заполнено название`);
+    }
+    if (!Number.isFinite(weapon.damage) || weapon.damage < 0) {
+      throw new HttpError(400, `weapons[${index}].damage: нужно неотрицательное число`);
+    }
+    return { name: name.en ? name : { ru: name.ru }, damage: weapon.damage };
+  });
+  if (weapons.length > 0) result.weapons = weapons;
+  const dps = weapons.length
+    ? weapons.reduce((sum, weapon) => sum + weapon.damage, 0)
+    : item.dps;
+  if (typeof dps === "number" && Number.isFinite(dps)) result.dps = dps;
   if (item.image !== undefined) result.image = item.image.replace(/^\/+/, "");
   const role = optionalLocalized(item.role);
   if (role) result.role = role;
@@ -173,7 +188,7 @@ async function validateCard(
   if (!Number.isFinite(item.cost) || !Number.isFinite(item.hp) || !Number.isFinite(item.buildTime)) {
     throw new HttpError(400, "cost, hp и buildTime должны быть числами");
   }
-  for (const key of ["shield", "dps", "speed", "range"] as const) {
+  for (const key of ["shield", "selfRegen", "shieldRegen", "dps", "speed", "range"] as const) {
     const value = item[key];
     if (value !== undefined && !Number.isFinite(value)) {
       throw new HttpError(400, `${key}: должно быть числом`);

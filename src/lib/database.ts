@@ -9,7 +9,7 @@ import { getCollection } from "astro:content";
 import { type DictKey, t } from "../i18n";
 import type { CompareGroup, CompareMetric } from "./compare";
 import type { CardTab, SortKey, TabId } from "./database-constants";
-import type { Building, Faction, Tag, Text, Unit } from "./schemas";
+import type { Building, Faction, Tag, Text, Unit, Weapon } from "./schemas";
 import { href, type Lang, localeHref } from "./site";
 import { foldSearch } from "./utils";
 import { entrySlug, getPublished } from "./wiki";
@@ -19,7 +19,7 @@ export { CARD_TABS, SORT_KEYS, TABS } from "./database-constants";
 
 /* — константы и базовые типы — */
 
-const STAT_KEYS = ["hp", "shield", "dps", "speed", "range"] as const;
+const STAT_KEYS = ["hp", "shield", "selfRegen", "shieldRegen", "dps", "speed", "range"] as const;
 type StatKey = (typeof STAT_KEYS)[number];
 
 type TagGroup = Tag["group"];
@@ -62,7 +62,10 @@ export interface DatabaseCard {
   hp: number;
   buildTime: number;
   shield: number;
+  selfRegen: number;
+  shieldRegen: number;
   dps: number;
+  weapons: Weapon[];
   speed: number;
   range: number;
   strongVs?: string[] | Text | undefined;
@@ -100,7 +103,10 @@ export interface ExplorerItem {
   cost: number;
   hp: number;
   shield: number;
+  selfRegen: number;
+  shieldRegen: number;
   dps: number;
+  weapons: { name: string; damage: number }[];
   speed: number;
   range: number;
   buildTime: number;
@@ -188,6 +194,7 @@ export interface ExplorerLabels {
     faction: string;
     type: string;
     tags: string;
+    weaponSlot: string;
     group: Record<CompareGroup, string>;
     metric: Record<CompareMetric, string>;
   };
@@ -359,6 +366,10 @@ export function buildBars(card: DatabaseCard, lang: Lang, scale: StatScale): Sta
 type CardData = Unit | Building;
 
 function toCard(id: string, tab: CardTab, data: CardData): DatabaseCard {
+  const weapons = data.weapons ?? [];
+  const dps = weapons.length
+    ? weapons.reduce((sum, weapon) => sum + weapon.damage, 0)
+    : (data.dps ?? 0);
   return {
     id,
     tab,
@@ -372,7 +383,10 @@ function toCard(id: string, tab: CardTab, data: CardData): DatabaseCard {
     hp: data.hp,
     buildTime: data.buildTime,
     shield: data.shield ?? 0,
-    dps: data.dps ?? 0,
+    selfRegen: data.selfRegen ?? 0,
+    shieldRegen: data.shieldRegen ?? 0,
+    dps,
+    weapons,
     speed: data.speed ?? 0,
     range: data.range ?? 0,
     strongVs: data.strongVs,
@@ -449,11 +463,13 @@ function explorerLabels(lang: Lang): ExplorerLabels {
       faction: t(lang, "database.compare.faction"),
       type: t(lang, "database.compare.type"),
       tags: t(lang, "database.compare.tags"),
+      weaponSlot: t(lang, "database.compare.weaponSlot"),
       group: {
         identity: t(lang, "database.compare.group.identity"),
         cost: t(lang, "database.compare.group.cost"),
         survival: t(lang, "database.compare.group.survival"),
         offense: t(lang, "database.compare.group.offense"),
+        weapons: t(lang, "database.compare.group.weapons"),
         mobility: t(lang, "database.compare.group.mobility"),
         efficiency: t(lang, "database.compare.group.efficiency"),
       },
@@ -462,6 +478,8 @@ function explorerLabels(lang: Lang): ExplorerLabels {
         buildTime: t(lang, "database.compare.metric.buildTime"),
         hp: t(lang, "database.compare.metric.hp"),
         shield: t(lang, "database.compare.metric.shield"),
+        selfRegen: t(lang, "database.compare.metric.selfRegen"),
+        shieldRegen: t(lang, "database.compare.metric.shieldRegen"),
         totalHp: t(lang, "database.compare.metric.totalHp"),
         dps: t(lang, "database.compare.metric.dps"),
         range: t(lang, "database.compare.metric.range"),
@@ -540,6 +558,7 @@ export async function loadDatabase(lang: Lang): Promise<DatabaseData> {
     const tagText = [...new Set(card.tags.flatMap((id) => [id, tagLabel(tagMap, id, lang)]))].join(
       " ",
     );
+    const weaponText = card.weapons.map((weapon) => weapon.name[lang]).join(" ");
     return {
       id: card.id,
       tab: card.tab,
@@ -549,12 +568,15 @@ export async function loadDatabase(lang: Lang): Promise<DatabaseData> {
       cost: card.cost,
       hp: card.hp,
       shield: card.shield,
+      selfRegen: card.selfRegen,
+      shieldRegen: card.shieldRegen,
       dps: card.dps,
+      weapons: card.weapons.map((weapon) => ({ name: weapon.name[lang], damage: weapon.damage })),
       speed: card.speed,
       range: card.range,
       buildTime: card.buildTime,
       searchText: foldSearch(
-        `${name} ${cardFactionName} ${cardTypeLabel} ${card.role?.[lang] ?? ""} ${card.desc[lang]} ${tagText}`,
+        `${name} ${cardFactionName} ${cardTypeLabel} ${card.role?.[lang] ?? ""} ${card.desc[lang]} ${tagText} ${weaponText}`,
       ),
       name,
       factionName: cardFactionName,
