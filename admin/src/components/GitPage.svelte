@@ -99,10 +99,11 @@
     committing = true;
     error = "";
     try {
-      const result = await api.post<{ output: string; status: GitStatus }>("/api/git/commit", {
-        files: selected,
-        message,
-      });
+      const result = await api.post<{ output: string; status: GitStatus }>(
+        "/api/git/commit",
+        { files: selected, message },
+        120_000,
+      );
       output = result.output;
       applyStatus(result.status);
       message = `content: обновление ${new Date().toISOString().slice(0, 10)}`;
@@ -128,7 +129,11 @@
     pushing = true;
     error = "";
     try {
-      const result = await api.post<{ output: string; status: GitStatus }>("/api/git/push", {});
+      const result = await api.post<{ output: string; status: GitStatus }>(
+        "/api/git/push",
+        {},
+        120_000,
+      );
       output = result.output;
       applyStatus(result.status);
       toast("Изменения отправлены");

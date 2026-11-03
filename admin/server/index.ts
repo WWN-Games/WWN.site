@@ -24,7 +24,15 @@ import {
   listCollection,
   saveCollectionItem,
 } from "./collections.ts";
-import { ADMIN_ROOT, EXTRA_ORIGINS, HOST, IS_LOOPBACK_HOST, PORT, SITE_DEV_URL } from "./config.ts";
+import {
+  ADMIN_ORIGIN,
+  ADMIN_ROOT,
+  EXTRA_ORIGINS,
+  HOST,
+  IS_LOOPBACK_HOST,
+  PORT,
+  SITE_DEV_URL,
+} from "./config.ts";
 import { readFactions, readItems, readSections, readTags } from "./data.ts";
 import { gitCommit, gitDiff, gitPush, gitStatus } from "./git.ts";
 import { applySecurityHeaders, HttpError, readJsonBody, sendJson, serveMedia } from "./http.ts";
@@ -318,6 +326,7 @@ async function handleApi(
     const allowed = new Set([
       `http://127.0.0.1:${PORT}`,
       `http://localhost:${PORT}`,
+      ADMIN_ORIGIN,
       ...EXTRA_ORIGINS,
     ]);
     const site = req.headers["sec-fetch-site"];
@@ -364,7 +373,7 @@ httpServer.on("request", async (req, res) => {
       return;
     }
   }
-  const url = new URL(req.url ?? "/", `http://${HOST}:${PORT}`);
+  const url = new URL(req.url ?? "/", ADMIN_ORIGIN);
   try {
     if (await serveMedia(req, res, url.pathname)) return;
     if (url.pathname.startsWith("/api/")) {
@@ -397,7 +406,7 @@ httpServer.on("error", (error) => {
 httpServer.listen(PORT, HOST, () => {
   console.log("");
   console.log("  WWN Admin");
-  console.log(`  http://${HOST}:${PORT}`);
+  console.log(`  ${ADMIN_ORIGIN}`);
   console.log(`  сайт: ${SITE_DEV_URL} (запускается отдельно: pnpm dev)`);
   if (!IS_LOOPBACK_HOST && EXTRA_ORIGINS.length === 0) {
     console.warn(

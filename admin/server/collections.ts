@@ -22,6 +22,14 @@ import { runValidation } from "./validation.ts";
 const PUBLIC_ROOT = path.join(SITE_ROOT, "public");
 const SRC_ROOT = path.join(SITE_ROOT, "src");
 
+const COLLECTION_SCHEMAS = {
+  units: unitSchema,
+  buildings: buildingSchema,
+  factions: factionSchema,
+  tags: tagSchema,
+  sections: sectionSchema,
+} as const;
+
 function stringArray(value: unknown): string[] {
   if (!Array.isArray(value)) return [];
   return value.filter((item): item is string => typeof item === "string" && item.trim() !== "");
@@ -186,12 +194,20 @@ async function validateCard(
   }
   item.image = image?.replace(/^\/+/, "");
 
-  if (originalId && originalId !== item.id) await moveCardImage(originalId, item.id, item);
-
   const schema = name === "units" ? unitSchema : buildingSchema;
   const parsed = schema.safeParse(cardPayload(item));
   if (!parsed.success) {
     throw new HttpError(400, "Проверьте поля карточки", zodMessages(name, parsed.error));
+  }
+
+  /* Переносим файл только после успешной валидации, чтобы ошибка схемы
+     не оставила JSON со старым id, а картинку — с новым именем. */
+  if (originalId && originalId !== item.id) {
+    await moveCardImage(originalId, item.id, item);
+    if (item.image !== parsed.data.image) {
+      if (item.image === undefined) delete parsed.data.image;
+      else parsed.data.image = item.image;
+    }
   }
   return parsed.data;
 }
@@ -204,6 +220,11 @@ async function validateFaction(item: Faction, originalId: string | undefined): P
     .replace(/^\/+/, "")
     .replace(/^src\//, "");
   item.lore = item.lore.trim();
+  if (typeof item.subfaction === "string") {
+    const subfaction = item.subfaction.trim();
+    if (subfaction) item.subfaction = subfaction;
+    else delete item.subfaction;
+  }
   if (!isSlug(item.id)) throw new HttpError(400, "id: только латиница, цифры и дефис");
   if (!Number.isInteger(item.order) || item.order <= 0) {
     throw new HttpError(400, "order: целое число больше нуля");
@@ -222,6 +243,16 @@ async function validateFaction(item: Faction, originalId: string | undefined): P
         `Нельзя переименовать: фракция используется карточками ${refs.slice(0, 5).join(", ")}`,
       );
     }
+    const children = factions.filter((faction) => faction.subfaction === originalId);
+    if (children.length > 0) {
+      throw new HttpError(
+        409,
+        `Нельзя переименовать: на фракцию ссылаются подфракции ${children
+          .slice(0, 5)
+          .map((faction) => faction.id)
+          .join(", ")}`,
+      );
+    }
   }
   const duplicateOrder = factions.find(
     (faction) =>
@@ -238,13 +269,22 @@ async function validateFaction(item: Faction, originalId: string | undefined): P
     throw new HttpError(400, `emblem: файл не найден (${item.emblem})`);
   }
 
-  if (typeof item.subfaction === "string" && item.subfaction.trim()) {
-    item.subfaction = item.subfaction.trim();
+  if (typeof item.subfaction === "string") {
     if (item.subfaction === item.id) {
       throw new HttpError(400, "subfaction: фракция не может быть родителем самой себе");
     }
     if (!factions.some((faction) => faction.id === item.subfaction)) {
       throw new HttpError(400, `subfaction: неизвестная фракция «${item.subfaction}»`);
+    }
+    const seen = new Set<string>([item.id]);
+    let parentId: string | undefined = item.subfaction;
+    while (parentId) {
+      if (seen.has(parentId)) {
+        throw new HttpError(400, "subfaction: обнаружен цикл родительских фракций");
+      }
+      seen.add(parentId);
+      const parent = factions.find((faction) => faction.id === parentId);
+      parentId = typeof parent?.subfaction === "string" ? parent.subfaction : undefined;
     }
   }
 
@@ -406,6 +446,14 @@ export async function saveCollectionItem(
   const current = index >= 0 ? (items[index] as unknown as Record<string, unknown>) : undefined;
   const payload = current ? orderLike(current, normalized) : normalized;
 
+  /* Не теряем необязательные поля, которых ещё нет в Zod-схеме. */
+  if (current) {
+    const known = new Set(Object.keys(COLLECTION_SCHEMAS[name].shape));
+    for (const [key, value] of Object.entries(current)) {
+      if (!known.has(key)) payload[key] = value;
+    }
+  }
+
   if (
     originalId &&
     originalId === (payload as { id: string }).id &&
@@ -439,6 +487,16 @@ export async function deleteCollectionItem(
     const refs = await checkCardReferences(id, "faction");
     if (refs.length > 0) {
       throw new HttpError(409, `Фракция используется карточками: ${refs.slice(0, 5).join(", ")}`);
+    }
+    const children = (await readFactions()).filter((faction) => faction.subfaction === id);
+    if (children.length > 0) {
+      throw new HttpError(
+        409,
+        `На фракцию ссылаются подфракции: ${children
+          .slice(0, 5)
+          .map((faction) => faction.id)
+          .join(", ")}`,
+      );
     }
   }
   if (name === "tags") {

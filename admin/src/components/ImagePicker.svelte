@@ -59,12 +59,16 @@
     uploading = true;
     try {
       const dataUrl = await readAsDataUrl(file);
-      const result = await api.post<UploadResult>("/api/upload", {
-        kind,
-        id: id.trim(),
-        filename: file.name,
-        dataUrl,
-      });
+      const result = await api.post<UploadResult>(
+        "/api/upload",
+        {
+          kind,
+          id: id.trim(),
+          filename: file.name,
+          dataUrl,
+        },
+        120_000,
+      );
       onchange(result.path);
       toast(kind === "faction" ? "Эмблема обновлена" : "Изображение загружено");
     } catch (cause) {

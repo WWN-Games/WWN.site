@@ -89,4 +89,23 @@ test.describe("Главная", () => {
     await expect(question).toHaveAttribute("aria-expanded", "true");
     await expect(page.locator(".faq__item").first()).toHaveClass(/is-open/);
   });
+
+  test("кнопка «Подробнее в вики» ведёт на страницу фракции", async ({ page }) => {
+    await page.goto("./");
+    await expect(page.locator(".fac__link").first()).toHaveAttribute(
+      "href",
+      "/WWN.site/wiki/factions/fenearth/",
+    );
+  });
+
+  test("404 отдаёт оформленную страницу", async ({ page }) => {
+    const response = await page.goto("missing-page/");
+    expect(response?.status()).toBe(404);
+    const code = page.locator(".notfound__code");
+    await expect(code).toBeVisible();
+    const fontSize = await code.evaluate((element) =>
+      Number.parseFloat(getComputedStyle(element).fontSize),
+    );
+    expect(fontSize).toBeGreaterThan(70);
+  });
 });

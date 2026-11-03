@@ -28,15 +28,15 @@ const blocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 <title>{title}</title>
 <meta name="description" content={description} />
 {noindex && <meta name="robots" content="noindex" />}
-<link rel="canonical" href={canonicalUrl} />
-<link rel="alternate" hreflang="ru" href={ruUrl} />
-<link rel="alternate" hreflang="en" href={enUrl} />
-<link rel="alternate" hreflang="x-default" href={ruUrl} />
+{!noindex && <link rel="canonical" href={canonicalUrl} />}
+{!noindex && <link rel="alternate" hreflang="ru" href={ruUrl} />}
+{!noindex && <link rel="alternate" hreflang="en" href={enUrl} />}
+{!noindex && <link rel="alternate" hreflang="x-default" href={ruUrl} />}
 <meta property="og:type" content={type} />
 <meta property="og:site_name" content="WWN" />
 <meta property="og:locale" content={ogLocale} />
 <meta property="og:locale:alternate" content={ogLocaleAlt} />
-<meta property="og:url" content={canonicalUrl} />
+{!noindex && <meta property="og:url" content={canonicalUrl} />}
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:image" content={ogImage} />

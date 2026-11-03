@@ -10,14 +10,14 @@ export class ApiError extends Error {
   }
 }
 
-async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
+async function request<T>(path: string, init: RequestInit = {}, timeoutMs = 60_000): Promise<T> {
   const headers = new Headers(init.headers);
   if (init.body && !headers.has("Content-Type")) headers.set("Content-Type", "application/json");
   const response = await fetch(path, {
     ...init,
     headers,
     credentials: "same-origin",
-    signal: init.signal ?? AbortSignal.timeout(60_000),
+    signal: init.signal ?? AbortSignal.timeout(timeoutMs),
   });
   let payload: unknown = null;
   const text = await response.text();
@@ -40,13 +40,13 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
 }
 
 export const api = {
-  get<T>(path: string): Promise<T> {
-    return request<T>(path);
+  get<T>(path: string, timeoutMs?: number): Promise<T> {
+    return request<T>(path, {}, timeoutMs);
   },
-  post<T>(path: string, body: unknown): Promise<T> {
-    return request<T>(path, { method: "POST", body: JSON.stringify(body) });
+  post<T>(path: string, body: unknown, timeoutMs?: number): Promise<T> {
+    return request<T>(path, { method: "POST", body: JSON.stringify(body) }, timeoutMs);
   },
-  delete<T>(path: string): Promise<T> {
-    return request<T>(path, { method: "DELETE" });
+  delete<T>(path: string, timeoutMs?: number): Promise<T> {
+    return request<T>(path, { method: "DELETE" }, timeoutMs);
   },
 };

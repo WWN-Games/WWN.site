@@ -708,6 +708,10 @@
     opacity 0.15s,
     color 0.15s;
 }
+/* Текст рисуем псевдоэлементом: он не попадает в TOC и Pagefind. */
+.article__body .article__anchor::before {
+  content: "#";
+}
 .article__body h2:hover .article__anchor,
 .article__body h3:hover .article__anchor,
 .article__anchor:focus-visible {

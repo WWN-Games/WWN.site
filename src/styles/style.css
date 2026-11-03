@@ -1470,9 +1470,6 @@ body:has(.mobile-nav:popover-open) {
   background: rgba(88, 168, 255, 0.1);
   border-color: var(--line-strong);
 }
-.news__all {
-  margin-top: 42px;
-}
 .news__card h3 {
   font-size: 17px;
   color: #fff;

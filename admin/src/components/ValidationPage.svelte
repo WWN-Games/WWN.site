@@ -7,9 +7,10 @@
     navigate: (path: string) => void;
     toast: ToastFn;
     initial: ValidationState;
+    refresh: () => void;
   }
 
-  const { navigate, toast, initial }: Props = $props();
+  const { navigate, toast, initial, refresh }: Props = $props();
 
   let state = $state<ValidationState>({ ok: true, errors: [], checkedAt: "" });
   let running = $state(false);
@@ -32,6 +33,7 @@
     try {
       state = await api.post<ValidationState>("/api/validate", {});
       toast(state.ok ? "Валидация пройдена" : `Найдено ошибок: ${state.errors.length}`, state.ok ? "ok" : "warn");
+      refresh();
     } catch (cause) {
       toast(cause instanceof Error ? cause.message : String(cause), "error");
     } finally {

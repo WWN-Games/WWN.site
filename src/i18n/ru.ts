@@ -85,7 +85,6 @@ export const ru = {
   "gallery.next": "Вперёд",
   "news.title": "Что нового",
   "news.subtitle": "Новости мода и сообщества",
-  "news.all": "Релизы",
   "download.title": "Скачать WWN",
   "download.subtitle": "Установка за пару минут",
   "download.steam.title": "Steam Workshop",

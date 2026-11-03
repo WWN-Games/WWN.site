@@ -13,7 +13,6 @@ import { remarkWikiLinks } from "./remark-wiki-links";
 
 export const AUTOLINK_HEADINGS_OPTIONS = {
   behavior: "append" as const,
-  content: { type: "text" as const, value: "#" },
   properties: { className: ["article__anchor"], tabIndex: 0 },
 };
 

@@ -58,7 +58,7 @@ const isActive = (section?: string) => Boolean(section && path.startsWith(sectio
     </nav>
 
     <div class="header__side">
-      <LangSwitch lang={lang} />
+      <LangSwitch lang={lang} {path} />
       <button
         class="icon-btn burger"
         id="burger"
@@ -85,5 +85,5 @@ const isActive = (section?: string) => Boolean(section && path.startsWith(sectio
       );
     })
   }
-  <LangSwitch lang={lang} />
+  <LangSwitch lang={lang} {path} />
 </div>

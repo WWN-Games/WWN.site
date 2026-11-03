@@ -27,7 +27,7 @@ const factions = factionsData.factions
     motto: faction.motto?.[lang] ?? "",
     desc: faction.desc[lang],
     chips: CHIPS[faction.id] ?? [],
-    href: localeHref(lang, `${faction.lore}/`),
+    href: localeHref(lang, `wiki/${faction.lore}/`),
   }));
 ---
 

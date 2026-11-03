@@ -157,6 +157,9 @@ export function validateContent(): string[] {
   // --- статьи вики ------------------------------------------------------------
   const articles: Article[] = [];
   const slugsByLang = new Map<Lang, Set<string>>(LANGS.map((lang) => [lang, new Set<string>()]));
+  const publishedSlugsByLang = new Map<Lang, Set<string>>(
+    LANGS.map((lang) => [lang, new Set<string>()]),
+  );
 
   for (const file of listFiles(WIKI_DIR, ".md")) {
     const name = relative(file);
@@ -196,6 +199,7 @@ export function validateContent(): string[] {
     const dir = slug.split("/").slice(0, -1).join("/");
     articles.push({ file: name, lang, section, slug, dir, data: result.data, body: parsed.body });
     slugsByLang.get(lang)?.add(slug);
+    if (!result.data.draft) publishedSlugsByLang.get(lang)?.add(slug);
   }
 
   // паритет языков
@@ -250,7 +254,8 @@ export function validateContent(): string[] {
       const raw = match[1];
       if (raw === undefined) continue;
       const target = resolveMarkdownLink(raw, article.lang, article.dir);
-      if (target === null || !slugsByLang.get(article.lang)?.has(target)) {
+      const available = article.data.draft ? slugsByLang : publishedSlugsByLang;
+      if (target === null || !available.get(article.lang)?.has(target)) {
         errors.push(`${article.file}: ссылка «${raw}» ведёт в несуществующую статью`);
       }
     }

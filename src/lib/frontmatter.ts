@@ -4,9 +4,22 @@
    в редакторе и `pnpm validate` не расходились.
    ============================================================================ */
 
-import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
+import {
+  type ParseOptions,
+  parseDocument,
+  type SchemaOptions,
+  stringify as stringifyYaml,
+} from "yaml";
 
 import { type WikiFrontMatter, wikiSchema } from "./schemas.ts";
+
+/* Те же опции, что у Astro Content Layer: иначе timestamp-подобные строки
+   разбираются по-разному и админка может записать невалидный front matter. */
+const PARSE_OPTIONS: ParseOptions & SchemaOptions = {
+  customTags: ["timestamp"],
+  merge: true,
+  schema: "core",
+};
 
 export interface ParsedFrontMatter {
   data: Record<string, unknown>;
@@ -20,7 +33,9 @@ export function parseArticleFrontMatter(raw: string): ParsedFrontMatter {
 
   let parsed: unknown;
   try {
-    parsed = parseYaml(match[1] ?? "");
+    const document = parseDocument(match[1] ?? "", PARSE_OPTIONS);
+    if (document.errors.length > 0) throw document.errors[0];
+    parsed = document.toJS();
   } catch (error) {
     throw new Error(
       `Ошибка YAML во front matter: ${error instanceof Error ? error.message : error}`,
@@ -45,6 +60,9 @@ export function serializeArticleFrontMatter(
   extra?: Record<string, unknown>,
 ): string {
   const frontMatter = { ...extra, ...data, draft: data.draft ?? false };
-  const yaml = stringifyYaml(frontMatter, { lineWidth: 0 }).trimEnd();
+  const yaml = stringifyYaml(frontMatter, {
+    customTags: ["timestamp"],
+    lineWidth: 0,
+  }).trimEnd();
   return `---\n${yaml}\n---\n\n${body.replace(/^\n+/, "")}`;
 }

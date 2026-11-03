@@ -14,6 +14,9 @@ export const SITE_DEV_URL = `${SITE_ORIGIN}${SITE_BASE}`;
 
 export const IS_LOOPBACK_HOST = HOST === "127.0.0.1" || HOST === "localhost" || HOST === "::1";
 
+/** Origin админки с корректными скобками для IPv6. */
+export const ADMIN_ORIGIN = `http://${HOST.includes(":") ? `[${HOST}]` : HOST}:${PORT}`;
+
 /** Дополнительные origin для ADMIN_HOST вне loopback: ADMIN_ORIGIN=http://192.168.1.10:4322 */
 export const EXTRA_ORIGINS = (process.env.ADMIN_ORIGIN ?? "")
   .split(",")

@@ -229,7 +229,7 @@
               {askConfirm}
             />
           {:else if route.view === "validation"}
-            <ValidationPage {navigate} {toast} initial={bootstrap.validation} />
+            <ValidationPage {navigate} {toast} initial={bootstrap.validation} {refresh} />
           {:else if route.view === "git"}
             <GitPage {toast} {askConfirm} {refresh} />
           {/if}

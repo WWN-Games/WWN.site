@@ -189,13 +189,17 @@
       const dataUrl = await readAsDataUrl(file);
       const fallbackAlt = file.name.replace(/\.[^.]+$/, "");
       const alt = window.prompt("Подпись к изображению (alt)", fallbackAlt) ?? fallbackAlt;
-      const result = await api.post<UploadResult>("/api/upload", {
-        kind: "article",
-        filename: file.name,
-        dataUrl,
-        slug,
-        alt,
-      });
+      const result = await api.post<UploadResult>(
+        "/api/upload",
+        {
+          kind: "article",
+          filename: file.name,
+          dataUrl,
+          slug,
+          alt,
+        },
+        120_000,
+      );
       insert(`\n${result.markdown ?? ""}\n`);
       toast("Изображение загружено и вставлено");
     } catch (cause) {

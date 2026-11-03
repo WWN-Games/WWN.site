@@ -87,7 +87,6 @@ export const en = {
   "gallery.next": "Next",
   "news.title": "What's new",
   "news.subtitle": "Mod and community news",
-  "news.all": "Releases",
   "download.title": "Download WWN",
   "download.subtitle": "Install in a couple of minutes",
   "download.steam.title": "Steam Workshop",

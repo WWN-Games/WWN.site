@@ -23,3 +23,43 @@ const description = t(lang, "notfound.desc");
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .notfound {
+    display: grid;
+    justify-items: center;
+    gap: 14px;
+    padding: clamp(48px, 12vh, 120px) 0 clamp(64px, 14vh, 140px);
+    text-align: center;
+  }
+
+  .notfound__code {
+    font-family: var(--font-display);
+    font-size: clamp(76px, 18vw, 148px);
+    line-height: 1;
+    letter-spacing: 0.02em;
+    background: var(--grad-text);
+    background-clip: text;
+    color: transparent;
+  }
+
+  .notfound__desc {
+    max-width: 46ch;
+    color: var(--muted);
+  }
+
+  .notfound__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 10px;
+  }
+
+  @media (forced-colors: active) {
+    .notfound__code {
+      color: CanvasText;
+      background: none;
+    }
+  }
+</style>
