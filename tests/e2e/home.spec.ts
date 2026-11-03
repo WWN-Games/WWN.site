@@ -98,14 +98,23 @@ test.describe("Главная", () => {
     );
   });
 
-  test("404 отдаёт оформленную страницу", async ({ page }) => {
+  test("404 — отдельная английская страница", async ({ page }) => {
     const response = await page.goto("missing-page/");
     expect(response?.status()).toBe(404);
+    await expect(page.locator("html")).toHaveAttribute("lang", "en");
+    await expect(page.locator(".notfound__desc")).toContainText("doesn't exist");
     const code = page.locator(".notfound__code");
     await expect(code).toBeVisible();
     const fontSize = await code.evaluate((element) =>
       Number.parseFloat(getComputedStyle(element).fontSize),
     );
     expect(fontSize).toBeGreaterThan(70);
+  });
+
+  test("404 для EN-пути тоже английская", async ({ page }) => {
+    const response = await page.goto("en/missing-page/");
+    expect(response?.status()).toBe(404);
+    await expect(page.locator("html")).toHaveAttribute("lang", "en");
+    await expect(page.locator(".notfound__desc")).toContainText("doesn't exist");
   });
 });
