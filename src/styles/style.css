@@ -139,18 +139,6 @@ svg {
   flex: none;
 }
 
-/* до применения переводов привязки пусты — резервируем строку,
-   чтобы появление текста не сдвигало уже отрисованный макет
-   (в hero текст многострочный — там резерв только вредит) */
-[data-i18n]:empty::after,
-[data-i18n-html]:empty::after {
-  content: "\200b";
-}
-.hero [data-i18n]:empty::after,
-.hero [data-i18n-html]:empty::after {
-  content: none;
-}
-
 ::selection {
   background: rgba(var(--cyan-rgb), 0.32);
   color: #fff;
@@ -294,11 +282,6 @@ body:has(dialog[open]) {
 .btn--lg svg {
   width: 24px;
   height: 24px;
-}
-/* оптическая коррекция: заглавные сидят на ~1px выше центра */
-.btn--lg [data-i18n] {
-  position: relative;
-  top: 1px;
 }
 .btn:focus-visible,
 a:focus-visible,
@@ -1797,7 +1780,9 @@ body:has(.mobile-nav:popover-open) {
 }
 
 /* :where() — нулевая специфичность: reveal не перебивает hover-правила компонентов */
-:where([data-reveal]) {
+/* Скрываем блоки только при работающем JS: класс .js ставит inline-скрипт
+   в <head>, а .js-reveal — аварийный таймаут, если бандл не загрузился. */
+.js:not(.js-reveal) :where([data-reveal]:not(.is-in)) {
   opacity: 0;
   transform: translateY(var(--reveal-shift));
 }

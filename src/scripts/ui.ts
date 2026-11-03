@@ -1,36 +1,50 @@
 /* ============================================================================
    WWN — общий интерфейс: шапка, прогресс, scrollspy, reveal, год.
-   Скрипт переживает View Transitions: инициализация на каждом astro:page-load.
+   Скрипт переживает View Transitions: на каждом astro:page-load старые
+   обработчики и observers отменяются, затем создаются новые.
    ============================================================================ */
 
 import { debounce, prefersReducedMotion } from "../lib/utils";
 
 const REVEAL = { threshold: 0, rootMargin: "0px" };
 let revealObserver: IntersectionObserver | null = null;
+let cleanup: (() => void) | null = null;
 
 function initYear(): void {
   const year = document.querySelector("#year");
   if (year) year.textContent = String(new Date().getFullYear());
 }
 
-function initMobileNav(): void {
+function initMobileNav(signal: AbortSignal): void {
   const burger = document.querySelector<HTMLElement>("#burger");
   const mobileNav = document.querySelector<HTMLElement>("#mobileNav");
-  if (!burger || !mobileNav || mobileNav.dataset.bound === "true") return;
-  mobileNav.dataset.bound = "true";
+  if (!burger || !mobileNav) return;
 
-  mobileNav.addEventListener("click", (event) => {
-    if ((event.target as HTMLElement).closest("a")) mobileNav.hidePopover();
-  });
-  mobileNav.addEventListener("toggle", (event) => {
-    burger.setAttribute("aria-expanded", String((event as ToggleEvent).newState === "open"));
-  });
-  window.matchMedia("(min-width: 901px)").addEventListener("change", (event) => {
-    if (event.matches) mobileNav.hidePopover();
-  });
+  mobileNav.addEventListener(
+    "click",
+    (event) => {
+      if ((event.target as HTMLElement).closest("a")) mobileNav.hidePopover();
+    },
+    { signal },
+  );
+  mobileNav.addEventListener(
+    "toggle",
+    (event) => {
+      burger.setAttribute("aria-expanded", String((event as ToggleEvent).newState === "open"));
+    },
+    { signal },
+  );
+  window.matchMedia("(min-width: 901px)").addEventListener(
+    "change",
+    (event) => {
+      if (event.matches) mobileNav.hidePopover();
+    },
+    { signal },
+  );
 }
 
 function initReveal(): void {
+  document.documentElement.classList.add("reveal-ready");
   const elements = [...document.querySelectorAll<HTMLElement>("[data-reveal]")].filter(
     (element) => !element.classList.contains("is-in"),
   );
@@ -52,7 +66,7 @@ function initReveal(): void {
   for (const element of elements) revealObserver.observe(element);
 }
 
-function initScroll(): void {
+function initScroll(signal: AbortSignal): void {
   const header = document.querySelector("#header");
   if (!header) return;
 
@@ -73,8 +87,14 @@ function initScroll(): void {
   };
   if (spyTargets.length) {
     measureSpy();
-    window.addEventListener("resize", debounce(measureSpy, 150));
-    document.fonts.ready.then(measureSpy).catch(() => {});
+    const remeasure = debounce(measureSpy, 150);
+    window.addEventListener("resize", remeasure, { signal });
+    signal.addEventListener("abort", remeasure.cancel, { once: true });
+    document.fonts.ready
+      .then(() => {
+        if (!signal.aborted) measureSpy();
+      })
+      .catch(() => {});
   }
 
   let maxScroll = 0;
@@ -82,7 +102,9 @@ function initScroll(): void {
     maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
   };
   measureScroll();
-  new ResizeObserver(measureScroll).observe(document.body);
+  const resizeObserver = new ResizeObserver(measureScroll);
+  resizeObserver.observe(document.body);
+  signal.addEventListener("abort", () => resizeObserver.disconnect(), { once: true });
 
   let ticking = false;
   const update = () => {
@@ -111,23 +133,41 @@ function initScroll(): void {
   };
 
   update();
-  window.addEventListener("scroll", schedule, { passive: true });
+  window.addEventListener("scroll", schedule, { passive: true, signal });
 
-  if (toTop && toTop.dataset.bound !== "true") {
-    toTop.dataset.bound = "true";
-    toTop.addEventListener("click", (event) => {
-      event.preventDefault();
-      window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? "auto" : "smooth" });
-    });
+  if (toTop) {
+    toTop.addEventListener(
+      "click",
+      (event) => {
+        event.preventDefault();
+        window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? "auto" : "smooth" });
+      },
+      { signal },
+    );
   }
 }
 
 function boot(): void {
+  cleanup?.();
+
+  const controller = new AbortController();
+  const { signal } = controller;
+
   initYear();
-  initMobileNav();
-  initScroll();
+  initMobileNav(signal);
+  initScroll(signal);
   initReveal();
+
+  cleanup = () => {
+    controller.abort();
+    revealObserver?.disconnect();
+    revealObserver = null;
+  };
 }
 
+document.addEventListener("astro:before-swap", () => {
+  cleanup?.();
+  cleanup = null;
+});
 document.addEventListener("astro:page-load", boot);
 boot();

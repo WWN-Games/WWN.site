@@ -5,18 +5,25 @@
   "type": "module",
   "scripts": {
     "start": "tsx server/index.ts",
-    "dev": "tsx watch server/index.ts"
+    "dev": "tsx watch server/index.ts",
+    "build": "vite build",
+    "check": "node ../node_modules/typescript/bin/tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
     "@sveltejs/vite-plugin-svelte": "^7.3.1",
+    "astro": "^7.4.5",
+    "rehype-autolink-headings": "^7.1.0",
     "rehype-raw": "^7.0.0",
+    "rehype-slug": "^6.0.0",
     "rehype-stringify": "^10.0.1",
     "remark-gfm": "^4.0.1",
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.2",
+    "sharp": "^0.35.5",
     "svelte": "^5.57.3",
     "tsx": "^4.20.0",
     "unified": "^11.0.5",
+    "vfile": "^6.0.3",
     "vite": "^8.3.5",
     "yaml": "^2.9.1"
   },

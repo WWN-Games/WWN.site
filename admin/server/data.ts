@@ -1,18 +1,9 @@
 import path from "node:path";
 
+import { COLLECTION_FILES, type CollectionName } from "../../src/lib/collections.ts";
 import type { Faction, Section, Tag } from "../shared/types.ts";
 import { SITE_ROOT } from "./config.ts";
 import { HttpError, readJson } from "./http.ts";
-
-export const COLLECTION_FILES = {
-  units: "src/data/units.json",
-  buildings: "src/data/buildings.json",
-  factions: "src/data/factions.json",
-  tags: "src/data/tags.json",
-  sections: "src/data/sections.json",
-} as const;
-
-export type CollectionName = keyof typeof COLLECTION_FILES;
 
 export function collectionPath(name: CollectionName): string {
   return path.join(SITE_ROOT, COLLECTION_FILES[name]);

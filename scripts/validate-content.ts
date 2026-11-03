@@ -10,6 +10,7 @@ import { fileURLToPath } from "node:url";
 
 import type { ZodType } from "astro/zod";
 
+import { parseArticleFrontMatter } from "../src/lib/frontmatter.ts";
 import {
   buildingSchema,
   factionSchema,
@@ -17,6 +18,8 @@ import {
   statsSchema,
   tagSchema,
   unitSchema,
+  type WikiFrontMatter,
+  wikiSchema,
 } from "../src/lib/schemas.ts";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -27,24 +30,13 @@ const PUBLIC_DIR = path.join(ROOT, "public");
 const LANGS = ["ru", "en"] as const;
 type Lang = (typeof LANGS)[number];
 
-const FRONT_MATTER_KEYS = ["title", "desc", "order", "updated", "draft"] as const;
-type FrontMatterKey = (typeof FRONT_MATTER_KEYS)[number];
-
-interface FrontMatter {
-  title: string;
-  desc: string;
-  order: number;
-  updated: string;
-  draft: boolean;
-}
-
 interface Article {
   file: string;
   lang: Lang;
   section: string;
   slug: string;
   dir: string;
-  data: FrontMatter;
+  data: WikiFrontMatter;
   body: string;
 }
 
@@ -60,93 +52,6 @@ function listFiles(dir: string, extension: string): string[] {
     else if (entry.isFile() && entry.name.endsWith(extension)) files.push(full);
   }
   return files.sort((a, b) => a.localeCompare(b));
-}
-
-function isFrontMatterKey(key: string): key is FrontMatterKey {
-  return (FRONT_MATTER_KEYS as readonly string[]).includes(key);
-}
-
-function isRealDate(value: string): boolean {
-  const [year, month, day] = value.split("-").map(Number);
-  if (year === undefined || month === undefined || day === undefined) return false;
-  const date = new Date(Date.UTC(year, month - 1, day));
-  return (
-    date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day
-  );
-}
-
-/** Строгий разбор front matter: title/desc в кавычках, order:int, updated:YYYY-MM-DD, draft:bool. */
-function parseFrontMatter(
-  raw: string,
-  file: string,
-  errors: string[],
-): { data: FrontMatter | null; body: string } {
-  const match = /^---\r?\n([\s\S]*?)\r?\n---[ \t]*(?:\r?\n|$)/.exec(raw);
-  if (!match) {
-    errors.push(`${file}: нет front matter (ожидается блок --- ... ---)`);
-    return { data: null, body: raw };
-  }
-  const body = raw.slice(match[0].length);
-  const values = new Map<FrontMatterKey, string>();
-  const lines = (match[1] ?? "").split(/\r?\n/);
-  lines.forEach((line, index) => {
-    if (line.trim() === "") return;
-    const parsed = /^([A-Za-z][A-Za-z0-9_-]*):[ \t]*(.*)$/.exec(line);
-    if (!parsed) {
-      errors.push(`${file}: front matter, строка ${index + 2}: неверный формат «${line}»`);
-      return;
-    }
-    const [, key, value] = parsed;
-    if (key === undefined || value === undefined) return;
-    if (!isFrontMatterKey(key)) {
-      errors.push(`${file}: front matter: неизвестное поле «${key}»`);
-      return;
-    }
-    if (values.has(key)) {
-      errors.push(`${file}: front matter: поле «${key}» повторяется`);
-      return;
-    }
-    values.set(key, value.trim());
-  });
-
-  const title = values.get("title");
-  if (title === undefined) errors.push(`${file}: front matter: нет поля title`);
-  else if (!/^".+"$/.test(title)) errors.push(`${file}: title должен быть в двойных кавычках`);
-
-  const desc = values.get("desc");
-  if (desc === undefined) errors.push(`${file}: front matter: нет поля desc`);
-  else if (!/^".+"$/.test(desc)) errors.push(`${file}: desc должен быть в двойных кавычках`);
-
-  const orderRaw = values.get("order");
-  let order: number | null = null;
-  if (orderRaw === undefined) errors.push(`${file}: front matter: нет поля order`);
-  else if (!/^\d+$/.test(orderRaw)) errors.push(`${file}: order должен быть целым числом`);
-  else {
-    order = Number(orderRaw);
-    if (order <= 0) errors.push(`${file}: order должен быть больше нуля`);
-  }
-
-  const updated = values.get("updated");
-  if (updated === undefined) errors.push(`${file}: front matter: нет поля updated`);
-  else if (!/^\d{4}-\d{2}-\d{2}$/.test(updated))
-    errors.push(`${file}: updated должен быть в формате YYYY-MM-DD`);
-  else if (!isRealDate(updated)) errors.push(`${file}: updated — несуществующая дата «${updated}»`);
-
-  const draftRaw = values.get("draft");
-  let draft = false;
-  if (draftRaw !== undefined) {
-    if (draftRaw === "true") draft = true;
-    else if (draftRaw === "false") draft = false;
-    else errors.push(`${file}: draft должен быть true или false`);
-  }
-
-  if (title === undefined || desc === undefined || order === null || updated === undefined) {
-    return { data: null, body };
-  }
-  return {
-    data: { title: title.slice(1, -1), desc: desc.slice(1, -1), order, updated, draft },
-    body,
-  };
 }
 
 /** Убирает блоки кода и инлайн-код: там ссылки и картинки не рендерятся. */
@@ -273,10 +178,23 @@ export function validateContent(): string[] {
     }
     const slug = parts.slice(1).join("/").replace(/\.md$/i, "");
     const raw = readFileSync(file, "utf8");
-    const { data, body } = parseFrontMatter(raw, name, errors);
-    if (!data) continue;
+    let parsed: ReturnType<typeof parseArticleFrontMatter>;
+    try {
+      parsed = parseArticleFrontMatter(raw);
+    } catch (error) {
+      errors.push(`${name}: ${error instanceof Error ? error.message : String(error)}`);
+      continue;
+    }
+    const result = wikiSchema.safeParse(parsed.data);
+    if (!result.success) {
+      for (const issue of result.error.issues) {
+        const at = issue.path.length > 0 ? `.${issue.path.map(String).join(".")}` : "";
+        errors.push(`${name}: front matter${at}: ${issue.message}`);
+      }
+      continue;
+    }
     const dir = slug.split("/").slice(0, -1).join("/");
-    articles.push({ file: name, lang, section, slug, dir, data, body });
+    articles.push({ file: name, lang, section, slug, dir, data: result.data, body: parsed.body });
     slugsByLang.get(lang)?.add(slug);
   }
 

@@ -27,11 +27,11 @@ function resolveLink(link: NewsItem["link"], lang: Lang): ResolvedLink | null {
 }
 
 const cards = news.map((item) => {
-  const tag = item.tag.replace(/[^\w-]/g, "") || "update";
+  const tag = item.tag;
   return {
     date: item.date,
     tag,
-    tagLabel: newsTagLabels[tag]?.[lang] ?? tag,
+    tagLabel: newsTagLabels[tag][lang],
     title: item.title[lang],
     text: item.text[lang],
     link: resolveLink(item.link, lang),

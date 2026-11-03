@@ -38,6 +38,7 @@ export const en = {
   "a11y.menu": "Menu",
   "a11y.language": "Site language",
   "a11y.gallery": "Gallery",
+  "a11y.breadcrumb": "Breadcrumb",
   "hero.badge": "version {version}",
   // biome-ignore format: двойные кавычки в HTML-разметке значения
   "hero.title": "A galaxy on the edge of <span class=\"accent\">the Triple Conflict</span>",
@@ -72,14 +73,6 @@ export const en = {
   "facsec.kicker": "Factions",
   "facsec.title": "Choose your side in this conflict!",
   "facsec.sub": "Only one will emerge victorious from this war.",
-  "facsec.fenearth.name": "Fenearth Republic",
-  "facsec.fenearth.motto": "Heir of the Galactic Federation",
-  "facsec.fenearth.desc":
-    "A federal parliamentary republic and the galaxy's second economy. Industrial might, GF technology and a heavy fleet.",
-  "facsec.proton.name": "Proton Movement",
-  "facsec.proton.motto": "PHATHOU — the First Order",
-  "facsec.proton.desc":
-    "A union of clans of the Oten Territory. A mass army, rugged hardware and the ferocity of the crocodile-like Vasst.",
   "facsec.openLore": "Read in the wiki",
   "factions.chip.industry": "Industry",
   "factions.chip.fleet": "Heavy fleet",
@@ -152,6 +145,7 @@ export const en = {
   "wiki.copy": "Copy",
   "wiki.copied": "Copied",
   "wiki.copyLink": "Copy link",
+  "wiki.anchor": "Link to section",
   "wiki.edit": "Edit on GitHub",
   "wiki.report": "Report an issue",
   "wiki.related": "Read also",
@@ -231,7 +225,6 @@ export const en = {
   "database.type.defense": "Defense",
   "database.count": "Showing {n} of {total}",
   "database.compare.title": "Comparison",
-  "database.compare.add": "Compare",
   "database.compare.addAria": "Add {name} to comparison",
   "database.compare.removeAria": "Remove {name} from comparison",
   "database.compare.selected": "Selected: {n} of {max}",

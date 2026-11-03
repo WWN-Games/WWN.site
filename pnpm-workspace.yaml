@@ -1,3 +1,7 @@
+packages:
+  - "."
+  - "admin"
+
 allowBuilds:
   esbuild: true
   sharp: true

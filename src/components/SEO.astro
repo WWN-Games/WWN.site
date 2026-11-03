@@ -8,19 +8,18 @@ interface Props {
   /** Путь без base и языка: "", "wiki/", "wiki/lore/history/", "database/". */
   path: string;
   type?: "website" | "article" | undefined;
-  image?: string | undefined;
   jsonLd?: Record<string, unknown> | Record<string, unknown>[] | undefined;
   noindex?: boolean | undefined;
 }
 
-const { lang, title, description, path, type = "website", image, jsonLd, noindex = false } = Astro.props;
+const { lang, title, description, path, type = "website", jsonLd, noindex = false } = Astro.props;
 
 const clean = path.replace(/^\/+|\/+$/g, "");
 const suffix = clean ? `${clean}/` : "";
 const canonicalUrl = `${SITE}${localeHref(lang, suffix)}`;
 const ruUrl = `${SITE}${href(suffix)}`;
 const enUrl = `${SITE}${href(`en/${suffix}`)}`;
-const ogImage = image ?? `${SITE}${href("img/bg/og-banner.webp")}`;
+const ogImage = `${SITE}${href("img/bg/og-banner.webp")}`;
 const ogLocale = lang === "ru" ? "ru_RU" : "en_US";
 const ogLocaleAlt = lang === "ru" ? "en_US" : "ru_RU";
 const blocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];

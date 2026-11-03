@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-
   import type { ToastFn, ValidationState } from "../../shared/types";
   import { api } from "../lib/api";
   import Icon from "./Icon.svelte";
@@ -8,13 +6,17 @@
   interface Props {
     navigate: (path: string) => void;
     toast: ToastFn;
-    refresh: () => void;
+    initial: ValidationState;
   }
 
-  const { navigate, toast, refresh }: Props = $props();
+  const { navigate, toast, initial }: Props = $props();
 
   let state = $state<ValidationState>({ ok: true, errors: [], checkedAt: "" });
   let running = $state(false);
+
+  $effect(() => {
+    state = initial;
+  });
 
   function routeFor(error: string): string | null {
     const article = /src\/content\/wiki\/(?:ru|en)\/([^/]+)\/(.+?)\.md/.exec(error);
@@ -30,7 +32,6 @@
     try {
       state = await api.post<ValidationState>("/api/validate", {});
       toast(state.ok ? "Валидация пройдена" : `Найдено ошибок: ${state.errors.length}`, state.ok ? "ok" : "warn");
-      refresh();
     } catch (cause) {
       toast(cause instanceof Error ? cause.message : String(cause), "error");
     } finally {
@@ -42,15 +43,6 @@
     state.checkedAt ? new Date(state.checkedAt).toLocaleString("ru-RU") : "—",
   );
 
-  onMount(() => {
-    // Показываем актуальное состояние на момент открытия страницы.
-    void api
-      .post<ValidationState>("/api/validate", {})
-      .then((next) => {
-        state = next;
-      })
-      .catch(() => undefined);
-  });
 </script>
 
 <div class="page-head">

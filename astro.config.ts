@@ -9,12 +9,8 @@ import svelte from "@astrojs/svelte";
 import { defineConfig, fontProviders } from "astro/config";
 import icon from "astro-icon";
 import pagefind from "astro-pagefind";
-import rehypeAutolinkHeadings from "rehype-autolink-headings";
-import rehypeSlug from "rehype-slug";
 
-import { rehypeArticleFeatures } from "./src/lib/markdown/rehype-article";
-import { rehypeAssetUrls } from "./src/lib/markdown/rehype-asset-urls";
-import { remarkWikiLinks } from "./src/lib/markdown/remark-wiki-links";
+import { REHYPE_PLUGINS, REMARK_PLUGINS } from "./src/lib/markdown/pipeline";
 import { BASE, SITE } from "./src/lib/site";
 
 // Те же unicode-range, что были в fonts.css: latin/cyrillic-сабсеты.
@@ -50,19 +46,8 @@ export default defineConfig({
 
   markdown: {
     processor: unified({
-      remarkPlugins: [remarkWikiLinks],
-      rehypePlugins: [
-        rehypeSlug,
-        [
-          rehypeAutolinkHeadings,
-          {
-            behavior: "append",
-            properties: { className: ["article__anchor"], tabIndex: -1, ariaHidden: "true" },
-          },
-        ],
-        rehypeAssetUrls,
-        rehypeArticleFeatures,
-      ],
+      remarkPlugins: [...REMARK_PLUGINS],
+      rehypePlugins: [...REHYPE_PLUGINS],
     }),
     shikiConfig: { theme: "github-dark" },
   },

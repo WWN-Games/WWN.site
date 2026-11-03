@@ -65,6 +65,7 @@ const isActive = (section?: string) => Boolean(section && path.startsWith(sectio
         type="button"
         aria-label={t(lang, "a11y.menu")}
         aria-controls="mobileNav"
+        aria-expanded="false"
         popovertarget="mobileNav"
       >
         <span></span>
@@ -74,6 +75,15 @@ const isActive = (section?: string) => Boolean(section && path.startsWith(sectio
 </header>
 
 <div class="mobile-nav" id="mobileNav" popover="auto">
-  {mobileItems.map((item) => <a href={item.href}>{t(lang, item.key)}</a>)}
+  {
+    mobileItems.map((item) => {
+      const active = isActive("section" in item ? item.section : undefined);
+      return (
+        <a href={item.href} aria-current={active ? "page" : undefined}>
+          {t(lang, item.key)}
+        </a>
+      );
+    })
+  }
   <LangSwitch lang={lang} />
 </div>

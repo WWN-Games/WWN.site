@@ -13,7 +13,12 @@ export class ApiError extends Error {
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   const headers = new Headers(init.headers);
   if (init.body && !headers.has("Content-Type")) headers.set("Content-Type", "application/json");
-  const response = await fetch(path, { ...init, headers, credentials: "same-origin" });
+  const response = await fetch(path, {
+    ...init,
+    headers,
+    credentials: "same-origin",
+    signal: init.signal ?? AbortSignal.timeout(60_000),
+  });
   let payload: unknown = null;
   const text = await response.text();
   if (text) {
@@ -25,8 +30,7 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   }
   if (!response.ok) {
     const record = payload as { error?: unknown; details?: unknown } | null;
-    const message =
-      typeof record?.error === "string" ? record.error : `Ошибка ${response.status}`;
+    const message = typeof record?.error === "string" ? record.error : `Ошибка ${response.status}`;
     const details = Array.isArray(record?.details)
       ? record.details.filter((item): item is string => typeof item === "string")
       : [];

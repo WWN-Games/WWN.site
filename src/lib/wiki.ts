@@ -5,9 +5,8 @@
 
 import { type CollectionEntry, getCollection } from "astro:content";
 
-import statsJson from "../data/stats.json";
-import { statsSchema } from "./schemas";
 import { type Lang, localeHref } from "./site";
+import { collectStats } from "./stats";
 
 export type WikiEntry = CollectionEntry<"wiki">;
 type PublishedWikiEntry = WikiEntry & { data: { draft: false } };
@@ -38,9 +37,29 @@ function bySectionThenOrder(a: WikiEntry, b: WikiEntry, sectionOrder: Map<string
   return sectionDiff || a.data.order - b.data.order || a.data.title.localeCompare(b.data.title);
 }
 
-/** Все статьи языка (в dev — включая черновики), в порядке разделов и order. */
-export async function getEntries(lang: Lang): Promise<WikiEntry[]> {
-  const [entries, sections] = await Promise.all([getCollection("wiki"), getCollection("sections")]);
+/* В статической сборке одна и та же коллекция запрашивается из getStaticPaths,
+   страницы и API. Кэш живёт на процесс сборки; в dev его нет, чтобы правки
+   Markdown подхватывались сразу. */
+const entriesCache = new Map<Lang, Promise<WikiEntry[]>>();
+const publishedCache = new Map<Lang, Promise<PublishedWikiEntry[]>>();
+let sectionsPromise: Promise<Awaited<ReturnType<typeof loadSections>>> | null = null;
+
+async function loadSections() {
+  const sections = await getCollection("sections");
+  return sections.sort((a, b) => a.data.order - b.data.order);
+}
+
+async function getSections() {
+  if (import.meta.env.DEV) return loadSections();
+  sectionsPromise ??= loadSections().catch((error: unknown) => {
+    sectionsPromise = null;
+    throw error;
+  });
+  return sectionsPromise;
+}
+
+async function loadEntries(lang: Lang): Promise<WikiEntry[]> {
+  const [entries, sections] = await Promise.all([getCollection("wiki"), getSections()]);
   const sectionOrder = new Map(sections.map((section) => [section.id, section.data.order]));
   return entries
     .filter((entry) => entryLang(entry) === lang)
@@ -48,14 +67,36 @@ export async function getEntries(lang: Lang): Promise<WikiEntry[]> {
     .sort((a, b) => bySectionThenOrder(a, b, sectionOrder));
 }
 
-export async function getPublished(lang: Lang): Promise<PublishedWikiEntry[]> {
-  const entries = await getEntries(lang);
-  return entries.filter((entry): entry is PublishedWikiEntry => !entry.data.draft);
+/** Все статьи языка (в dev — включая черновики), в порядке разделов и order. */
+export async function getEntries(lang: Lang): Promise<WikiEntry[]> {
+  if (import.meta.env.DEV) return loadEntries(lang);
+  let promise = entriesCache.get(lang);
+  if (!promise) {
+    promise = loadEntries(lang).catch((error: unknown) => {
+      entriesCache.delete(lang);
+      throw error;
+    });
+    entriesCache.set(lang, promise);
+  }
+  return promise;
 }
 
-async function getSections() {
-  const sections = await getCollection("sections");
-  return sections.sort((a, b) => a.data.order - b.data.order);
+export async function getPublished(lang: Lang): Promise<PublishedWikiEntry[]> {
+  if (import.meta.env.DEV) {
+    const entries = await getEntries(lang);
+    return entries.filter((entry): entry is PublishedWikiEntry => !entry.data.draft);
+  }
+  let promise = publishedCache.get(lang);
+  if (!promise) {
+    promise = getEntries(lang)
+      .then((entries) => entries.filter((entry): entry is PublishedWikiEntry => !entry.data.draft))
+      .catch((error: unknown) => {
+        publishedCache.delete(lang);
+        throw error;
+      });
+    publishedCache.set(lang, promise);
+  }
+  return promise;
 }
 
 /** Разделы с опубликованными статьями (для хаба и сайдбара). */
@@ -100,7 +141,7 @@ export async function getRelated(lang: Lang, slug: string): Promise<WikiEntry[]>
     .filter((entry) => (linksOf.get(entrySlug(entry)) ?? []).includes(slug))
     .map((entry) => entrySlug(entry));
 
-  const result = [...new Set([...outgoing, ...incoming])];
+  const result = [...new Set([...outgoing, ...incoming])].filter((target) => target !== slug);
   for (const neighbour of published.filter(
     (entry) => entrySection(entry) === entrySection(current),
   )) {
@@ -122,14 +163,7 @@ export async function getPager(
   return { prev: published[index - 1], next: published[index + 1] };
 }
 
-/** Живые цифры: юниты + строения и фракции считаются по данным, карты — из stats.json. */
-export async function getStats() {
-  const [units, buildings, factions] = await Promise.all([
-    getCollection("units"),
-    getCollection("buildings"),
-    getCollection("factions"),
-  ]);
-  const parsed = statsSchema.safeParse(statsJson);
-  const maps = parsed.success ? parsed.data.maps : 0;
-  return { units: units.length + buildings.length, factions: factions.length, maps };
+/** Живые цифры: юниты, строения, фракции и теги считаются по данным. */
+export function getStats() {
+  return collectStats();
 }

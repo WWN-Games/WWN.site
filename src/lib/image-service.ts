@@ -13,7 +13,7 @@ export default {
   validateOptions: (async (options, imageConfig, logger) => {
     const explicit = options.format;
     const validated = await sharpService.validateOptions?.(options, imageConfig, logger);
-    if (!validated) return options;
+    if (!validated) throw new Error("image-service: sharp не вернул валидированные опции");
     if (!explicit && validated.format !== "svg") validated.format = "avif";
     return validated;
   }) satisfies ValidateOptions,

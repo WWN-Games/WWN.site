@@ -35,14 +35,16 @@ const searchLabels = {
 <aside class="wiki-sidebar" aria-label={t(lang, "wiki.sidebar")}>
   <div class="wiki-sidebar__search">
     <Icon name="icon-park-outline:search" />
-    <input
-      type="text"
+    <button
+      type="button"
+      class="wiki-sidebar__search-field"
       id="searchInput"
-      readonly
-      placeholder={t(lang, "wiki.search.placeholder")}
+      aria-haspopup="dialog"
       aria-label={t(lang, "wiki.search.title")}
       data-search-open
-    />
+    >
+      <span class="wiki-sidebar__placeholder">{t(lang, "wiki.search.placeholder")}</span>
+    </button>
     <kbd class="wiki-sidebar__kbd">Ctrl K</kbd>
   </div>
 
@@ -81,5 +83,5 @@ const searchLabels = {
     <a class="btn btn--sm" href={`${localeHref(lang, "")}#download`}>{t(lang, "nav.download")}</a>
   </div>
 
-  <WikiSearch lang={lang} sections={searchSections} labels={searchLabels} client:load />
+  <WikiSearch lang={lang} sections={searchSections} labels={searchLabels} client:idle />
 </aside>

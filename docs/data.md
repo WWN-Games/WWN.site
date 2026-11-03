@@ -97,13 +97,13 @@
 { "maps": 13 }
 ```
 
-Единственное поле — число карт. Остальное считается на сборке: юниты + строения, фракции, теги, `cards` (= units + buildings) — `getStats()` в `src/lib/wiki.ts` и эндпоинт `stats.json`.
+Единственное поле — число карт. Остальное считается на сборке: `units`, `buildings`, `cards` (= units + buildings), `factions`, `tags` — `collectStats()` в `src/lib/stats.ts`, `getStats()` в `src/lib/wiki.ts` и эндпоинт `stats.json`.
 
 ## Публичный API
 
 Сборка публикует статические JSON-эндпоинты: `/api/v1/units.json`, `buildings.json`, `factions.json`, `tags.json`, `stats.json`, `index.json` (манифест).
 
-Общий конверт: `{ schemaVersion, generatedAt, count, items }`, `schemaVersion: 1`, заголовок `Cache-Control: public, max-age=3600`. В `items` — данные коллекции, отсортированные по `id`; в `stats.json` элементы `{ id, value }`, в `index.json` — `{ id, url, count }`.
+Общий конверт: `{ schemaVersion, generatedAt, count, items }`, `schemaVersion: 1`. Ответ формируется с заголовком `Cache-Control: public, max-age=3600`, но GitHub Pages отдаёт статические файлы без кастомных заголовков — фактический кэш зависит от хостинга/CDN. В `items` — данные коллекции, отсортированные по `id` (исключение — `factions.json`: по `order`, затем по `id`); в `stats.json` элементы `{ id, value }`, в `index.json` — `{ id, url, count }`.
 
 ## Сравнение карточек
 

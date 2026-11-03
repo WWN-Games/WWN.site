@@ -52,7 +52,7 @@
   async function load(): Promise<void> {
     loading = true;
     try {
-      applyStatus(await api.get<GitStatus>("/api/git/status"), true);
+      applyStatus(await api.get<GitStatus>("/api/git/status"));
       if (!message) {
         message = `content: обновление ${new Date().toISOString().slice(0, 10)}`;
       }

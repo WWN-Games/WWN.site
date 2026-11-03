@@ -11,7 +11,7 @@ import { visit } from "unist-util-visit";
 import { href } from "../site";
 
 const ASSET = /^\.\.\/assets\/(.+)$/;
-const RAW_ATTR = /(src|href)="(\.\.\/assets\/[^"]+)"/g;
+const RAW_ATTR = /\b(src|href|poster)=(["'])(\.\.\/assets\/[^"']+)\2/g;
 
 function rewrite(value: string): string {
   const match = value.match(ASSET);
@@ -29,13 +29,16 @@ export function rehypeAssetUrls() {
       const key = isLink ? "href" : "src";
       const value = node.properties?.[key];
       if (typeof value === "string") node.properties[key] = rewrite(value);
+      const poster = node.properties?.poster;
+      if (typeof poster === "string") node.properties.poster = rewrite(poster);
     });
 
     visit(tree, "raw", (node) => {
       const raw = node as unknown as { value: string };
       raw.value = raw.value.replace(
         RAW_ATTR,
-        (_match: string, attr: string, path: string) => `${attr}="${rewrite(path)}"`,
+        (_match: string, attr: string, quote: string, path: string) =>
+          `${attr}=${quote}${rewrite(path)}${quote}`,
       );
     });
   };

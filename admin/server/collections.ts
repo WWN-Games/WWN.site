@@ -1,7 +1,9 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import { isDeepStrictEqual } from "node:util";
-
+import { withDerivedDps } from "../../src/lib/cards.ts";
+import type { CollectionName } from "../../src/lib/collections.ts";
+import { BUILDING_TYPES, UNIT_TYPES } from "../../src/lib/content-constants.ts";
 import {
   buildingSchema,
   factionSchema,
@@ -11,154 +13,104 @@ import {
 } from "../../src/lib/schemas.ts";
 import type { Card, CollectionItem, Faction, Section, Tag } from "../shared/types.ts";
 import { SITE_ROOT } from "./config.ts";
-import {
-  type CollectionName,
-  collectionPath,
-  readFactions,
-  readItems,
-  readSections,
-  readTags,
-} from "./data.ts";
-import { HttpError, atomicWrite, fileExists, isInside, readText } from "./http.ts";
+import { collectionPath, readFactions, readItems, readSections, readTags } from "./data.ts";
+import { atomicWrite, fileExists, HttpError, isInside, readText } from "./http.ts";
 import { deleteJsonItem, updateJsonItem } from "./json-edit.ts";
-import { isSlug } from "./strings.ts";
+import { isSlug, isTagId } from "./strings.ts";
 import { runValidation } from "./validation.ts";
 
 const PUBLIC_ROOT = path.join(SITE_ROOT, "public");
 const SRC_ROOT = path.join(SITE_ROOT, "src");
-const UNIT_TYPES = ["ground", "air", "naval", "space", "support"];
-const BUILDING_TYPES = ["economy", "defense", "structure"];
-const TAG_GROUPS = ["tier", "class", "movement", "mod"];
-const SECTION_ICONS = ["book", "shield", "cube", "gear", "compass", "users", "clock", "rocket", "chat"];
 
 function stringArray(value: unknown): string[] {
   if (!Array.isArray(value)) return [];
   return value.filter((item): item is string => typeof item === "string" && item.trim() !== "");
 }
 
-function localized(value: { ru?: string; en?: string } | undefined): { ru: string; en: string } {
-  return { ru: value?.ru?.trim() ?? "", en: value?.en?.trim() ?? "" };
-}
-
-function optionalLocalized(
-  value: { ru?: string; en?: string } | undefined,
-): { ru: string; en?: string } | undefined {
-  const text = localized(value);
-  if (!text.ru && !text.en) return undefined;
-  const ru = text.ru || text.en;
-  return text.en ? { ru, en: text.en } : { ru };
-}
-
-function assertLocalized(value: { ru?: string; en?: string } | undefined, field: string): void {
-  const text = localized(value);
-  if (!text.ru) throw new HttpError(400, `${field}: не заполнено RU`);
-  if (!text.en) throw new HttpError(400, `${field}: не заполнено EN`);
-}
-
-function zodMessages(prefix: string, error: { issues: Array<{ path: PropertyKey[]; message: string }> }): string[] {
+function zodMessages(
+  prefix: string,
+  error: { issues: Array<{ path: PropertyKey[]; message: string }> },
+): string[] {
   return error.issues.map((issue) => {
     const at = issue.path.map(String).join(".");
     return `${prefix}${at ? `.${at}` : ""}: ${issue.message}`;
   });
 }
 
-function normalizeCard(item: Card): Record<string, unknown> {
-  assertLocalized(item.name, "name");
-  assertLocalized(item.desc, "desc");
-  const result: Record<string, unknown> = {
-    id: item.id.trim(),
-    name: localized(item.name),
-    faction: item.faction.trim(),
-    type: item.type,
-    desc: localized(item.desc),
-    tags: [...new Set(stringArray(item.tags))],
-    cost: item.cost,
-    hp: item.hp,
-    buildTime: item.buildTime,
-  };
-  for (const key of ["shield", "selfRegen", "shieldRegen", "speed", "range"] as const) {
-    const value = item[key];
-    if (typeof value === "number" && Number.isFinite(value)) result[key] = value;
-  }
-  const weapons = (item.weapons ?? []).map((weapon, index) => {
-    const name = localized(weapon.name);
-    if (!name.ru && !name.en) {
-      throw new HttpError(400, `weapons[${index}].name: не заполнено название`);
-    }
-    if (!Number.isFinite(weapon.damage) || weapon.damage < 0) {
-      throw new HttpError(400, `weapons[${index}].damage: нужно неотрицательное число`);
-    }
-    return { name: name.en ? name : { ru: name.ru }, damage: weapon.damage };
-  });
-  if (weapons.length > 0) result.weapons = weapons;
-  const dps = weapons.length
-    ? weapons.reduce((sum, weapon) => sum + weapon.damage, 0)
-    : item.dps;
-  if (typeof dps === "number" && Number.isFinite(dps)) result.dps = dps;
-  if (item.image !== undefined) result.image = item.image.replace(/^\/+/, "");
-  const role = optionalLocalized(item.role);
-  if (role) result.role = role;
-  if (item.strongVs !== undefined) result.strongVs = item.strongVs;
-  if (item.weakVs !== undefined) result.weakVs = item.weakVs;
-  if (item.draft) result.draft = true;
-  if (item.new) result.new = true;
-  return result;
+/** Обрезает текст и убирает пустой EN — схема сама подставит en = ru. */
+function cleanText(
+  value: { ru?: string; en?: string } | undefined,
+): { ru: string; en?: string } | undefined {
+  if (!value) return undefined;
+  const ru = value.ru?.trim() ?? "";
+  const en = value.en?.trim() ?? "";
+  if (!ru && !en) return undefined;
+  return en ? { ru: ru || en, en } : { ru: ru || en };
 }
 
-function normalizeFaction(item: Faction): Record<string, unknown> {
-  assertLocalized(item.name, "name");
-  assertLocalized(item.desc, "desc");
-  const result: Record<string, unknown> = {
-    id: item.id.trim(),
-    order: item.order,
-    name: localized(item.name),
-    color: item.color.trim(),
-    emblem: item.emblem.trim().replace(/^\/+/, "").replace(/^src\//, ""),
-    lore: item.lore.trim(),
-    desc: localized(item.desc),
-  };
-  const motto = optionalLocalized(item.motto);
-  if (motto) result.motto = motto;
-  const playstyle = optionalLocalized(item.playstyle);
-  if (playstyle) result.playstyle = playstyle;
-  const specialty = optionalLocalized(item.specialty);
-  if (specialty) result.specialty = specialty;
-  if (item.strengths) {
-    result.strengths = {
-      ru: stringArray(item.strengths.ru),
-      en: stringArray(item.strengths.en),
-    };
-  }
-  if (item.weaknesses) {
-    result.weaknesses = {
-      ru: stringArray(item.weaknesses.ru),
-      en: stringArray(item.weaknesses.en),
-    };
-  }
-  if (item.subfaction === true || (typeof item.subfaction === "string" && item.subfaction.trim())) {
-    result.subfaction = item.subfaction;
-  }
-  return result;
+function cleanTextOrList(
+  value: string[] | { ru?: string; en?: string } | undefined,
+): string[] | { ru: string; en?: string } | undefined {
+  if (Array.isArray(value)) return stringArray(value);
+  return cleanText(value);
 }
 
-function normalizeTag(item: Tag): Record<string, unknown> {
-  assertLocalized(item.name, "name");
+function cardPayload(item: Card): Record<string, unknown> {
+  const derived = withDerivedDps(item);
   return {
+    ...derived,
     id: item.id.trim(),
-    name: localized(item.name),
-    group: item.group,
+    name: cleanText(item.name),
+    faction: item.faction.trim(),
+    desc: cleanText(item.desc),
+    tags: [...new Set(stringArray(item.tags))],
+    image: item.image?.replace(/^\/+/, ""),
+    role: cleanText(item.role),
+    strongVs: cleanTextOrList(item.strongVs),
+    weakVs: cleanTextOrList(item.weakVs),
+    weapons: derived.weapons?.map((weapon) => ({
+      ...weapon,
+      name: cleanText(weapon.name),
+    })),
   };
 }
 
-function normalizeSection(item: Section): Record<string, unknown> {
-  assertLocalized(item.title, "title");
-  assertLocalized(item.desc, "desc");
+function factionPayload(item: Faction): Record<string, unknown> {
+  return {
+    ...item,
+    id: item.id.trim(),
+    name: cleanText(item.name),
+    color: item.color.trim(),
+    emblem: item.emblem
+      .trim()
+      .replace(/^\/+/, "")
+      .replace(/^src\//, ""),
+    lore: item.lore.trim(),
+    desc: cleanText(item.desc),
+    motto: cleanText(item.motto),
+    playstyle: cleanText(item.playstyle),
+    specialty: cleanText(item.specialty),
+    strengths: item.strengths
+      ? { ru: stringArray(item.strengths.ru), en: stringArray(item.strengths.en) }
+      : undefined,
+    weaknesses: item.weaknesses
+      ? { ru: stringArray(item.weaknesses.ru), en: stringArray(item.weaknesses.en) }
+      : undefined,
+    subfaction: item.subfaction,
+  };
+}
+
+function tagPayload(item: Tag): Record<string, unknown> {
+  return { id: item.id.trim(), name: cleanText(item.name), group: item.group };
+}
+
+function sectionPayload(item: Section): Record<string, unknown> {
   return {
     id: item.id.trim(),
     icon: item.icon,
     order: item.order,
-    title: localized(item.title),
-    desc: localized(item.desc),
+    title: cleanText(item.title),
+    desc: cleanText(item.desc),
   };
 }
 
@@ -181,11 +133,19 @@ async function validateCard(
   name: "units" | "buildings",
   item: Card,
   originalId: string | undefined,
-): Promise<void> {
-  if (!isSlug(item.id.trim())) throw new HttpError(400, "id: только латиница, цифры и дефис");
+): Promise<Card> {
+  item.id = item.id.trim();
+  item.faction = item.faction.trim();
+  if (!isSlug(item.id)) throw new HttpError(400, "id: только латиница, цифры и дефис");
   const typeValues = name === "units" ? UNIT_TYPES : BUILDING_TYPES;
-  if (!typeValues.includes(item.type)) throw new HttpError(400, `type: неизвестный тип «${item.type}»`);
-  if (!Number.isFinite(item.cost) || !Number.isFinite(item.hp) || !Number.isFinite(item.buildTime)) {
+  if (!(typeValues as readonly string[]).includes(item.type)) {
+    throw new HttpError(400, `type: неизвестный тип «${item.type}»`);
+  }
+  if (
+    !Number.isFinite(item.cost) ||
+    !Number.isFinite(item.hp) ||
+    !Number.isFinite(item.buildTime)
+  ) {
     throw new HttpError(400, "cost, hp и buildTime должны быть числами");
   }
   for (const key of ["shield", "selfRegen", "shieldRegen", "dps", "speed", "range"] as const) {
@@ -194,10 +154,6 @@ async function validateCard(
       throw new HttpError(400, `${key}: должно быть числом`);
     }
   }
-
-  const schema = name === "units" ? unitSchema : buildingSchema;
-  const parsed = schema.safeParse(normalizeCard(item));
-  if (!parsed.success) throw new HttpError(400, "Проверьте поля карточки", zodMessages(name, parsed.error));
 
   const factions = await readFactions();
   if (!factions.some((faction) => faction.id === item.faction)) {
@@ -223,71 +179,133 @@ async function validateCard(
   }
   if (image !== undefined && image !== "") {
     const target = path.resolve(PUBLIC_ROOT, image.replace(/^\/+/, ""));
-    if (!isInside(PUBLIC_ROOT, target)) throw new HttpError(400, "image: путь выходит за пределы public/");
-    if (!(await fileExists(target))) throw new HttpError(400, `image: файл public/${image} не найден`);
+    if (!isInside(PUBLIC_ROOT, target))
+      throw new HttpError(400, "image: путь выходит за пределы public/");
+    if (!(await fileExists(target)))
+      throw new HttpError(400, `image: файл public/${image} не найден`);
   }
-  item.image = image;
+  item.image = image?.replace(/^\/+/, "");
+
+  if (originalId && originalId !== item.id) await moveCardImage(originalId, item.id, item);
+
+  const schema = name === "units" ? unitSchema : buildingSchema;
+  const parsed = schema.safeParse(cardPayload(item));
+  if (!parsed.success) {
+    throw new HttpError(400, "Проверьте поля карточки", zodMessages(name, parsed.error));
+  }
+  return parsed.data;
 }
 
-async function validateFaction(item: Faction, originalId: string | undefined): Promise<void> {
-  if (!isSlug(item.id.trim())) throw new HttpError(400, "id: только латиница, цифры и дефис");
+async function validateFaction(item: Faction, originalId: string | undefined): Promise<Faction> {
+  item.id = item.id.trim();
+  item.color = item.color.trim();
+  item.emblem = item.emblem
+    .trim()
+    .replace(/^\/+/, "")
+    .replace(/^src\//, "");
+  item.lore = item.lore.trim();
+  if (!isSlug(item.id)) throw new HttpError(400, "id: только латиница, цифры и дефис");
   if (!Number.isInteger(item.order) || item.order <= 0) {
     throw new HttpError(400, "order: целое число больше нуля");
   }
   if (!/^#[0-9a-f]{6}$/i.test(item.color)) throw new HttpError(400, "color: нужен формат #rrggbb");
-  const parsed = factionSchema.safeParse(normalizeFaction(item));
-  if (!parsed.success) throw new HttpError(400, "Проверьте поля фракции", zodMessages("faction", parsed.error));
 
   const factions = await readFactions();
   if (factions.some((faction) => faction.id === item.id && faction.id !== originalId)) {
     throw new HttpError(409, `Фракция «${item.id}» уже существует`);
   }
+  if (originalId && originalId !== item.id) {
+    const refs = await checkCardReferences(originalId, "faction");
+    if (refs.length > 0) {
+      throw new HttpError(
+        409,
+        `Нельзя переименовать: фракция используется карточками ${refs.slice(0, 5).join(", ")}`,
+      );
+    }
+  }
   const duplicateOrder = factions.find(
-    (faction) => faction.order === item.order && faction.id !== originalId && faction.id !== item.id,
+    (faction) =>
+      faction.order === item.order && faction.id !== originalId && faction.id !== item.id,
   );
-  if (duplicateOrder) throw new HttpError(409, `order ${item.order} уже занят фракцией «${duplicateOrder.id}»`);
+  if (duplicateOrder)
+    throw new HttpError(409, `order ${item.order} уже занят фракцией «${duplicateOrder.id}»`);
 
-  const emblem = item.emblem.trim().replace(/^\/+/, "").replace(/^src\//, "");
-  const emblemFile = path.resolve(SRC_ROOT, emblem);
+  const emblemFile = path.resolve(SRC_ROOT, item.emblem);
   if (!isInside(path.join(SRC_ROOT, "assets/img/factions"), emblemFile)) {
     throw new HttpError(400, "emblem: путь должен вести в src/assets/img/factions");
   }
-  if (!(await fileExists(emblemFile))) throw new HttpError(400, `emblem: файл не найден (${emblem})`);
+  if (!(await fileExists(emblemFile))) {
+    throw new HttpError(400, `emblem: файл не найден (${item.emblem})`);
+  }
 
   if (typeof item.subfaction === "string" && item.subfaction.trim()) {
-    if (item.subfaction === item.id) throw new HttpError(400, "subfaction: фракция не может быть родителем самой себе");
+    item.subfaction = item.subfaction.trim();
+    if (item.subfaction === item.id) {
+      throw new HttpError(400, "subfaction: фракция не может быть родителем самой себе");
+    }
     if (!factions.some((faction) => faction.id === item.subfaction)) {
       throw new HttpError(400, `subfaction: неизвестная фракция «${item.subfaction}»`);
     }
   }
+
+  const parsed = factionSchema.safeParse(factionPayload(item));
+  if (!parsed.success) {
+    throw new HttpError(400, "Проверьте поля фракции", zodMessages("faction", parsed.error));
+  }
+  return parsed.data;
 }
 
-async function validateTag(item: Tag, originalId: string | undefined): Promise<void> {
-  if (!isSlug(item.id.trim())) throw new HttpError(400, "id: только латиница, цифры и дефис");
-  if (!TAG_GROUPS.includes(item.group)) throw new HttpError(400, `group: неизвестная группа «${item.group}»`);
-  const parsed = tagSchema.safeParse(normalizeTag(item));
-  if (!parsed.success) throw new HttpError(400, "Проверьте поля тега", zodMessages("tag", parsed.error));
+async function validateTag(item: Tag, originalId: string | undefined): Promise<Tag> {
+  item.id = item.id.trim();
+  if (!isTagId(item.id)) {
+    throw new HttpError(400, "id: латиница, цифры, дефис, подчёркивание и +");
+  }
+  const parsed = tagSchema.safeParse(tagPayload(item));
+  if (!parsed.success) {
+    throw new HttpError(400, "Проверьте поля тега", zodMessages("tag", parsed.error));
+  }
   const tags = await readTags();
   if (tags.some((tag) => tag.id === item.id && tag.id !== originalId)) {
     throw new HttpError(409, `Тег «${item.id}» уже существует`);
   }
+  if (originalId && originalId !== item.id) {
+    const refs = await checkCardReferences(originalId, "tag");
+    if (refs.length > 0) {
+      throw new HttpError(
+        409,
+        `Нельзя переименовать: тег используется карточками ${refs.slice(0, 5).join(", ")}`,
+      );
+    }
+  }
+  return parsed.data;
 }
 
-async function validateSection(item: Section, originalId: string | undefined): Promise<void> {
-  if (!isSlug(item.id.trim())) throw new HttpError(400, "id: только латиница, цифры и дефис");
+async function validateSection(item: Section, originalId: string | undefined): Promise<Section> {
+  item.id = item.id.trim();
+  if (!isSlug(item.id)) throw new HttpError(400, "id: только латиница, цифры и дефис");
   if (!Number.isInteger(item.order) || item.order <= 0) {
     throw new HttpError(400, "order: целое число больше нуля");
   }
-  if (!SECTION_ICONS.includes(item.icon)) throw new HttpError(400, `icon: неизвестная иконка «${item.icon}»`);
-  const parsed = sectionSchema.safeParse(normalizeSection(item));
-  if (!parsed.success) throw new HttpError(400, "Проверьте поля раздела", zodMessages("section", parsed.error));
+  const parsed = sectionSchema.safeParse(sectionPayload(item));
+  if (!parsed.success) {
+    throw new HttpError(400, "Проверьте поля раздела", zodMessages("section", parsed.error));
+  }
   const sections = await readSections();
-  if (sections.some((section) => section.order === item.order && section.id !== originalId && section.id !== item.id)) {
+  if (
+    sections.some(
+      (section) =>
+        section.order === item.order && section.id !== originalId && section.id !== item.id,
+    )
+  ) {
     throw new HttpError(409, `order ${item.order} уже занят разделом`);
   }
   if (sections.some((section) => section.id === item.id && section.id !== originalId)) {
     throw new HttpError(409, `Раздел «${item.id}» уже существует`);
   }
+  if (originalId && originalId !== item.id && (await checkSectionArticles(originalId))) {
+    throw new HttpError(409, "Нельзя переименовать раздел, пока в нём есть статьи");
+  }
+  return parsed.data;
 }
 
 async function moveCardImage(oldId: string, newId: string, item: Card): Promise<void> {
@@ -355,38 +373,37 @@ export async function saveCollectionItem(
   let normalized: Record<string, unknown>;
   switch (name) {
     case "units":
-    case "buildings": {
-      const card = item as Card;
-      await validateCard(name, card, originalId);
-      if (originalId && originalId !== card.id) await moveCardImage(originalId, card.id, card);
-      normalized = normalizeCard(card);
+    case "buildings":
+      normalized = (await validateCard(name, item as Card, originalId)) as unknown as Record<
+        string,
+        unknown
+      >;
       break;
-    }
-    case "factions": {
-      const faction = item as Faction;
-      await validateFaction(faction, originalId);
-      normalized = normalizeFaction(faction);
+    case "factions":
+      normalized = (await validateFaction(item as Faction, originalId)) as unknown as Record<
+        string,
+        unknown
+      >;
       break;
-    }
-    case "tags": {
-      const tag = item as Tag;
-      await validateTag(tag, originalId);
-      normalized = normalizeTag(tag);
+    case "tags":
+      normalized = (await validateTag(item as Tag, originalId)) as unknown as Record<
+        string,
+        unknown
+      >;
       break;
-    }
-    case "sections": {
-      const section = item as Section;
-      await validateSection(section, originalId);
-      normalized = normalizeSection(section);
+    case "sections":
+      normalized = (await validateSection(item as Section, originalId)) as unknown as Record<
+        string,
+        unknown
+      >;
       break;
-    }
     default:
       throw new HttpError(400, "Неизвестная коллекция");
   }
 
   const file = collectionPath(name);
   const raw = await readText(file);
-  const current = index >= 0 ? (items[index] as Record<string, unknown>) : undefined;
+  const current = index >= 0 ? (items[index] as unknown as Record<string, unknown>) : undefined;
   const payload = current ? orderLike(current, normalized) : normalized;
 
   if (
@@ -401,12 +418,7 @@ export async function saveCollectionItem(
     };
   }
 
-  const nextRaw = updateJsonItem(
-    raw,
-    name,
-    payload as unknown as { id: string },
-    originalId,
-  );
+  const nextRaw = updateJsonItem(raw, name, payload as unknown as { id: string }, originalId);
   await atomicWrite(file, nextRaw);
 
   return {
@@ -448,11 +460,15 @@ export async function deleteCollectionItem(
 
   if (name === "units" || name === "buildings") {
     const card = item as Card;
+    const imageRoot = path.join(PUBLIC_ROOT, "img/database");
     const image = card.image?.replace(/^\/+/, "");
-    if (image && image.startsWith("img/database/")) {
-      await fs.rm(path.join(PUBLIC_ROOT, image), { force: true });
-    } else if (image === undefined) {
-      await fs.rm(path.join(PUBLIC_ROOT, "img/database", `${card.id}.avif`), { force: true });
+    const target = image?.startsWith("img/database/")
+      ? path.resolve(PUBLIC_ROOT, image)
+      : image === undefined
+        ? path.join(imageRoot, `${card.id}.avif`)
+        : null;
+    if (target && isInside(imageRoot, target)) {
+      await fs.rm(target, { force: true });
     }
   }
 

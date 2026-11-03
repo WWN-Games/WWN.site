@@ -2,16 +2,16 @@
    WWN — новости главной.
    ============================================================================ */
 
-import type { Lang } from "../lib/site";
+import type { Text } from "../lib/schemas";
 
 /** Текст на двух языках сайта: ru — основной, en — английский. */
-export type LocalizedText = Record<Lang, string>;
+export type LocalizedText = Text;
 
 export interface NewsItem {
   /** Дата в формате ISO YYYY-MM-DD. */
   date: string;
   /** id тега из newsTagLabels. */
-  tag: string;
+  tag: NewsTag;
   /** Внешняя (https://…) или внутренняя (wiki/<раздел>/<статья>/) ссылка: строкой либо { ru, en }. */
   link?: string | LocalizedText;
   title: LocalizedText;
@@ -19,10 +19,12 @@ export interface NewsItem {
 }
 
 /** Подписи тегов новостей: id → { ru, en }; цвет — класс .tag--<id>. */
-export const newsTagLabels: Record<string, LocalizedText> = {
+export const newsTagLabels = {
   update: { ru: "Обновление", en: "Update" },
   news: { ru: "Новости", en: "News" },
-};
+} satisfies Record<string, LocalizedText>;
+
+export type NewsTag = keyof typeof newsTagLabels;
 
 export const news: readonly NewsItem[] = [
   {

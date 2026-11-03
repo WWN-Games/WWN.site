@@ -15,15 +15,12 @@ const MD_LINK = /^(.+?)\.md(#.*)?$/i;
 
 export function remarkWikiLinks() {
   return (tree: Root, file: VFile) => {
-    const filePath = file.path ?? "";
+    const filePath = (file.path ?? "").split("\\").join("/");
     const relative = filePath.split("/wiki/")[1];
-    if (!relative) {
-      throw new Error(`remarkWikiLinks: не удалось определить язык статьи для ${filePath}`);
-    }
+    // Markdown вне вики (например, будущие страницы документации) не трогаем.
+    if (!relative) return;
     const [lang, ...rest] = relative.split("/");
-    if (lang !== "ru" && lang !== "en") {
-      throw new Error(`remarkWikiLinks: неизвестный язык в пути ${filePath}`);
-    }
+    if (lang !== "ru" && lang !== "en") return;
     const dir = rest.slice(0, -1).join("/");
 
     visit(tree, "link", (node) => {

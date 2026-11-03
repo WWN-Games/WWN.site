@@ -30,7 +30,7 @@ import {
 } from "@/lib/database-constants";
 import { filterItems, searchTokens, sortItems } from "@/lib/database-view";
 import type { Lang } from "@/lib/site";
-import { collator, debounce, foldSearch, nextFocusIndex } from "@/lib/utils";
+import { collator, debounce, formatTemplate, nextFocusIndex } from "@/lib/utils";
 
 interface Props {
   lang: Lang;
@@ -79,7 +79,23 @@ let restored = false;
 let animatedTab: TabId | null = null;
 
 const typeOptions = $derived(types[tab]);
-const tabItems = $derived(items.filter((item) => item.tab === tab));
+
+/* Поисковый текст живёт в data-search статических карточек, а не в props
+   острова: так гидратация не парсит десятки килобайт JSON. */
+let searchIndex = $state<Record<string, string>>({});
+$effect(() => {
+  const index: Record<string, string> = {};
+  for (const card of document.querySelectorAll<HTMLElement>("[data-card-id]")) {
+    const id = card.dataset.cardId;
+    if (id) index[id] = card.dataset.search ?? "";
+  }
+  searchIndex = index;
+});
+
+const searchableItems = $derived(
+  items.map((item) => ({ ...item, searchText: searchIndex[item.id] ?? "" })),
+);
+const tabItems = $derived(searchableItems.filter((item) => item.tab === tab));
 const availableTagIds = $derived(new Set(tabItems.flatMap((item) => item.tags)));
 const currentCardTab = $derived(tab === "factions" ? null : tab);
 
@@ -151,7 +167,7 @@ const visibleIds = $derived.by(() => {
 
 const total = $derived(tab === "factions" ? factions.length : tabItems.length);
 const countText = $derived(
-  labels.count.replace("{n}", String(visibleIds.length)).replace("{total}", String(total)),
+  formatTemplate(labels.count, { n: visibleIds.length, total }),
 );
 const tagButtonLabel = $derived(
   appliedTags.length
@@ -159,7 +175,7 @@ const tagButtonLabel = $derived(
     : labels.tag,
 );
 const draftPreviewCount = $derived.by(() => {
-  if (tab === "factions") return 0;
+  if (tab === "factions" || !tagOpen) return 0;
   return filterItems(tabItems, {
     query: searchQuery,
     faction,
@@ -316,7 +332,7 @@ function syncCompareDom(selection: Record<CardTab, string[]> = selectedByTab): v
     button.setAttribute("aria-pressed", String(isSelected));
     button.setAttribute(
       "aria-label",
-      (isSelected ? labels.compare.removeAria : labels.compare.addAria).replace("{name}", name),
+      formatTemplate(isSelected ? labels.compare.removeAria : labels.compare.addAria, { name }),
     );
     button.closest(".unit-card")?.classList.toggle("is-compared", isSelected);
   }
@@ -500,7 +516,7 @@ function activate(next: TabId, focus = false): void {
 }
 
 const runSearch = debounce((value: string) => {
-  searchQuery = foldSearch(value.trim());
+  searchQuery = value.trim();
 }, 140);
 
 function onSearchInput(event: Event): void {
@@ -665,7 +681,7 @@ function toggleCompare(item: ExplorerItem): void {
   if (list.includes(item.id)) {
     next = list.filter((id) => id !== item.id);
   } else if (list.length >= MAX_COMPARE) {
-    showNotice(labels.compare.limit.replace("{max}", String(MAX_COMPARE)));
+    showNotice(formatTemplate(labels.compare.limit, { max: MAX_COMPARE }));
     return;
   } else {
     next = [...list, item.id];
@@ -896,7 +912,7 @@ onDestroy(() => {
     </div>
     <div class="tag-panel__preview" role="status" aria-live="polite">
       <span class:is-empty={showTagEmptyHint}>
-        {labels.tagMode.preview.replace("{n}", String(draftPreviewCount))}
+        {formatTemplate(labels.tagMode.preview, { n: draftPreviewCount })}
       </span>
       {#if showTagEmptyHint}
         <span class="tag-panel__warning">{labels.tagMode.emptyHint}</span>

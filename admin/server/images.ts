@@ -4,12 +4,20 @@ import sharp from "sharp";
 
 import type { UploadResult } from "../shared/types.ts";
 import { SITE_ROOT } from "./config.ts";
-import { HttpError, atomicWrite, fileExists, isInside } from "./http.ts";
+import { atomicWrite, fileExists, HttpError, isInside } from "./http.ts";
 import { isSlug, slugify } from "./strings.ts";
 
 const PUBLIC_ROOT = path.join(SITE_ROOT, "public");
 const ASSETS_ROOT = path.join(SITE_ROOT, "src/assets");
 const MAX_BYTES = 20 * 1024 * 1024;
+const ALLOWED_RASTER_MIME = new Set([
+  "image/avif",
+  "image/gif",
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+]);
 
 export type UploadKind = "article" | "card" | "faction";
 
@@ -17,9 +25,9 @@ interface UploadInput {
   kind: UploadKind;
   filename: string;
   dataUrl: string;
-  slug?: string;
-  id?: string;
-  alt?: string;
+  slug?: string | undefined;
+  id?: string | undefined;
+  alt?: string | undefined;
 }
 
 function decodeDataUrl(dataUrl: string): { mime: string; buffer: Buffer } {
@@ -44,6 +52,23 @@ async function uniqueArticleName(articleName: string, base: string): Promise<str
   return candidate;
 }
 
+function assertSafeSvg(text: string): void {
+  const dangerous = [
+    /<script[\s>]/i,
+    /<foreignObject[\s>]/i,
+    /<iframe[\s>]/i,
+    /<object[\s>]/i,
+    /<embed[\s>]/i,
+    /\son[a-z]+\s*=/i,
+    /javascript:/i,
+    /<!ENTITY/i,
+    /(?:href|xlink:href)\s*=\s*["']\s*(?:https?:)?\/\//i,
+  ];
+  if (dangerous.some((pattern) => pattern.test(text))) {
+    throw new HttpError(400, "SVG содержит недопустимые элементы или ссылки");
+  }
+}
+
 async function saveRaster(
   buffer: Buffer,
   target: string,
@@ -52,7 +77,7 @@ async function saveRaster(
   const tmp = `${target}.${process.pid}.${Date.now()}.tmp`;
   await fs.mkdir(path.dirname(target), { recursive: true });
   try {
-    await sharp(buffer, { failOn: "none" })
+    await sharp(buffer, { failOn: "none", limitInputPixels: 50_000_000 })
       .rotate()
       .resize({ width, withoutEnlargement: true })
       .avif({ quality: 80, effort: 4 })
@@ -75,6 +100,9 @@ async function saveRaster(
 export async function saveUpload(input: UploadInput): Promise<UploadResult> {
   if (!input || typeof input !== "object") throw new HttpError(400, "Нет данных файла");
   const { mime, buffer } = decodeDataUrl(input.dataUrl);
+  if (input.kind !== "faction" && !ALLOWED_RASTER_MIME.has(mime)) {
+    throw new HttpError(400, `Недопустимый формат изображения: ${mime}`);
+  }
   const original = path.basename(input.filename || "image");
   const base = slugify(original.replace(/\.[^.]+$/, "")) || "image";
 
@@ -105,7 +133,7 @@ export async function saveUpload(input: UploadInput): Promise<UploadResult> {
     if (!isInside(path.join(PUBLIC_ROOT, "img/database"), target)) {
       throw new HttpError(400, "Некорректный путь изображения");
     }
-    const meta = await saveRaster(buffer, target, 900);
+    const meta = await saveRaster(buffer, target, 256);
     return {
       path: `img/database/${id}.avif`,
       url: `/media/public/img/database/${id}.avif`,
@@ -122,6 +150,7 @@ export async function saveUpload(input: UploadInput): Promise<UploadResult> {
     if (buffer.length > 2 * 1024 * 1024) throw new HttpError(413, "SVG больше 2 МБ");
     const text = buffer.toString("utf8");
     if (!/<svg[\s>]/i.test(text)) throw new HttpError(400, "В файле нет SVG-разметки");
+    assertSafeSvg(text);
     const target = path.join(ASSETS_ROOT, "img/factions", `${id}.svg`);
     if (!isInside(path.join(ASSETS_ROOT, "img/factions"), target)) {
       throw new HttpError(400, "Некорректный путь эмблемы");

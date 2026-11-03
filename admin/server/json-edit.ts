@@ -44,7 +44,7 @@ class Scanner {
     const char = this.text[this.index];
     if (char === "{") return this.parseObject();
     if (char === "[") return this.parseArray();
-    if (char === "\"") return this.parseString();
+    if (char === '"') return this.parseString();
     if (char === "t" || char === "f") return this.parseBoolean();
     if (char === "n") return this.parseNull();
     return this.parseNumber();
@@ -110,7 +110,7 @@ class Scanner {
 
   private parseString(): JsonNode {
     const start = this.index;
-    if (this.text[this.index] !== "\"") throw new Error("JSON: ожидается строка");
+    if (this.text[this.index] !== '"') throw new Error("JSON: ожидается строка");
     this.index += 1;
     while (this.index < this.text.length) {
       const char = this.text[this.index];
@@ -118,7 +118,7 @@ class Scanner {
         this.index += 2;
         continue;
       }
-      if (char === "\"") {
+      if (char === '"') {
         this.index += 1;
         const raw = this.text.slice(start, this.index);
         return {
@@ -168,9 +168,10 @@ class Scanner {
 
 function findArray(raw: string, key: string): JsonNode {
   const root = new Scanner(raw).parse();
-  if (root.type !== "object" || !root.properties) throw new Error("JSON: корень должен быть объектом");
+  if (root.type !== "object" || !root.properties)
+    throw new Error("JSON: корень должен быть объектом");
   const property = root.properties.find((entry) => entry.key === key);
-  if (!property || property.value.type !== "array") {
+  if (property?.value.type !== "array") {
     throw new Error(`JSON: нет массива «${key}»`);
   }
   return property.value;

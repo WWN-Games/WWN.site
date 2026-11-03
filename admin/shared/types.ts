@@ -1,77 +1,34 @@
-/* Общие типы клиента и сервера локальной админки. */
+/* Общие типы клиента и сервера локальной админки.
+   Доменные типы берутся из Zod-схем сайта, чтобы админка и контент
+   не расходились. Здесь остаются только DTO самого интерфейса. */
 
-export type Lang = "ru" | "en";
+import type { CollectionName } from "../../src/lib/collections.ts";
+import type { Building, Faction, Section, Tag, Text, Unit } from "../../src/lib/schemas.ts";
+import type { Lang } from "../../src/lib/site.ts";
 
-export interface LocalizedText {
-  ru: string;
-  en: string;
-}
-
-export type CollectionName = "units" | "buildings" | "factions" | "tags" | "sections";
-
-export interface Section {
-  id: string;
-  icon: string;
-  order: number;
-  title: LocalizedText;
-  desc: LocalizedText;
-  articleCount?: number;
-  nextOrder?: number;
-}
-
-export interface Tag {
-  id: string;
-  name: LocalizedText;
-  group: "tier" | "class" | "movement" | "mod";
-}
-
-export interface Faction {
-  id: string;
-  order: number;
-  name: LocalizedText;
-  color: string;
-  emblem: string;
-  lore: string;
-  desc: LocalizedText;
-  motto?: LocalizedText;
-  playstyle?: LocalizedText;
-  specialty?: LocalizedText;
-  strengths?: { ru: string[]; en: string[] };
-  weaknesses?: { ru: string[]; en: string[] };
-  subfaction?: boolean | string;
-}
-
-export interface Weapon {
-  name: LocalizedText;
-  damage: number;
-}
-
-export interface Card {
-  id: string;
-  name: LocalizedText;
-  faction: string;
-  type: string;
-  desc: LocalizedText;
-  tags: string[];
-  cost: number;
-  hp: number;
-  buildTime: number;
-  shield?: number;
-  selfRegen?: number;
-  shieldRegen?: number;
-  dps?: number;
-  weapons?: Weapon[];
-  speed?: number;
-  range?: number;
-  image?: string;
-  role?: LocalizedText;
-  strongVs?: string[] | LocalizedText;
-  weakVs?: string[] | LocalizedText;
-  draft?: boolean;
-  new?: boolean;
-}
-
+export type { CollectionName, Faction, Lang, Section, Tag, Text };
+export type LocalizedText = Text;
+export type Card = Unit | Building;
 export type CollectionItem = Card | Faction | Tag | Section;
+
+/** Section из bootstrap дополняется вычисляемым nextOrder. */
+export type SectionView = Section & { nextOrder?: number };
+
+export function isCard(item: CollectionItem): item is Card {
+  return "faction" in item && "tags" in item && "cost" in item;
+}
+
+export function isFaction(item: CollectionItem): item is Faction {
+  return "color" in item && "emblem" in item && "lore" in item;
+}
+
+export function isTag(item: CollectionItem): item is Tag {
+  return "group" in item;
+}
+
+export function isSection(item: CollectionItem): item is Section {
+  return "icon" in item && "title" in item;
+}
 
 export interface ArticleFile {
   title: string;
@@ -107,6 +64,7 @@ export interface ArticleSummary {
   orderMismatch: boolean;
   draftMismatch: boolean;
   mtime: number;
+  error?: string | undefined;
 }
 
 export interface ValidationState {
@@ -132,7 +90,7 @@ export interface GitStatus {
 }
 
 export interface Bootstrap {
-  sections: Section[];
+  sections: SectionView[];
   factions: Faction[];
   tags: Tag[];
   counts: {
@@ -158,8 +116,8 @@ export interface ArticleSaveInput {
   order: number;
   updated: string;
   draft: boolean;
-  ru: Omit<ArticleFile, "file">;
-  en: Omit<ArticleFile, "file">;
+  ru: Omit<ArticleFile, "file" | "exists">;
+  en: Omit<ArticleFile, "file" | "exists">;
 }
 
 export interface CollectionSaveInput {
@@ -179,7 +137,6 @@ export interface UploadResult {
 export interface PreviewResult {
   html: string;
   css: string;
-  sitePath: string;
 }
 
 export interface ToastItem {

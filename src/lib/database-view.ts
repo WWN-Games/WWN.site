@@ -20,14 +20,18 @@ export function searchTokens(query: string): string[] {
   return foldSearch(query).trim().split(/\s+/).filter(Boolean);
 }
 
-export function matchesSearch(item: ExplorerItem, tokens: readonly string[]): boolean {
+export interface SearchableExplorerItem extends ExplorerItem {
+  searchText: string;
+}
+
+export function matchesSearch(item: SearchableExplorerItem, tokens: readonly string[]): boolean {
   return tokens.every((token) => item.searchText.includes(token));
 }
 
 export function filterItems(
-  items: readonly ExplorerItem[],
+  items: readonly SearchableExplorerItem[],
   filters: DatabaseFilters,
-): ExplorerItem[] {
+): SearchableExplorerItem[] {
   const tokens = searchTokens(filters.query);
   return items.filter((item) => {
     if (tokens.length && !matchesSearch(item, tokens)) return false;
@@ -49,8 +53,8 @@ export function sortItems(
   direction: SortDirection,
   lang: "ru" | "en",
 ): ExplorerItem[] {
-  const compareName = (a: ExplorerItem, b: ExplorerItem): number =>
-    collator(lang).compare(a.name, b.name);
+  const collate = collator(lang);
+  const compareName = (a: ExplorerItem, b: ExplorerItem): number => collate.compare(a.name, b.name);
   const sorted = [...items];
   const sign = direction === "asc" ? 1 : -1;
 

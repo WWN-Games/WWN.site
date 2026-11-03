@@ -36,6 +36,7 @@ export const ru = {
   "a11y.menu": "Меню",
   "a11y.language": "Язык сайта",
   "a11y.gallery": "Галерея",
+  "a11y.breadcrumb": "Хлебные крошки",
   "hero.badge": "версия {version}",
   // biome-ignore format: двойные кавычки в HTML-разметке значения
   "hero.title": "Галактика на грани <span class=\"accent\">Тройственного Конфликта</span>",
@@ -70,14 +71,6 @@ export const ru = {
   "facsec.kicker": "Фракции",
   "facsec.title": "Выбери свою сторону в этом конфликте!",
   "facsec.sub": "Только один выйдет победителем из этой войны.",
-  "facsec.fenearth.name": "Фенземская Республика",
-  "facsec.fenearth.motto": "Наследница Всегалактической Федерации",
-  "facsec.fenearth.desc":
-    "Федеративная парламентская республика и вторая экономика галактики. Промышленная мощь, технологии ВГФ и тяжёлый флот.",
-  "facsec.proton.name": "Движение Протон",
-  "facsec.proton.motto": "PHATHOU — Первый порядок",
-  "facsec.proton.desc":
-    "Союз кланов Территории Отен. Массовая армия, неприхотливая техника и ярость крокодилоподобных васттов.",
   "facsec.openLore": "Подробнее в вики",
   "factions.chip.industry": "Промышленность",
   "factions.chip.fleet": "Тяжёлый флот",
@@ -150,6 +143,7 @@ export const ru = {
   "wiki.copy": "Копировать",
   "wiki.copied": "Скопировано",
   "wiki.copyLink": "Скопировать ссылку",
+  "wiki.anchor": "Ссылка на раздел",
   "wiki.edit": "Редактировать на GitHub",
   "wiki.report": "Сообщить об ошибке",
   "wiki.related": "Читать также",
@@ -229,7 +223,6 @@ export const ru = {
   "database.type.defense": "Оборона",
   "database.count": "Показано: {n} из {total}",
   "database.compare.title": "Сравнение",
-  "database.compare.add": "Сравнить",
   "database.compare.addAria": "Добавить «{name}» к сравнению",
   "database.compare.removeAria": "Убрать «{name}» из сравнения",
   "database.compare.selected": "Выбрано: {n} из {max}",

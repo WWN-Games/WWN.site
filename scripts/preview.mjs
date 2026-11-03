@@ -7,7 +7,7 @@
 import { createReadStream } from "node:fs";
 import { stat } from "node:fs/promises";
 import { createServer } from "node:http";
-import { extname, join, resolve } from "node:path";
+import { extname, isAbsolute, join, relative as relativePath, resolve } from "node:path";
 
 const DIST = resolve("dist");
 const BASE = "/WWN.site";
@@ -28,12 +28,21 @@ const MIME = {
   ".woff2": "font/woff2",
   ".mp3": "audio/mpeg",
   ".wasm": "application/wasm",
+  ".map": "application/json; charset=utf-8",
+  ".ico": "image/x-icon",
+  ".webmanifest": "application/manifest+json",
 };
 
 async function fileFor(pathname) {
-  const decoded = decodeURIComponent(pathname);
+  let decoded;
+  try {
+    decoded = decodeURIComponent(pathname);
+  } catch {
+    return null;
+  }
   const target = join(DIST, decoded);
-  if (!target.startsWith(DIST)) return null;
+  const rel = relativePath(DIST, target);
+  if (rel.startsWith("..") || isAbsolute(rel)) return null;
   try {
     const info = await stat(target);
     if (info.isDirectory()) return join(target, "index.html");
@@ -62,6 +71,10 @@ const server = createServer(async (request, response) => {
     "Content-Type": MIME[extname(file)] ?? "application/octet-stream",
     "Cache-Control": "no-store",
   });
+  if (request.method === "HEAD") {
+    response.end();
+    return;
+  }
   createReadStream(file).pipe(response);
 });
 

@@ -8,6 +8,7 @@ import { CloseSmall } from "@icon-park/svg";
 
 import { iconSvg } from "@/components/ui/icon";
 import type { ExplorerItem, ExplorerLabels } from "@/lib/database";
+import { formatTemplate } from "@/lib/utils";
 
 interface Props {
   items: ExplorerItem[];
@@ -20,16 +21,14 @@ interface Props {
 
 let { items, labels, max, onopen, onclear, onremove }: Props = $props();
 
-const countText = $derived(
-  labels.selected.replace("{n}", String(items.length)).replace("{max}", String(max)),
-);
+const countText = $derived(formatTemplate(labels.selected, { n: items.length, max }));
 const hint = $derived(
-  items.length < 2 ? labels.hint.replace("{n}", String(2 - items.length)) : "",
+  items.length < 2 ? formatTemplate(labels.hint, { n: 2 - items.length }) : "",
 );
-const openText = $derived(labels.open.replace("{n}", String(items.length)));
+const openText = $derived(formatTemplate(labels.open, { n: items.length }));
 
 function removeLabel(name: string): string {
-  return labels.removeAria.replace("{name}", name);
+  return formatTemplate(labels.removeAria, { name });
 }
 </script>
 

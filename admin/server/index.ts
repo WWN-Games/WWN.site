@@ -2,7 +2,7 @@ import { createServer } from "node:http";
 import path from "node:path";
 
 import { createServer as createViteServer } from "vite";
-
+import { COLLECTION_NAMES } from "../../src/lib/collections.ts";
 import type {
   ArticleSaveInput,
   Bootstrap,
@@ -12,7 +12,6 @@ import type {
   Lang,
 } from "../shared/types.ts";
 import {
-  articleDefaults,
   deleteArticle,
   duplicateArticle,
   listArticles,
@@ -25,23 +24,18 @@ import {
   listCollection,
   saveCollectionItem,
 } from "./collections.ts";
-import { ADMIN_ROOT, HOST, PORT, SITE_DEV_URL } from "./config.ts";
-import { readItems, readSections, readFactions, readTags } from "./data.ts";
-import {
-  HttpError,
-  readJsonBody,
-  sendJson,
-  serveMedia,
-} from "./http.ts";
+import { ADMIN_ROOT, EXTRA_ORIGINS, HOST, IS_LOOPBACK_HOST, PORT, SITE_DEV_URL } from "./config.ts";
+import { readFactions, readItems, readSections, readTags } from "./data.ts";
+import { gitCommit, gitDiff, gitPush, gitStatus } from "./git.ts";
+import { applySecurityHeaders, HttpError, readJsonBody, sendJson, serveMedia } from "./http.ts";
 import { saveUpload, type UploadKind } from "./images.ts";
 import { renderPreview } from "./preview.ts";
-import { gitCommit, gitDiff, gitPush, gitStatus } from "./git.ts";
 import { runValidation } from "./validation.ts";
 
-const COLLECTIONS = new Set<CollectionName>(["units", "buildings", "factions", "tags", "sections"]);
+const COLLECTIONS = new Set<string>(COLLECTION_NAMES);
 
 function isCollectionName(value: string | undefined): value is CollectionName {
-  return value !== undefined && COLLECTIONS.has(value as CollectionName);
+  return value !== undefined && COLLECTIONS.has(value);
 }
 
 async function siteRunning(): Promise<boolean> {
@@ -90,7 +84,6 @@ async function bootstrap(): Promise<Bootstrap> {
     const inSection = articles.filter((article) => article.section === section.id);
     return {
       ...section,
-      articleCount: inSection.length,
       nextOrder: inSection.reduce((max, article) => Math.max(max, article.order), 0) + 1,
     };
   });
@@ -128,159 +121,225 @@ function requireString(value: unknown, name: string): string {
   return value;
 }
 
-async function handleApi(req: import("node:http").IncomingMessage, res: import("node:http").ServerResponse, url: URL): Promise<boolean> {
-  if (!url.pathname.startsWith("/api/")) return false;
+interface ApiContext {
+  req: import("node:http").IncomingMessage;
+  res: import("node:http").ServerResponse;
+  url: URL;
+  params: Record<string, string | undefined>;
+}
 
-  if (req.method !== "GET" && req.method !== "HEAD") {
-    const origin = req.headers.origin;
-    const allowed = new Set([`http://127.0.0.1:${PORT}`, `http://localhost:${PORT}`]);
-    if (origin && !allowed.has(origin)) {
-      throw new HttpError(403, "Запрос с чужого origin запрещён");
-    }
-  }
+interface ApiRoute {
+  method: "GET" | "POST" | "DELETE";
+  pattern: URLPattern;
+  handle: (context: ApiContext) => Promise<void>;
+}
 
-  const route = url.pathname.slice("/api".length);
+function collectionName(value: string | undefined): CollectionName {
+  if (!isCollectionName(value)) throw new HttpError(404, "Неизвестная коллекция");
+  return value;
+}
 
-  if (route === "/bootstrap" && req.method === "GET") {
-    sendJson(res, 200, await bootstrap());
-    return true;
-  }
-
-  if (route === "/validate" && (req.method === "GET" || req.method === "POST")) {
-    sendJson(res, 200, runValidation());
-    return true;
-  }
-
-  if (route === "/articles" && req.method === "GET") {
-    sendJson(res, 200, { items: await listArticles() });
-    return true;
-  }
-
-  if (route === "/articles/defaults" && req.method === "GET") {
-    const section = url.searchParams.get("section") ?? "";
-    sendJson(res, 200, await articleDefaults(section));
-    return true;
-  }
-
-  if (route === "/article" && req.method === "GET") {
-    const slug = url.searchParams.get("slug");
-    if (!slug) throw new HttpError(400, "Нет параметра slug");
-    sendJson(res, 200, await readArticle(slug));
-    return true;
-  }
-
-  if (route === "/article" && req.method === "POST") {
-    const input = (await readJsonBody(req)) as ArticleSaveInput;
-    sendJson(res, 200, await saveArticle(input));
-    return true;
-  }
-
-  if (route === "/article" && req.method === "DELETE") {
-    const slug = url.searchParams.get("slug");
-    if (!slug) throw new HttpError(400, "Нет параметра slug");
-    sendJson(res, 200, { validation: await deleteArticle(slug) });
-    return true;
-  }
-
-  if (route === "/article/duplicate" && req.method === "POST") {
-    const body = (await readJsonBody(req)) as { slug?: unknown };
-    const slug = requireString(body.slug, "slug");
-    sendJson(res, 200, await duplicateArticle(slug));
-    return true;
-  }
-
-  if (route === "/preview" && req.method === "POST") {
-    const body = (await readJsonBody(req)) as {
-      lang?: Lang;
-      section?: unknown;
-      slug?: unknown;
-      body?: unknown;
-    };
-    const lang = body.lang === "en" ? "en" : "ru";
-    const section = typeof body.section === "string" ? body.section : "misc";
-    const slug = typeof body.slug === "string" ? body.slug : `${section}/preview`;
-    const text = typeof body.body === "string" ? body.body : "";
-    sendJson(res, 200, await renderPreview({ lang, section, slug, body: text }));
-    return true;
-  }
-
-  if (route === "/upload" && req.method === "POST") {
-    const body = (await readJsonBody(req)) as {
-      kind?: UploadKind;
-      filename?: unknown;
-      dataUrl?: unknown;
-      slug?: unknown;
-      id?: unknown;
-      alt?: unknown;
-    };
-    if (body.kind !== "article" && body.kind !== "card" && body.kind !== "faction") {
-      throw new HttpError(400, "Неизвестный тип загрузки");
-    }
-    const result = await saveUpload({
-      kind: body.kind,
-      filename: typeof body.filename === "string" ? body.filename : "image",
-      dataUrl: requireString(body.dataUrl, "dataUrl"),
-      slug: typeof body.slug === "string" ? body.slug : undefined,
-      id: typeof body.id === "string" ? body.id : undefined,
-      alt: typeof body.alt === "string" ? body.alt : undefined,
-    });
-    sendJson(res, 200, result);
-    return true;
-  }
-
-  const collectionMatch = /^\/collections\/([^/]+)(?:\/([^/]+))?$/.exec(route);
-  if (collectionMatch) {
-    const name = collectionMatch[1];
-    if (!isCollectionName(name)) throw new HttpError(404, "Неизвестная коллекция");
-    const id = collectionMatch[2] ? decodeURIComponent(collectionMatch[2]) : undefined;
-
-    if (req.method === "GET" && id) {
-      sendJson(res, 200, { item: await getCollectionItem(name, id) });
-      return true;
-    }
-    if (req.method === "GET") {
-      sendJson(res, 200, { items: await listCollection(name) });
-      return true;
-    }
-    if (req.method === "POST") {
+const apiRoutes: ApiRoute[] = [
+  {
+    method: "GET",
+    pattern: new URLPattern({ pathname: "/api/bootstrap" }),
+    handle: async ({ res }) => sendJson(res, 200, await bootstrap()),
+  },
+  {
+    method: "POST",
+    pattern: new URLPattern({ pathname: "/api/validate" }),
+    handle: async ({ res }) => sendJson(res, 200, runValidation()),
+  },
+  {
+    method: "GET",
+    pattern: new URLPattern({ pathname: "/api/articles" }),
+    handle: async ({ res }) => sendJson(res, 200, { items: await listArticles() }),
+  },
+  {
+    method: "GET",
+    pattern: new URLPattern({ pathname: "/api/article" }),
+    handle: async ({ res, url }) => {
+      const slug = url.searchParams.get("slug");
+      if (!slug) throw new HttpError(400, "Нет параметра slug");
+      sendJson(res, 200, await readArticle(slug));
+    },
+  },
+  {
+    method: "POST",
+    pattern: new URLPattern({ pathname: "/api/article" }),
+    handle: async ({ req, res }) => {
+      const input = (await readJsonBody(req)) as ArticleSaveInput;
+      sendJson(res, 200, await saveArticle(input));
+    },
+  },
+  {
+    method: "DELETE",
+    pattern: new URLPattern({ pathname: "/api/article" }),
+    handle: async ({ res, url }) => {
+      const slug = url.searchParams.get("slug");
+      if (!slug) throw new HttpError(400, "Нет параметра slug");
+      sendJson(res, 200, { validation: await deleteArticle(slug) });
+    },
+  },
+  {
+    method: "POST",
+    pattern: new URLPattern({ pathname: "/api/article/duplicate" }),
+    handle: async ({ req, res }) => {
+      const body = (await readJsonBody(req)) as { slug?: unknown };
+      sendJson(res, 200, await duplicateArticle(requireString(body.slug, "slug")));
+    },
+  },
+  {
+    method: "POST",
+    pattern: new URLPattern({ pathname: "/api/preview" }),
+    handle: async ({ req, res }) => {
+      const body = (await readJsonBody(req)) as {
+        lang?: Lang;
+        section?: unknown;
+        slug?: unknown;
+        body?: unknown;
+      };
+      const lang = body.lang === "en" ? "en" : "ru";
+      const section = typeof body.section === "string" ? body.section : "misc";
+      const slug = typeof body.slug === "string" ? body.slug : `${section}/preview`;
+      const text = typeof body.body === "string" ? body.body : "";
+      sendJson(res, 200, await renderPreview({ lang, section, slug, body: text }));
+    },
+  },
+  {
+    method: "POST",
+    pattern: new URLPattern({ pathname: "/api/upload" }),
+    handle: async ({ req, res }) => {
+      const body = (await readJsonBody(req)) as {
+        kind?: UploadKind;
+        filename?: unknown;
+        dataUrl?: unknown;
+        slug?: unknown;
+        id?: unknown;
+        alt?: unknown;
+      };
+      if (body.kind !== "article" && body.kind !== "card" && body.kind !== "faction") {
+        throw new HttpError(400, "Неизвестный тип загрузки");
+      }
+      sendJson(
+        res,
+        200,
+        await saveUpload({
+          kind: body.kind,
+          filename: typeof body.filename === "string" ? body.filename : "image",
+          dataUrl: requireString(body.dataUrl, "dataUrl"),
+          slug: typeof body.slug === "string" ? body.slug : undefined,
+          id: typeof body.id === "string" ? body.id : undefined,
+          alt: typeof body.alt === "string" ? body.alt : undefined,
+        }),
+      );
+    },
+  },
+  {
+    method: "GET",
+    pattern: new URLPattern({ pathname: "/api/collections/:name/:id" }),
+    handle: async ({ res, params }) => {
+      const id = decodeURIComponent(params.id ?? "");
+      if (!id) throw new HttpError(400, "Нет id записи");
+      sendJson(res, 200, { item: await getCollectionItem(collectionName(params.name), id) });
+    },
+  },
+  {
+    method: "GET",
+    pattern: new URLPattern({ pathname: "/api/collections/:name" }),
+    handle: async ({ res, params }) => {
+      sendJson(res, 200, { items: await listCollection(collectionName(params.name)) });
+    },
+  },
+  {
+    method: "POST",
+    pattern: new URLPattern({ pathname: "/api/collections/:name" }),
+    handle: async ({ req, res, params }) => {
       const body = (await readJsonBody(req)) as CollectionSaveInput;
       if (!body || typeof body !== "object" || !("item" in body)) {
         throw new HttpError(400, "Нет данных записи");
       }
-      sendJson(res, 200, await saveCollectionItem(name, body.item, body.originalId));
-      return true;
-    }
-    if (req.method === "DELETE") {
+      sendJson(
+        res,
+        200,
+        await saveCollectionItem(collectionName(params.name), body.item, body.originalId),
+      );
+    },
+  },
+  {
+    method: "DELETE",
+    pattern: new URLPattern({ pathname: "/api/collections/:name/:id" }),
+    handle: async ({ res, params }) => {
+      const id = decodeURIComponent(params.id ?? "");
       if (!id) throw new HttpError(400, "Нет id записи");
-      sendJson(res, 200, { validation: await deleteCollectionItem(name, id) });
-      return true;
+      sendJson(res, 200, {
+        validation: await deleteCollectionItem(collectionName(params.name), id),
+      });
+    },
+  },
+  {
+    method: "GET",
+    pattern: new URLPattern({ pathname: "/api/git/status" }),
+    handle: async ({ res }) => sendJson(res, 200, await gitStatus()),
+  },
+  {
+    method: "GET",
+    pattern: new URLPattern({ pathname: "/api/git/diff" }),
+    handle: async ({ res, url }) =>
+      sendJson(res, 200, { diff: await gitDiff(url.searchParams.getAll("file")) }),
+  },
+  {
+    method: "POST",
+    pattern: new URLPattern({ pathname: "/api/git/commit" }),
+    handle: async ({ req, res }) => {
+      const body = (await readJsonBody(req)) as { files?: unknown; message?: unknown };
+      const files = Array.isArray(body.files)
+        ? body.files.filter((file): file is string => typeof file === "string")
+        : [];
+      sendJson(res, 200, await gitCommit(files, requireString(body.message, "message")));
+    },
+  },
+  {
+    method: "POST",
+    pattern: new URLPattern({ pathname: "/api/git/push" }),
+    handle: async ({ res }) => sendJson(res, 200, await gitPush()),
+  },
+];
+
+async function handleApi(
+  req: import("node:http").IncomingMessage,
+  res: import("node:http").ServerResponse,
+  url: URL,
+): Promise<boolean> {
+  if (!url.pathname.startsWith("/api/")) return false;
+
+  if (req.method !== "GET") {
+    const origin = req.headers.origin;
+    const allowed = new Set([
+      `http://127.0.0.1:${PORT}`,
+      `http://localhost:${PORT}`,
+      ...EXTRA_ORIGINS,
+    ]);
+    const site = req.headers["sec-fetch-site"];
+    if (typeof site === "string" && site !== "same-origin" && site !== "none") {
+      throw new HttpError(403, "Запрос с чужого сайта запрещён");
+    }
+    // Браузер всегда шлёт Origin для same-origin POST/DELETE. Запрос без него —
+    // это curl или CSRF-попытка; для локальной админки такие запросы не нужны.
+    if (!origin || !allowed.has(origin)) {
+      throw new HttpError(403, "Запрос с чужого origin запрещён");
     }
   }
 
-  if (route === "/git/status" && req.method === "GET") {
-    sendJson(res, 200, await gitStatus());
-    return true;
-  }
-  if (route === "/git/diff" && req.method === "GET") {
-    const files = url.searchParams.getAll("file");
-    sendJson(res, 200, { diff: await gitDiff(files) });
-    return true;
-  }
-  if (route === "/git/commit" && req.method === "POST") {
-    const body = (await readJsonBody(req)) as { files?: unknown; message?: unknown };
-    const files = Array.isArray(body.files)
-      ? body.files.filter((file): file is string => typeof file === "string")
-      : [];
-    const message = requireString(body.message, "message");
-    sendJson(res, 200, await gitCommit(files, message));
-    return true;
-  }
-  if (route === "/git/push" && req.method === "POST") {
-    sendJson(res, 200, await gitPush());
+  for (const route of apiRoutes) {
+    if (req.method !== route.method) continue;
+    const match = route.pattern.exec(url);
+    if (!match) continue;
+    await route.handle({ req, res, url, params: match.pathname.groups });
     return true;
   }
 
-  throw new HttpError(404, `Неизвестный API-маршрут: ${route}`);
+  throw new HttpError(404, `Неизвестный API-маршрут: ${url.pathname}`);
 }
 
 const httpServer = createServer();
@@ -295,6 +354,16 @@ const vite = await createViteServer({
 });
 
 httpServer.on("request", async (req, res) => {
+  applySecurityHeaders(res);
+  if (IS_LOOPBACK_HOST) {
+    const hostname = String(req.headers.host ?? "")
+      .replace(/:\d+$/, "")
+      .toLowerCase();
+    if (!["127.0.0.1", "localhost", "[::1]", "::1"].includes(hostname)) {
+      sendJson(res, 403, { error: "Неверный Host" });
+      return;
+    }
+  }
   const url = new URL(req.url ?? "/", `http://${HOST}:${PORT}`);
   try {
     if (await serveMedia(req, res, url.pathname)) return;
@@ -302,7 +371,7 @@ httpServer.on("request", async (req, res) => {
       await handleApi(req, res, url);
       return;
     }
-    vite.middlewares(req, res, (error) => {
+    vite.middlewares(req, res, (error: unknown) => {
       if (error) {
         console.error("[admin] vite:", error);
         if (!res.headersSent) sendJson(res, 500, { error: "Ошибка Vite" });
@@ -314,12 +383,15 @@ httpServer.on("request", async (req, res) => {
     } else {
       console.error("[admin]", error);
       if (!res.headersSent) {
-        sendJson(res, 500, {
-          error: error instanceof Error ? error.message : "Внутренняя ошибка админки",
-        });
+        sendJson(res, 500, { error: "Внутренняя ошибка админки" });
       }
     }
   }
+});
+
+httpServer.on("error", (error) => {
+  console.error(`[admin] не удалось запустить сервер на ${HOST}:${PORT}:`, error.message);
+  process.exit(1);
 });
 
 httpServer.listen(PORT, HOST, () => {
@@ -327,6 +399,11 @@ httpServer.listen(PORT, HOST, () => {
   console.log("  WWN Admin");
   console.log(`  http://${HOST}:${PORT}`);
   console.log(`  сайт: ${SITE_DEV_URL} (запускается отдельно: pnpm dev)`);
+  if (!IS_LOOPBACK_HOST && EXTRA_ORIGINS.length === 0) {
+    console.warn(
+      "  ВНИМАНИЕ: сервер слушает не loopback без ADMIN_ORIGIN — запросы с других origin будут отклонены.",
+    );
+  }
   console.log("");
 });
 

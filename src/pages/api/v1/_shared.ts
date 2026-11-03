@@ -17,20 +17,10 @@ interface ApiEnvelope<T> {
   items: T[];
 }
 
-/** Идентификаторы живых цифр stats.json (см. src/lib/wiki.ts: getStats). */
+/** Идентификаторы живых цифр stats.json (см. src/lib/stats.ts). */
 export const STAT_IDS = ["buildings", "cards", "factions", "maps", "tags", "units"] as const;
 
-/** DPS юнита считается по сумме урона всех орудий, если они заданы. */
-export function withDerivedDps<
-  T extends { id: string; dps?: number | undefined; weapons?: { damage: number }[] | undefined },
->(item: T): T {
-  const weapons = item.weapons;
-  if (!weapons?.length) return item;
-  return {
-    ...item,
-    dps: weapons.reduce((sum, weapon) => sum + weapon.damage, 0),
-  };
-}
+export { withDerivedDps } from "../../../lib/cards.ts";
 
 /** Стабильный порядок по id. */
 export function byId<T extends { id: string }>(a: T, b: T): number {
@@ -46,5 +36,5 @@ export function jsonResponse<T>(items: T[]): Response {
     count: items.length,
     items,
   };
-  return new Response(`${JSON.stringify(payload, null, 2)}\n`, { headers: API_HEADERS });
+  return new Response(`${JSON.stringify(payload)}\n`, { headers: API_HEADERS });
 }

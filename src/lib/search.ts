@@ -6,7 +6,7 @@
    ============================================================================ */
 
 import type { Lang } from "./site";
-import { foldSearch } from "./utils";
+import { escapeHtml, foldSearch } from "./utils";
 
 /** База сайта с хвостовым слэшем: "/WWN.site/". */
 const BASE_URL: string = import.meta.env.BASE_URL;
@@ -20,7 +20,7 @@ export interface PagefindResultData {
 }
 
 /** Ссылка на результат до загрузки данных. */
-interface PagefindResultRef {
+export interface PagefindResultRef {
   id: string;
   score: number;
   data: () => Promise<PagefindResultData>;
@@ -29,8 +29,6 @@ interface PagefindResultRef {
 /** Ответ pagefind.search(). */
 interface PagefindSearchResponse {
   results: PagefindResultRef[];
-  unfilteredResultCount?: number;
-  filters?: Record<string, Record<string, number>>;
   totalFilters?: Record<string, Record<string, number>>;
 }
 
@@ -120,7 +118,9 @@ export function stripBase(url: string, base: string = BASE_URL): string {
 export function withBase(url: string, base: string = BASE_URL): string {
   if (!url) return base;
   if (/^(https?:)?\/\//i.test(url) || /^[a-z][a-z0-9+.-]*:/i.test(url)) return url;
-  return `${base}${stripBase(url, base).replace(/^\/+/, "")}`;
+  if (url.startsWith("#") || url.startsWith("?")) return url;
+  const prefix = base.replace(/\/+$/, "");
+  return `${prefix}/${stripBase(url, prefix).replace(/^\/+/, "")}`;
 }
 
 /** EN-страницы живут под /en/, остальные — RU (язык по умолчанию без префикса). */
@@ -146,25 +146,34 @@ export function sectionCounts(response: PagefindSearchResponse): Record<string, 
 }
 
 /** Подсветка совпадений в заголовке: свёртка 1:1, поэтому позиции совпадают.
- *  ВАЖНО: text должен быть уже экранирован HTML (escapeHtml) перед вызовом,
- *  иначе возможна XSS-уязвимость. */
+ *  Принимает сырой текст и экранирует каждый фрагмент — так запрос не может
+ *  разорвать HTML-сущность и не требует escapeHtml у вызывающей стороны. */
 export function highlight(text: string, query: string): string {
   const needle = foldSearch(query.trim());
-  if (!needle) return text;
+  if (!needle) return escapeHtml(text);
   const fold = foldSearch(text);
   const parts: string[] = [];
   let pos = 0;
   let index = fold.indexOf(needle);
   while (index !== -1) {
     parts.push(
-      text.slice(pos, index),
+      escapeHtml(text.slice(pos, index)),
       "<mark>",
-      text.slice(index, index + needle.length),
+      escapeHtml(text.slice(index, index + needle.length)),
       "</mark>",
     );
     pos = index + needle.length;
     index = fold.indexOf(needle, pos);
   }
-  parts.push(text.slice(pos));
+  parts.push(escapeHtml(text.slice(pos)));
   return parts.join("");
+}
+
+/** Pagefind отдаёт HTML, где текст уже экранирован, а подсветка — <mark>.
+ *  Оставляем только mark без атрибутов, остальные теги удаляем. */
+export function sanitizePagefindExcerpt(excerpt: string): string {
+  return excerpt.replace(/<\/?([a-z][a-z0-9-]*)\b[^>]*>/gi, (match, tag: string) => {
+    if (tag.toLowerCase() !== "mark") return "";
+    return match.startsWith("</") ? "</mark>" : "<mark>";
+  });
 }

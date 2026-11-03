@@ -7,6 +7,7 @@
 import { defineCollection } from "astro:content";
 import { file, glob } from "astro/loaders";
 
+import { COLLECTION_FILES } from "./lib/collections";
 import {
   buildingSchema,
   factionSchema,
@@ -18,8 +19,13 @@ import {
 
 const jsonArray =
   <T>(key: string) =>
-  (text: string): T[] =>
-    JSON.parse(text)[key] as T[];
+  (text: string): T[] => {
+    const parsed: unknown = JSON.parse(text);
+    const value =
+      parsed && typeof parsed === "object" ? (parsed as Record<string, unknown>)[key] : undefined;
+    if (!Array.isArray(value)) throw new Error(`Ожидался массив "${key}" в JSON-коллекции`);
+    return value as T[];
+  };
 
 const wiki = defineCollection({
   loader: glob({ base: "./src/content/wiki", pattern: "**/*.md" }),
@@ -27,27 +33,27 @@ const wiki = defineCollection({
 });
 
 const units = defineCollection({
-  loader: file("./src/data/units.json", { parser: jsonArray("units") }),
+  loader: file(`./${COLLECTION_FILES.units}`, { parser: jsonArray("units") }),
   schema: unitSchema,
 });
 
 const buildings = defineCollection({
-  loader: file("./src/data/buildings.json", { parser: jsonArray("buildings") }),
+  loader: file(`./${COLLECTION_FILES.buildings}`, { parser: jsonArray("buildings") }),
   schema: buildingSchema,
 });
 
 const factions = defineCollection({
-  loader: file("./src/data/factions.json", { parser: jsonArray("factions") }),
+  loader: file(`./${COLLECTION_FILES.factions}`, { parser: jsonArray("factions") }),
   schema: factionSchema,
 });
 
 const tags = defineCollection({
-  loader: file("./src/data/tags.json", { parser: jsonArray("tags") }),
+  loader: file(`./${COLLECTION_FILES.tags}`, { parser: jsonArray("tags") }),
   schema: tagSchema,
 });
 
 const sections = defineCollection({
-  loader: file("./src/data/sections.json", { parser: jsonArray("sections") }),
+  loader: file(`./${COLLECTION_FILES.sections}`, { parser: jsonArray("sections") }),
   schema: sectionSchema,
 });
 

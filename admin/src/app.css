@@ -39,8 +39,7 @@ body {
 body {
   background:
     radial-gradient(1000px 600px at 90% -10%, rgba(44, 182, 255, 0.09), transparent 70%),
-    radial-gradient(800px 500px at -10% 100%, rgba(255, 65, 87, 0.05), transparent 70%),
-    var(--bg-0);
+    radial-gradient(800px 500px at -10% 100%, rgba(255, 65, 87, 0.05), transparent 70%), var(--bg-0);
 }
 
 button,
@@ -137,7 +136,10 @@ kbd {
   text-decoration: none;
   border: 1px solid transparent;
   border-radius: 10px;
-  transition: background 0.18s, color 0.18s, border-color 0.18s;
+  transition:
+    background 0.18s,
+    color 0.18s,
+    border-color 0.18s;
 }
 .nav-item:hover {
   color: #fff;
@@ -449,7 +451,10 @@ kbd {
   border: 1px solid var(--line);
   border-radius: 9px;
   background: var(--surface-1);
-  transition: color 0.18s, background 0.18s, border-color 0.18s;
+  transition:
+    color 0.18s,
+    background 0.18s,
+    border-color 0.18s;
 }
 .icon-btn:hover {
   color: #fff;
@@ -486,7 +491,10 @@ kbd {
   border: 1px solid var(--border-1);
   border-radius: 9px;
   background: rgba(3, 9, 18, 0.66);
-  transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
+  transition:
+    border-color 0.18s,
+    box-shadow 0.18s,
+    background 0.18s;
 }
 .field input:focus,
 .field select:focus,
@@ -557,9 +565,6 @@ input[type="color"] {
 .form-grid--four {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
-.form-grid > .span-2 {
-  grid-column: span 2;
-}
 .form-grid > .span-all {
   grid-column: 1 / -1;
 }
@@ -604,7 +609,10 @@ input[type="color"] {
   border: 1px solid var(--line);
   border-radius: 9px;
   background: var(--surface-1);
-  transition: color 0.18s, background 0.18s, border-color 0.18s;
+  transition:
+    color 0.18s,
+    background 0.18s,
+    border-color 0.18s;
 }
 .tab:hover {
   color: #fff;
@@ -615,20 +623,6 @@ input[type="color"] {
   background: rgba(var(--cyan-rgb), 0.15);
   border-color: rgba(var(--cyan-rgb), 0.38);
 }
-.tab__badge {
-  min-width: 18px;
-  padding: 0 5px;
-  color: var(--muted-2);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  text-align: center;
-  border-radius: 999px;
-  background: rgba(2, 6, 13, 0.5);
-}
-.tab.is-active .tab__badge {
-  color: var(--cyan-hi);
-}
-
 .badge {
   display: inline-flex;
   align-items: center;
@@ -985,7 +979,9 @@ input[type="color"] {
   font-size: 11px;
   border: 1px solid transparent;
   border-radius: 7px;
-  transition: color 0.15s, background 0.15s;
+  transition:
+    color 0.15s,
+    background 0.15s;
 }
 .markdown-toolbar button:hover {
   color: #fff;
@@ -1073,9 +1069,21 @@ input[type="color"] {
   border: 1px dashed var(--border-1);
   border-radius: 12px;
   background:
-    linear-gradient(45deg, rgba(255, 255, 255, 0.025) 25%, transparent 25% 75%, rgba(255, 255, 255, 0.025) 75%),
-    linear-gradient(45deg, rgba(255, 255, 255, 0.025) 25%, transparent 25% 75%, rgba(255, 255, 255, 0.025) 75%);
-  background-position: 0 0, 8px 8px;
+    linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.025) 25%,
+      transparent 25% 75%,
+      rgba(255, 255, 255, 0.025) 75%
+    ),
+    linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.025) 25%,
+      transparent 25% 75%,
+      rgba(255, 255, 255, 0.025) 75%
+    );
+  background-position:
+    0 0,
+    8px 8px;
   background-size: 16px 16px;
 }
 .image-picker__preview img {
@@ -1223,7 +1231,9 @@ input[type="color"] {
   animation: spin 0.8s linear infinite;
 }
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* — модалки/тосты — */
@@ -1295,7 +1305,10 @@ input[type="color"] {
   border-left-color: var(--gold);
 }
 @keyframes toast-in {
-  from { opacity: 0; transform: translateY(8px); }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
 }
 
 /* — адаптив — */
@@ -1359,7 +1372,6 @@ input[type="color"] {
   .form-grid--four {
     grid-template-columns: minmax(0, 1fr);
   }
-  .form-grid > .span-2,
   .form-grid > .span-all {
     grid-column: auto;
   }

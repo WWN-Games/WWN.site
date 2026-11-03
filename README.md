@@ -11,7 +11,7 @@
 
 ## Технологии
 
-- **TypeScript 7.1** — нативный компилятор на Go (beta), `.astro` проверяет content mapper
+- **TypeScript 7.1** — нативный `tsc` (beta), `.astro` проверяет content mapper
 - **Astro 7** — статическая сборка с Content Layer
 - **Svelte 5** — острова интерактивности (runes)
 - **Pagefind** — клиентский поиск по индексу
@@ -29,7 +29,22 @@
 | `pnpm lint` / `pnpm lint:fix` | Biome: линт и формат |
 | `pnpm validate` | валидация контента и данных (паритет RU/EN, ссылки, схемы) |
 | `pnpm test` | unit-тесты (Vitest) |
-| `pnpm test:e2e` | e2e/a11y-тесты (Playwright) |
+| `pnpm test:e2e` | сборка + e2e/a11y-тесты (Playwright) |
+| `pnpm admin` | локальная админка (см. ниже) |
+
+## Админка
+
+Локальный редактор контента и git-операций: `pnpm admin` →
+<http://127.0.0.1:4322>. Админка входит в общий pnpm-workspace и использует
+корневой `pnpm install` и общий lockfile.
+
+- `ADMIN_HOST` (по умолчанию `127.0.0.1`), `ADMIN_PORT` (4322), `SITE_ORIGIN`
+  (адрес dev-сервера сайта).
+- При запуске не на loopback задайте `ADMIN_ORIGIN` — иначе запросы с других
+  origin будут отклонены.
+- Аутентификации нет: не выставляйте админку в публичную сеть.
+- Проверка типов админки: `pnpm --dir admin check` (тот же TypeScript 7, что и у сайта).
+- Сборка админки: `pnpm --dir admin build`.
 
 ## Структура
 
@@ -44,8 +59,9 @@ src/
 ├─ pages/           — маршруты (RU в корне, EN под /en/)
 ├─ scripts/         — клиентские скрипты (шапка, TOC, hero и т.п.)
 └─ styles/          — глобальный CSS
+admin/              — локальная админка (Vite + Svelte, часть workspace)
 public/             — robots, manifest, иконки базы, аудио, брендинг
-scripts/            — validate-content.ts, preview.mjs (для e2e)
+scripts/            — validate-content.ts, typecheck.ts, preview.mjs (для e2e)
 tests/              — unit (Vitest) и e2e (Playwright)
 docs/               — документация для редакторов контента
 ```

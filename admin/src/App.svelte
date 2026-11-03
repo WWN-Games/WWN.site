@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { get } from "svelte/store";
 
   import type { Bootstrap, ToastItem } from "../shared/types";
   import ArticleEditor from "./components/ArticleEditor.svelte";
@@ -14,8 +13,8 @@
   import Topbar from "./components/Topbar.svelte";
   import ValidationPage from "./components/ValidationPage.svelte";
   import { api } from "./lib/api";
-  import { dirty } from "./lib/dirty";
-  import { parseRoute, routeKey, type Route } from "./lib/routes";
+  import { dirty } from "./lib/dirty.svelte";
+  import { parseRoute, type Route, routeKey } from "./lib/routes";
 
   interface ConfirmState {
     title: string;
@@ -82,7 +81,7 @@
   }
 
   function navigate(path: string): void {
-    if (get(dirty)) {
+    if (dirty.value) {
       void askConfirm({
         title: "Есть несохранённые изменения",
         message: "Перейти в другой раздел и потерять изменения?",
@@ -90,7 +89,7 @@
         danger: true,
       }).then((ok) => {
         if (!ok) return;
-        dirty.set(false);
+        dirty.value = false;
         window.location.hash = path;
       });
       return;
@@ -110,12 +109,12 @@
       sidebarOpen = false;
     };
     const onBeforeUnload = (event: BeforeUnloadEvent): void => {
-      if (!get(dirty)) return;
+      if (!dirty.value) return;
       event.preventDefault();
       event.returnValue = "";
     };
     const onDocumentClick = (event: MouseEvent): void => {
-      if (!get(dirty)) return;
+      if (!dirty.value) return;
       const target = event.target;
       if (!(target instanceof Element)) return;
       const anchor = target.closest<HTMLAnchorElement>('a[href^="#/"]');
@@ -130,7 +129,7 @@
         danger: true,
       }).then((ok) => {
         if (!ok) return;
-        dirty.set(false);
+        dirty.value = false;
         window.location.hash = href.slice(1);
       });
     };
@@ -230,7 +229,7 @@
               {askConfirm}
             />
           {:else if route.view === "validation"}
-            <ValidationPage {navigate} {toast} {refresh} />
+            <ValidationPage {navigate} {toast} initial={bootstrap.validation} />
           {:else if route.view === "git"}
             <GitPage {toast} {askConfirm} {refresh} />
           {/if}
@@ -243,6 +242,7 @@
 <Toasts items={toasts} onclose={closeToast} />
 
 {#if confirmState}
+  <!-- biome-ignore lint/a11y/noStaticElementInteractions: клик по подложке закрывает модалку -->
   <div
     class="modal-backdrop"
     role="presentation"

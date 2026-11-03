@@ -48,7 +48,7 @@ function withDiscordLink(html: string): string {
               <span>{t(lang, item.question)}</span>
               <i />
             </button>
-            <div class="faq__a" id={item.id} inert aria-hidden="true">
+            <div class="faq__a" id={item.id}>
               {item.html ? (
                 <p>
                   <Fragment set:html={withDiscordLink(t(lang, item.answer))} />

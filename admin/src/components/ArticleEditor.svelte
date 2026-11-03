@@ -10,8 +10,8 @@
     ToastFn,
     ValidationState,
   } from "../../shared/types";
-  import { api, ApiError } from "../lib/api";
-  import { dirty as dirtyStore } from "../lib/dirty";
+  import { ApiError, api } from "../lib/api";
+  import { dirty as dirtyStore } from "../lib/dirty.svelte";
   import { formatDate, slugify, todayIso } from "../lib/format";
   import Icon from "./Icon.svelte";
   import MarkdownEditor from "./MarkdownEditor.svelte";
@@ -70,8 +70,8 @@
   const isDirty = $derived(snapshotValue() !== initialSnapshot);
 
   $effect(() => {
-    dirtyStore.set(isDirty);
-    return () => dirtyStore.set(false);
+    dirtyStore.value = isDirty;
+    return () => dirtyStore.value = false;
   });
 
   $effect(() => {
@@ -171,7 +171,7 @@
       });
       const changedPath = result.article.slug !== slug;
       applyArticle(result.article);
-      dirtyStore.set(false);
+      dirtyStore.value = false;
       toast("Статья сохранена");
       if (!result.validation.ok) {
         toast(`Сохранено, но валидация нашла ${result.validation.errors.length} ошибок`, "warn");
@@ -202,7 +202,7 @@
     if (!ok) return;
     try {
       await api.delete(`/api/article?slug=${encodeURIComponent(originalSlug)}`);
-      dirtyStore.set(false);
+      dirtyStore.value = false;
       toast("Статья удалена");
       refresh();
       navigate("/articles");
@@ -220,7 +220,7 @@
       const result = await api.post<{ article: Article }>("/api/article/duplicate", {
         slug: originalSlug,
       });
-      dirtyStore.set(false);
+      dirtyStore.value = false;
       toast(`Создана копия: ${result.article.slug}`);
       refresh();
       navigate(`/article/${result.article.slug}`);
@@ -273,7 +273,7 @@
   });
 
   onDestroy(() => {
-    dirtyStore.set(false);
+    dirtyStore.value = false;
   });
 </script>
 

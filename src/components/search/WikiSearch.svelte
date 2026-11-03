@@ -8,13 +8,15 @@ import {
   isLangUrl,
   loadPagefind,
   type PagefindResultData,
+  type PagefindResultRef,
   resetPagefind,
+  sanitizePagefindExcerpt,
   sectionCounts,
   sectionOf,
   stripBase,
   withBase,
 } from "@/lib/search";
-import { debounce, escapeHtml, nextFocusIndex } from "@/lib/utils";
+import { debounce, formatTemplate, nextFocusIndex } from "@/lib/utils";
 
 interface Section {
   id: string;
@@ -49,15 +51,12 @@ interface FoundItem {
 
 let { lang, sections, labels }: Props = $props();
 
-/** Подстановка {n} и других плейсхолдеров в строки, переданные с сервера. */
-function fmt(template: string, vars: Record<string, string | number>): string {
-  return template.replace(/\{(\w+)\}/g, (_, key: string) => String(vars[key] ?? `{${key}}`));
-}
+const fmt = formatTemplate;
 
-const RECENT_KEY = "wwn-wiki-search";
 const RECENT_MAX = 5;
 const RESULT_LIMIT = 12;
 const SEARCH_DELAY = 160;
+const recentKey = `wwn-wiki-search:${lang}`;
 
 let panel = $state<HTMLDialogElement | null>(null);
 let panelInput = $state<HTMLInputElement | null>(null);
@@ -71,6 +70,8 @@ let activeSection = $state("");
 let expanded = $state(false);
 let loading = $state(false);
 let failed = $state(false);
+let refs = $state<PagefindResultRef[]>([]);
+let loadedCount = $state(0);
 
 /* Гонки: ответ устаревшего запроса отбрасывается по номеру. */
 let searchSeq = 0;
@@ -78,7 +79,7 @@ let destroyed = false;
 
 const shortQuery = $derived(query.trim().length < 2);
 const foundCount = $derived(items.length);
-const hiddenCount = $derived(Math.max(0, items.length - RESULT_LIMIT));
+const hiddenCount = $derived(Math.max(0, refs.length - loadedCount));
 const visible = $derived(expanded ? items : items.slice(0, RESULT_LIMIT));
 /* Как в legacy: в чипах только разделы с совпадениями, с числом результатов. */
 const filterSections = $derived(sections.filter((section) => (counts[section.id] ?? 0) > 0));
@@ -92,7 +93,7 @@ const hintText = $derived(
 
 function readRecent(): string[] {
   try {
-    const raw = localStorage.getItem(RECENT_KEY);
+    const raw = localStorage.getItem(recentKey);
     const parsed: unknown = raw ? JSON.parse(raw) : [];
     if (!Array.isArray(parsed)) return [];
     return parsed
@@ -108,7 +109,7 @@ function rememberQuery(value: string): void {
   if (trimmed.length < 2) return;
   recents = [trimmed, ...recents.filter((recent) => recent !== trimmed)].slice(0, RECENT_MAX);
   try {
-    localStorage.setItem(RECENT_KEY, JSON.stringify(recents));
+    localStorage.setItem(recentKey, JSON.stringify(recents));
   } catch {
     // приватный режим — недавние просто не сохранятся
   }
@@ -118,10 +119,14 @@ function toFound(data: PagefindResultData, term: string): FoundItem {
   const sectionId = sectionOf(data);
   return {
     href: withBase(data.url),
-    title: highlight(escapeHtml(data.meta?.title ?? stripBase(data.url)), term),
+    title: highlight(data.meta?.title ?? stripBase(data.url), term),
     sectionTitle: sections.find((section) => section.id === sectionId)?.title ?? "",
-    excerpt: escapeHtml(data.excerpt ?? ""),
+    excerpt: sanitizePagefindExcerpt(data.excerpt ?? ""),
   };
+}
+
+function fulfilledData(results: PromiseSettledResult<PagefindResultData>[]): PagefindResultData[] {
+  return results.flatMap((result) => (result.status === "fulfilled" ? [result.value] : []));
 }
 
 async function runSearch(): Promise<void> {
@@ -133,6 +138,8 @@ async function runSearch(): Promise<void> {
   if (term.length < 2) {
     items = [];
     counts = {};
+    refs = [];
+    loadedCount = 0;
     failed = false;
     loading = false;
     return;
@@ -151,10 +158,13 @@ async function runSearch(): Promise<void> {
     );
     if (seq !== searchSeq) return;
 
-    const data = await Promise.all(response.results.map((result) => result.data()));
+    refs = response.results;
+    const batch = refs.slice(0, RESULT_LIMIT);
+    const data = await Promise.allSettled(batch.map((result) => result.data()));
     if (seq !== searchSeq) return;
 
-    const found = data.filter((entry) => isLangUrl(entry.url, lang));
+    loadedCount = batch.length;
+    const found = fulfilledData(data).filter((entry) => isLangUrl(entry.url, lang));
     counts = sectionCounts(response);
     items = found.map((entry) => toFound(entry, term));
     loading = false;
@@ -162,10 +172,29 @@ async function runSearch(): Promise<void> {
     if (seq !== searchSeq) return;
     items = [];
     counts = {};
+    refs = [];
+    loadedCount = 0;
     failed = true;
     loading = false;
     void resetPagefind();
   }
+}
+
+/** Догружает оставшиеся результаты: изначально запрашиваются только первые 12. */
+async function expand(): Promise<void> {
+  if (expanded) return;
+  expanded = true;
+  const batch = refs.slice(loadedCount);
+  if (!batch.length) return;
+
+  const seq = searchSeq;
+  const term = query.trim();
+  const data = await Promise.allSettled(batch.map((result) => result.data()));
+  if (seq !== searchSeq) return;
+
+  loadedCount = refs.length;
+  const found = fulfilledData(data).filter((entry) => isLangUrl(entry.url, lang));
+  items = [...items, ...found.map((entry) => toFound(entry, term))];
 }
 
 const debouncedSearch = debounce(() => {
@@ -328,10 +357,12 @@ $effect(() => {
 
     {#if !shortQuery && !failed}
       <fieldset class="search-filters" id="searchFilters">
+        <legend class="visually-hidden">{labels.title}</legend>
         <button
           type="button"
           class="search-chip"
           class:is-active={!activeSection}
+          aria-pressed={!activeSection}
           onclick={() => selectSection("")}
         >
           {labels.all}
@@ -341,6 +372,7 @@ $effect(() => {
             type="button"
             class="search-chip"
             class:is-active={activeSection === section.id}
+            aria-pressed={activeSection === section.id}
             onclick={() => selectSection(section.id)}
           >
             {section.title}
@@ -398,7 +430,7 @@ $effect(() => {
           </a>
         {/each}
         {#if !expanded && hiddenCount > 0}
-          <button type="button" class="search-more" onclick={() => (expanded = true)}>
+          <button type="button" class="search-more" onclick={() => void expand()}>
             {fmt(labels.more, { n: hiddenCount })}
           </button>
         {/if}

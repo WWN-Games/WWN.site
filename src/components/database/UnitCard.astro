@@ -8,6 +8,7 @@ import StatBars from "@/components/database/StatBars.astro";
 import { t } from "@/i18n";
 import {
   buildBars,
+  cardSearchText,
   type DatabaseCard,
   factionColor,
   factionName,
@@ -44,12 +45,14 @@ const strongVs = pickList(card.strongVs, lang);
 const weakVs = pickList(card.weakVs, lang);
 const hasCosts = card.cost > 0 || card.buildTime > 0;
 const canExpandDesc = desc.length > 220;
+const searchText = cardSearchText(card, lang, factions, tags);
 ---
 
 <article
   class="unit-card"
   data-card-id={card.id}
   data-tab={card.tab}
+  data-search={searchText}
   style={`--faction-color:${color}`}
 >
   {card.isNew && <span class="unit-card__new">{t(lang, "database.new")}</span>}

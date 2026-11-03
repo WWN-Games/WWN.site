@@ -18,6 +18,7 @@ import {
 } from "@/lib/compare";
 import type { ExplorerItem, ExplorerLabels, ExplorerTag } from "@/lib/database";
 import type { Lang } from "@/lib/site";
+import { formatTemplate } from "@/lib/utils";
 
 interface Props {
   open: boolean;
@@ -125,7 +126,7 @@ const weaponRows = $derived.by(() => {
     return {
       key: `weapon-${index}`,
       group: "weapons" as const,
-      label: labels.weaponSlot.replace("{n}", String(index + 1)),
+      label: formatTemplate(labels.weaponSlot, { n: index + 1 }),
       cells,
     } satisfies Row;
   }).filter((row): row is Row => row !== null);
@@ -158,7 +159,7 @@ function handleClose(): void {
 }
 
 function removeLabel(name: string): string {
-  return labels.removeCard.replace("{name}", name);
+  return formatTemplate(labels.removeCard, { name });
 }
 
 async function copyLink(): Promise<void> {
@@ -167,19 +168,7 @@ async function copyLink(): Promise<void> {
     await navigator.clipboard.writeText(value);
     shareStatus = "ok";
   } catch {
-    try {
-      const textarea = document.createElement("textarea");
-      textarea.value = value;
-      textarea.setAttribute("readonly", "");
-      textarea.style.position = "fixed";
-      textarea.style.opacity = "0";
-      document.body.append(textarea);
-      textarea.select();
-      shareStatus = document.execCommand("copy") ? "ok" : "error";
-      textarea.remove();
-    } catch {
-      shareStatus = "error";
-    }
+    shareStatus = "error";
   }
   if (shareTimer) clearTimeout(shareTimer);
   shareTimer = setTimeout(() => {

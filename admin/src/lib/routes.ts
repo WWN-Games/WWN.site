@@ -1,9 +1,9 @@
 export type Route =
   | { view: "dashboard" }
-  | { view: "articles"; section?: string }
-  | { view: "article"; slug?: string; section?: string }
+  | { view: "articles"; section?: string | undefined }
+  | { view: "article"; slug?: string | undefined; section?: string | undefined }
   | { view: "collections"; name: string }
-  | { view: "item"; name: string; id?: string }
+  | { view: "item"; name: string; id?: string | undefined }
   | { view: "validation" }
   | { view: "git" };
 

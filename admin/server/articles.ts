@@ -1,7 +1,8 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
-import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
 
+import { parseArticleFrontMatter, serializeArticleFrontMatter } from "../../src/lib/frontmatter.ts";
+import { type WikiFrontMatter, wikiSchema } from "../../src/lib/schemas.ts";
 import type {
   Article,
   ArticleFile,
@@ -10,130 +11,85 @@ import type {
   Lang,
 } from "../shared/types.ts";
 import { SITE_ROOT } from "./config.ts";
-import { HttpError, atomicWrite, fileExists, isRealDate, readText, todayIso, toPosix } from "./http.ts";
 import { readSections } from "./data.ts";
-import { isSlug, slugify } from "./strings.ts";
+import {
+  atomicWrite,
+  fileExists,
+  HttpError,
+  isInside,
+  isRealDate,
+  readText,
+  todayIso,
+  toPosix,
+} from "./http.ts";
+import { isSlug } from "./strings.ts";
 import { runValidation } from "./validation.ts";
 
 const WIKI_ROOT = path.join(SITE_ROOT, "src/content/wiki");
 const LANGS: Lang[] = ["ru", "en"];
-const KNOWN_KEYS = new Set(["title", "desc", "order", "updated", "draft"]);
 
-interface ParsedFrontMatter {
-  title: string;
-  desc: string;
-  order: number;
-  updated: string;
-  draft: boolean;
+interface ParsedFile extends WikiFrontMatter {
   extra: Record<string, unknown>;
   body: string;
-}
-
-interface ParsedFile extends ParsedFrontMatter {
   file: string;
   exists: boolean;
 }
 
 function articlePath(lang: Lang, slug: string): string {
-  const target = path.resolve(WIKI_ROOT, lang, `${slug}.md`);
-  if (!target.startsWith(`${path.resolve(WIKI_ROOT, lang)}${path.sep}`)) {
-    throw new HttpError(400, "Некорректный путь статьи");
-  }
+  const root = path.resolve(WIKI_ROOT, lang);
+  const target = path.resolve(root, `${slug}.md`);
+  if (!isInside(root, target)) throw new HttpError(400, "Некорректный путь статьи");
   return target;
 }
 
-function parseArticle(raw: string, file: string): ParsedFrontMatter {
-  const match = /^---\r?\n([\s\S]*?)\r?\n---[ \t]*(?:\r?\n|$)/.exec(raw);
-  if (!match) {
-    throw new HttpError(500, `Нет front matter: ${file}`);
-  }
-
-  let data: unknown;
-  try {
-    data = parseYaml(match[1] ?? "");
-  } catch (error) {
-    throw new HttpError(500, `Ошибка YAML во front matter: ${file}`, [
-      error instanceof Error ? error.message : String(error),
-    ]);
-  }
-  if (data === null || typeof data !== "object" || Array.isArray(data)) {
-    throw new HttpError(500, `Front matter должен быть объектом: ${file}`);
-  }
-
-  const front = data as Record<string, unknown>;
-  const extra: Record<string, unknown> = {};
-  for (const [key, value] of Object.entries(front)) {
-    if (!KNOWN_KEYS.has(key)) extra[key] = value;
-  }
-
-  if (typeof front.title !== "string" || front.title.trim() === "") {
-    throw new HttpError(500, `Поле title отсутствует или пустое: ${file}`);
-  }
-  if (typeof front.desc !== "string" || front.desc.trim() === "") {
-    throw new HttpError(500, `Поле desc отсутствует или пустое: ${file}`);
-  }
-  if (typeof front.order !== "number" || !Number.isInteger(front.order) || front.order <= 0) {
-    throw new HttpError(500, `Поле order должно быть целым положительным числом: ${file}`);
-  }
-  const updated =
-    front.updated instanceof Date
-      ? front.updated.toISOString().slice(0, 10)
-      : typeof front.updated === "string"
-        ? front.updated
-        : "";
-  if (!isRealDate(updated)) {
-    throw new HttpError(500, `Поле updated должно быть датой YYYY-MM-DD: ${file}`);
-  }
-  if (front.draft !== undefined && typeof front.draft !== "boolean") {
-    throw new HttpError(500, `Поле draft должно быть true или false: ${file}`);
-  }
-
-  return {
-    title: front.title,
-    desc: front.desc,
-    order: front.order,
-    updated,
-    draft: front.draft === true,
-    extra,
-    body: raw.slice(match[0].length).replace(/^\r?\n+/, ""),
-  };
-}
-
 function serializeArticle(file: ParsedFile): string {
-  const lines = [
-    "---",
-    `title: ${JSON.stringify(file.title)}`,
-    `desc: ${JSON.stringify(file.desc)}`,
-    `order: ${file.order}`,
-    `updated: ${file.updated}`,
-  ];
-  if (file.draft) lines.push("draft: true");
-  if (Object.keys(file.extra).length > 0) {
-    lines.push(stringifyYaml(file.extra).trimEnd());
-  }
-  lines.push("---", "", file.body.trimEnd(), "");
-  return lines.join("\n");
+  const data: WikiFrontMatter = {
+    title: file.title,
+    desc: file.desc,
+    order: file.order,
+    updated: file.updated,
+    draft: file.draft,
+  };
+  return serializeArticleFrontMatter(data, file.body.trimEnd(), file.extra);
 }
 
 async function readOne(lang: Lang, slug: string): Promise<ParsedFile | null> {
   const file = articlePath(lang, slug);
   if (!(await fileExists(file))) return null;
+  const relative = toPosix(path.relative(SITE_ROOT, file));
   const raw = await readText(file);
-  const parsed = parseArticle(raw, toPosix(path.relative(SITE_ROOT, file)));
+  let parsed: ReturnType<typeof parseArticleFrontMatter>;
+  try {
+    parsed = parseArticleFrontMatter(raw);
+  } catch (error) {
+    throw new HttpError(500, `Ошибка front matter: ${relative}`, [
+      error instanceof Error ? error.message : String(error),
+    ]);
+  }
+  const result = wikiSchema.safeParse(parsed.data);
+  if (!result.success) {
+    throw new HttpError(
+      500,
+      `Некорректный front matter: ${relative}`,
+      result.error.issues.map((issue) => {
+        const at = issue.path.map(String).join(".");
+        return `${at ? `${at}: ` : ""}${issue.message}`;
+      }),
+    );
+  }
+  const extra = Object.fromEntries(parsed.unknownKeys.map((key) => [key, parsed.data[key]]));
   return {
-    ...parsed,
-    file: toPosix(path.relative(SITE_ROOT, file)),
+    ...result.data,
+    extra,
+    body: parsed.body.replace(/^\r?\n+/, ""),
+    file: relative,
     exists: true,
   };
 }
 
 async function walk(dir: string, prefix = ""): Promise<string[]> {
-  let entries;
-  try {
-    entries = await fs.readdir(dir, { withFileTypes: true });
-  } catch {
-    return [];
-  }
+  const entries = await fs.readdir(dir, { withFileTypes: true }).catch(() => null);
+  if (!entries) return [];
   const result: string[] = [];
   for (const entry of entries) {
     if (entry.name.startsWith(".")) continue;
@@ -212,7 +168,7 @@ export async function readArticle(slug: string): Promise<Article> {
   if (parts.length !== 2 || !parts[0] || !isSlug(parts[1] ?? "")) {
     throw new HttpError(400, "Некорректный slug статьи");
   }
-  const [section, name] = parts as [string, string];
+  const [section] = parts as [string, string];
   const [ru, en] = await Promise.all([readOne("ru", slug), readOne("en", slug)]);
   if (!ru && !en) throw new HttpError(404, `Статья «${slug}» не найдена`);
 
@@ -249,7 +205,9 @@ export async function readArticle(slug: string): Promise<Article> {
   };
 }
 
-export async function articleDefaults(section: string): Promise<{ order: number; section: string }> {
+export async function articleDefaults(
+  section: string,
+): Promise<{ order: number; section: string }> {
   const articles = await listArticles();
   const inSection = articles.filter((article) => article.section === section);
   const max = inSection.reduce((value, article) => Math.max(value, article.order), 0);
@@ -269,6 +227,12 @@ export async function saveArticle(input: ArticleSaveInput): Promise<{
   const parts = input.slug.split("/");
   if (parts.length !== 2 || parts[0] !== input.section || !isSlug(parts[1] ?? "")) {
     throw new HttpError(400, "Slug должен быть в формате «раздел/статья» и содержать латиницу");
+  }
+  if (input.originalSlug) {
+    const originalParts = input.originalSlug.split("/");
+    if (originalParts.length !== 2 || !originalParts[0] || !isSlug(originalParts[1] ?? "")) {
+      throw new HttpError(400, "Некорректный originalSlug");
+    }
   }
   if (!Number.isInteger(input.order) || input.order <= 0) {
     throw new HttpError(400, "Порядок должен быть целым числом больше нуля");
@@ -298,10 +262,7 @@ export async function saveArticle(input: ArticleSaveInput): Promise<{
       article.order === input.order,
   );
   if (duplicateOrder) {
-    throw new HttpError(
-      409,
-      `Порядок ${input.order} уже занят статьёй «${duplicateOrder.slug}»`,
-    );
+    throw new HttpError(409, `Порядок ${input.order} уже занят статьёй «${duplicateOrder.slug}»`);
   }
 
   const oldPaths = input.originalSlug
@@ -312,13 +273,19 @@ export async function saveArticle(input: ArticleSaveInput): Promise<{
   if (renaming) {
     for (const target of newPaths) {
       if (await fileExists(target)) {
-        throw new HttpError(409, `Файл уже существует: ${toPosix(path.relative(SITE_ROOT, target))}`);
+        throw new HttpError(
+          409,
+          `Файл уже существует: ${toPosix(path.relative(SITE_ROOT, target))}`,
+        );
       }
     }
   } else if (!input.originalSlug) {
     for (const target of newPaths) {
       if (await fileExists(target)) {
-        throw new HttpError(409, `Статья уже существует: ${toPosix(path.relative(SITE_ROOT, target))}`);
+        throw new HttpError(
+          409,
+          `Статья уже существует: ${toPosix(path.relative(SITE_ROOT, target))}`,
+        );
       }
     }
   }
@@ -356,6 +323,10 @@ export async function saveArticle(input: ArticleSaveInput): Promise<{
 }
 
 export async function deleteArticle(slug: string): Promise<ReturnType<typeof runValidation>> {
+  const parts = slug.split("/");
+  if (parts.length !== 2 || !parts[0] || !isSlug(parts[1] ?? "")) {
+    throw new HttpError(400, "Некорректный slug статьи");
+  }
   const paths = LANGS.map((lang) => articlePath(lang, slug));
   const existed = await Promise.all(paths.map((file) => fileExists(file)));
   if (!existed.some(Boolean)) throw new HttpError(404, `Статья «${slug}» не найдена`);
@@ -396,8 +367,4 @@ export async function duplicateArticle(slug: string): Promise<{
       body: source.en.body,
     },
   });
-}
-
-export function suggestSlug(title: string): string {
-  return slugify(title) || "article";
 }

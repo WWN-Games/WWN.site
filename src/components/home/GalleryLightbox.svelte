@@ -44,8 +44,10 @@ function open(next: number): void {
   const item = items[index];
   if (!item) return;
   current = item;
-  lastFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-  if (dialog && !dialog.open) dialog.showModal();
+  if (dialog && !dialog.open) {
+    lastFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    dialog.showModal();
+  }
   preloadNeighbors();
 }
 

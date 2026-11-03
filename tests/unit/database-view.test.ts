@@ -8,10 +8,15 @@ import {
   serializeCompareParam,
 } from "../../src/lib/compare";
 import type { ExplorerItem } from "../../src/lib/database";
-import { filterItems, searchTokens, sortItems } from "../../src/lib/database-view";
+import {
+  filterItems,
+  type SearchableExplorerItem,
+  searchTokens,
+  sortItems,
+} from "../../src/lib/database-view";
 import { withDerivedDps } from "../../src/pages/api/v1/_shared";
 
-function item(overrides: Partial<ExplorerItem> = {}): ExplorerItem {
+function item(overrides: Partial<SearchableExplorerItem> = {}): SearchableExplorerItem {
   return {
     id: "unit-a",
     tab: "units",
@@ -91,11 +96,11 @@ describe("database view", () => {
       filterItems(items, {
         query: "",
         faction: "all",
-        type: "all",
-        tags: ["T1", "T2"],
-        tagMode: "any",
+        type: "air",
+        tags: [],
+        tagMode: "all",
       }),
-    ).toHaveLength(3);
+    ).toHaveLength(0);
   });
 
   it("сортирует числом и направлением, имя — tie-breaker", () => {

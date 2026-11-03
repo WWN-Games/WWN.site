@@ -16,6 +16,7 @@
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "test": "vitest run",
+    "pretest:e2e": "pnpm build",
     "test:e2e": "playwright test",
     "admin": "pnpm --dir admin start"
   },
@@ -24,7 +25,7 @@
     "@astrojs/sitemap": "^3.7.4",
     "@astrojs/svelte": "^9.1.2",
     "@icon-park/svg": "^1.4.2",
-    "astro": "^7.4.4",
+    "astro": "^7.4.5",
     "astro-icon": "^1.2.0",
     "astro-pagefind": "^2.0.1",
     "rehype-autolink-headings": "^7.1.0",
@@ -44,7 +45,9 @@
     "@types/node": "^26.6.6",
     "sharp": "^0.35.5",
     "typescript": "7.1.0-beta",
+    "unified": "^11.0.5",
     "vfile": "^6.0.3",
-    "vitest": "^5.0.5"
+    "vitest": "^5.0.5",
+    "yaml": "^2.9.1"
   }
 }

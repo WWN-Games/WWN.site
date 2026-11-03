@@ -7,6 +7,7 @@
 import { getCollection } from "astro:content";
 
 import { type DictKey, t } from "../i18n";
+import { withDerivedDps } from "./cards";
 import type { CompareGroup, CompareMetric } from "./compare";
 import type { CardTab, SortKey, TabId } from "./database-constants";
 import type { Building, Faction, Tag, Text, Unit, Weapon } from "./schemas";
@@ -14,8 +15,7 @@ import { href, type Lang, localeHref } from "./site";
 import { foldSearch } from "./utils";
 import { entrySlug, getPublished } from "./wiki";
 
-export type { CardTab, SortDirection, SortKey, TabId, TagMatchMode } from "./database-constants";
-export { CARD_TABS, SORT_KEYS, TABS } from "./database-constants";
+export type { CardTab, SortDirection, SortKey, TabId } from "./database-constants";
 
 /* — константы и базовые типы — */
 
@@ -39,9 +39,7 @@ export type StatScale = Record<StatKey, StatScaleEntry | null>;
 
 /** Готовая полоса: значения и проценты посчитаны на сборке. */
 export interface StatBarData {
-  key: StatKey;
   label: string;
-  value: number;
   display: string;
   percent: number;
   medianPercent: number;
@@ -88,7 +86,6 @@ export interface DatabaseFaction {
   weaknesses: string[];
   subfactionLabel: string | null;
   counts: { units: number; buildings: number };
-  hasWiki: boolean;
   wikiHref: string | null;
 }
 
@@ -110,8 +107,6 @@ export interface ExplorerItem {
   speed: number;
   range: number;
   buildTime: number;
-  /** Свёрнутый foldSearch текст текущего языка: имя, роль, описание, теги. */
-  searchText: string;
   /** Локализованное имя: остров работает только с языком страницы. */
   name: string;
   factionName: string;
@@ -171,7 +166,6 @@ export interface ExplorerLabels {
   count: string;
   compare: {
     title: string;
-    add: string;
     addAria: string;
     removeAria: string;
     selected: string;
@@ -320,8 +314,8 @@ function computeScale(cards: DatabaseCard[]): StatScale {
 function barPercent(value: number, key: StatKey, scale: StatScale): number {
   const entry = scale[key];
   if (!(value > 0) || !entry) return 0;
-  const lo = Math.max(entry.lo, 1);
-  const hi = Math.max(entry.hi, lo + 1);
+  const lo = Math.max(entry.lo, 0.01);
+  const hi = Math.max(entry.hi, lo * 1.01);
   const span = Math.log(hi / lo);
   if (!(span > 0)) return 100;
   const position = Math.log(Math.max(value, lo) / lo) / span;
@@ -350,9 +344,7 @@ export function buildBars(card: DatabaseCard, lang: Lang, scale: StatScale): Sta
     if (!entry) continue;
     const value = card[key];
     bars.push({
-      key,
       label: t(lang, `database.${key}`),
-      value,
       display: formatStat(value),
       percent: barPercent(value, key, scale),
       medianPercent: barPercent(entry.median, key, scale),
@@ -366,10 +358,8 @@ export function buildBars(card: DatabaseCard, lang: Lang, scale: StatScale): Sta
 type CardData = Unit | Building;
 
 function toCard(id: string, tab: CardTab, data: CardData): DatabaseCard {
-  const weapons = data.weapons ?? [];
-  const dps = weapons.length
-    ? weapons.reduce((sum, weapon) => sum + weapon.damage, 0)
-    : (data.dps ?? 0);
+  const derived = withDerivedDps(data);
+  const weapons = derived.weapons ?? [];
   return {
     id,
     tab,
@@ -385,7 +375,7 @@ function toCard(id: string, tab: CardTab, data: CardData): DatabaseCard {
     shield: data.shield ?? 0,
     selfRegen: data.selfRegen ?? 0,
     shieldRegen: data.shieldRegen ?? 0,
-    dps,
+    dps: derived.dps ?? 0,
     weapons,
     speed: data.speed ?? 0,
     range: data.range ?? 0,
@@ -395,6 +385,21 @@ function toCard(id: string, tab: CardTab, data: CardData): DatabaseCard {
     isNew: data.new ?? false,
     image: data.image,
   };
+}
+
+/** Текст для клиентского поиска: карточка кладёт его в data-search. */
+export function cardSearchText(
+  card: DatabaseCard,
+  lang: Lang,
+  factions: Map<string, Faction>,
+  tags: Map<string, Tag>,
+): string {
+  const name = card.name[lang];
+  const tagText = [...new Set(card.tags.flatMap((id) => [id, tagLabel(tags, id, lang)]))].join(" ");
+  const weaponText = card.weapons.map((weapon) => weapon.name[lang]).join(" ");
+  return foldSearch(
+    `${name} ${factionName(factions, card.faction, lang)} ${typeLabel(card.type, lang)} ${card.role?.[lang] ?? ""} ${card.desc[lang]} ${tagText} ${weaponText}`,
+  );
 }
 
 function explorerLabels(lang: Lang): ExplorerLabels {
@@ -440,7 +445,6 @@ function explorerLabels(lang: Lang): ExplorerLabels {
     count: t(lang, "database.count"),
     compare: {
       title: t(lang, "database.compare.title"),
-      add: t(lang, "database.compare.add"),
       addAria: t(lang, "database.compare.addAria"),
       removeAria: t(lang, "database.compare.removeAria"),
       selected: t(lang, "database.compare.selected"),
@@ -546,7 +550,6 @@ export async function loadDatabase(lang: Lang): Promise<DatabaseData> {
       weaknesses: data.weaknesses?.[lang] ?? [],
       subfactionLabel,
       counts: counts.get(entry.id) ?? { units: 0, buildings: 0 },
-      hasWiki,
       wikiHref: hasWiki ? localeHref(lang, `wiki/${data.lore}/`) : null,
     };
   });
@@ -555,10 +558,6 @@ export async function loadDatabase(lang: Lang): Promise<DatabaseData> {
     const name = card.name[lang];
     const cardFactionName = factionName(factionMap, card.faction, lang);
     const cardTypeLabel = typeLabel(card.type, lang);
-    const tagText = [...new Set(card.tags.flatMap((id) => [id, tagLabel(tagMap, id, lang)]))].join(
-      " ",
-    );
-    const weaponText = card.weapons.map((weapon) => weapon.name[lang]).join(" ");
     return {
       id: card.id,
       tab: card.tab,
@@ -575,9 +574,6 @@ export async function loadDatabase(lang: Lang): Promise<DatabaseData> {
       speed: card.speed,
       range: card.range,
       buildTime: card.buildTime,
-      searchText: foldSearch(
-        `${name} ${cardFactionName} ${cardTypeLabel} ${card.role?.[lang] ?? ""} ${card.desc[lang]} ${tagText} ${weaponText}`,
-      ),
       name,
       factionName: cardFactionName,
       factionColor: factionColor(factionMap, card.faction),

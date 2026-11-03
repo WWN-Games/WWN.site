@@ -53,12 +53,12 @@
     <Icon name="menu" size={18} />
   </button>
 
-  <div class="topbar__crumbs" aria-label="Хлебные крошки">
+  <nav class="topbar__crumbs" aria-label="Хлебные крошки">
     {#each crumbs as crumb, index}
       {#if index > 0}<span>/</span>{/if}
       <b>{crumb}</b>
     {/each}
-  </div>
+  </nav>
 
   <div class="topbar__actions">
     <span class="topbar__status" class:is-ok={bootstrap.validation.ok} class:is-bad={!bootstrap.validation.ok}>

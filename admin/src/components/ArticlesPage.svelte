@@ -114,7 +114,8 @@
   }
 
   function siteUrl(article: ArticleSummary): string {
-    return `${bootstrap.site.url}/wiki/${article.slug}/`;
+    const langPrefix = article.hasRu ? "" : "en/";
+    return `${bootstrap.site.url}/${langPrefix}wiki/${article.slug}/`;
   }
 
   onMount(() => {

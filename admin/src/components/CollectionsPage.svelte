@@ -1,15 +1,16 @@
 <script lang="ts">
   import { onMount } from "svelte";
 
-  import type {
-    AskConfirm,
-    Bootstrap,
-    Card,
-    CollectionItem,
-    Faction,
-    Section,
-    Tag,
-    ToastFn,
+  import { BUILDING_TYPES, UNIT_TYPES } from "../../../src/lib/content-constants";
+  import {
+    type AskConfirm,
+    type Bootstrap,
+    type CollectionItem,
+    isCard,
+    isFaction,
+    isSection,
+    isTag,
+    type ToastFn,
   } from "../../shared/types";
   import { api } from "../lib/api";
   import { assetUrl, formatCount } from "../lib/format";
@@ -55,7 +56,7 @@
     },
   };
 
-  const info = $derived(meta[name] ?? meta.units!);
+  const info = $derived(meta[name] ?? meta.units);
   const isCards = $derived(name === "units" || name === "buildings");
 
   let items = $state<CollectionItem[]>([]);
@@ -69,11 +70,7 @@
   const factionById = $derived(new Map(bootstrap.factions.map((faction) => [faction.id, faction])));
   const tagById = $derived(new Map(bootstrap.tags.map((tag) => [tag.id, tag])));
 
-  const typeOptions = $derived(
-    name === "units"
-      ? ["ground", "air", "naval", "space", "support"]
-      : ["economy", "defense", "structure"],
-  );
+  const typeOptions = $derived(name === "units" ? [...UNIT_TYPES] : [...BUILDING_TYPES]);
 
   const query = $derived(search.trim().toLowerCase().replace(/ё/g, "е"));
 
@@ -86,7 +83,8 @@
   const filtered = $derived.by(() => {
     const list = items.filter((item) => {
       if (isCards) {
-        const card = item as Card;
+        if (!isCard(item)) return false;
+        const card = item;
         if (factionFilter !== "all" && card.faction !== factionFilter) return false;
         if (typeFilter !== "all" && card.type !== typeFilter) return false;
         if (statusFilter === "draft" && !card.draft) return false;
@@ -110,23 +108,23 @@
         return true;
       }
       if (name === "tags") {
-        const tag = item as Tag;
-        if (query && !`${tag.id} ${tag.name.ru} ${tag.name.en}`.toLowerCase().includes(query)) return false;
+        if (!isTag(item)) return false;
+        if (query && !`${item.id} ${item.name.ru} ${item.name.en}`.toLowerCase().includes(query)) return false;
         return true;
       }
       if (name === "factions") {
-        const faction = item as Faction;
-        if (query && !`${faction.id} ${faction.name.ru} ${faction.name.en} ${faction.lore}`.toLowerCase().includes(query)) return false;
+        if (!isFaction(item)) return false;
+        if (query && !`${item.id} ${item.name.ru} ${item.name.en} ${item.lore}`.toLowerCase().includes(query)) return false;
         return true;
       }
-      const section = item as Section;
-      if (query && !`${section.id} ${section.title.ru} ${section.title.en}`.toLowerCase().includes(query)) return false;
+      if (!isSection(item)) return false;
+      if (query && !`${item.id} ${item.title.ru} ${item.title.en}`.toLowerCase().includes(query)) return false;
       return true;
     });
 
     return [...list].sort((a, b) => {
-      if (name === "factions") return (a as Faction).order - (b as Faction).order;
-      if (name === "sections") return (a as Section).order - (b as Section).order;
+      if (isFaction(a) && isFaction(b)) return a.order - b.order;
+      if (isSection(a) && isSection(b)) return a.order - b.order;
       return labelOf(a).localeCompare(labelOf(b), "ru");
     });
   });
@@ -263,7 +261,8 @@
         </thead>
         <tbody>
           {#each filtered as item (item.id)}
-            {@const card = item as Card}
+            {#if isCard(item)}
+            {@const card = item}
             <tr class="is-clickable" onclick={() => navigate(`/collections/${name}/${card.id}`)}>
               <td><CardThumb id={card.id} image={card.image} name={card.name.ru} /></td>
               <td>
@@ -300,6 +299,7 @@
                 </div>
               </td>
             </tr>
+            {/if}
           {/each}
         </tbody>
       </table>
@@ -319,7 +319,8 @@
         </thead>
         <tbody>
           {#each filtered as item (item.id)}
-            {@const faction = item as Faction}
+            {#if isFaction(item)}
+            {@const faction = item}
             <tr class="is-clickable" onclick={() => navigate(`/collections/factions/${faction.id}`)}>
               <td>
                 {#if faction.emblem}
@@ -348,6 +349,7 @@
                 </div>
               </td>
             </tr>
+            {/if}
           {/each}
         </tbody>
       </table>
@@ -366,7 +368,8 @@
         </thead>
         <tbody>
           {#each filtered as item (item.id)}
-            {@const tag = item as Tag}
+            {#if isTag(item)}
+            {@const tag = item}
             <tr class="is-clickable" onclick={() => navigate(`/collections/tags/${tag.id}`)}>
               <td><b>{tag.name.ru}</b> <span class="badge">{tag.name.en}</span></td>
               <td><code>{tag.id}</code></td>
@@ -383,6 +386,7 @@
                 </div>
               </td>
             </tr>
+            {/if}
           {/each}
         </tbody>
       </table>
@@ -401,7 +405,8 @@
         </thead>
         <tbody>
           {#each filtered as item (item.id)}
-            {@const section = item as Section}
+            {#if isSection(item)}
+            {@const section = item}
             <tr class="is-clickable" onclick={() => navigate(`/collections/sections/${section.id}`)}>
               <td>
                 <div class="table__title">
@@ -423,6 +428,7 @@
                 </div>
               </td>
             </tr>
+            {/if}
           {/each}
         </tbody>
       </table>

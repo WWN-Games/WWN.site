@@ -18,7 +18,14 @@ const external = { target: "_blank", rel: "noopener" } as const;
   <div class="wrap">
     <div class="footer__top">
       <div class="footer__brand">
-        <img src={href("img/brand/logo.svg")} alt="WWN" width="862" height="252" />
+        <img
+          src={href("img/brand/logo.svg")}
+          alt="WWN"
+          width="862"
+          height="252"
+          loading="lazy"
+          decoding="async"
+        />
         <p>{t(lang, "siteTagline")}</p>
         <div class="footer__social">
           <a class="icon-btn" href={LINKS.discord} {...external}>
@@ -66,7 +73,7 @@ const external = { target: "_blank", rel: "noopener" } as const;
     </div>
 
     <div class="footer__bottom">
-      <p>© <span id="year"></span> WWN. {t(lang, "footer.disclaimer")}</p>
+      <p>© <span id="year">{new Date().getFullYear()}</span> WWN. {t(lang, "footer.disclaimer")}</p>
     </div>
   </div>
 </footer>

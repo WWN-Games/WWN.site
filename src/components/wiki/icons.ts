@@ -3,7 +3,9 @@
    id раздела приходит из src/data/sections.json (валидируется Zod-схемой).
    ============================================================================ */
 
-const SECTION_ICON_NAMES: Record<string, string> = {
+import type { SECTION_ICONS } from "@/lib/content-constants";
+
+const SECTION_ICON_NAMES = {
   book: "icon-park-outline:book",
   shield: "icon-park-outline:shield",
   cube: "icon-park-outline:cube",
@@ -13,8 +15,8 @@ const SECTION_ICON_NAMES: Record<string, string> = {
   clock: "icon-park-outline:time",
   rocket: "icon-park-outline:rocket",
   chat: "icon-park-outline:message",
-};
+} satisfies Record<(typeof SECTION_ICONS)[number], string>;
 
 export function sectionIconName(id: string): string {
-  return SECTION_ICON_NAMES[id] ?? "icon-park-outline:book";
+  return SECTION_ICON_NAMES[id as keyof typeof SECTION_ICON_NAMES] ?? "icon-park-outline:book";
 }

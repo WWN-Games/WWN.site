@@ -29,14 +29,32 @@ const kept: string[] = [];
 let skipBlock = false;
 let filteredDependencyErrors = 0;
 
-const diagnostic = /^(.+?)\(\d+,\d+\): (?:error|warning) TS\d+:/;
+/* Разрешаем только известные диагностики astro-icon@1.2.0: его .astro-файлы
+   не рассчитаны на strict-опции проекта. Любая новая ошибка зависимости
+   должна валить проверку, а не молча исчезать. */
+const ALLOWED_DEPENDENCY_DIAGNOSTICS: Record<string, Set<string>> = {
+  "/node_modules/astro-icon/components/Icon.astro": new Set(["TS18048", "TS2345"]),
+};
+
+function isAllowedDependencyDiagnostic(file: string, code: string): boolean {
+  const marker = "/node_modules/astro-icon/components/Icon.astro";
+  return file.endsWith(marker) && ALLOWED_DEPENDENCY_DIAGNOSTICS[marker]?.has(code) === true;
+}
+
+const diagnostic = /^(.+?)\(\d+,\d+\): (?:error|warning) (TS\d+):/;
 
 for (const line of lines) {
   const header = diagnostic.exec(line);
   if (header) {
     const file = (header[1] ?? "").split(path.sep).join("/");
-    skipBlock = file.includes("/node_modules/") || file.startsWith("node_modules/");
-    if (skipBlock && line.includes(": error TS")) filteredDependencyErrors++;
+    const code = header[2] ?? "";
+    const isDependency = file.includes("/node_modules/") || file.startsWith("node_modules/");
+    if (isDependency && isAllowedDependencyDiagnostic(file, code)) {
+      skipBlock = true;
+      filteredDependencyErrors++;
+    } else {
+      skipBlock = false;
+    }
   } else if (line !== "" && !/^\s/.test(line)) {
     // Глобальные ошибки tsc идут без заголовка файла — их нельзя терять.
     skipBlock = false;
@@ -62,7 +80,9 @@ if (kept.length > 0) {
 }
 
 if (result.status !== null && filteredDependencyErrors > 0) {
-  console.log("typecheck: OK (диагностика node_modules пропущена)");
+  console.log(
+    `typecheck: OK (пропущено известных диагностик astro-icon: ${filteredDependencyErrors})`,
+  );
   process.exit(0);
 }
 

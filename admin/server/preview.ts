@@ -1,9 +1,7 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
 
-import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeRaw from "rehype-raw";
-import rehypeSlug from "rehype-slug";
 import rehypeStringify from "rehype-stringify";
 import remarkGfm from "remark-gfm";
 import remarkParse from "remark-parse";
@@ -11,40 +9,33 @@ import remarkRehype from "remark-rehype";
 import { unified } from "unified";
 import { VFile } from "vfile";
 
+import { REHYPE_PLUGINS, REMARK_PLUGINS } from "../../src/lib/markdown/pipeline.ts";
 import type { Lang, PreviewResult } from "../shared/types.ts";
-import { rehypeArticleFeatures } from "../../src/lib/markdown/rehype-article.ts";
-import { rehypeAssetUrls } from "../../src/lib/markdown/rehype-asset-urls.ts";
-import { remarkWikiLinks } from "../../src/lib/markdown/remark-wiki-links.ts";
 import { SITE_BASE, SITE_DEV_URL, SITE_ROOT } from "./config.ts";
 import { HttpError } from "./http.ts";
 
-const processor = unified()
-  .use(remarkParse)
-  .use(remarkGfm)
-  .use(remarkWikiLinks)
-  .use(remarkRehype, { allowDangerousHtml: true })
-  .use(rehypeRaw)
-  .use(rehypeSlug)
-  .use(
-    rehypeAutolinkHeadings,
-    {
-      behavior: "append",
-      properties: { className: ["article__anchor"], tabIndex: -1, ariaHidden: "true" },
-    },
-  )
-  .use(rehypeAssetUrls)
-  .use(rehypeArticleFeatures)
-  .use(rehypeStringify, { allowDangerousHtml: true });
+const processor = unified().use(remarkParse).use(remarkGfm);
+for (const plugin of REMARK_PLUGINS) {
+  if (Array.isArray(plugin)) processor.use(plugin[0] as never, plugin[1] as never);
+  else processor.use(plugin as never);
+}
+processor.use(remarkRehype, { allowDangerousHtml: true }).use(rehypeRaw);
+for (const plugin of REHYPE_PLUGINS) {
+  if (Array.isArray(plugin)) processor.use(plugin[0] as never, plugin[1] as never);
+  else processor.use(plugin as never);
+}
+processor.use(rehypeStringify, { allowDangerousHtml: true });
 
 let cssPromise: Promise<string> | null = null;
 
 function previewCss(): Promise<string> {
   cssPromise ??= (async () => {
-    const [base, wiki] = await Promise.all([
-      fs.readFile(path.join(SITE_ROOT, "src/styles/style.css"), "utf8"),
-      fs.readFile(path.join(SITE_ROOT, "src/styles/wiki.css"), "utf8"),
-    ]);
-    return `${base}\n${wiki}\n
+    try {
+      const [base, wiki] = await Promise.all([
+        fs.readFile(path.join(SITE_ROOT, "src/styles/style.css"), "utf8"),
+        fs.readFile(path.join(SITE_ROOT, "src/styles/wiki.css"), "utf8"),
+      ]);
+      return `${base}\n${wiki}\n
 @font-face {
   font-family: "Onest";
   src: url("/media/assets/fonts/onest-wght.woff2") format("woff2");
@@ -80,7 +71,11 @@ body {
 .article__body { max-width: none; }
 .article__body > :first-child { margin-top: 0; }
 .preview-empty { color: var(--muted); font: 14px var(--font-body); }
-`;
+    `;
+    } catch (error) {
+      cssPromise = null;
+      throw error;
+    }
   })();
   return cssPromise;
 }
@@ -89,8 +84,8 @@ function rewriteHtml(html: string): string {
   return html
     .replaceAll('src="../../../../assets/', 'src="/media/assets/')
     .replaceAll('src="../assets/', 'src="/media/public/')
-    .replaceAll('src="/WWN.site/', 'src="/media/public/')
-    .replaceAll('href="/WWN.site/', `href="${SITE_DEV_URL}/`)
+    .replaceAll(`src="${SITE_BASE}/`, 'src="/media/public/')
+    .replaceAll(`href="${SITE_BASE}/`, `href="${SITE_DEV_URL}/`)
     .replaceAll('href="../../../../assets/', 'href="/media/assets/')
     .replaceAll('href="../assets/', 'href="/media/public/');
 }
@@ -105,12 +100,7 @@ export async function renderPreview(input: {
   if (typeof input.body !== "string") throw new HttpError(400, "Нет текста статьи");
 
   const slug = input.slug || `${input.section}/preview`;
-  const filePath = path.join(
-    SITE_ROOT,
-    "src/content/wiki",
-    input.lang,
-    `${slug}.md`,
-  );
+  const filePath = path.join(SITE_ROOT, "src/content/wiki", input.lang, `${slug}.md`);
 
   let html: string;
   try {
@@ -124,10 +114,8 @@ export async function renderPreview(input: {
     ]);
   }
 
-  const prefix = input.lang === "en" ? `${SITE_BASE}/en/wiki` : `${SITE_BASE}/wiki`;
   return {
     html,
     css: await previewCss(),
-    sitePath: `${prefix}/${slug}/`,
   };
 }

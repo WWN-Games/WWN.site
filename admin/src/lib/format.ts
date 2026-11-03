@@ -1,19 +1,6 @@
-const CYRILLIC: Record<string, string> = {
-  а: "a", б: "b", в: "v", г: "g", д: "d", е: "e", ё: "e", ж: "zh", з: "z",
-  и: "i", й: "y", к: "k", л: "l", м: "m", н: "n", о: "o", п: "p", р: "r",
-  с: "s", т: "t", у: "u", ф: "f", х: "h", ц: "ts", ч: "ch", ш: "sh", щ: "sch",
-  ъ: "", ы: "y", ь: "", э: "e", ю: "yu", я: "ya",
-};
+import { formatNumber, formatDate as formatSiteDate } from "../../../src/lib/utils";
 
-export function slugify(value: string): string {
-  return [...value.toLowerCase()]
-    .map((char) => CYRILLIC[char] ?? char)
-    .join("")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .replace(/-{2,}/g, "-")
-    .slice(0, 80);
-}
+export { slugify } from "../../shared/slug";
 
 export function todayIso(): string {
   return new Date().toISOString().slice(0, 10);
@@ -21,17 +8,11 @@ export function todayIso(): string {
 
 export function formatDate(value: string): string {
   if (!value) return "—";
-  const date = new Date(`${value}T00:00:00`);
-  if (Number.isNaN(date.getTime())) return value;
-  return new Intl.DateTimeFormat("ru-RU", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  }).format(date);
+  return formatSiteDate(value, "ru");
 }
 
 export function formatCount(value: number): string {
-  return new Intl.NumberFormat("ru-RU").format(value);
+  return formatNumber(value, "ru");
 }
 
 export function assetUrl(path: string | undefined): string {

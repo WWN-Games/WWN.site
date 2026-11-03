@@ -8,11 +8,11 @@
     ToastFn,
     ValidationState,
   } from "../../shared/types";
-  import { api, ApiError } from "../lib/api";
-  import { dirty as dirtyStore } from "../lib/dirty";
-  import Icon from "./Icon.svelte";
+  import { ApiError, api } from "../lib/api";
+  import { dirty as dirtyStore } from "../lib/dirty.svelte";
   import CardForm from "./CardForm.svelte";
   import FactionForm from "./FactionForm.svelte";
+  import Icon from "./Icon.svelte";
   import SectionForm from "./SectionForm.svelte";
   import TagForm from "./TagForm.svelte";
 
@@ -35,7 +35,7 @@
     tags: { title: "Тег", singular: "тег" },
     sections: { title: "Раздел", singular: "раздел" },
   };
-  const info = $derived(labels[name] ?? labels.units!);
+  const info = $derived(labels[name] ?? labels.units);
   const isCards = $derived(name === "units" || name === "buildings");
   const isNew = $derived(!id);
 
@@ -50,8 +50,8 @@
   const isDirty = $derived(item ? JSON.stringify(item) !== initialSnapshot : false);
 
   $effect(() => {
-    dirtyStore.set(isDirty);
-    return () => dirtyStore.set(false);
+    dirtyStore.value = isDirty;
+    return () => dirtyStore.value = false;
   });
 
   function createNew(): CollectionItem {
@@ -99,11 +99,11 @@
   async function load(): Promise<void> {
     loading = true;
     try {
-      const response = await api.get<{ items: CollectionItem[] }>(`/api/collections/${name}`);
       if (id) {
-        const found = response.items.find((entry) => entry.id === id);
-        if (!found) throw new Error(`Запись «${id}» не найдена`);
-        item = structuredClone(found);
+        const response = await api.get<{ item: CollectionItem }>(
+          `/api/collections/${name}/${encodeURIComponent(id)}`,
+        );
+        item = structuredClone(response.item);
         originalId = id;
       } else {
         item = createNew();
@@ -132,7 +132,7 @@
       item = result.item;
       originalId = result.item.id;
       initialSnapshot = JSON.stringify(result.item);
-      dirtyStore.set(false);
+      dirtyStore.value = false;
       toast("Запись сохранена");
       if (!result.validation.ok) {
         toast(`Сохранено, но валидация нашла ${result.validation.errors.length} ошибок`, "warn");
@@ -163,7 +163,7 @@
     if (!ok) return;
     try {
       await api.delete(`/api/collections/${name}/${encodeURIComponent(originalId)}`);
-      dirtyStore.set(false);
+      dirtyStore.value = false;
       toast("Запись удалена");
       refresh();
       navigate(`/collections/${name}`);
@@ -185,7 +185,7 @@
   });
 
   onDestroy(() => {
-    dirtyStore.set(false);
+    dirtyStore.value = false;
   });
 </script>
 

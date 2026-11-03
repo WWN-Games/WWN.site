@@ -1,0 +1,25 @@
+---
+import { t } from "@/i18n";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { type Lang, localeHref } from "@/lib/site";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const title = t(lang, "notfound.title");
+const description = t(lang, "notfound.desc");
+---
+
+<BaseLayout lang={lang} title={title} description={description} path="404/" noindex>
+  <section class="notfound wrap">
+    <p class="notfound__code" aria-hidden="true">404</p>
+    <h1>{title}</h1>
+    <p class="notfound__desc">{description}</p>
+    <div class="notfound__actions">
+      <a class="btn btn--cyan" href={localeHref(lang, "")}>{t(lang, "notfound.home")}</a>
+      <a class="btn" href={localeHref(lang, "wiki/")}>{t(lang, "notfound.wiki")}</a>
+    </div>
+  </section>
+</BaseLayout>

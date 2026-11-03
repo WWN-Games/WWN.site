@@ -13,7 +13,7 @@ interface GitResult {
 
 function runGit(args: string[], timeout = 30_000): Promise<GitResult> {
   return new Promise((resolve, reject) => {
-    const child = spawn("git", args, {
+    const child = spawn("git", ["--literal-pathspecs", ...args], {
       cwd: SITE_ROOT,
       env: { ...process.env, GIT_TERMINAL_PROMPT: "0" },
       stdio: ["ignore", "pipe", "pipe"],
@@ -124,10 +124,16 @@ export async function gitDiff(files: string[]): Promise<string> {
   if (result.code !== 0) {
     throw new HttpError(500, "git diff завершился с ошибкой", [result.stderr.trim()]);
   }
-  return result.stdout || "Изменений в отслеживаемых файлах нет (новые файлы появятся после добавления в индекс).";
+  return (
+    result.stdout ||
+    "Изменений в отслеживаемых файлах нет (новые файлы появятся после добавления в индекс)."
+  );
 }
 
-export async function gitCommit(files: string[], message: string): Promise<{ output: string; status: GitStatus }> {
+export async function gitCommit(
+  files: string[],
+  message: string,
+): Promise<{ output: string; status: GitStatus }> {
   if (typeof message !== "string" || message.trim() === "") {
     throw new HttpError(400, "Введите сообщение коммита");
   }
@@ -139,15 +145,19 @@ export async function gitCommit(files: string[], message: string): Promise<{ out
     throw new HttpError(500, "git add завершился с ошибкой", [add.stderr.trim()]);
   }
 
-  const staged = await runGit(["diff", "--cached", "--quiet"]);
-  if (staged.code === 0) throw new HttpError(400, "Нечего коммитить: выбранные файлы не изменились");
+  const staged = await runGit(["diff", "--cached", "--quiet", "--", ...safe]);
+  if (staged.code === 0)
+    throw new HttpError(400, "Нечего коммитить: выбранные файлы не изменились");
 
-  const commit = await runGit(["commit", "-m", message.trim()]);
+  // --only гарантирует, что в коммит попадут ровно выбранные пути,
+  // даже если в индексе уже лежали чужие изменения.
+  const commit = await runGit(["commit", "-m", message.trim(), "--only", "--", ...safe]);
   if (commit.code !== 0) {
-    throw new HttpError(500, "git commit завершился с ошибкой", [
-      commit.stdout.trim(),
-      commit.stderr.trim(),
-    ].filter(Boolean));
+    throw new HttpError(
+      500,
+      "git commit завершился с ошибкой",
+      [commit.stdout.trim(), commit.stderr.trim()].filter(Boolean),
+    );
   }
 
   return {
@@ -159,11 +169,15 @@ export async function gitCommit(files: string[], message: string): Promise<{ out
 export async function gitPush(): Promise<{ output: string; status: GitStatus }> {
   const result = await runGit(["push"], 120_000);
   if (result.code !== 0) {
-    throw new HttpError(500, "git push завершился с ошибкой", [
-      result.stdout.trim(),
-      result.stderr.trim(),
-      "Проверьте SSH-ключ, upstream и права на репозиторий.",
-    ].filter(Boolean));
+    throw new HttpError(
+      500,
+      "git push завершился с ошибкой",
+      [
+        result.stdout.trim(),
+        result.stderr.trim(),
+        "Проверьте SSH-ключ, upstream и права на репозиторий.",
+      ].filter(Boolean),
+    );
   }
   return {
     output: [result.stdout.trim(), result.stderr.trim()].filter(Boolean).join("\n") || "Готово.",

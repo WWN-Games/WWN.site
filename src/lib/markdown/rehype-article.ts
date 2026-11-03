@@ -28,10 +28,9 @@ const SOURCE_TITLES = new Set([
 ]);
 
 function langOf(file: VFile): Lang {
-  const relative = (file.path ?? "").split("/wiki/")[1];
-  if (!relative) {
-    throw new Error(`rehypeArticleFeatures: не удалось определить язык статьи для ${file.path}`);
-  }
+  const normalized = (file.path ?? "").split("\\").join("/");
+  const relative = normalized.split("/wiki/")[1];
+  if (!relative) return "ru";
   return relative.startsWith("en/") ? "en" : "ru";
 }
 
@@ -44,10 +43,14 @@ function textOf(node: Element): string {
 }
 
 function addClass(node: Element, className: string): void {
-  const existing = node.properties?.className;
-  const classes = Array.isArray(existing) ? existing.map(String) : [];
+  const existing: unknown = node.properties?.className;
+  const classes = Array.isArray(existing)
+    ? existing.map(String)
+    : typeof existing === "string"
+      ? existing.split(/\s+/).filter(Boolean)
+      : [];
   if (!classes.includes(className)) classes.push(className);
-  if (node.properties) node.properties.className = classes;
+  node.properties = { ...node.properties, className: classes };
 }
 
 export function rehypeArticleFeatures() {
@@ -56,10 +59,22 @@ export function rehypeArticleFeatures() {
 
     visit(tree, "element", (node) => {
       if (node.tagName !== "a") return;
+      const classes = node.properties?.className;
+      if (Array.isArray(classes) && classes.includes("article__anchor")) {
+        node.properties.ariaLabel = t(lang, "wiki.anchor");
+        return;
+      }
       const href = node.properties?.href;
       if (typeof href !== "string" || !/^https?:\/\//i.test(href)) return;
       node.properties.target = "_blank";
-      node.properties.rel = ["noopener"];
+      const existingRel = node.properties.rel;
+      node.properties.rel = [
+        ...new Set([
+          ...(Array.isArray(existingRel) ? existingRel.map(String) : []),
+          "noopener",
+          "noreferrer",
+        ]),
+      ];
       addClass(node, "wiki-link--external");
     });
 

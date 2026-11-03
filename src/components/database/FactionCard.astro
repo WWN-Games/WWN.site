@@ -30,7 +30,7 @@ const desc = pick(faction.desc, lang);
 const motto = pick(faction.motto, lang);
 const playstyle = pick(faction.playstyle, lang);
 const specialty = pick(faction.specialty, lang);
-const initials = name.slice(0, 2);
+const initials = name.slice(0, 2).toUpperCase();
 ---
 
 <article
@@ -80,7 +80,7 @@ const initials = name.slice(0, 2);
     {
       playstyle && (
         <div class="faction-block">
-          <h5>{t(lang, "database.faction.playstyle")}</h5>
+          <h2>{t(lang, "database.faction.playstyle")}</h2>
           <p>{playstyle}</p>
         </div>
       )
@@ -88,7 +88,7 @@ const initials = name.slice(0, 2);
     {
       specialty && (
         <div class="faction-block">
-          <h5>{t(lang, "database.faction.specialty")}</h5>
+          <h2>{t(lang, "database.faction.specialty")}</h2>
           <p>{specialty}</p>
         </div>
       )
@@ -96,7 +96,7 @@ const initials = name.slice(0, 2);
     {
       faction.strengths.length > 0 && (
         <div class="faction-block">
-          <h5>{t(lang, "database.strong")}</h5>
+          <h2>{t(lang, "database.strong")}</h2>
           <ul>
             {faction.strengths.map((item) => (
               <li>{item}</li>
@@ -108,7 +108,7 @@ const initials = name.slice(0, 2);
     {
       faction.weaknesses.length > 0 && (
         <div class="faction-block">
-          <h5>{t(lang, "database.weak")}</h5>
+          <h2>{t(lang, "database.weak")}</h2>
           <ul>
             {faction.weaknesses.map((item) => (
               <li>{item}</li>

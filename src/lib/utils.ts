@@ -94,6 +94,13 @@ export function foldSearch(text: string): string {
     .replace(FOLD_RE, (char) => FOLD_MAP[char] ?? char);
 }
 
+/** Подстановка {var}-плейсхолдеров; неизвестные имена остаются как есть. */
+export function formatTemplate(template: string, vars: Record<string, string | number>): string {
+  return template.replace(/\{(\w+)\}/g, (match, name: string) =>
+    Object.hasOwn(vars, name) ? String(vars[name]) : match,
+  );
+}
+
 export function escapeHtml(value: string): string {
   return value.replace(
     /[&<>"']/g,
