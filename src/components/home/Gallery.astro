@@ -16,7 +16,6 @@ interface ResolvedGalleryItem {
   image: ImageMetadata;
   caption: string;
   wide: boolean;
-  tall: boolean;
   lightboxSrc: string;
 }
 
@@ -47,7 +46,6 @@ const resolved = (
         image: entry.default,
         caption: item.caption[lang],
         wide: item.wide === true,
-        tall: item.tall === true,
         lightboxSrc: lightbox.src,
       };
     }),
@@ -76,7 +74,7 @@ const lightboxLabels = {
           {resolved.map((item, index) => (
             <button
               type="button"
-              class={`gallery__item${item.wide ? " gallery__item--wide" : ""}${item.tall ? " gallery__item--tall" : ""}`}
+              class={`gallery__item${item.wide ? " gallery__item--wide" : ""}`}
               data-gallery-index={index}
               aria-label={item.caption}
             >

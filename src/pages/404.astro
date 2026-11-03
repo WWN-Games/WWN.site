@@ -3,29 +3,140 @@ import { t } from "@/i18n";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { localeHref } from "@/lib/site";
 
-const lang = "en";
-const title = t(lang, "notfound.title");
-const description = t(lang, "notfound.desc");
+const title = t("ru", "notfound.title");
+const description = t("ru", "notfound.desc");
 ---
 
-<BaseLayout lang={lang} title={title} description={description} path="404/" noindex>
-  <section class="notfound wrap">
-    <p class="notfound__code" aria-hidden="true">404</p>
-    <h1>{title}</h1>
-    <p class="notfound__desc">{description}</p>
-    <div class="notfound__actions">
-      <a class="btn btn--cyan" href={localeHref(lang, "")}>{t(lang, "notfound.home")}</a>
-      <a class="btn" href={localeHref(lang, "wiki/")}>{t(lang, "notfound.wiki")}</a>
-    </div>
-  </section>
+<BaseLayout lang="ru" {title} {description} path="404/" noindex minimal>
+  <div class="notfound-page">
+    <fieldset class="notfound__lang" aria-label="Язык страницы / Page language">
+      <legend class="visually-hidden">Язык страницы / Page language</legend>
+      <button type="button" data-set-lang="ru" aria-pressed="true">RU</button>
+      <button type="button" data-set-lang="en" aria-pressed="false">EN</button>
+    </fieldset>
+
+    <section class="notfound" data-lang-block="ru" lang="ru">
+      <p class="notfound__code" aria-hidden="true">404</p>
+      <h1>{t("ru", "notfound.title")}</h1>
+      <p class="notfound__desc">{t("ru", "notfound.desc")}</p>
+      <div class="notfound__actions">
+        <a class="btn btn--cyan" href={localeHref("ru", "")}>{t("ru", "notfound.home")}</a>
+        <a class="btn" href={localeHref("ru", "wiki/")}>{t("ru", "notfound.wiki")}</a>
+      </div>
+    </section>
+
+    <section class="notfound" data-lang-block="en" lang="en" hidden>
+      <p class="notfound__code" aria-hidden="true">404</p>
+      <h1>{t("en", "notfound.title")}</h1>
+      <p class="notfound__desc">{t("en", "notfound.desc")}</p>
+      <div class="notfound__actions">
+        <a class="btn btn--cyan" href={localeHref("en", "")}>{t("en", "notfound.home")}</a>
+        <a class="btn" href={localeHref("en", "wiki/")}>{t("en", "notfound.wiki")}</a>
+      </div>
+    </section>
+  </div>
 </BaseLayout>
 
+<script>
+  const STORAGE_KEY = "wwn-lang";
+  const BASE = import.meta.env.BASE_URL;
+  const blocks = [...document.querySelectorAll<HTMLElement>("[data-lang-block]")];
+  const buttons = [...document.querySelectorAll<HTMLButtonElement>("[data-set-lang]")];
+
+  function savedLang(): "ru" | "en" | null {
+    try {
+      const value = localStorage.getItem(STORAGE_KEY);
+      return value === "ru" || value === "en" ? value : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function detectLang(): "ru" | "en" {
+    const saved = savedLang();
+    if (saved) return saved;
+    if (location.pathname.startsWith(`${BASE}en/`)) return "en";
+    return (navigator.language ?? "").toLowerCase().startsWith("en") ? "en" : "ru";
+  }
+
+  function applyLang(lang: "ru" | "en", persist = false): void {
+    document.documentElement.lang = lang;
+    for (const block of blocks) block.hidden = block.dataset.langBlock !== lang;
+    for (const button of buttons) {
+      button.setAttribute("aria-pressed", String(button.dataset.setLang === lang));
+    }
+
+    const active = blocks.find((block) => block.dataset.langBlock === lang);
+    const heading = active?.querySelector("h1")?.textContent?.trim();
+    const description = active?.querySelector(".notfound__desc")?.textContent?.trim();
+    if (heading) document.title = heading;
+    if (description) {
+      document.querySelector('meta[name="description"]')?.setAttribute("content", description);
+    }
+    if (persist) {
+      try {
+        localStorage.setItem(STORAGE_KEY, lang);
+      } catch {
+        // приватный режим — выбор действует до перезагрузки
+      }
+    }
+  }
+
+  for (const button of buttons) {
+    button.addEventListener("click", () => {
+      const lang = button.dataset.setLang === "en" ? "en" : "ru";
+      applyLang(lang, true);
+    });
+  }
+
+  applyLang(detectLang());
+</script>
+
 <style>
+  .notfound-page {
+    display: grid;
+    place-items: center;
+    min-height: 100svh;
+    padding: 24px;
+  }
+
+  .notfound__lang {
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    display: flex;
+    gap: 6px;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    z-index: 10;
+  }
+
+  .notfound__lang button {
+    padding: 6px 10px;
+    font: inherit;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    background: rgba(9, 19, 34, 0.72);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    cursor: pointer;
+    transition:
+      color 0.2s,
+      border-color 0.2s;
+  }
+
+  .notfound__lang button[aria-pressed="true"] {
+    color: var(--cyan-hi);
+    border-color: rgba(var(--cyan-rgb), 0.45);
+  }
+
   .notfound {
     display: grid;
     justify-items: center;
     gap: 14px;
-    padding: clamp(48px, 12vh, 120px) 0 clamp(64px, 14vh, 140px);
+    padding: clamp(48px, 12vh, 120px) 0;
     text-align: center;
   }
 

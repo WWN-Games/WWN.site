@@ -2,10 +2,6 @@ import { formatNumber, formatDate as formatSiteDate } from "../../../src/lib/uti
 
 export { slugify } from "../../shared/slug";
 
-export function todayIso(): string {
-  return new Date().toISOString().slice(0, 10);
-}
-
 export function formatDate(value: string): string {
   if (!value) return "—";
   return formatSiteDate(value, "ru");

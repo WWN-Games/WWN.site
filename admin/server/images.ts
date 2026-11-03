@@ -1,11 +1,10 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import sharp from "sharp";
-
+import { isSlug, slugify } from "../shared/slug.ts";
 import type { UploadResult } from "../shared/types.ts";
 import { SITE_ROOT } from "./config.ts";
 import { atomicWrite, fileExists, HttpError, isInside } from "./http.ts";
-import { isSlug, slugify } from "./strings.ts";
 
 const PUBLIC_ROOT = path.join(SITE_ROOT, "public");
 const ASSETS_ROOT = path.join(SITE_ROOT, "src/assets");

@@ -19,6 +19,8 @@ interface Props {
   type?: "website" | "article";
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
   noindex?: boolean;
+  /** Только контент страницы, без шапки, футера и служебных элементов. */
+  minimal?: boolean;
 }
 
 const {
@@ -29,6 +31,7 @@ const {
   type = "website",
   jsonLd,
   noindex = false,
+  minimal = false,
 } = Astro.props;
 
 /* Локальные варианты в astro.config.ts объявлены в порядке [latin, cyrillic],
@@ -92,21 +95,25 @@ const fontPreloads = (
     <ClientRouter />
   </head>
   <body>
-    <a class="skip-link" href="#top">{t(lang, "a11y.skip")}</a>
-    <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+    {!minimal && <a class="skip-link" href="#top">{t(lang, "a11y.skip")}</a>}
+    {!minimal && <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>}
 
-    <Header lang={lang} path={path} />
+    {!minimal && <Header lang={lang} path={path} />}
 
     <main id="top">
       <slot />
     </main>
 
-    <Footer lang={lang} />
+    {!minimal && <Footer lang={lang} />}
 
-    <a class="to-top" id="toTop" href="#top">
-      <span class="visually-hidden">{t(lang, "footer.backToTop")}</span>
-      <Icon name="icon-park-outline:up" />
-    </a>
+    {
+      !minimal && (
+        <a class="to-top" id="toTop" href="#top">
+          <span class="visually-hidden">{t(lang, "footer.backToTop")}</span>
+          <Icon name="icon-park-outline:up" />
+        </a>
+      )
+    }
 
     <script>
       import "../scripts/ui";

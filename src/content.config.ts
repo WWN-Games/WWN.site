@@ -7,7 +7,7 @@
 import { defineCollection } from "astro:content";
 import { file, glob } from "astro/loaders";
 
-import { COLLECTION_FILES } from "./lib/collections";
+import { COLLECTION_FILES } from "./lib/content-constants";
 import {
   buildingSchema,
   factionSchema,

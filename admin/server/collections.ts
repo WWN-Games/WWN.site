@@ -2,7 +2,7 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import { isDeepStrictEqual } from "node:util";
 import { withDerivedDps } from "../../src/lib/cards.ts";
-import type { CollectionName } from "../../src/lib/collections.ts";
+import type { CollectionName } from "../../src/lib/content-constants.ts";
 import { BUILDING_TYPES, UNIT_TYPES } from "../../src/lib/content-constants.ts";
 import {
   buildingSchema,
@@ -11,12 +11,12 @@ import {
   tagSchema,
   unitSchema,
 } from "../../src/lib/schemas.ts";
+import { isSlug, isTagId } from "../shared/slug.ts";
 import type { Card, CollectionItem, Faction, Section, Tag } from "../shared/types.ts";
 import { SITE_ROOT } from "./config.ts";
 import { collectionPath, readFactions, readItems, readSections, readTags } from "./data.ts";
 import { atomicWrite, fileExists, HttpError, isInside, readText } from "./http.ts";
 import { deleteJsonItem, updateJsonItem } from "./json-edit.ts";
-import { isSlug, isTagId } from "./strings.ts";
 import { runValidation } from "./validation.ts";
 
 const PUBLIC_ROOT = path.join(SITE_ROOT, "public");

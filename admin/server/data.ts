@@ -1,6 +1,6 @@
 import path from "node:path";
 
-import { COLLECTION_FILES, type CollectionName } from "../../src/lib/collections.ts";
+import { COLLECTION_FILES, type CollectionName } from "../../src/lib/content-constants.ts";
 import type { Faction, Section, Tag } from "../shared/types.ts";
 import { SITE_ROOT } from "./config.ts";
 import { HttpError, readJson } from "./http.ts";
@@ -9,9 +9,7 @@ export function collectionPath(name: CollectionName): string {
   return path.join(SITE_ROOT, COLLECTION_FILES[name]);
 }
 
-export async function readContainer<T extends Record<string, unknown>>(
-  name: CollectionName,
-): Promise<T> {
+async function readContainer<T extends Record<string, unknown>>(name: CollectionName): Promise<T> {
   const container = await readJson<T>(collectionPath(name));
   if (container === null || typeof container !== "object" || Array.isArray(container)) {
     throw new HttpError(500, `Файл ${COLLECTION_FILES[name]} должен содержать объект`);

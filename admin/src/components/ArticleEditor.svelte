@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
-
+  import { todayIso } from "../../shared/date";
   import type {
     Article,
     ArticleFile,
@@ -12,7 +12,7 @@
   } from "../../shared/types";
   import { ApiError, api } from "../lib/api";
   import { dirty as dirtyStore } from "../lib/dirty.svelte";
-  import { formatDate, slugify, todayIso } from "../lib/format";
+  import { formatDate, slugify } from "../lib/format";
   import Icon from "./Icon.svelte";
   import MarkdownEditor from "./MarkdownEditor.svelte";
 

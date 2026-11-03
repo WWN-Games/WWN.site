@@ -2,7 +2,7 @@ import { createServer } from "node:http";
 import path from "node:path";
 
 import { createServer as createViteServer } from "vite";
-import { COLLECTION_NAMES } from "../../src/lib/collections.ts";
+import { COLLECTION_NAMES } from "../../src/lib/content-constants.ts";
 import type {
   ArticleSaveInput,
   Bootstrap,

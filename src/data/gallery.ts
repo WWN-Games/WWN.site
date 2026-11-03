@@ -11,8 +11,6 @@ interface GalleryItem {
   caption: LocalizedText;
   /** Карточка шириной в 2 колонки. */
   wide?: boolean;
-  /** Карточка высотой в 2 строки. */
-  tall?: boolean;
 }
 
 export const gallery: readonly GalleryItem[] = [

@@ -1328,10 +1328,6 @@ body:has(.mobile-nav:popover-open) {
 .gallery__item--wide {
   grid-column: span 2;
 }
-.gallery__item--tall {
-  grid-row: span 2;
-}
-
 .lightbox {
   position: fixed;
   inset: 0;
@@ -1880,9 +1876,6 @@ body:has(.mobile-nav:popover-open) {
   }
   .gallery__item--wide {
     grid-column: span 1;
-  }
-  .gallery__item--tall {
-    grid-row: span 1;
   }
   .hero {
     min-height: 92svh;

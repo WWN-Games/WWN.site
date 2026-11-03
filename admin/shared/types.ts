@@ -2,7 +2,7 @@
    Доменные типы берутся из Zod-схем сайта, чтобы админка и контент
    не расходились. Здесь остаются только DTO самого интерфейса. */
 
-import type { CollectionName } from "../../src/lib/collections.ts";
+import type { CollectionName } from "../../src/lib/content-constants.ts";
 import type { Building, Faction, Section, Tag, Text, Unit } from "../../src/lib/schemas.ts";
 import type { Lang } from "../../src/lib/site.ts";
 

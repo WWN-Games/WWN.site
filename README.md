@@ -1,6 +1,6 @@
 # WWN — сайт мода для Rusted Warfare
 
-Статический сайт: Astro 7 + TypeScript 7 (tsgo), острова на Svelte 5, поиск на Pagefind,
+Статический сайт: Astro 7 + TypeScript 7, острова на Svelte 5, поиск на Pagefind,
 контент и данные — Content Collections с Zod-валидацией.
 Деплой — GitHub Pages (base `/WWN.site`), сборка артефакта через GitHub Actions.
 

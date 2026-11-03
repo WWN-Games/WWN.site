@@ -40,6 +40,11 @@ const options = LOCALES.map((code) => ({
     url.search = location.search;
     url.hash = location.hash;
     link.href = url.href;
+    try {
+      localStorage.setItem("wwn-lang", link.dataset.lang ?? "");
+    } catch {
+      // приватный режим — выбор не сохранится
+    }
   });
 </script>
 

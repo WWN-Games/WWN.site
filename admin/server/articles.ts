@@ -3,6 +3,8 @@ import path from "node:path";
 
 import { parseArticleFrontMatter, serializeArticleFrontMatter } from "../../src/lib/frontmatter.ts";
 import { type WikiFrontMatter, wikiSchema } from "../../src/lib/schemas.ts";
+import { isRealDate, todayIso } from "../shared/date.ts";
+import { isSlug } from "../shared/slug.ts";
 import type {
   Article,
   ArticleFile,
@@ -12,17 +14,7 @@ import type {
 } from "../shared/types.ts";
 import { SITE_ROOT } from "./config.ts";
 import { readSections } from "./data.ts";
-import {
-  atomicWrite,
-  fileExists,
-  HttpError,
-  isInside,
-  isRealDate,
-  readText,
-  todayIso,
-  toPosix,
-} from "./http.ts";
-import { isSlug } from "./strings.ts";
+import { atomicWrite, fileExists, HttpError, isInside, readText, toPosix } from "./http.ts";
 import { runValidation } from "./validation.ts";
 
 const WIKI_ROOT = path.join(SITE_ROOT, "src/content/wiki");

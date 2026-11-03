@@ -98,12 +98,14 @@ test.describe("Главная", () => {
     );
   });
 
-  test("404 — отдельная английская страница", async ({ page }) => {
+  test("404 — отдельная страница с выбором языка", async ({ page }) => {
     const response = await page.goto("missing-page/");
     expect(response?.status()).toBe(404);
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
-    await expect(page.locator(".notfound__desc")).toContainText("doesn't exist");
-    const code = page.locator(".notfound__code");
+    await expect(page.locator('[data-lang-block="en"] .notfound__desc')).toContainText(
+      "doesn't exist",
+    );
+    const code = page.locator('[data-lang-block="en"] .notfound__code');
     await expect(code).toBeVisible();
     const fontSize = await code.evaluate((element) =>
       Number.parseFloat(getComputedStyle(element).fontSize),
@@ -111,10 +113,32 @@ test.describe("Главная", () => {
     expect(fontSize).toBeGreaterThan(70);
   });
 
-  test("404 для EN-пути тоже английская", async ({ page }) => {
+  test("404 уважает сохранённый русский язык", async ({ page }) => {
+    await page.addInitScript(() => localStorage.setItem("wwn-lang", "ru"));
+    const response = await page.goto("en/missing-page/");
+    expect(response?.status()).toBe(404);
+    await expect(page.locator("html")).toHaveAttribute("lang", "ru");
+    await expect(page.locator('[data-lang-block="ru"] .notfound__desc')).toContainText(
+      "Такой страницы",
+    );
+  });
+
+  test("404 уважает сохранённый английский язык", async ({ page }) => {
+    await page.addInitScript(() => localStorage.setItem("wwn-lang", "en"));
+    const response = await page.goto("missing-page/");
+    expect(response?.status()).toBe(404);
+    await expect(page.locator("html")).toHaveAttribute("lang", "en");
+    await expect(page.locator('[data-lang-block="en"] .notfound__desc')).toContainText(
+      "doesn't exist",
+    );
+  });
+
+  test("404 для EN-пути по умолчанию английская", async ({ page }) => {
     const response = await page.goto("en/missing-page/");
     expect(response?.status()).toBe(404);
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
-    await expect(page.locator(".notfound__desc")).toContainText("doesn't exist");
+    await expect(page.locator('[data-lang-block="en"] .notfound__desc')).toContainText(
+      "doesn't exist",
+    );
   });
 });
