@@ -10,17 +10,22 @@ export const MAX_COMPARE = 4;
 
 export type CompareMetric =
   | "cost"
+  | "energy"
+  | "fullCost"
   | "buildTime"
   | "hp"
   | "shield"
+  | "armor"
   | "selfRegen"
   | "shieldRegen"
   | "totalHp"
   | "dps"
+  | "dpsAll"
   | "range"
   | "speed"
-  | "dpsPerCost"
-  | "hpPerCost";
+  | "turnSpeed"
+  | "dpsPerFullCost"
+  | "totalHpPerFullCost";
 
 export type CompareGroup =
   | "identity"
@@ -42,17 +47,22 @@ export interface CompareMetricDef {
 /** Порядок групп и метрик в таблице сравнения. */
 export const COMPARE_METRICS: readonly CompareMetricDef[] = [
   { key: "cost", group: "cost", direction: "lower" },
+  { key: "energy", group: "cost", direction: "lower" },
+  { key: "fullCost", group: "cost", direction: "lower" },
   { key: "buildTime", group: "cost", direction: "lower" },
   { key: "hp", group: "survival", direction: "higher" },
   { key: "shield", group: "survival", direction: "higher" },
+  { key: "armor", group: "survival", direction: "higher" },
   { key: "selfRegen", group: "survival", direction: "higher" },
   { key: "shieldRegen", group: "survival", direction: "higher" },
   { key: "totalHp", group: "survival", direction: "higher" },
   { key: "dps", group: "offense", direction: "higher" },
+  { key: "dpsAll", group: "offense", direction: "higher" },
   { key: "range", group: "offense", direction: "higher" },
   { key: "speed", group: "mobility", direction: "higher" },
-  { key: "dpsPerCost", group: "efficiency", direction: "higher" },
-  { key: "hpPerCost", group: "efficiency", direction: "higher" },
+  { key: "turnSpeed", group: "mobility", direction: "higher" },
+  { key: "dpsPerFullCost", group: "efficiency", direction: "higher" },
+  { key: "totalHpPerFullCost", group: "efficiency", direction: "higher" },
 ] as const;
 
 export const COMPARE_GROUPS: readonly CompareGroup[] = [
@@ -70,10 +80,13 @@ export function metricValue(item: ExplorerItem, key: CompareMetric): number | nu
   switch (key) {
     case "totalHp":
       return item.hp + item.shield;
-    case "dpsPerCost":
-      return item.cost > 0 ? (item.dps / item.cost) * 100 : null;
-    case "hpPerCost":
-      return item.cost > 0 ? (item.hp / item.cost) * 100 : null;
+    case "dps":
+    case "dpsAll":
+      return item.dps;
+    case "dpsPerFullCost":
+      return item.fullCost > 0 ? (item.dps / item.fullCost) * 100 : null;
+    case "totalHpPerFullCost":
+      return item.fullCost > 0 ? ((item.hp + item.shield) / item.fullCost) * 100 : null;
     case "buildTime":
       return item.buildTime > 0 ? item.buildTime : null;
     default: {
@@ -97,6 +110,15 @@ export interface CompareSelection {
   ids: string[];
 }
 
+export interface CardSelection {
+  tab: CardTab;
+  id: string;
+}
+
+function isCardTab(value: string): value is CardTab {
+  return value === "units" || value === "buildings";
+}
+
 /** `units:ahaosa,argo` → проверенный набор id (не более MAX_COMPARE). */
 export function parseCompareParam(
   value: string | null,
@@ -106,7 +128,7 @@ export function parseCompareParam(
   const separator = value.indexOf(":");
   if (separator < 1) return null;
   const tab = value.slice(0, separator);
-  if (tab !== "units" && tab !== "buildings") return null;
+  if (!isCardTab(tab)) return null;
 
   const ids = [
     ...new Set(
@@ -123,7 +145,27 @@ export function parseCompareParam(
   return ids.length ? { tab, ids } : null;
 }
 
+/** `units:ahaosa` → одна карточка для модального окна. */
+export function parseCardParam(
+  value: string | null,
+  items: Map<string, ExplorerItem>,
+): CardSelection | null {
+  if (!value) return null;
+  const separator = value.indexOf(":");
+  if (separator < 1) return null;
+  const tab = value.slice(0, separator);
+  if (!isCardTab(tab)) return null;
+  const id = value.slice(separator + 1).trim();
+  if (!id || items.get(id)?.tab !== tab) return null;
+  return { tab, id };
+}
+
 /** Набор id → значение query-параметра compare. */
 export function serializeCompareParam(tab: CardTab, ids: string[]): string {
   return `${tab}:${[...new Set(ids)].slice(0, MAX_COMPARE).join(",")}`;
+}
+
+/** Одна карточка → значение query-параметра card. */
+export function serializeCardParam(tab: CardTab, id: string): string {
+  return `${tab}:${id}`;
 }

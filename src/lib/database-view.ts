@@ -3,6 +3,7 @@
    Используются Svelte-островом и unit-тестами. Без DOM и без Astro.
    ============================================================================ */
 
+import { hasMatchingWeapon } from "./card-stats";
 import type { ExplorerItem, SortDirection, SortKey } from "./database";
 import type { TagMatchMode } from "./database-constants";
 import { collator, foldSearch } from "./utils";
@@ -10,9 +11,10 @@ import { collator, foldSearch } from "./utils";
 export interface DatabaseFilters {
   query: string;
   faction: string;
-  type: string;
   tags: string[];
   tagMode: TagMatchMode;
+  weaponTags: string[];
+  weaponTagMode: TagMatchMode;
 }
 
 /** Поиск по токенам: «акула пво» находит карточку, где слова идут не подряд. */
@@ -36,7 +38,12 @@ export function filterItems(
   return items.filter((item) => {
     if (tokens.length && !matchesSearch(item, tokens)) return false;
     if (filters.faction !== "all" && item.faction !== filters.faction) return false;
-    if (filters.type !== "all" && item.type !== filters.type) return false;
+    if (
+      filters.weaponTags.length > 0 &&
+      !hasMatchingWeapon(item.weapons, filters.weaponTags, filters.weaponTagMode)
+    ) {
+      return false;
+    }
     if (filters.tags.length === 0) return true;
     const matchesTags =
       filters.tagMode === "any"

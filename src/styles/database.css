@@ -1429,3 +1429,807 @@ body.has-compare-tray .database-page {
     padding-bottom: 230px;
   }
 }
+
+/* ============================================================================
+   Новый глянцевый слой базы: крупнее изображение, стандартизированные карточки,
+   полная карточка, таблица оружия и фильтр оружия в сравнении.
+   ============================================================================ */
+
+.unit-card .unit-card__img {
+  width: 106px;
+  height: 106px;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--faction-color, var(--cyan)) 34%, var(--line));
+  background:
+    radial-gradient(90% 90% at 32% 22%, rgba(255, 255, 255, 0.12), transparent 62%),
+    radial-gradient(
+      100% 100% at 50% 100%,
+      color-mix(in srgb, var(--faction-color, var(--cyan)) 22%, transparent),
+      transparent 70%
+    ),
+    color-mix(in srgb, var(--faction-color, var(--cyan)) 10%, rgba(6, 12, 22, 0.94));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -14px 28px rgba(0, 0, 0, 0.28),
+    0 10px 24px color-mix(in srgb, var(--faction-color, var(--cyan)) 16%, transparent);
+}
+.unit-card .unit-card__img img {
+  padding: 6px;
+  filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.35));
+}
+.unit-card .unit-card__top {
+  gap: 16px;
+  padding-right: 46px;
+}
+.unit-card__name {
+  font-size: 17px;
+  letter-spacing: 0.01em;
+  text-wrap: balance;
+}
+.unit-card {
+  gap: 13px;
+  padding: 20px 22px 18px;
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), transparent 26%),
+    radial-gradient(
+      120% 90% at 50% 0%,
+      color-mix(in srgb, var(--faction-color, var(--cyan)) 18%, transparent),
+      transparent 64%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--faction-color, var(--cyan)) 13%, rgba(7, 13, 25, 0.97)),
+      rgba(5, 10, 19, 0.985) 76%
+    );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 14px 30px rgba(0, 0, 0, 0.2);
+}
+.unit-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--faction-color, var(--cyan)) 60%, #fff),
+    transparent
+  );
+  opacity: 0.55;
+  pointer-events: none;
+}
+.unit-card:hover {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 20px 44px rgba(0, 0, 0, 0.35),
+    0 0 28px color-mix(in srgb, var(--faction-color, var(--cyan)) 20%, transparent);
+}
+.database-grid {
+  gap: 18px;
+}
+.chip--cost {
+  color: var(--cyan-hi);
+  border-color: rgba(var(--cyan-rgb), 0.38);
+  background: rgba(var(--cyan-rgb), 0.1);
+}
+.unit-card__detail {
+  order: 40;
+  justify-self: stretch;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 2px;
+  padding: 9px 12px;
+  font-family: var(--font-display);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--control-radius-sm);
+  background: rgba(7, 15, 28, 0.55);
+  transition:
+    color 0.18s,
+    border-color 0.18s,
+    background 0.18s;
+}
+.unit-card__detail::after {
+  content: "→";
+  font-family: var(--font-body);
+  font-size: 14px;
+  letter-spacing: 0;
+  color: var(--faction-color, var(--cyan));
+}
+.unit-card__detail:hover {
+  color: #fff;
+  border-color: color-mix(in srgb, var(--faction-color, var(--cyan)) 52%, var(--line));
+  background: color-mix(in srgb, var(--faction-color, var(--cyan)) 12%, rgba(7, 15, 28, 0.7));
+}
+.unit-card__detail:focus-visible {
+  outline: 2px solid var(--faction-color, var(--cyan-hi));
+  outline-offset: 2px;
+}
+.statbar__track {
+  height: 7px;
+}
+.statbar__label {
+  font-size: 9.5px;
+}
+.statbar__val {
+  font-size: 12px;
+}
+
+/* — полная карточка — */
+.detail-dialog {
+  width: min(1180px, calc(100vw - 28px));
+  max-width: none;
+  max-height: calc(100dvh - 36px);
+  margin: auto;
+  padding: 0;
+  color: var(--text);
+  border: 1px solid var(--line-strong);
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(12, 26, 46, 0.995), rgba(4, 9, 17, 0.998));
+  box-shadow: 0 34px 100px rgba(0, 0, 0, 0.75);
+  overflow: hidden;
+}
+.detail-dialog::backdrop {
+  background: rgba(1, 4, 9, 0.74);
+  backdrop-filter: blur(6px);
+}
+.detail-dialog__panel {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100dvh - 36px);
+}
+.detail-hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 20px;
+  padding: 22px 24px;
+  border-bottom: 1px solid var(--line-soft);
+  background:
+    radial-gradient(
+      100% 120% at 12% 0%,
+      color-mix(in srgb, var(--faction-color, var(--cyan)) 28%, transparent),
+      transparent 60%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--faction-color, var(--cyan)) 10%, rgba(9, 20, 36, 0.98)),
+      rgba(5, 11, 21, 0.99)
+    );
+}
+.detail-hero__img {
+  display: grid;
+  place-items: center;
+  width: 132px;
+  height: 132px;
+  overflow: hidden;
+  font-family: var(--font-display);
+  font-size: 30px;
+  color: var(--faction-color, var(--cyan));
+  border: 1px solid color-mix(in srgb, var(--faction-color, var(--cyan)) 40%, var(--line));
+  border-radius: 20px;
+  background:
+    radial-gradient(90% 90% at 32% 22%, rgba(255, 255, 255, 0.14), transparent 62%),
+    color-mix(in srgb, var(--faction-color, var(--cyan)) 12%, rgba(6, 12, 22, 0.94));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 18px 36px color-mix(in srgb, var(--faction-color, var(--cyan)) 22%, transparent);
+}
+.detail-hero__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 8px;
+  filter: drop-shadow(0 10px 16px rgba(0, 0, 0, 0.4));
+}
+.detail-hero__body {
+  display: grid;
+  gap: 9px;
+  min-width: 0;
+}
+.detail-hero__body h2 {
+  font-size: clamp(24px, 3vw, 36px);
+  line-height: 1.12;
+  text-wrap: balance;
+}
+.detail-hero__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.detail-hero__desc {
+  max-width: 72ch;
+  color: var(--muted);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+.detail-dialog__close {
+  align-self: start;
+  width: 40px;
+  height: 40px;
+}
+.detail-dialog__close svg {
+  width: 18px;
+  height: 18px;
+}
+.detail-dialog__body {
+  display: grid;
+  gap: 22px;
+  padding: 22px 24px 26px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.detail-section {
+  display: grid;
+  gap: 12px;
+}
+.detail-section h3 {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+.detail-section__count {
+  padding: 2px 7px;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  border: 1px solid var(--border-1);
+  border-radius: var(--radius-pill);
+}
+.detail-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+.detail-stats > div {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: rgba(9, 19, 34, 0.55);
+}
+.detail-stats span {
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted-2);
+}
+.detail-stats b {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.detail-stats__wide {
+  grid-column: span 4;
+}
+.detail-stats--builder {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.detail-stats--builder .detail-stats__wide {
+  grid-column: span 3;
+}
+.detail-vs {
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.detail-vs b {
+  color: var(--text-soft);
+}
+.detail-empty {
+  padding: 14px 16px;
+  color: var(--muted);
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-sm);
+}
+.weapon-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: rgba(6, 13, 25, 0.5);
+}
+.weapon-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+}
+.weapon-table th,
+.weapon-table td {
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--line-soft);
+}
+.weapon-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 0;
+  background: #081426;
+}
+.weapon-table thead th button {
+  width: 100%;
+  padding: 9px 10px;
+  font-family: var(--font-display);
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: left;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.weapon-table thead th button:hover {
+  color: var(--cyan-hi);
+}
+.weapon-table thead th[aria-sort] button::after {
+  content: " ↕";
+  color: var(--muted-2);
+}
+.weapon-table thead th[aria-sort="ascending"] button::after {
+  content: " ↑";
+  color: var(--cyan);
+}
+.weapon-table thead th[aria-sort="descending"] button::after {
+  content: " ↓";
+  color: var(--cyan);
+}
+.weapon-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+.weapon-table__name {
+  color: var(--text);
+  white-space: nowrap;
+}
+.weapon-table__dps {
+  color: var(--cyan-hi);
+  font-weight: 600;
+}
+.weapon-table__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.weapon-table__tags .chip {
+  padding: 2px 6px;
+  font-size: 9px;
+}
+.detail-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.detail-card {
+  display: grid;
+  gap: 8px;
+  padding: 13px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: linear-gradient(180deg, rgba(14, 29, 51, 0.62), rgba(7, 14, 26, 0.6));
+}
+.detail-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.detail-card__head b {
+  font-family: var(--font-display);
+  font-size: 13px;
+  color: #fff;
+}
+.detail-card__label {
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted-2);
+}
+.detail-links,
+.detail-unload {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.detail-link {
+  padding: 4px 9px;
+  font-size: 11.5px;
+  color: var(--cyan-hi);
+  border: 1px solid rgba(var(--cyan-rgb), 0.3);
+  border-radius: var(--radius-pill);
+  background: rgba(var(--cyan-rgb), 0.08);
+  transition:
+    color 0.18s,
+    border-color 0.18s,
+    background 0.18s;
+}
+.detail-link:hover {
+  color: #fff;
+  border-color: rgba(var(--cyan-rgb), 0.65);
+  background: rgba(var(--cyan-rgb), 0.2);
+}
+.detail-dialog__foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 24px calc(16px + var(--safe-bottom));
+  border-top: 1px solid var(--line-soft);
+  background: rgba(6, 12, 22, 0.65);
+}
+
+/* — фильтр оружия в сравнении — */
+.compare-weapon-filter {
+  margin: 0 20px 4px;
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-sm);
+  background: rgba(7, 15, 28, 0.55);
+}
+.compare-weapon-filter summary {
+  padding: 9px 12px;
+  font-family: var(--font-display);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cyan-hi);
+  cursor: pointer;
+  user-select: none;
+}
+.compare-weapon-filter__body {
+  display: grid;
+  gap: 9px;
+  padding: 0 12px 12px;
+}
+.compare-weapon-filter__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.compare-weapon-filter__chips .tag-chip {
+  padding: 4px 9px;
+  font-size: 10.5px;
+}
+.compare-weapon__sub {
+  display: block;
+  margin-top: 3px;
+  font-size: 10.5px;
+  color: var(--muted-2);
+}
+@media (max-width: 900px) {
+  .detail-hero {
+    grid-template-columns: 104px minmax(0, 1fr) auto;
+    gap: 14px;
+    padding: 18px;
+  }
+  .detail-hero__img {
+    width: 104px;
+    height: 104px;
+    border-radius: 16px;
+  }
+  .detail-dialog__body {
+    padding: 18px;
+  }
+  .detail-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .detail-stats__wide {
+    grid-column: span 2;
+  }
+  .detail-stats--builder {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .detail-stats--builder .detail-stats__wide {
+    grid-column: span 2;
+  }
+  .detail-cards {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 720px) {
+  .unit-card .unit-card__img {
+    width: 92px;
+    height: 92px;
+  }
+  .detail-dialog {
+    width: 100vw;
+    max-height: 100dvh;
+    height: 100dvh;
+    border: 0;
+    border-radius: 0;
+  }
+  .detail-dialog__panel {
+    max-height: 100dvh;
+  }
+  .detail-hero {
+    grid-template-columns: 82px minmax(0, 1fr) auto;
+    padding: 14px;
+  }
+  .detail-hero__img {
+    width: 82px;
+    height: 82px;
+    font-size: 22px;
+  }
+  .detail-hero__body h2 {
+    font-size: 23px;
+  }
+  .detail-hero__desc {
+    font-size: 12.5px;
+  }
+  .detail-dialog__body {
+    padding: 14px;
+    gap: 18px;
+  }
+  .detail-dialog__foot {
+    padding: 12px 14px calc(14px + var(--safe-bottom));
+  }
+  .compare-weapon-filter {
+    margin: 0 14px 4px;
+  }
+}
+
+/* Таблица оружия: не даём колонкам слипаться на широком составе. */
+.weapon-table {
+  min-width: 1080px;
+}
+.weapon-table thead th {
+  white-space: nowrap;
+}
+.weapon-table th:nth-child(1),
+.weapon-table td:nth-child(1) {
+  min-width: 160px;
+}
+.weapon-table th:nth-child(5),
+.weapon-table td:nth-child(5) {
+  min-width: 70px;
+}
+.weapon-table th:nth-child(6),
+.weapon-table td:nth-child(6) {
+  min-width: 210px;
+}
+.weapon-table th:nth-child(7),
+.weapon-table td:nth-child(7),
+.weapon-table th:nth-child(8),
+.weapon-table td:nth-child(8),
+.weapon-table th:nth-child(9),
+.weapon-table td:nth-child(9) {
+  min-width: 72px;
+  white-space: nowrap;
+}
+
+.compare-weapon-filter__sort {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.compare-weapon-filter__sort label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.compare-weapon-filter__sort select {
+  padding: 7px 10px;
+  font: inherit;
+  font-size: 12px;
+  color: var(--text);
+  border: 1px solid var(--border-1);
+  border-radius: var(--control-radius-sm);
+  background: var(--surface-1);
+}
+.compare-weapon-filter__direction {
+  width: 34px;
+  height: 32px;
+  font-size: 15px;
+  color: var(--cyan-hi);
+  border: 1px solid var(--border-1);
+  border-radius: var(--control-radius-sm);
+}
+
+@media (max-width: 720px) {
+  .detail-dialog__foot {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+  .detail-dialog__foot .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.unit-card__detail {
+  appearance: none;
+  cursor: pointer;
+  font-weight: 400;
+}
+
+/* Фракции используют ту же карточку, что юниты и строения. */
+.database-grid[data-grid="factions"] {
+  grid-template-columns: repeat(3, 1fr);
+}
+.database-grid[data-grid="factions"] .faction-card {
+  display: grid;
+  align-content: start;
+  gap: 13px;
+  padding: 20px 22px 18px;
+  border-radius: 18px;
+  contain-intrinsic-size: auto 560px;
+}
+.faction-card__title {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+.faction-card__namerow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.faction-card__motto {
+  color: var(--faction-color, var(--cyan));
+  font-size: 12.5px;
+  line-height: 1.35;
+}
+.faction-card__blocks {
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.faction-block {
+  padding: 11px 12px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(180deg, rgba(14, 29, 51, 0.55), rgba(7, 14, 26, 0.55));
+}
+.faction-block h2 {
+  font-size: 9.5px;
+  margin-bottom: 6px;
+}
+.faction-block ul,
+.faction-block p {
+  font-size: 12px;
+  line-height: 1.45;
+}
+@media (max-width: 1240px) {
+  .database-grid[data-grid="factions"] {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 720px) {
+  .database-grid[data-grid="factions"] {
+    grid-template-columns: 1fr;
+  }
+  .faction-card__blocks {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* — сравнение: более крупные карточки, окраска колонок по фракции — */
+.compare-dialog {
+  width: min(1240px, calc(100vw - 28px));
+  border-radius: 22px;
+  background:
+    radial-gradient(80% 60% at 50% 0%, rgba(var(--cyan-rgb), 0.07), transparent 60%),
+    linear-gradient(180deg, rgba(12, 26, 46, 0.995), rgba(4, 9, 17, 0.998));
+}
+.compare-cardhead {
+  min-width: 220px;
+  padding: 14px 34px 14px 14px;
+  border-top-width: 4px;
+  border-radius: 14px;
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+.compare-cardhead__img {
+  width: 84px;
+  height: 84px;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 16px;
+  background:
+    radial-gradient(90% 90% at 32% 22%, rgba(255, 255, 255, 0.12), transparent 62%),
+    color-mix(in srgb, var(--faction-color, var(--cyan)) 14%, rgba(6, 12, 22, 0.94));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 10px 22px color-mix(in srgb, var(--faction-color, var(--cyan)) 16%, transparent);
+  transition:
+    border-color 0.18s,
+    box-shadow 0.18s,
+    transform 0.18s;
+}
+.compare-cardhead__img:hover {
+  border-color: color-mix(in srgb, var(--faction-color, var(--cyan)) 62%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    0 12px 26px color-mix(in srgb, var(--faction-color, var(--cyan)) 26%, transparent);
+  transform: translateY(-1px);
+}
+.compare-cardhead__img:focus-visible {
+  outline: 2px solid var(--faction-color, var(--cyan-hi));
+  outline-offset: 2px;
+}
+.compare-cardhead__img img {
+  padding: 5px;
+  filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.35));
+}
+.compare-cardhead__name {
+  max-width: 200px;
+  font-size: 16px;
+}
+.compare-table tbody td {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--faction-color, var(--cyan)) 6%, transparent),
+    color-mix(in srgb, var(--faction-color, var(--cyan)) 2%, transparent)
+  );
+  border-bottom-color: color-mix(in srgb, var(--faction-color, var(--cyan)) 10%, var(--line-soft));
+  transition: background 0.18s;
+}
+.compare-table tbody tr:hover td {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--faction-color, var(--cyan)) 10%, transparent),
+    color-mix(in srgb, var(--faction-color, var(--cyan)) 5%, transparent)
+  );
+}
+.compare-table tbody td.is-best {
+  color: var(--cyan-hi);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--faction-color, var(--cyan)) 18%, rgba(7, 15, 28, 0.6)),
+    color-mix(in srgb, var(--faction-color, var(--cyan)) 9%, rgba(7, 15, 28, 0.6))
+  );
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--faction-color, var(--cyan)) 34%, transparent);
+  font-weight: 600;
+}
+.compare-table tbody th {
+  background: #071426;
+}
+.compare-table__group th {
+  padding-top: 20px;
+  color: var(--cyan-hi);
+  border-bottom: 1px solid rgba(var(--cyan-rgb), 0.12);
+}
+.compare-table {
+  font-size: 13px;
+}
+.compare-table tbody td,
+.compare-table tbody th {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.compare-dialog__foot {
+  background: rgba(6, 12, 22, 0.72);
+}
+@media (max-width: 720px) {
+  .compare-cardhead {
+    min-width: 190px;
+    padding: 10px 30px 10px 10px;
+  }
+  .compare-cardhead__img {
+    width: 64px;
+    height: 64px;
+    border-radius: 12px;
+  }
+  .compare-cardhead__name {
+    max-width: 160px;
+    font-size: 14px;
+  }
+}

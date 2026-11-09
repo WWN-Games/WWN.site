@@ -6,7 +6,7 @@
 
 import { z } from "astro/zod";
 
-import { BUILDING_TYPES, SECTION_ICONS, TAG_GROUPS, UNIT_TYPES } from "./content-constants.ts";
+import { SECTION_ICONS, TAG_GROUPS, UNLOAD_OPTIONS } from "./content-constants.ts";
 
 /** Локализованный текст: EN обязателен для потребителей, но в JSON может отсутствовать. */
 const text = z
@@ -40,10 +40,48 @@ const stat = z.number().nonnegative().optional();
 
 const weaponSchema = z.object({
   name: text,
+  /** Количество одинаковых орудий; DPS умножается на это число. */
+  count: z.number().int().positive().default(1),
   damage: z.number().nonnegative(),
+  /** Задержка между выстрелами в секундах. */
+  fireDelay: z.number().positive(),
+  /** Теги из групп weapon и sector. */
+  tags: z.array(z.string().min(1)).default([]),
+  spread: z.number().nonnegative().optional(),
+  splashRadius: z.number().nonnegative().optional(),
+  stunDuration: z.number().nonnegative().optional(),
 });
 
 export type Weapon = z.infer<typeof weaponSchema>;
+
+export const builderSchema = z.object({
+  buildRange: z.number().nonnegative(),
+  repairSpeed: z.number().nonnegative(),
+  buildSpeed: z.number().nonnegative(),
+  /** Обычные теги карточек: кого лечит/чинит. */
+  healTags: z.array(z.string().min(1)).default([]),
+});
+
+export type Builder = z.infer<typeof builderSchema>;
+
+export const factorySchema = z.object({
+  name: text,
+  buildSpeed: z.number().positive(),
+  /** id юнитов, которые производит завод. */
+  producedUnits: z.array(z.string().min(1)).default([]),
+});
+
+export type Factory = z.infer<typeof factorySchema>;
+
+export const transportSchema = z.object({
+  name: text,
+  seats: z.number().int().nonnegative().default(0),
+  /** Обычные теги: кого можно перевозить. */
+  cargoTags: z.array(z.string().min(1)).default([]),
+  unload: z.array(z.enum(UNLOAD_OPTIONS)).default([]),
+});
+
+export type Transport = z.infer<typeof transportSchema>;
 
 const cardBase = z.object({
   id: z.string().min(1),
@@ -52,15 +90,21 @@ const cardBase = z.object({
   desc: text,
   tags: z.array(z.string().min(1)),
   cost: z.number().nonnegative(),
+  /** Энергия обязательна; для карточек без энергии пишется 0. */
+  energy: z.number().nonnegative(),
   hp: z.number().nonnegative(),
   buildTime: z.number().nonnegative(),
   shield: stat,
+  armor: stat,
   selfRegen: stat,
   shieldRegen: stat,
-  dps: stat,
-  weapons: z.array(weaponSchema).optional(),
   speed: stat,
+  turnSpeed: stat,
   range: stat,
+  weapons: z.array(weaponSchema).optional(),
+  builder: builderSchema.optional(),
+  factories: z.array(factorySchema).optional(),
+  transports: z.array(transportSchema).optional(),
   image: z.string().optional(),
   role: text.optional(),
   strongVs: z.union([z.array(z.string()), text]).optional(),
@@ -69,13 +113,8 @@ const cardBase = z.object({
   new: z.boolean().optional(),
 });
 
-export const unitSchema = cardBase.extend({
-  type: z.enum(UNIT_TYPES),
-});
-
-export const buildingSchema = cardBase.extend({
-  type: z.enum(BUILDING_TYPES),
-});
+export const unitSchema = cardBase;
+export const buildingSchema = cardBase;
 
 export type Unit = z.infer<typeof unitSchema>;
 export type Building = z.infer<typeof buildingSchema>;

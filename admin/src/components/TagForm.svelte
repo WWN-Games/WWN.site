@@ -13,6 +13,8 @@
     { value: "class", label: "Класс" },
     { value: "movement", label: "Движение" },
     { value: "mod", label: "Мод" },
+    { value: "weapon", label: "Оружие" },
+    { value: "sector", label: "Сектор" },
   ];
 </script>
 

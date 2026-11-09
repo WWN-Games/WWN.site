@@ -1,7 +1,8 @@
 {
   "_schema": [
     "Реестр тегов каталога. id — то, что пишется в поле tags юнита или строения.",
-    "name — подпись { ru, en }, group — группа: tier | class | movement | mod.",
+    "name — подпись { ru, en }, group — группа: tier | class | movement | mod | weapon | sector.",
+    "weapon и sector — теги оружия (назначение, тип, сектор обстрела).",
     "Новый тег: добавьте сюда запись с новым id и впишите id в tags нужных карточек.",
     "Незарегистрированные теги на сайте показываются как есть (по id)."
   ],
@@ -549,6 +550,142 @@
         "en": "waterDrop"
       },
       "group": "mod"
+    },
+    {
+      "id": "close",
+      "name": {
+        "ru": "Ближние",
+        "en": "Close range"
+      },
+      "group": "weapon"
+    },
+    {
+      "id": "long",
+      "name": {
+        "ru": "Дальние",
+        "en": "Long range"
+      },
+      "group": "weapon"
+    },
+    {
+      "id": "anti-air",
+      "name": {
+        "ru": "По воздуху",
+        "en": "Anti-air"
+      },
+      "group": "weapon"
+    },
+    {
+      "id": "anti-orbital",
+      "name": {
+        "ru": "По орбите",
+        "en": "Anti-orbital"
+      },
+      "group": "weapon"
+    },
+    {
+      "id": "anti-sub",
+      "name": {
+        "ru": "Под воду",
+        "en": "Anti-submarine"
+      },
+      "group": "weapon"
+    },
+    {
+      "id": "splash",
+      "name": {
+        "ru": "Сплеш",
+        "en": "Splash"
+      },
+      "group": "weapon"
+    },
+    {
+      "id": "stun",
+      "name": {
+        "ru": "Стан",
+        "en": "Stun"
+      },
+      "group": "weapon"
+    },
+    {
+      "id": "laser",
+      "name": {
+        "ru": "Лазер",
+        "en": "Laser"
+      },
+      "group": "weapon"
+    },
+    {
+      "id": "plasma",
+      "name": {
+        "ru": "Плазма",
+        "en": "Plasma"
+      },
+      "group": "weapon"
+    },
+    {
+      "id": "blaster",
+      "name": {
+        "ru": "Бластер",
+        "en": "Blaster"
+      },
+      "group": "weapon"
+    },
+    {
+      "id": "rocket",
+      "name": {
+        "ru": "Ракета",
+        "en": "Rocket"
+      },
+      "group": "weapon"
+    },
+    {
+      "id": "space-only",
+      "name": {
+        "ru": "Стрельба только в космосе",
+        "en": "Space only"
+      },
+      "group": "weapon"
+    },
+    {
+      "id": "surface-only",
+      "name": {
+        "ru": "Стрельба только над поверхностью",
+        "en": "Surface only"
+      },
+      "group": "weapon"
+    },
+    {
+      "id": "front",
+      "name": {
+        "ru": "Передний",
+        "en": "Front"
+      },
+      "group": "sector"
+    },
+    {
+      "id": "left",
+      "name": {
+        "ru": "Левый",
+        "en": "Left"
+      },
+      "group": "sector"
+    },
+    {
+      "id": "right",
+      "name": {
+        "ru": "Правый",
+        "en": "Right"
+      },
+      "group": "sector"
+    },
+    {
+      "id": "rear",
+      "name": {
+        "ru": "Задний",
+        "en": "Rear"
+      },
+      "group": "sector"
     }
   ]
 }

@@ -1,12 +1,12 @@
 import { getCollection } from "astro:content";
 import type { APIRoute } from "astro";
 
-import { byId, jsonResponse, withDerivedDps } from "./_shared";
+import { byId, jsonResponse, withDerivedCard } from "./_shared";
 
 export const prerender = true;
 
 export const GET: APIRoute = async () => {
   const entries = await getCollection("units");
-  const items = entries.map((entry) => withDerivedDps(entry.data)).sort(byId);
+  const items = entries.map((entry) => withDerivedCard(entry.data)).sort(byId);
   return jsonResponse(items);
 };

@@ -21,11 +21,11 @@
     "admin": "pnpm --dir admin start"
   },
   "dependencies": {
-    "@astrojs/markdown-remark": "^7.3.5",
+    "@astrojs/markdown-remark": "^7.3.6",
     "@astrojs/sitemap": "^3.7.4",
     "@astrojs/svelte": "^9.1.2",
     "@icon-park/svg": "^1.4.2",
-    "astro": "^7.4.5",
+    "astro": "^7.4.7",
     "astro-icon": "^1.2.0",
     "astro-pagefind": "^2.0.1",
     "rehype-autolink-headings": "^7.1.0",
@@ -36,10 +36,10 @@
   "devDependencies": {
     "@astrojs/ts-content-mapper": "^0.2.0",
     "@axe-core/playwright": "^4.14.0",
-    "@biomejs/biome": "^2.6.5",
+    "@biomejs/biome": "^2.6.6",
     "@iconify-json/icon-park-outline": "^1.2.4",
     "@iconify-json/simple-icons": "^1.2.101",
-    "@playwright/test": "^1.64.1",
+    "@playwright/test": "^1.65.0",
     "@types/hast": "^3.0.5",
     "@types/mdast": "^4.0.4",
     "@types/node": "^26.6.6",

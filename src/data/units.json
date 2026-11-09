@@ -4,1439 +4,2552 @@
     "id — строковый идентификатор (картинка: public/img/database/<id>.avif);",
     "name, desc — { ru, en }; если перевод совпадает, en можно не писать;",
     "faction — id из factions.json;",
-    "type — ground | air | naval | space | support;",
-    "cost, hp, shield, dps, speed, range, buildTime — числа;",
-    "tags — id тегов из data/tags.json (например, [\"T2\", \"ship\", \"WATER\"]); свои теги добавляются в этот файл.",
-    "shield, dps, speed, range можно не писать, если значение 0.",
+    "cost, energy, hp, shield, armor, dps, speed, range, buildTime, turnSpeed — числа;",
+    "energy обязательна (0, если энергии нет); полная стоимость = cost + energy / 4.",
+    "tags — id обычных тегов из data/tags.json (tier | class | movement | mod).",
+    "weapons — массив орудий: name, count, damage, fireDelay, tags (группы weapon и sector), spread, splashRadius, stunDuration.",
+    "DPS считается из оружия: сумма count * damage / fireDelay. Без оружия DPS = 0.",
+    "builder — { buildRange, repairSpeed, buildSpeed, healTags }; factories — список заводов; transports — список отделений.",
+    "shield, armor, selfRegen, shieldRegen, speed, turnSpeed, range можно не писать, если значение 0.",
     "Необязательное поле image переопределяет картинку, image: \"\" — показать инициалы.",
     "Необязательные поля карточки: role, strongVs, weakVs, draft, new (new: true — плашка «Новое»)."
   ],
   "units": [
     {
       "id": "ahaosa",
-      "name": { "ru": "Лодка ПВО", "en": "AA Boat" },
+      "name": {
+        "ru": "Лодка ПВО",
+        "en": "AA Boat"
+      },
       "faction": "proton",
-      "type": "naval",
       "desc": {
         "ru": "АХАОСА • Атакует только воздушные цели • Большой разовый урон на средней дистанции • Может плавать по воде, средняя мобильность • Может пускать стан-разряды под воду",
         "en": "AKHAOSA • Attacks only air targets • High single-shot damage at medium range • Can sail on water, medium mobility • Can fire stun discharges underwater"
       },
-      "tags": ["T1", "ship", "HOVER"],
-      "cost": 100, "hp": 320, "dps": 120, "speed": 0.9, "range": 245, "buildTime": 6
+      "tags": [
+        "T1",
+        "ship",
+        "HOVER"
+      ],
+      "cost": 100,
+      "energy": 0,
+      "hp": 320,
+      "speed": 0.9,
+      "range": 245,
+      "buildTime": 6
     },
-
     {
       "id": "akula",
-      "name": { "ru": "Линкор \"Акула\"", "en": "Battleship \"Shark\"" },
+      "name": {
+        "ru": "Линкор \"Акула\"",
+        "en": "Battleship \"Shark\""
+      },
       "faction": "fenearth",
-      "type": "naval",
       "desc": {
         "ru": "После постройки можно выбрать защитную или атакующую модификацию • Имеет радар, сонар, мощные пушки, флак-пушки",
         "en": "After construction you can choose a defensive or an assault modification • Has radar, sonar, powerful guns and flak guns"
       },
-      "tags": ["T4", "super-ship", "WATER"],
-      "cost": 6000, "hp": 6500, "dps": 950, "speed": 0.7, "range": 600, "buildTime": 200
+      "tags": [
+        "T4",
+        "super-ship",
+        "WATER"
+      ],
+      "cost": 6000,
+      "energy": 0,
+      "hp": 6500,
+      "speed": 0.7,
+      "range": 600,
+      "buildTime": 200
     },
-
     {
       "id": "allter",
-      "name": { "ru": "Всепроходимый", "en": "All-terrain" },
+      "name": {
+        "ru": "Всепроходимый",
+        "en": "All-terrain"
+      },
       "faction": "fenearth",
-      "type": "ground",
       "desc": {
         "ru": "Быстрый, слабый, малобронированный • Имеет пушки, направленные во все стороны • Атакует наземные и воздушные цели, есть защита от ракет • Можно конвертировать в турель",
         "en": "Fast, fragile, lightly armoured • Has guns facing in all directions • Attacks ground and air targets, has missile protection • Can be converted into a turret"
       },
-      "tags": ["T1", "bot", "OVER_CLIFF_WATER"],
-      "cost": 150, "hp": 150, "dps": 34.3, "speed": 1.45, "range": 180, "buildTime": 7
+      "tags": [
+        "T1",
+        "bot",
+        "OVER_CLIFF_WATER"
+      ],
+      "cost": 150,
+      "energy": 0,
+      "hp": 150,
+      "speed": 1.45,
+      "range": 180,
+      "buildTime": 7
     },
-
     {
       "id": "armcld",
-      "name": { "ru": "Броненосец", "en": "Armour-clad" },
+      "name": {
+        "ru": "Броненосец",
+        "en": "Armour-clad"
+      },
       "faction": "fenearth",
-      "type": "space",
       "desc": {
         "ru": "(ТКМК: Три Километра Конструкторский) • Имеет хорошее защитное вооружение • Имеет небольшое количество наступательного вооружения • Есть возможность строить любую противоракетную защиту • Может перевозить абсолютно все планетарные юниты и быстро строить любые здания • Способен перевозить все космические верфи и станции • Подходит для создания плацдармов • Для строительства на льду, лаве, насыпях и мостах, юнит должен находиться над ними",
         "en": "(TKMC: Three Kilometres Construction) • Has good defensive armament • Carries a small amount of offensive weapons • Can build any missile defence • Can transport absolutely every planetary unit and quickly build any structure • Can carry all space shipyards and stations • Suited for building bridgeheads • To build on ice, lava, mounds and bridges, the unit must be above them"
       },
-      "tags": ["T4", "super-space-ship", "AIR"],
-      "cost": 8000, "hp": 8000, "shield": 3000, "dps": 106.7, "speed": 0.5, "range": 500, "buildTime": 150
+      "tags": [
+        "T4",
+        "super-space-ship",
+        "AIR"
+      ],
+      "cost": 8000,
+      "energy": 0,
+      "hp": 8000,
+      "shield": 3000,
+      "speed": 0.5,
+      "range": 500,
+      "buildTime": 150
     },
-
     {
       "id": "armp",
-      "name": { "ru": "Бронебойщик", "en": "Armour-piercer" },
+      "name": {
+        "ru": "Бронебойщик",
+        "en": "Armour-piercer"
+      },
       "faction": "fenearth",
-      "type": "ground",
       "desc": {
         "ru": "Стреляет мощными одиночными снарядами со средней дистанции • Маневренный, имеет повышенное пробивание брони • (Народное прозвище: Паук, Жук)",
         "en": "Fires powerful single shells at medium range • Manoeuvrable, has increased armour penetration • (Nicknames: Spider, Beetle)"
       },
-      "tags": ["T2", "bot", "OVER_CLIFF_WATER"],
-      "cost": 230, "hp": 440, "dps": 40.2, "speed": 1.3, "range": 230, "buildTime": 17
+      "tags": [
+        "T2",
+        "bot",
+        "OVER_CLIFF_WATER"
+      ],
+      "cost": 230,
+      "energy": 0,
+      "hp": 440,
+      "speed": 1.3,
+      "range": 230,
+      "buildTime": 17
     },
-
     {
       "id": "artfzr",
-      "name": { "ru": "Артиллерия", "en": "Artillery" },
+      "name": {
+        "ru": "Артиллерия",
+        "en": "Artillery"
+      },
       "faction": "fenearth",
-      "type": "ground",
       "desc": {
         "ru": "Высокий радиус стрельбы • Медленная, есть возможность буксировки • Может окапываться для снижения получаемого урона",
         "en": "Long firing range • Slow, can be towed • Can dig in to reduce incoming damage"
       },
-      "tags": ["T1", "infantry", "LAND"],
-      "cost": 150, "hp": 200, "dps": 20, "speed": 0.5, "range": 320, "buildTime": 7
+      "tags": [
+        "T1",
+        "infantry",
+        "LAND"
+      ],
+      "cost": 150,
+      "energy": 0,
+      "hp": 200,
+      "speed": 0.5,
+      "range": 320,
+      "buildTime": 7
     },
-
     {
       "id": "astohasp",
-      "name": { "ru": "Экспериментальный Т1 эсминец", "en": "Experimental T1 destroyer" },
+      "name": {
+        "ru": "Экспериментальный Т1 эсминец",
+        "en": "Experimental T1 destroyer"
+      },
       "faction": "proton",
-      "type": "air",
       "desc": {
         "ru": "АКХАСТОКХА • Может минировать местность на поверхности и в космосе • Может перемещать и запускать метеориты, имеющиеся на карте, или искать новые",
         "en": "AKHASTOKHA • Can mine the surface and space • Can move and launch meteorites present on the map, or search for new ones"
       },
-      "tags": ["T1", "plane", "AIR"],
-      "cost": 800, "hp": 1200, "dps": 60, "speed": 1.25, "range": 250, "buildTime": 50
+      "tags": [
+        "T1",
+        "plane",
+        "AIR"
+      ],
+      "cost": 800,
+      "energy": 0,
+      "hp": 1200,
+      "speed": 1.25,
+      "range": 250,
+      "buildTime": 50
     },
-
     {
       "id": "atlas",
-      "name": { "ru": "Дескор \"Атлас\"", "en": "Landing ship \"Atlas\"" },
+      "name": {
+        "ru": "Дескор \"Атлас\"",
+        "en": "Landing ship \"Atlas\""
+      },
       "faction": "fenearth",
-      "type": "space",
       "desc": {
         "ru": "Перевозит наземные и морские юниты • Маневренный • Может быть погружён в ангар больших космических кораблей",
         "en": "Transports ground and naval units • Manoeuvrable • Can be loaded into the hangar of large spaceships"
       },
-      "tags": ["T3", "super-space-ship", "AIR"],
-      "cost": 2000, "hp": 3000, "shield": 2000, "speed": 1.6, "buildTime": 27
+      "tags": [
+        "T3",
+        "super-space-ship",
+        "AIR"
+      ],
+      "cost": 2000,
+      "energy": 0,
+      "hp": 3000,
+      "shield": 2000,
+      "speed": 1.6,
+      "buildTime": 27
     },
-
     {
       "id": "bjilan",
-      "name": { "ru": "Базовый истребитель \"Бжилан\"", "en": "Base fighter \"Bjilan\"" },
+      "name": {
+        "ru": "Базовый истребитель \"Бжилан\"",
+        "en": "Base fighter \"Bjilan\""
+      },
       "faction": "fenearth",
-      "type": "space",
       "desc": {
         "ru": "Имеет мощное точное нескорострельное орудие • Далеко стреляет • Перевозит один пехотный отряд • Может быть обслужен в некоторых юнитах как вертолёт • (Народное прозвище: Комар, Джастер)",
         "en": "Has a powerful precise low-rate gun • Shoots far • Carries one infantry squad • Can be serviced in some units like a helicopter • (Nicknames: Mosquito, Jaster)"
       },
-      "tags": ["T1", "space-ship", "AIR"],
-      "cost": 500, "hp": 400, "shield": 200, "dps": 30, "speed": 1.1, "range": 360, "buildTime": 10
+      "tags": [
+        "T1",
+        "space-ship",
+        "AIR"
+      ],
+      "cost": 500,
+      "energy": 0,
+      "hp": 400,
+      "shield": 200,
+      "speed": 1.1,
+      "range": 360,
+      "buildTime": 10
     },
-
     {
       "id": "bombpe",
-      "name": { "ru": "Бомбардировщик \"Копье\"", "en": "Bomber \"Spear\"" },
+      "name": {
+        "ru": "Бомбардировщик \"Копье\"",
+        "en": "Bomber \"Spear\""
+      },
       "faction": "proton",
-      "type": "air",
       "desc": {
         "ru": "Большой урон по наземным целям • Атакует под себя лазерным лучом • Может так же бомбить крупные космические корабли в атмосфере",
         "en": "High damage to ground targets • Strikes below itself with a laser beam • Can also bomb large spaceships in the atmosphere"
       },
-      "tags": ["T1", "plane", "AIR"],
-      "cost": 250, "hp": 300, "dps": 50, "speed": 2.35, "range": 60, "buildTime": 25
+      "tags": [
+        "T1",
+        "plane",
+        "AIR"
+      ],
+      "cost": 250,
+      "energy": 0,
+      "hp": 300,
+      "speed": 2.35,
+      "range": 60,
+      "buildTime": 25
     },
-
     {
       "id": "bomfzr",
-      "name": { "ru": "Бомбардировщик \"Пепелитель\"", "en": "Bomber \"Arsonist\"" },
+      "name": {
+        "ru": "Бомбардировщик \"Пепелитель\"",
+        "en": "Bomber \"Arsonist\""
+      },
       "faction": "fenearth",
-      "type": "air",
       "desc": {
         "ru": "Большой урон по наземным целям • Атакует под себя • Может отстреливаться от самолетов • Может так же бомбить крупные космические корабли в атмосфере",
         "en": "High damage to ground targets • Attacks below itself • Can shoot back at planes • Can also bomb large spaceships in the atmosphere"
       },
-      "tags": ["T2", "plane", "AIR"],
-      "cost": 650, "hp": 600, "dps": 750, "speed": 1.8, "range": 300, "buildTime": 25
+      "tags": [
+        "T2",
+        "plane",
+        "AIR"
+      ],
+      "cost": 650,
+      "energy": 0,
+      "hp": 600,
+      "speed": 1.8,
+      "range": 300,
+      "buildTime": 25
     },
-
     {
       "id": "bomfzrt3",
-      "name": { "ru": "Супербомбардировщик \"Шмель\"", "en": "Superbomber \"Bumblebee\"" },
+      "name": {
+        "ru": "Супербомбардировщик \"Шмель\"",
+        "en": "Superbomber \"Bumblebee\""
+      },
       "faction": "fenearth",
-      "type": "air",
       "desc": {
         "ru": "Стреляет напалм-бомбами • Атакует под себя • Имеет флак-пушку для защиты от воздушных атак • Может так же бомбить крупные космические корабли в атмосфере • Может быть обслужен в некоторых юнитах как вертолёт",
         "en": "Fires napalm bombs • Attacks below itself • Has a flak gun for defence against air attacks • Can also bomb large spaceships in the atmosphere • Can be serviced in some units like a helicopter"
       },
-      "tags": ["T3", "super-plane", "AIR"],
-      "cost": 1100, "hp": 1400, "dps": 1250, "speed": 1.8, "range": 300, "buildTime": 45
+      "tags": [
+        "T3",
+        "super-plane",
+        "AIR"
+      ],
+      "cost": 1100,
+      "energy": 0,
+      "hp": 1400,
+      "speed": 1.8,
+      "range": 300,
+      "buildTime": 45
     },
-
     {
       "id": "btrfzr",
-      "name": { "ru": "Бронетранспортёр", "en": "Armoured personnel carrier" },
+      "name": {
+        "ru": "Бронетранспортёр",
+        "en": "Armoured personnel carrier"
+      },
       "faction": "fenearth",
-      "type": "ground",
       "desc": {
         "ru": "Атакует наземные и воздушные цели • Повышенный урон по пехоте и самолетам • Может перевозить пехоту • Способен перемещаться по горам и плавать • Есть защита от ракет",
         "en": "Attacks ground and air targets • Increased damage against infantry and aircraft • Can transport infantry • Can move over mountains and swim • Has missile protection"
       },
-      "tags": ["T1", "tank", "OVER_CLIFF_WATER"],
-      "cost": 150, "hp": 220, "dps": 31.8, "speed": 1.35, "range": 190, "buildTime": 6.5
+      "tags": [
+        "T1",
+        "tank",
+        "OVER_CLIFF_WATER"
+      ],
+      "cost": 150,
+      "energy": 0,
+      "hp": 220,
+      "speed": 1.35,
+      "range": 190,
+      "buildTime": 6.5
     },
-
     {
       "id": "bug",
-      "name": { "ru": "Разведывательный корабль \"Жучок\"", "en": "Reconnaissance ship \"Bug\"" },
+      "name": {
+        "ru": "Разведывательный корабль \"Жучок\"",
+        "en": "Reconnaissance ship \"Bug\""
+      },
       "faction": "fenearth",
-      "type": "space",
       "desc": {
         "ru": "Стелс, может быть прикреплен ко вражеским большим юнитам • Летает, входит в атмосферу и совершает прыжки абсолютно незаметно • Может перевозить пехотный отряд • Имеет неплохую автопушку для защиты и неожиданных атак • Может быть обслужен в некоторых юнитах как вертолёт",
         "en": "Stealth, can attach to large enemy units • Flies, enters the atmosphere and jumps completely unnoticed • Can transport an infantry squad • Has a decent autocannon for defence and surprise attacks • Can be serviced in some units like a helicopter"
       },
-      "tags": ["T4", "super-space-ship", "AIR"],
-      "cost": 1500, "hp": 400, "shield": 100, "speed": 1, "range": 360, "buildTime": 18
+      "tags": [
+        "T4",
+        "super-space-ship",
+        "AIR"
+      ],
+      "cost": 1500,
+      "energy": 0,
+      "hp": 400,
+      "shield": 100,
+      "speed": 1,
+      "range": 360,
+      "buildTime": 18
     },
-
     {
       "id": "buiair",
-      "name": { "ru": "Вертолет строитель", "en": "Builder helicopter" },
+      "name": {
+        "ru": "Вертолет строитель",
+        "en": "Builder helicopter"
+      },
       "faction": "fenearth",
-      "type": "air",
       "desc": {
         "ru": "Может строить здания и чинить • Мобильный и непрочный • Для строительства на льду, лаве, насыпях и мостах юнит должен находиться над ними",
         "en": "Can build structures and repair • Mobile and fragile • To build on ice, lava, mounds and bridges, the unit must be above them"
       },
-      "tags": ["T1", "plane", "AIR"],
-      "cost": 200, "hp": 250, "speed": 1.7, "range": 130, "buildTime": 11
+      "tags": [
+        "T1",
+        "plane",
+        "AIR"
+      ],
+      "cost": 200,
+      "energy": 0,
+      "hp": 250,
+      "speed": 1.7,
+      "range": 130,
+      "buildTime": 11
     },
-
     {
       "id": "buibotfzr",
-      "name": { "ru": "Бот строитель", "en": "Builder bot" },
+      "name": {
+        "ru": "Бот строитель",
+        "en": "Builder bot"
+      },
       "faction": "fenearth",
-      "type": "ground",
       "desc": {
         "ru": "Может строить здания и чинить в небольшом радиусе • Маневренный, легкобронированный • Есть защита от ракет • Для строительства на льду, лаве, насыпях, мостах и в тоннелях, юнит должен находиться над ними/в них • (Народное прозвище: Батончик)",
         "en": "Can build structures and repair in a small radius • Manoeuvrable, lightly armoured • Has missile protection • To build on ice, lava, mounds, bridges and in tunnels, the unit must be above/in them • (Nickname: Baton)"
       },
-      "tags": ["T1", "bot", "OVER_CLIFF_WATER"],
-      "cost": 120, "hp": 250, "speed": 1.35, "range": 150, "buildTime": 5
+      "tags": [
+        "T1",
+        "bot",
+        "OVER_CLIFF_WATER"
+      ],
+      "cost": 120,
+      "energy": 0,
+      "hp": 250,
+      "speed": 1.35,
+      "range": 150,
+      "buildTime": 5
     },
-
     {
       "id": "builandfzr",
-      "name": { "ru": "Строитель", "en": "Builder" },
+      "name": {
+        "ru": "Строитель",
+        "en": "Builder"
+      },
       "faction": "fenearth",
-      "type": "ground",
       "desc": {
         "ru": "Может строить здания и чинить в среднем радиусе • Тяжелобронированный, медленный • Есть защита от ракет • Для строительства на льду, лаве, насыпях, мостах и в тоннелях, юнит должен находиться над ними/в них • (Народное прозвище: Батончик)",
         "en": "Can build structures and repair in a medium radius • Heavily armoured, slow • Has missile protection • To build on ice, lava, mounds, bridges and in tunnels, the unit must be above/in them • (Nickname: Baton)"
       },
-      "tags": ["T1", "tank", "LAND"],
-      "cost": 100, "hp": 450, "speed": 0.85, "range": 150, "buildTime": 3
+      "tags": [
+        "T1",
+        "tank",
+        "LAND"
+      ],
+      "cost": 100,
+      "energy": 0,
+      "hp": 450,
+      "speed": 0.85,
+      "range": 150,
+      "buildTime": 3
     },
-
     {
       "id": "builandpe",
-      "name": { "ru": "Строитель", "en": "Builder" },
+      "name": {
+        "ru": "Строитель",
+        "en": "Builder"
+      },
       "faction": "proton",
-      "type": "ground",
       "desc": {
         "ru": "Может строить здания и чинить в среднем радиусе • Средняя скорость и бронирование, может ходить по горам • Перевозит пехотные отряды и буксирует артиллерию • Имеет пушку для защиты • Для строительства на льду, лаве, насыпях, мостах и в тоннелях, юнит должен находиться над ними/в них",
         "en": "Can build structures and repair in a medium radius • Medium speed and armour, can walk over mountains • Transports infantry squads and tows artillery • Has a gun for defence • To build on ice, lava, mounds, bridges and in tunnels, the unit must be above/in them"
       },
-      "tags": ["T1", "tank", "OVER_CLIFF"],
-      "cost": 80, "hp": 300, "dps": 40.9, "speed": 1, "range": 160, "buildTime": 4
+      "tags": [
+        "T1",
+        "tank",
+        "OVER_CLIFF"
+      ],
+      "cost": 80,
+      "energy": 0,
+      "hp": 300,
+      "speed": 1,
+      "range": 160,
+      "buildTime": 4
     },
-
     {
       "id": "buiseafzr",
-      "name": { "ru": "Корабль строитель", "en": "Ship builder" },
+      "name": {
+        "ru": "Корабль строитель",
+        "en": "Ship builder"
+      },
       "faction": "fenearth",
-      "type": "naval",
       "desc": {
         "ru": "Может строить здания и чинить в большом радиусе • Прочный, медленный, есть защита от топерд • Для строительства на льду, насыпях, мостах и в каналах, юнит должен находиться рядом с ними/в них",
         "en": "Can build structures and repair in a large radius • Durable, slow, has torpedo protection • To build on ice, mounds, bridges and in channels, the unit must be near/in them"
       },
-      "tags": ["T1", "ship", "WATER"],
-      "cost": 150, "hp": 600, "speed": 0.85, "range": 270, "buildTime": 10
+      "tags": [
+        "T1",
+        "ship",
+        "WATER"
+      ],
+      "cost": 150,
+      "energy": 0,
+      "hp": 600,
+      "speed": 0.85,
+      "range": 270,
+      "buildTime": 10
     },
-
     {
       "id": "buiseafzr3",
-      "name": { "ru": "Суперкорабль строитель", "en": "Supership builder" },
+      "name": {
+        "ru": "Суперкорабль строитель",
+        "en": "Supership builder"
+      },
       "faction": "fenearth",
-      "type": "naval",
       "desc": {
         "ru": "Может строить здания и чинить в большом радиусе • Вооружен торпедным аппаратом для защиты от подводных угроз • Есть защита от торпед и ракет • Для строительства на льду, насыпях, мостах и в каналах, юнит должен находиться рядом с ними/в них",
         "en": "Can build structures and repair in a large radius • Armed with a torpedo tube for defence against underwater threats • Has torpedo and missile protection • To build on ice, mounds, bridges and in channels, the unit must be near/in them"
       },
-      "tags": ["T2", "ship", "WATER"],
-      "cost": 600, "hp": 1500, "dps": 257.1, "speed": 0.8, "range": 290, "buildTime": 30
+      "tags": [
+        "T2",
+        "ship",
+        "WATER"
+      ],
+      "cost": 600,
+      "energy": 0,
+      "hp": 1500,
+      "speed": 0.8,
+      "range": 290,
+      "buildTime": 30
     },
-
     {
       "id": "buisp",
-      "name": { "ru": "Дрон строитель", "en": "Builder drone" },
+      "name": {
+        "ru": "Дрон строитель",
+        "en": "Builder drone"
+      },
       "faction": "fenearth",
-      "type": "space",
       "desc": {
         "ru": "Может строить здания и чинить в небольшом радиусе • Может построить орбитальную верфь, медленный • Для строительства на льду, лаве, насыпях, мостах и в каналах, юнит должен находиться над ними",
         "en": "Can build structures and repair in a small radius • Can build an orbital shipyard, slow • To build on ice, lava, mounds, bridges and in channels, the unit must be above them"
       },
-      "tags": ["T1", "space-ship", "AIR"],
-      "cost": 400, "hp": 400, "shield": 200, "speed": 0.6, "range": 130, "buildTime": 12
+      "tags": [
+        "T1",
+        "space-ship",
+        "AIR"
+      ],
+      "cost": 400,
+      "energy": 0,
+      "hp": 400,
+      "shield": 200,
+      "speed": 0.6,
+      "range": 130,
+      "buildTime": 12
     },
-
     {
       "id": "bulyotsp",
-      "name": { "ru": "КБ \"Булёт\"", "en": "Design Bureau \"Bulyot\"" },
+      "name": {
+        "ru": "КБ \"Булёт\"",
+        "en": "Design Bureau \"Bulyot\""
+      },
       "faction": "fenearth",
-      "type": "space",
       "desc": {
         "ru": "Космический стратегический ядерный бомбардировщик • Может атаковать наземные и космические цели (Внимание на кнопки!) • Вооружён турелями и пушками для ближнего боя • (Народное прозвище: Бутылка)",
         "en": "Space strategic nuclear bomber • Can attack ground and space targets (watch the buttons!) • Armed with turrets and guns for close combat • (Nickname: Bottle)"
       },
-      "tags": ["T3", "super-space-ship", "AIR"],
-      "cost": 4500, "hp": 2500, "shield": 1500, "dps": 6720, "speed": 1.2, "range": 650, "buildTime": 90
+      "tags": [
+        "T3",
+        "super-space-ship",
+        "AIR"
+      ],
+      "cost": 4500,
+      "energy": 0,
+      "hp": 2500,
+      "shield": 1500,
+      "speed": 1.2,
+      "range": 650,
+      "buildTime": 90
     },
-
     {
       "id": "carifzr",
-      "name": { "ru": "Авианосец", "en": "Aircraft carrier" },
+      "name": {
+        "ru": "Авианосец",
+        "en": "Aircraft carrier"
+      },
       "faction": "fenearth",
-      "type": "naval",
       "desc": {
         "ru": "Производит, транспортирует и ремонтирует посаженные на него самолеты • Большой радиус обзора, есть пушки • Очень хорошие флак-пушки для защиты от авиации",
         "en": "Produces, transports and repairs aircraft landed on it • Large view radius, has guns • Very good flak guns for defence against aircraft"
       },
-      "tags": ["T2", "ship", "WATER"],
-      "cost": 1600, "hp": 3600, "dps": 150, "speed": 0.7, "range": 320, "buildTime": 50
+      "tags": [
+        "T2",
+        "ship",
+        "WATER"
+      ],
+      "cost": 1600,
+      "energy": 0,
+      "hp": 3600,
+      "speed": 0.7,
+      "range": 320,
+      "buildTime": 50
     },
-
     {
       "id": "cerberus",
-      "name": { "ru": "Цербер", "en": "Cerberus" },
+      "name": {
+        "ru": "Цербер",
+        "en": "Cerberus"
+      },
       "faction": "fenearth",
-      "type": "ground",
       "desc": {
         "ru": "Лечит ближайшие юниты, производит пехотные отряды, лекарей и ловушки • Способен стрелять под водой • Имеет большой урон и радиус обзора • Обладает радаром и сонаром",
         "en": "Heals nearby units, produces infantry squads, medics and traps • Can shoot underwater • Has high damage and view radius • Has radar and sonar"
       },
-      "tags": ["T4", "super-bot", "OVER_CLIFF_WATER"],
-      "cost": 3800, "hp": 4500, "dps": 200, "speed": 1, "range": 250, "buildTime": 90
+      "tags": [
+        "T4",
+        "super-bot",
+        "OVER_CLIFF_WATER"
+      ],
+      "cost": 3800,
+      "energy": 0,
+      "hp": 4500,
+      "speed": 1,
+      "range": 250,
+      "buildTime": 90
     },
-
     {
       "id": "colibri",
-      "name": { "ru": "Суперистребитель \"Колибри\"", "en": "Superfighter \"Colibri\"" },
+      "name": {
+        "ru": "Суперистребитель \"Колибри\"",
+        "en": "Superfighter \"Colibri\""
+      },
       "faction": "fenearth",
-      "type": "air",
       "desc": {
         "ru": "Быстрый и маневренный • Хорошо атакует воздушные и космические цели • Есть турель для защиты от воздуха и космоса • Может выходить в космос и совершать прыжки",
         "en": "Fast and manoeuvrable • Good at attacking air and space targets • Has a turret for defence against air and space • Can go into space and make jumps"
       },
-      "tags": ["T3", "super-plane", "AIR"],
-      "cost": 1000, "hp": 750, "shield": 400, "dps": 15, "speed": 1.3, "range": 240, "buildTime": 25
+      "tags": [
+        "T3",
+        "super-plane",
+        "AIR"
+      ],
+      "cost": 1000,
+      "energy": 0,
+      "hp": 750,
+      "shield": 400,
+      "speed": 1.3,
+      "range": 240,
+      "buildTime": 25
     },
-
     {
       "id": "crab",
-      "name": { "ru": "Подводная лодка \"Дунклеостей\"", "en": "Submarine \"Dunkleosteus\"" },
+      "name": {
+        "ru": "Подводная лодка \"Дунклеостей\"",
+        "en": "Submarine \"Dunkleosteus\""
+      },
       "faction": "fenearth",
-      "type": "naval",
       "desc": {
         "ru": "Стелс под водой, маломанёвреннен • Имеет мощные торпеды и лазеры • Производит тактические и ядерные ракеты • Может стрелять по орбите • Хороший сонар • (Народное прозвище: Сигара, Краб)",
         "en": "Stealth underwater, low manoeuvrability • Has powerful torpedoes and lasers • Produces tactical and nuclear missiles • Can shoot into orbit • Good sonar • (Nicknames: Cigar, Crab)"
       },
-      "tags": ["T3", "super-ship", "WATER"],
-      "cost": 5500, "hp": 3500, "dps": 3600, "speed": 0.8, "range": 30000, "buildTime": 200
+      "tags": [
+        "T3",
+        "super-ship",
+        "WATER"
+      ],
+      "cost": 5500,
+      "energy": 0,
+      "hp": 3500,
+      "speed": 0.8,
+      "range": 30000,
+      "buildTime": 200
     },
-
     {
       "id": "crufzr",
-      "name": { "ru": "Крейсер \"Дельфин\"", "en": "Cruiser \"Dolphin\"" },
+      "name": {
+        "ru": "Крейсер \"Дельфин\"",
+        "en": "Cruiser \"Dolphin\""
+      },
       "faction": "fenearth",
-      "type": "naval",
       "desc": {
         "ru": "Медленный, бронированный • Вооружен дальнобойной мощной артиллерией • Строит и ремонтирует вертолеты • Имеет радар, сонар, защиту от ракет, торпед и малых юнитов • Небольшая атака по орбите",
         "en": "Slow, armoured • Armed with long-range powerful artillery • Builds and repairs helicopters • Has radar, sonar, protection against missiles, torpedoes and small units • Small orbital attack"
       },
-      "tags": ["T2", "ship", "WATER"],
-      "cost": 1700, "hp": 3500, "dps": 210, "speed": 0.8, "range": 420, "buildTime": 55
+      "tags": [
+        "T2",
+        "ship",
+        "WATER"
+      ],
+      "cost": 1700,
+      "energy": 0,
+      "hp": 3500,
+      "speed": 0.8,
+      "range": 420,
+      "buildTime": 55
     },
-
     {
       "id": "cutfzr",
-      "name": { "ru": "Катер", "en": "Cutter" },
+      "name": {
+        "ru": "Катер",
+        "en": "Cutter"
+      },
       "faction": "fenearth",
-      "type": "naval",
       "desc": {
         "ru": "Быстрый, дешёвый • Может стрелять по земле и воздуху",
         "en": "Fast, cheap • Can shoot at ground and air"
       },
-      "tags": ["T1", "ship", "WATER"],
-      "cost": 200, "hp": 600, "dps": 25, "speed": 1.3, "range": 250, "buildTime": 8
+      "tags": [
+        "T1",
+        "ship",
+        "WATER"
+      ],
+      "cost": 200,
+      "energy": 0,
+      "hp": 600,
+      "speed": 1.3,
+      "range": 250,
+      "buildTime": 8
     },
-
     {
       "id": "cutfzr3",
-      "name": { "ru": "Катер \"Бычок\"", "en": "Cutter \"Goby\"" },
+      "name": {
+        "ru": "Катер \"Бычок\"",
+        "en": "Cutter \"Goby\""
+      },
       "faction": "fenearth",
-      "type": "naval",
       "desc": {
         "ru": "Имеет осадную скорострельную артиллерийскую батарею • Большой разброс, часто стреляет • Есть турель для защиты от воздуха и космоса",
         "en": "Has a siege rapid-fire artillery battery • Large spread, fires often • Has a turret for defence against air and space"
       },
-      "tags": ["T3", "super-ship", "WATER"],
-      "cost": 1500, "hp": 2000, "dps": 48, "speed": 1, "range": 550, "buildTime": 100
+      "tags": [
+        "T3",
+        "super-ship",
+        "WATER"
+      ],
+      "cost": 1500,
+      "energy": 0,
+      "hp": 2000,
+      "speed": 1,
+      "range": 550,
+      "buildTime": 100
     },
-
     {
       "id": "cutpe",
-      "name": { "ru": "Катер \"Кристалл\"", "en": "Cutter \"Crystal\"" },
+      "name": {
+        "ru": "Катер \"Кристалл\"",
+        "en": "Cutter \"Crystal\""
+      },
       "faction": "proton",
-      "type": "naval",
       "desc": {
         "ru": "Быстрый, дешёвый, эффективный • Стреляет колечками по наземным и воздушным целям • Есть торпеды с токсинами",
         "en": "Fast, cheap, efficient • Shoots rings at ground and air targets • Has torpedoes with toxins"
       },
-      "tags": ["T1", "ship", "WATER"],
-      "cost": 190, "hp": 500, "dps": 90, "speed": 1.2, "range": 280, "buildTime": 10
+      "tags": [
+        "T1",
+        "ship",
+        "WATER"
+      ],
+      "cost": 190,
+      "energy": 0,
+      "hp": 500,
+      "speed": 1.2,
+      "range": 280,
+      "buildTime": 10
     },
-
     {
       "id": "dartrekon",
-      "name": { "ru": "Дартрекон", "en": "Dartrekon" },
+      "name": {
+        "ru": "Дартрекон",
+        "en": "Dartrekon"
+      },
       "faction": "fenearth",
-      "type": "ground",
       "desc": {
         "ru": "Очень маневренный, но легкий • Вооружен мощной дальнострельной лазерной пушкой • Имеет ПВО и ПОО • Способен стрелять под водой • Может стрелять по космическим кораблям в атмосфере • (Народное прозвище: Снайпер, Шприц)",
         "en": "Very manoeuvrable but light • Armed with a powerful long-range laser gun • Has AA and anti-orbital defence • Can shoot underwater • Can shoot at spaceships in the atmosphere • (Nicknames: Sniper, Syringe)"
       },
-      "tags": ["T3", "super-bot", "OVER_CLIFF_WATER"],
-      "cost": 1250, "hp": 850, "dps": 60, "speed": 1.6, "range": 330, "buildTime": 40
+      "tags": [
+        "T3",
+        "super-bot",
+        "OVER_CLIFF_WATER"
+      ],
+      "cost": 1250,
+      "energy": 0,
+      "hp": 850,
+      "speed": 1.6,
+      "range": 330,
+      "buildTime": 40
     },
-
     {
       "id": "deg",
-      "name": { "ru": "Дегеры", "en": "Deguers" },
+      "name": {
+        "ru": "Дегеры",
+        "en": "Deguers"
+      },
       "faction": "proton",
-      "type": "ground",
       "desc": {
         "ru": "ДХЕЙГХЕРИ • Искусственно выращенные солдаты, хорошо приспособлены сражаться в засухе • Могут захватывать здания, атакуют по земле и воздуху • Ползают по горам, хорошая регенерация",
         "en": "DHEIGHERI • Artificially grown soldiers, well adapted to fight in drought • Can capture buildings, attack ground and air • Crawl over mountains, good regeneration"
       },
-      "tags": ["T1", "infantry", "OVER_CLIFF"],
-      "cost": 50, "hp": 300, "dps": 78, "speed": 1.1, "range": 170, "buildTime": 6
+      "tags": [
+        "T1",
+        "infantry",
+        "OVER_CLIFF"
+      ],
+      "cost": 50,
+      "energy": 0,
+      "hp": 300,
+      "speed": 1.1,
+      "range": 170,
+      "buildTime": 6
     },
-
     {
       "id": "drefzr",
-      "name": { "ru": "Десантный корабль", "en": "Landing ship" },
+      "name": {
+        "ru": "Десантный корабль",
+        "en": "Landing ship"
+      },
       "faction": "fenearth",
-      "type": "naval",
       "desc": {
         "ru": "Перевозит юниты • Умеет перемещаться по суше • Есть пушки для самообороны от земли и воздуха • (Народное прозвище: Подушка)",
         "en": "Transports units • Can move on land • Has guns for self-defence against ground and air • (Nickname: Pillow)"
       },
-      "tags": ["T1", "ship", "HOVER"],
-      "cost": 500, "hp": 900, "dps": 25, "speed": 0.9, "range": 230, "buildTime": 16
+      "tags": [
+        "T1",
+        "ship",
+        "HOVER"
+      ],
+      "cost": 500,
+      "energy": 0,
+      "hp": 900,
+      "speed": 0.9,
+      "range": 230,
+      "buildTime": 16
     },
-
     {
       "id": "dronpe",
-      "name": { "ru": "Развед-дрон", "en": "Recon drone" },
+      "name": {
+        "ru": "Развед-дрон",
+        "en": "Recon drone"
+      },
       "faction": "proton",
-      "type": "ground",
       "desc": {
         "ru": "Дрон-разведчик, имеет радар, хороший обзор и манёвренность • Бомба-камикадзе, производит сильный стан-взрыв при атаке на врага • Показывает местность некоторе время после уничтожения",
         "en": "Scout drone, has radar, good view and manoeuvrability • Kamikaze bomb, creates a strong stun explosion when attacking an enemy • Reveals the terrain for some time after being destroyed"
       },
-      "tags": ["T1", "tank", "OVER_CLIFF"],
-      "cost": 70, "hp": 160, "dps": 150, "speed": 1.35, "range": 60, "buildTime": 4
+      "tags": [
+        "T1",
+        "tank",
+        "OVER_CLIFF"
+      ],
+      "cost": 70,
+      "energy": 0,
+      "hp": 160,
+      "speed": 1.35,
+      "range": 60,
+      "buildTime": 4
     },
-
     {
       "id": "drooppe",
-      "name": { "ru": "Десантный корабль", "en": "Landing ship" },
+      "name": {
+        "ru": "Десантный корабль",
+        "en": "Landing ship"
+      },
       "faction": "proton",
-      "type": "naval",
       "desc": {
         "ru": "Перевозит много юнитов, прочный • Имеет артиллерийскую стан-пушку, лазерную защиту в области и ремонтную установку • Может поддерживать высадку, наземные войска и флот",
         "en": "Transports many units, durable • Has an artillery stun gun, area laser defence and a repair unit • Can support landings, ground troops and the fleet"
       },
-      "tags": ["T1", "ship", "WATER"],
-      "cost": 450, "hp": 800, "dps": 20, "speed": 0.9, "range": 320, "buildTime": 19
+      "tags": [
+        "T1",
+        "ship",
+        "WATER"
+      ],
+      "cost": 450,
+      "energy": 0,
+      "hp": 800,
+      "speed": 0.9,
+      "range": 320,
+      "buildTime": 19
     },
-
     {
       "id": "drot",
-      "name": { "ru": "Экспериментальный Т1 бот \"Дрот\"", "en": "Experimental T1 bot \"Drot\"" },
+      "name": {
+        "ru": "Экспериментальный Т1 бот \"Дрот\"",
+        "en": "Experimental T1 bot \"Drot\""
+      },
       "faction": "proton",
-      "type": "ground",
       "desc": {
         "ru": "Сильный юнит ближнего боя • Стелс, ходит под водой • Пилит врагов, станит",
         "en": "Strong melee unit • Stealth, walks underwater • Saws enemies, stuns"
       },
-      "tags": ["T1", "tank", "HOVER"],
-      "cost": 300, "hp": 550, "dps": 108, "speed": 1.2, "range": 20, "buildTime": 40
+      "tags": [
+        "T1",
+        "tank",
+        "HOVER"
+      ],
+      "cost": 300,
+      "energy": 0,
+      "hp": 550,
+      "speed": 1.2,
+      "range": 20,
+      "buildTime": 40
     },
-
     {
       "id": "drshfzr",
-      "name": { "ru": "Транспортник \"Титан\"", "en": "Transporter \"Titan\"" },
+      "name": {
+        "ru": "Транспортник \"Титан\"",
+        "en": "Transporter \"Titan\""
+      },
       "faction": "fenearth",
-      "type": "air",
       "desc": {
         "ru": "Перевозит юниты • Может отстреливаться от самолетов • Способен десантировать юниты на лету без приземления и остановки",
         "en": "Transports units • Can shoot back at planes • Can drop units in flight without landing or stopping"
       },
-      "tags": ["T2", "plane", "AIR"],
-      "cost": 400, "hp": 1000, "speed": 1.8, "range": 300, "buildTime": 12
+      "tags": [
+        "T2",
+        "plane",
+        "AIR"
+      ],
+      "cost": 400,
+      "energy": 0,
+      "hp": 1000,
+      "speed": 1.8,
+      "range": 300,
+      "buildTime": 12
     },
-
     {
       "id": "engineerfzr",
-      "name": { "ru": "Инженеры", "en": "Engineers" },
+      "name": {
+        "ru": "Инженеры",
+        "en": "Engineers"
+      },
       "faction": "fenearth",
-      "type": "ground",
       "desc": {
         "ru": "Могут строить здания и чинить юниты • Могут окапываться для снижения получаемого урона • Для строительства на льду, лаве, насыпях, мостах и в тоннелях, юнит должен находиться над ними/в них",
         "en": "Can build structures and repair units • Can dig in to reduce incoming damage • To build on ice, lava, mounds, bridges and in tunnels, the unit must be above/in them"
       },
-      "tags": ["T1", "infantry", "LAND"],
-      "cost": 60, "hp": 100, "speed": 0.7, "range": 150, "buildTime": 3
+      "tags": [
+        "T1",
+        "infantry",
+        "LAND"
+      ],
+      "cost": 60,
+      "energy": 0,
+      "hp": 100,
+      "speed": 0.7,
+      "range": 150,
+      "buildTime": 3
     },
-
     {
       "id": "engineerprot",
-      "name": { "ru": "Инженеры", "en": "Engineers" },
+      "name": {
+        "ru": "Инженеры",
+        "en": "Engineers"
+      },
       "faction": "proton",
-      "type": "ground",
       "desc": {
         "ru": "Могут строить здания и чинить • Хорошо плавают • Для строительства на льду, лаве, насыпях, мостах и в тоннелях, юнит должен находиться над ними/в них",
         "en": "Can build structures and repair • Swim well • To build on ice, lava, mounds, bridges and in tunnels, the unit must be above/in them"
       },
-      "tags": ["T1", "infantry", "HOVER"],
-      "cost": 50, "hp": 100, "speed": 1, "range": 150, "buildTime": 2.5
+      "tags": [
+        "T1",
+        "infantry",
+        "HOVER"
+      ],
+      "cost": 50,
+      "energy": 0,
+      "hp": 100,
+      "speed": 1,
+      "range": 150,
+      "buildTime": 2.5
     },
-
     {
       "id": "esmfzr",
-      "name": { "ru": "Эсминец \"Заградитель\"", "en": "Destroyer \"Barrier\"" },
+      "name": {
+        "ru": "Эсминец \"Заградитель\"",
+        "en": "Destroyer \"Barrier\""
+      },
       "faction": "fenearth",
-      "type": "naval",
       "desc": {
         "ru": "Неплохая скорость, бронированный • Может стрелять по земле и воздуху • Может ставить мины • Имеет торпедный аппарат против подводных целей",
         "en": "Decent speed, armoured • Can shoot at ground and air • Can lay mines • Has a torpedo tube against underwater targets"
       },
-      "tags": ["T1", "ship", "WATER"],
-      "cost": 500, "hp": 900, "dps": 150, "speed": 1.05, "range": 260, "buildTime": 20
+      "tags": [
+        "T1",
+        "ship",
+        "WATER"
+      ],
+      "cost": 500,
+      "energy": 0,
+      "hp": 900,
+      "speed": 1.05,
+      "range": 260,
+      "buildTime": 20
     },
-
     {
       "id": "eye",
-      "name": { "ru": "Мониторинговый комплекс \"Око\"", "en": "Monitoring complex \"Eye\"" },
+      "name": {
+        "ru": "Мониторинговый комплекс \"Око\"",
+        "en": "Monitoring complex \"Eye\""
+      },
       "faction": "fenearth",
-      "type": "space",
       "desc": {
         "ru": "Имеет радар • Большой радиус обзора • Медленный, может быть перевезён в ангарах больших кораблей • Обладает стан-пушкой для защиты • (Народное прозвище: Глазик)",
         "en": "Has radar • Large view radius • Slow, can be transported in the hangars of large ships • Has a stun gun for defence • (Nickname: Little Eye)"
       },
-      "tags": ["T3", "super-space-ship", "AIR"],
-      "cost": 3500, "hp": 1000, "shield": 500, "dps": 45, "speed": 0.6, "range": 250, "buildTime": 12
+      "tags": [
+        "T3",
+        "super-space-ship",
+        "AIR"
+      ],
+      "cost": 3500,
+      "energy": 0,
+      "hp": 1000,
+      "shield": 500,
+      "speed": 0.6,
+      "range": 250,
+      "buildTime": 12
     },
-
     {
       "id": "figfzr",
-      "name": { "ru": "Истребитель \"Пресекатель\"", "en": "Fighter \"Suppressor\"" },
+      "name": {
+        "ru": "Истребитель \"Пресекатель\"",
+        "en": "Fighter \"Suppressor\""
+      },
       "faction": "fenearth",
-      "type": "air",
       "desc": {
         "ru": "Быстрый, манёвренный • Хорошо атакует воздушные цели • Стреляет ракетами по наземным целям • Для более успешного воздушного боя посылайте истребители через приказ attackMove",
         "en": "Fast, manoeuvrable • Good at attacking air targets • Fires missiles at ground targets • For more successful air combat send fighters via the attackMove order"
       },
-      "tags": ["T1", "plane", "AIR"],
-      "cost": 150, "hp": 280, "dps": 140, "speed": 2.65, "range": 230, "buildTime": 8
+      "tags": [
+        "T1",
+        "plane",
+        "AIR"
+      ],
+      "cost": 150,
+      "energy": 0,
+      "hp": 280,
+      "speed": 2.65,
+      "range": 230,
+      "buildTime": 8
     },
-
     {
       "id": "figpe",
-      "name": { "ru": "Истребитель \"Пика\"", "en": "Fighter \"Spade\"" },
+      "name": {
+        "ru": "Истребитель \"Пика\"",
+        "en": "Fighter \"Spade\""
+      },
       "faction": "proton",
-      "type": "air",
       "desc": {
         "ru": "Быстрый, манёвренный • Хорошо атакует воздушные цели • Для более успешного воздушного боя посылайте истребители через приказ attackMove",
         "en": "Fast, manoeuvrable • Good at attacking air targets • For more successful air combat send fighters via the attackMove order"
       },
-      "tags": ["T1", "plane", "AIR"],
-      "cost": 100, "hp": 230, "dps": 150, "speed": 3, "range": 200, "buildTime": 8
+      "tags": [
+        "T1",
+        "plane",
+        "AIR"
+      ],
+      "cost": 100,
+      "energy": 0,
+      "hp": 230,
+      "speed": 3,
+      "range": 200,
+      "buildTime": 8
     },
-
     {
       "id": "flibot",
-      "name": { "ru": "Экспериментальный Т1 бот-самолет", "en": "Experimental T1 bot-plane" },
+      "name": {
+        "ru": "Экспериментальный Т1 бот-самолет",
+        "en": "Experimental T1 bot-plane"
+      },
       "faction": "proton",
-      "type": "air",
       "desc": {
         "ru": "Мощный, мобильный, прочный • Есть режим ходьбы и полёта • Атакует воздух и поверхность штурмовыми пушками",
         "en": "Powerful, mobile, durable • Has walking and flight modes • Attacks air and surface with assault guns"
       },
-      "tags": ["T1", "plane", "AIR"],
-      "cost": 300, "hp": 450, "dps": 96, "speed": 2, "range": 150, "buildTime": 40
+      "tags": [
+        "T1",
+        "plane",
+        "AIR"
+      ],
+      "cost": 300,
+      "energy": 0,
+      "hp": 450,
+      "speed": 2,
+      "range": 150,
+      "buildTime": 40
     },
-
     {
       "id": "grap",
-      "name": { "ru": "Атакующий корвет \"Гарп\"", "en": "Attack corvette \"Harp\"" },
+      "name": {
+        "ru": "Атакующий корвет \"Гарп\"",
+        "en": "Attack corvette \"Harp\""
+      },
       "faction": "proton",
-      "type": "air",
       "desc": {
         "ru": "Имеет хорошую пушку ближнего боя • Может перевозить и запускать с орбиты самолёты • Может быть обслужен в некоторых юнитах как вертолёт",
         "en": "Has a good close-combat gun • Can transport and launch aircraft from orbit • Can be serviced in some units like a helicopter"
       },
-      "tags": ["T1", "plane", "AIR"],
-      "cost": 550, "hp": 750, "dps": 50, "speed": 1.25, "range": 270, "buildTime": 30
+      "tags": [
+        "T1",
+        "plane",
+        "AIR"
+      ],
+      "cost": 550,
+      "energy": 0,
+      "hp": 750,
+      "speed": 1.25,
+      "range": 270,
+      "buildTime": 30
     },
-
     {
       "id": "guardian",
-      "name": { "ru": "Страж", "en": "Guardian" },
+      "name": {
+        "ru": "Страж",
+        "en": "Guardian"
+      },
       "faction": "fenearth",
-      "type": "ground",
       "desc": {
         "ru": "Медленный, очень бронированный • Может стрелять по целям под водой, на земле, в воздухе и на орбите • Хорошая защита от ракет • Способен бостреливать космические корабли из под воды",
         "en": "Slow, very armoured • Can shoot at targets underwater, on the ground, in the air and in orbit • Good missile protection • Can shoot at spaceships from underwater"
       },
-      "tags": ["T2", "bot", "OVER_CLIFF_WATER"],
-      "cost": 300, "hp": 500, "dps": 300, "speed": 0.7, "range": 280, "buildTime": 19
+      "tags": [
+        "T2",
+        "bot",
+        "OVER_CLIFF_WATER"
+      ],
+      "cost": 300,
+      "energy": 0,
+      "hp": 500,
+      "speed": 0.7,
+      "range": 280,
+      "buildTime": 19
     },
-
     {
       "id": "helifzr",
-      "name": { "ru": "Боевой вертолет", "en": "Combat helicopter" },
+      "name": {
+        "ru": "Боевой вертолет",
+        "en": "Combat helicopter"
+      },
       "faction": "fenearth",
-      "type": "air",
       "desc": {
         "ru": "Атакует воздушные и наземные цели • Может перевозить отряд пехоты • Уязвим перед истребителями • (Народное прозвище: Мухи = спам вертолётов)",
         "en": "Attacks air and ground targets • Can transport an infantry squad • Vulnerable to fighters • (Nickname: Flies = helicopter spam)"
       },
-      "tags": ["T1", "plane", "AIR"],
-      "cost": 200, "hp": 220, "dps": 90, "speed": 1.25, "range": 140, "buildTime": 15
+      "tags": [
+        "T1",
+        "plane",
+        "AIR"
+      ],
+      "cost": 200,
+      "energy": 0,
+      "hp": 220,
+      "speed": 1.25,
+      "range": 140,
+      "buildTime": 15
     },
-
     {
       "id": "hillfzr",
-      "name": { "ru": "Лекарь", "en": "Medic" },
+      "name": {
+        "ru": "Лекарь",
+        "en": "Medic"
+      },
       "faction": "fenearth",
-      "type": "ground",
       "desc": {
         "ru": "Быстро чинит союзных юнитов в небольшом радиусе • Как и все строители, может быстро чинить космические корабли в атмосфере",
         "en": "Quickly repairs allied units in a small radius • Like all builders, can quickly repair spaceships in the atmosphere"
       },
-      "tags": ["T2", "bot", "OVER_CLIFF_WATER"],
-      "cost": 200, "hp": 250, "speed": 1.3, "range": 120, "buildTime": 12
+      "tags": [
+        "T2",
+        "bot",
+        "OVER_CLIFF_WATER"
+      ],
+      "cost": 200,
+      "energy": 0,
+      "hp": 250,
+      "speed": 1.3,
+      "range": 120,
+      "buildTime": 12
     },
-
     {
       "id": "hilpe",
-      "name": { "ru": "Ремонтная установка", "en": "Repair installation" },
+      "name": {
+        "ru": "Ремонтная установка",
+        "en": "Repair installation"
+      },
       "faction": "proton",
-      "type": "support",
       "desc": {
         "ru": "Легкая мобильная транспортируемая установка • Может лечить и помогать строить в среднем радиусе • Можно буксировать специальными юнитами",
         "en": "Light mobile transportable installation • Can heal and help build in a medium radius • Can be towed by special units"
       },
-      "tags": ["T1", "LAND"],
-      "cost": 80, "hp": 180, "speed": 0.8, "range": 200, "buildTime": 5.5
+      "tags": [
+        "T1",
+        "LAND"
+      ],
+      "cost": 80,
+      "energy": 0,
+      "hp": 180,
+      "speed": 0.8,
+      "range": 200,
+      "buildTime": 5.5
     },
-
     {
       "id": "indestructible",
-      "name": { "ru": "Неповредимый", "en": "Indestructible" },
+      "name": {
+        "ru": "Неповредимый",
+        "en": "Indestructible"
+      },
       "faction": "fenearth",
-      "type": "ground",
       "desc": {
         "ru": "Медленный, тяжёлый, очень мощная броня • Стреляет ядерными снарядами • Есть гаубица и ПВО для дополнительного урона • (4 черные штуки по бокам - это не колеса, а треугольные гусеницы!!!)",
         "en": "Slow, heavy, very powerful armour • Fires nuclear shells • Has a howitzer and AA for extra damage • (The 4 black things on the sides are not wheels, but triangular tracks!!!)"
       },
-      "tags": ["T4", "super-tank", "LAND"],
-      "cost": 5000, "hp": 13000, "dps": 12600, "speed": 0.5, "range": 380, "buildTime": 180
+      "tags": [
+        "T4",
+        "super-tank",
+        "LAND"
+      ],
+      "cost": 5000,
+      "energy": 0,
+      "hp": 13000,
+      "speed": 0.5,
+      "range": 380,
+      "buildTime": 180
     },
-
     {
       "id": "kraken",
-      "name": { "ru": "КРАКЕН", "en": "KRAKEN" },
+      "name": {
+        "ru": "КРАКЕН",
+        "en": "KRAKEN"
+      },
       "faction": "fenearth",
-      "type": "naval",
       "desc": {
         "ru": "Медленный, бронированный • Имеет два Т4 аэродрома и док для подводных лодок • Имеет СИП, ядерные снаряды и пушки для защиты • Имеет радар, сонар",
         "en": "Slow, armoured • Has two T4 aerodromes and a submarine dock • Has TIC, nuclear shells and guns for defence • Has radar, sonar"
       },
-      "tags": ["titan", "super-ship", "WATER"],
-      "cost": 19500, "hp": 18000, "dps": 5000, "speed": 0.5, "range": 700, "buildTime": 2000
+      "tags": [
+        "titan",
+        "super-ship",
+        "WATER"
+      ],
+      "cost": 19500,
+      "energy": 0,
+      "hp": 18000,
+      "speed": 0.5,
+      "range": 700,
+      "buildTime": 2000
     },
-
     {
       "id": "lasdef",
-      "name": { "ru": "Защитная установка", "en": "Defensive installation" },
+      "name": {
+        "ru": "Защитная установка",
+        "en": "Defensive installation"
+      },
       "faction": "proton",
-      "type": "support",
       "desc": {
         "ru": "Легкая мобильная транспортируемая установка • Защищает от физических снарядов в среднем радиусе • Можно буксировать специальными юнитами",
         "en": "Light mobile transportable installation • Protects against physical shells in a medium radius • Can be towed by special units"
       },
-      "tags": ["T1", "LAND"],
-      "cost": 70, "hp": 180, "speed": 0.8, "range": 200, "buildTime": 6
+      "tags": [
+        "T1",
+        "LAND"
+      ],
+      "cost": 70,
+      "energy": 0,
+      "hp": 180,
+      "speed": 0.8,
+      "range": 200,
+      "buildTime": 6
     },
-
     {
       "id": "lcfzr",
-      "name": { "ru": "Лёгкий крейсер \"Пиранья\"", "en": "Light cruiser \"Piranha\"" },
+      "name": {
+        "ru": "Лёгкий крейсер \"Пиранья\"",
+        "en": "Light cruiser \"Piranha\""
+      },
       "faction": "fenearth",
-      "type": "naval",
       "desc": {
         "ru": "Среднее вооружение, есть дальнобойные ракеты • Может строить и стрелять тактическими ракетами по земле и орбите • Имеет радар, вооружен глубинными бомбами • Небольшая атака по орбите, есть защита от ракет",
         "en": "Medium armament, has long-range missiles • Can build and fire tactical missiles at ground and orbit • Has radar, armed with depth charges • Small orbital attack, has missile protection"
       },
-      "tags": ["T2", "ship", "WATER"],
-      "cost": 1600, "hp": 2000, "dps": 1800, "speed": 0.9, "range": 1200, "buildTime": 45
+      "tags": [
+        "T2",
+        "ship",
+        "WATER"
+      ],
+      "cost": 1600,
+      "energy": 0,
+      "hp": 2000,
+      "speed": 0.9,
+      "range": 1200,
+      "buildTime": 45
     },
-
     {
       "id": "levetor",
-      "name": { "ru": "ЛЕВЕТОР", "en": "LEVETOR" },
+      "name": {
+        "ru": "ЛЕВЕТОР",
+        "en": "LEVETOR"
+      },
       "faction": "fenearth",
-      "type": "ground",
       "desc": {
         "ru": "Медленный, бронированный, имеет подушку левитации • Имеет щит и СИП, есть пушки для защиты • Уязвим с воздуха",
         "en": "Slow, armoured, has a levitation cushion • Has a shield and TIC, has guns for defence • Vulnerable from the air"
       },
-      "tags": ["titan", "super-tank", "OVER_CLIFF_WATER"],
-      "cost": 18000, "hp": 15000, "shield": 5000, "dps": 333.3, "speed": 0.4, "range": 700, "buildTime": 800
+      "tags": [
+        "titan",
+        "super-tank",
+        "OVER_CLIFF_WATER"
+      ],
+      "cost": 18000,
+      "energy": 0,
+      "hp": 15000,
+      "shield": 5000,
+      "speed": 0.4,
+      "range": 700,
+      "buildTime": 800
     },
-
     {
       "id": "lorryfzr",
-      "name": { "ru": "Военный грузовик", "en": "Military truck" },
+      "name": {
+        "ru": "Военный грузовик",
+        "en": "Military truck"
+      },
       "faction": "fenearth",
-      "type": "ground",
       "desc": {
         "ru": "Может быстро перевозить солдат • Может буксировать артиллерию • Есть возможность развернуть полевой госпиталь",
         "en": "Can quickly transport soldiers • Can tow artillery • Can deploy a field hospital"
       },
-      "tags": ["T1", "tank", "LAND"],
-      "cost": 100, "hp": 300, "speed": 1.6, "buildTime": 4
+      "tags": [
+        "T1",
+        "tank",
+        "LAND"
+      ],
+      "cost": 100,
+      "energy": 0,
+      "hp": 300,
+      "speed": 1.6,
+      "buildTime": 4
     },
-
     {
       "id": "lorrymiss",
-      "name": { "ru": "МПВО", "en": "MAD" },
+      "name": {
+        "ru": "МПВО",
+        "en": "MAD"
+      },
       "faction": "fenearth",
-      "type": "ground",
       "desc": {
         "ru": "Может атаковать воздушные и наземные цели • Средняя дальность",
         "en": "Can attack air and ground targets • Medium range"
       },
-      "tags": ["T2", "tank", "LAND"],
-      "cost": 230, "hp": 550, "dps": 8.2, "speed": 0.9, "range": 270, "buildTime": 15
+      "tags": [
+        "T2",
+        "tank",
+        "LAND"
+      ],
+      "cost": 230,
+      "energy": 0,
+      "hp": 550,
+      "speed": 0.9,
+      "range": 270,
+      "buildTime": 15
     },
-
     {
       "id": "lr",
-      "name": { "ru": "Дальнострел", "en": "Eye of Reach" },
+      "name": {
+        "ru": "Дальнострел",
+        "en": "Eye of Reach"
+      },
       "faction": "fenearth",
-      "type": "ground",
       "desc": {
         "ru": "Имеет барабанный скорострельный миномёт с напалм снарядами • Очень легкий, взрывоопасен • (Народное прозвище: Консервная банка)",
         "en": "Has a drum rapid-fire mortar with napalm shells • Very light, explosive • (Nickname: Tin can)"
       },
-      "tags": ["T1", "bot", "OVER_CLIFF_WATER"],
-      "cost": 200, "hp": 200, "dps": 360, "speed": 1.35, "range": 260, "buildTime": 10
+      "tags": [
+        "T1",
+        "bot",
+        "OVER_CLIFF_WATER"
+      ],
+      "cost": 200,
+      "energy": 0,
+      "hp": 200,
+      "speed": 1.35,
+      "range": 260,
+      "buildTime": 10
     },
-
     {
       "id": "marschpe",
-      "name": { "ru": "Грандфельдмаршалл", "en": "Grand Field Marshal" },
+      "name": {
+        "ru": "Грандфельдмаршалл",
+        "en": "Grand Field Marshal"
+      },
       "faction": "proton",
-      "type": "ground",
       "desc": {
         "ru": "Главный командир на поле боя • Сильный, живучий, большой аторитет • Вооружен превосходным лазерным пистолетом и стан-гранатами • Может захватывать здания • Хорошо плавает • Штабной юнит в случае потери штаба",
         "en": "Chief commander on the battlefield • Strong, tenacious, of great authority • Armed with an excellent laser pistol and stun grenades • Can capture buildings • Swims well • HQ unit if the HQ is lost"
       },
-      "tags": ["T2", "infantry", "HOVER"],
-      "cost": 200, "hp": 250, "dps": 120, "speed": 1.2, "range": 190, "buildTime": 25
+      "tags": [
+        "T2",
+        "infantry",
+        "HOVER"
+      ],
+      "cost": 200,
+      "energy": 0,
+      "hp": 250,
+      "speed": 1.2,
+      "range": 190,
+      "buildTime": 25
     },
-
     {
       "id": "megalodon",
-      "name": { "ru": "Флагман \"Мегалодон\"", "en": "Flagship \"Megalodon\"" },
+      "name": {
+        "ru": "Флагман \"Мегалодон\"",
+        "en": "Flagship \"Megalodon\""
+      },
       "faction": "fenearth",
-      "type": "naval",
       "desc": {
         "ru": "Стреляет очень далеко очень мощными снарядами и ракетами • Медленный, бронированный, уязвим перед подлодками и самолетами • Строит и ремонтирует летательные аппараты и малые звездолёты • Имеет радар, сонар, средний урон по орбите",
         "en": "Shoots very far with very powerful shells and missiles • Slow, armoured, vulnerable to submarines and aircraft • Builds and repairs aircraft and small spaceships • Has radar, sonar, medium orbital damage"
       },
-      "tags": ["T4", "super-ship", "WATER"],
-      "cost": 8500, "hp": 8000, "dps": 900, "speed": 0.7, "range": 700, "buildTime": 280
+      "tags": [
+        "T4",
+        "super-ship",
+        "WATER"
+      ],
+      "cost": 8500,
+      "energy": 0,
+      "hp": 8000,
+      "speed": 0.7,
+      "range": 700,
+      "buildTime": 280
     },
-
     {
       "id": "miner",
-      "name": { "ru": "Минер", "en": "Miner" },
+      "name": {
+        "ru": "Минер",
+        "en": "Miner"
+      },
       "faction": "proton",
-      "type": "naval",
       "desc": {
         "ru": "Машина постановки минных заграждений и проведения инженерных работ • Мобильная, быстро устанавливает ловушки и копает рвы • Может преодолевать горы и ходить под водой • Есть стан-ракета для самообороны",
         "en": "Mine-laying and engineering vehicle • Mobile, quickly sets traps and digs trenches • Can cross mountains and walk underwater • Has a stun missile for self-defence"
       },
-      "tags": ["T1", "ship", "OVER_CLIFF_WATER"],
-      "cost": 120, "hp": 150, "dps": 200, "speed": 1.4, "range": 220, "buildTime": 5
+      "tags": [
+        "T1",
+        "ship",
+        "OVER_CLIFF_WATER"
+      ],
+      "cost": 120,
+      "energy": 0,
+      "hp": 150,
+      "speed": 1.4,
+      "range": 220,
+      "buildTime": 5
     },
-
     {
       "id": "minomprot",
-      "name": { "ru": "Минометчики", "en": "Mortarmen" },
+      "name": {
+        "ru": "Минометчики",
+        "en": "Mortarmen"
+      },
       "faction": "proton",
-      "type": "ground",
       "desc": {
         "ru": "Мобильный отряд поддержки • Переносят легкий миномет • Могут стрелять из миномёта после его установки • В обычном бою кидают гранаты от миномёта во врага • Хорошо плавают",
         "en": "Mobile support squad • Carry a light mortar • Can fire the mortar after it is set up • In regular combat throw mortar grenades at the enemy • Swim well"
       },
-      "tags": ["T1", "infantry", "HOVER"],
-      "cost": 80, "hp": 200, "dps": 171.4, "speed": 1, "range": 160, "buildTime": 8
+      "tags": [
+        "T1",
+        "infantry",
+        "HOVER"
+      ],
+      "cost": 80,
+      "energy": 0,
+      "hp": 200,
+      "speed": 1,
+      "range": 160,
+      "buildTime": 8
     },
-
     {
       "id": "mir",
-      "name": { "ru": "МИР", "en": "MIR" },
+      "name": {
+        "ru": "МИР",
+        "en": "MIR"
+      },
       "faction": "fenearth",
-      "type": "air",
       "desc": {
         "ru": "Перевозит большое количестко юнитов • Атакует наземные, воздушные и космические цели • Имеет тактический лазер",
         "en": "Transports a large number of units • Attacks ground, air and space targets • Has a tactical laser"
       },
-      "tags": ["titan", "super-plane", "AIR"],
-      "cost": 17500, "hp": 14000, "dps": 24000, "speed": 1.4, "range": 600, "buildTime": 750
+      "tags": [
+        "titan",
+        "super-plane",
+        "AIR"
+      ],
+      "cost": 17500,
+      "energy": 0,
+      "hp": 14000,
+      "speed": 1.4,
+      "range": 600,
+      "buildTime": 750
     },
-
     {
       "id": "mobileshield",
-      "name": { "ru": "Мобильный щит", "en": "Mobile shield" },
+      "name": {
+        "ru": "Мобильный щит",
+        "en": "Mobile shield"
+      },
       "faction": "fenearth",
-      "type": "ground",
       "desc": {
         "ru": "Защищает от снарядов на земле и под водой • Может выдержать попадение тактической ракеты • Вооружен флак-зениткой для защиты от самолётов • Находясь под водой, дает возможность перемещаться по дну всем наземным юнитам • Для перемещения других юнитов под воду нужно подвести щит под вордой к берегу • При выходе за пределы щита, неплавающие юниты уничтожаются",
         "en": "Protects against shells on land and underwater • Can withstand a tactical missile hit • Armed with a flak gun for defence against aircraft • While underwater, allows all ground units to move along the bottom • To move other units underwater, bring the shield under water to the shore • Leaving the shield's area destroys non-swimming units"
       },
-      "tags": ["T3", "super-bot", "OVER_CLIFF_WATER"],
-      "cost": 1500, "hp": 1400, "shield": 500, "dps": 120, "speed": 1.2, "range": 300, "buildTime": 50
+      "tags": [
+        "T3",
+        "super-bot",
+        "OVER_CLIFF_WATER"
+      ],
+      "cost": 1500,
+      "energy": 0,
+      "hp": 1400,
+      "shield": 500,
+      "speed": 1.2,
+      "range": 300,
+      "buildTime": 50
     },
-
     {
       "id": "nahesansp",
-      "name": { "ru": "Транспортник \"Ремесленник\"", "en": "Transporter \"Craftsman\"" },
+      "name": {
+        "ru": "Транспортник \"Ремесленник\"",
+        "en": "Transporter \"Craftsman\""
+      },
       "faction": "proton",
-      "type": "air",
       "desc": {
         "ru": "NAHESANHOU • Удобный космический транспортник • Перевозит большое количество наземных и морских юнитов • Есть пушка для самообороны",
         "en": "NAHESANHOU • Convenient space transporter • Transports a large number of ground and naval units • Has a gun for self-defence"
       },
-      "tags": ["T1", "plane", "AIR"],
-      "cost": 450, "hp": 650, "dps": 42, "speed": 1.1, "range": 200, "buildTime": 25
+      "tags": [
+        "T1",
+        "plane",
+        "AIR"
+      ],
+      "cost": 450,
+      "energy": 0,
+      "hp": 650,
+      "speed": 1.1,
+      "range": 200,
+      "buildTime": 25
     },
-
     {
       "id": "pbuisp",
-      "name": { "ru": "Космический строитель", "en": "Space builder" },
+      "name": {
+        "ru": "Космический строитель",
+        "en": "Space builder"
+      },
       "faction": "proton",
-      "type": "air",
       "desc": {
         "ru": "Может строить здания и чинить в небольшом радиусе • Медленный, может построить орбитальные верфи и установки • Есть сверсветовой привод • Для строительства на льду, лаве, насыпях, мостах и в каналах, юнит должен находиться над ними • (Народное прозвище: Гробик)",
         "en": "Can build structures and repair in a small radius • Slow, can build orbital shipyards and installations • Has a superluminal drive • To build on ice, lava, mounds, bridges and in channels, the unit must be above them • (Nickname: Coffin)"
       },
-      "tags": ["T1", "plane", "AIR"],
-      "cost": 400, "hp": 500, "speed": 0.6, "range": 150, "buildTime": 20
+      "tags": [
+        "T1",
+        "plane",
+        "AIR"
+      ],
+      "cost": 400,
+      "energy": 0,
+      "hp": 500,
+      "speed": 0.6,
+      "range": 150,
+      "buildTime": 20
     },
-
     {
       "id": "plarm",
-      "name": { "ru": "Плараз", "en": "Plaraz" },
+      "name": {
+        "ru": "Плараз",
+        "en": "Plaraz"
+      },
       "faction": "proton",
-      "type": "naval",
       "desc": {
         "ru": "САУ осадного типа • Хороша против неподвижных и малоподвижных целей • Большая дальность стрельбы плазма-распылительной пушкой • Имеет слепую зону вблизи • Может плавать по воде, средняя манёвренность",
         "en": "Siege-type SPG • Good against stationary and slow targets • Long firing range with a plasma-spray gun • Has a blind zone up close • Can sail on water, medium manoeuvrability"
       },
-      "tags": ["T1", "ship", "HOVER"],
-      "cost": 200, "hp": 250, "dps": 2400, "speed": 1, "range": 440, "buildTime": 10
+      "tags": [
+        "T1",
+        "ship",
+        "HOVER"
+      ],
+      "cost": 200,
+      "energy": 0,
+      "hp": 250,
+      "speed": 1,
+      "range": 440,
+      "buildTime": 10
     },
-
     {
       "id": "quarterer",
-      "name": { "ru": "Четвертатель", "en": "Quarterer" },
+      "name": {
+        "ru": "Четвертатель",
+        "en": "Quarterer"
+      },
       "faction": "fenearth",
-      "type": "ground",
       "desc": {
         "ru": "Высокий урон в малом радиусе • Имеет пушки, направленные во все стороны • Атакует наземные и воздушные цели, есть защита от ракет • Имеет торпедный аппарат и радар",
         "en": "High damage in a small radius • Has guns facing in all directions • Attacks ground and air targets, has missile protection • Has a torpedo tube and radar"
       },
-      "tags": ["T3", "super-bot", "OVER_CLIFF_WATER"],
-      "cost": 1500, "hp": 2000, "dps": 120, "speed": 1.2, "range": 210, "buildTime": 55
+      "tags": [
+        "T3",
+        "super-bot",
+        "OVER_CLIFF_WATER"
+      ],
+      "cost": 1500,
+      "energy": 0,
+      "hp": 2000,
+      "speed": 1.2,
+      "range": 210,
+      "buildTime": 55
     },
-
     {
       "id": "rafzr",
-      "name": { "ru": "Спутник слежения", "en": "Tracking satellite" },
+      "name": {
+        "ru": "Спутник слежения",
+        "en": "Tracking satellite"
+      },
       "faction": "fenearth",
-      "type": "ground",
       "desc": {
         "ru": "Имеет радар • Большой радиус обзора • (Народное прозвище: Коробка, Старлинк)",
         "en": "Has radar • Large view radius • (Nicknames: Box, Starlink)"
       },
-      "tags": ["T1", "tank", "AIR"],
-      "cost": 400, "hp": 350, "shield": 300, "speed": 0.7, "range": 130, "buildTime": 12
+      "tags": [
+        "T1",
+        "tank",
+        "AIR"
+      ],
+      "cost": 400,
+      "energy": 0,
+      "hp": 350,
+      "shield": 300,
+      "speed": 0.7,
+      "range": 130,
+      "buildTime": 12
     },
-
     {
       "id": "raidocycle",
-      "name": { "ru": "Рейдоцикл", "en": "Raidocycle" },
+      "name": {
+        "ru": "Рейдоцикл",
+        "en": "Raidocycle"
+      },
       "faction": "proton",
-      "type": "ground",
       "desc": {
         "ru": "Быстрый, манёвренный, дешёвый, легендарный • Атакует по земле и воздуху • Хорошо подходит для дерзких менёвров • (Народное прозвище: Тачанка)",
         "en": "Fast, manoeuvrable, cheap, legendary • Attacks ground and air • Well suited for daring manoeuvres • (Nickname: Tachanka)"
       },
-      "tags": ["T1", "tank", "OVER_CLIFF"],
-      "cost": 110, "hp": 150, "dps": 40, "speed": 1.8, "range": 150, "buildTime": 5
+      "tags": [
+        "T1",
+        "tank",
+        "OVER_CLIFF"
+      ],
+      "cost": 110,
+      "energy": 0,
+      "hp": 150,
+      "speed": 1.8,
+      "range": 150,
+      "buildTime": 5
     },
-
     {
       "id": "recmob",
-      "name": { "ru": "Реклейм-мобиль", "en": "Reclaim-mobile" },
+      "name": {
+        "ru": "Реклейм-мобиль",
+        "en": "Reclaim-mobile"
+      },
       "faction": "proton",
-      "type": "naval",
       "desc": {
         "ru": "Ремонтно-эвакуационная машина • Мобильная, реклеймит с огромной скоростью на средней дистанции • Может преодолевать горы и ходить под водой • Может использовать ремонтный луч для самообороны",
         "en": "Repair and evacuation vehicle • Mobile, reclaims at huge speed at medium range • Can cross mountains and walk underwater • Can use a repair beam for self-defence"
       },
-      "tags": ["T1", "ship", "OVER_CLIFF_WATER"],
-      "cost": 100, "hp": 180, "dps": 32, "speed": 1.4, "range": 180, "buildTime": 4
+      "tags": [
+        "T1",
+        "ship",
+        "OVER_CLIFF_WATER"
+      ],
+      "cost": 100,
+      "energy": 0,
+      "hp": 180,
+      "speed": 1.4,
+      "range": 180,
+      "buildTime": 4
     },
-
     {
       "id": "resstfzr",
-      "name": { "ru": "Ресурсная станция", "en": "Resource station" },
+      "name": {
+        "ru": "Ресурсная станция",
+        "en": "Resource station"
+      },
       "faction": "fenearth",
-      "type": "space",
       "desc": {
         "ru": "Аккумулирует газы звезд, туманностей и газовых гигантов • Производит ресурсы вблизи них • Взрывоопасна • Медленная, может быть перевезена в ангарах больших кораблей",
         "en": "Accumulates gases from stars, nebulae and gas giants • Produces resources near them • Explosive • Slow, can be transported in the hangars of large ships"
       },
-      "tags": ["T1", "space-ship", "AIR"],
-      "cost": 5000, "hp": 1000, "shield": 700, "dps": 4000, "speed": 0.25, "buildTime": 140
+      "tags": [
+        "T1",
+        "space-ship",
+        "AIR"
+      ],
+      "cost": 5000,
+      "energy": 0,
+      "hp": 1000,
+      "shield": 700,
+      "speed": 0.25,
+      "buildTime": 140
     },
-
     {
       "id": "rotank",
-      "name": { "ru": "Ракетанк", "en": "Rocketank" },
+      "name": {
+        "ru": "Ракетанк",
+        "en": "Rocketank"
+      },
       "faction": "fenearth",
-      "type": "ground",
       "desc": {
         "ru": "Средняя скорость, хорошая прочность • Далеко стреляет ракетами • Может стрелять по самолетам • Вооружен мощной бронебойной пушкой • Есть защита от ракет",
         "en": "Medium speed, good durability • Shoots missiles far • Can shoot at aircraft • Armed with a powerful armour-piercing gun • Has missile protection"
       },
-      "tags": ["T3", "super-tank", "LAND"],
-      "cost": 900, "hp": 1400, "dps": 1320, "speed": 0.75, "range": 390, "buildTime": 28
+      "tags": [
+        "T3",
+        "super-tank",
+        "LAND"
+      ],
+      "cost": 900,
+      "energy": 0,
+      "hp": 1400,
+      "speed": 0.75,
+      "range": 390,
+      "buildTime": 28
     },
-
     {
       "id": "rszope",
-      "name": { "ru": "Дридикат", "en": "Dridikat" },
+      "name": {
+        "ru": "Дридикат",
+        "en": "Dridikat"
+      },
       "faction": "proton",
-      "type": "support",
       "desc": {
         "ru": "Легкое мобильное транспортируемое РСЗО • Можно буксировать специальными юнитами",
         "en": "Light mobile transportable MLRS • Can be towed by special units"
       },
-      "tags": ["T1", "LAND"],
-      "cost": 110, "hp": 150, "dps": 200, "speed": 0.8, "range": 340, "buildTime": 10
+      "tags": [
+        "T1",
+        "LAND"
+      ],
+      "cost": 110,
+      "energy": 0,
+      "hp": 150,
+      "speed": 0.8,
+      "range": 340,
+      "buildTime": 10
     },
-
     {
       "id": "sanatariada",
-      "name": { "ru": "Санатариада", "en": "Sanatariada" },
+      "name": {
+        "ru": "Санатариада",
+        "en": "Sanatariada"
+      },
       "faction": "fenearth",
-      "type": "ground",
       "desc": {
         "ru": "Вооружен двумя скорострельными дальнобойными гаубицами • Производит различные юниты поддержки • Есть дополнительные пушки и ПВО • Стреляет ракетами из-под воды",
         "en": "Armed with two rapid-fire long-range howitzers • Produces various support units • Has additional guns and AA • Fires missiles from underwater"
       },
-      "tags": ["T4", "super-bot", "OVER_CLIFF_WATER"],
-      "cost": 5000, "hp": 8000, "dps": 1050, "speed": 0.9, "range": 380, "buildTime": 150
+      "tags": [
+        "T4",
+        "super-bot",
+        "OVER_CLIFF_WATER"
+      ],
+      "cost": 5000,
+      "energy": 0,
+      "hp": 8000,
+      "speed": 0.9,
+      "range": 380,
+      "buildTime": 150
     },
-
     {
       "id": "scfzr",
-      "name": { "ru": "Самолет-разведчик", "en": "Reconnaissance plane" },
+      "name": {
+        "ru": "Самолет-разведчик",
+        "en": "Reconnaissance plane"
+      },
       "faction": "fenearth",
-      "type": "air",
       "desc": {
         "ru": "Быстрый, имеет хороший обзор и радар • Не может атаковать",
         "en": "Fast, has good view and radar • Cannot attack"
       },
-      "tags": ["T1", "plane", "AIR"],
-      "cost": 100, "hp": 250, "speed": 3, "buildTime": 7
+      "tags": [
+        "T1",
+        "plane",
+        "AIR"
+      ],
+      "cost": 100,
+      "energy": 0,
+      "hp": 250,
+      "speed": 3,
+      "buildTime": 7
     },
-
     {
       "id": "scoutsfzr",
-      "name": { "ru": "Разведотряд", "en": "Recon squad" },
+      "name": {
+        "ru": "Разведотряд",
+        "en": "Recon squad"
+      },
       "faction": "fenearth",
-      "type": "ground",
       "desc": {
         "ru": "Уровень стелса: 1 • Стелс, обнаруживают стелс юнитов • Вооружены лазерными снайперскими винтовками",
         "en": "Stealth level: 1 • Stealth, detects stealth units • Armed with laser sniper rifles"
       },
-      "tags": ["T1", "infantry", "LAND"],
-      "cost": 110, "hp": 130, "dps": 15, "speed": 0.7, "range": 260, "buildTime": 6
+      "tags": [
+        "T1",
+        "infantry",
+        "LAND"
+      ],
+      "cost": 110,
+      "energy": 0,
+      "hp": 130,
+      "speed": 0.7,
+      "range": 260,
+      "buildTime": 6
     },
-
     {
       "id": "scoutspe",
-      "name": { "ru": "Партизаны", "en": "Partisans" },
+      "name": {
+        "ru": "Партизаны",
+        "en": "Partisans"
+      },
       "faction": "proton",
-      "type": "ground",
       "desc": {
         "ru": "Быстрые, умеют плавать • Имеют стелс • Могут закладывать взрывчатку",
         "en": "Fast, can swim • Have stealth • Can plant explosives"
       },
-      "tags": ["T1", "infantry", "HOVER"],
-      "cost": 70, "hp": 180, "dps": 35, "speed": 1, "range": 150, "buildTime": 20
+      "tags": [
+        "T1",
+        "infantry",
+        "HOVER"
+      ],
+      "cost": 70,
+      "energy": 0,
+      "hp": 180,
+      "speed": 1,
+      "range": 150,
+      "buildTime": 20
     },
-
     {
       "id": "scpe",
-      "name": { "ru": "Ракета-разведчик", "en": "Recon missile" },
+      "name": {
+        "ru": "Ракета-разведчик",
+        "en": "Recon missile"
+      },
       "faction": "proton",
-      "type": "air",
       "desc": {
         "ru": "Быстрый, не может атаковать • Имеет радар и хороший радиус обзора • Показывает местность некоторе время после уничтожения",
         "en": "Fast, cannot attack • Has radar and a good view radius • Reveals the terrain for some time after being destroyed"
       },
-      "tags": ["T1", "plane", "AIR"],
-      "cost": 60, "hp": 180, "speed": 4, "buildTime": 6
+      "tags": [
+        "T1",
+        "plane",
+        "AIR"
+      ],
+      "cost": 60,
+      "energy": 0,
+      "hp": 180,
+      "speed": 4,
+      "buildTime": 6
     },
-
     {
       "id": "servant",
-      "name": { "ru": "СЛУК \"Слуга\"", "en": "SLSS \"Servant\"" },
+      "name": {
+        "ru": "СЛУК \"Слуга\"",
+        "en": "SLSS \"Servant\""
+      },
       "faction": "fenearth",
-      "type": "space",
       "desc": {
         "ru": "Снайперский Лазерный Ударный Корабль • Представляет из себя сверхдальнобойную мощную лазерную ускорительную установку • Может бить по земле и по тяжелобронированным космическим целям с большого расстояния • Есть пушки для самообороны • Испуользуйте корабль только вместе с прикрытием и с предварительной разведкой!",
         "en": "Sniper Laser Strike Ship • Is a super-long-range powerful laser accelerator installation • Can strike ground and heavily armoured space targets from a great distance • Has guns for self-defence • Use the ship only with cover and prior reconnaissance!"
       },
-      "tags": ["T4", "super-space-ship", "AIR"],
-      "cost": 9500, "hp": 5500, "shield": 2500, "dps": 9, "speed": 0.4, "range": 1500, "buildTime": 180
+      "tags": [
+        "T4",
+        "super-space-ship",
+        "AIR"
+      ],
+      "cost": 9500,
+      "energy": 0,
+      "hp": 5500,
+      "shield": 2500,
+      "speed": 0.4,
+      "range": 1500,
+      "buildTime": 180
     },
-
     {
       "id": "shipampf",
-      "name": { "ru": "Экспериментальный Т1 катер-шагаход", "en": "Experimental T1 walker boat" },
+      "name": {
+        "ru": "Экспериментальный Т1 катер-шагаход",
+        "en": "Experimental T1 walker boat"
+      },
       "faction": "proton",
-      "type": "ground",
       "desc": {
         "ru": "Манёвренный, прочный, хорошее орудие • Может выходить на сушу • Может стрелять по суше, воздуху и космосу",
         "en": "Manoeuvrable, durable, good gun • Can go on land • Can shoot at land, air and space"
       },
-      "tags": ["T1", "tank", "HOVER"],
-      "cost": 400, "hp": 700, "dps": 106.7, "speed": 1, "range": 300, "buildTime": 55
+      "tags": [
+        "T1",
+        "tank",
+        "HOVER"
+      ],
+      "cost": 400,
+      "energy": 0,
+      "hp": 700,
+      "speed": 1,
+      "range": 300,
+      "buildTime": 55
     },
-
     {
       "id": "skms",
-      "name": { "ru": "СКМС", "en": "SKMS" },
+      "name": {
+        "ru": "СКМС",
+        "en": "SKMS"
+      },
       "faction": "fenearth",
-      "type": "space",
       "desc": {
         "ru": "(Семь Километров Смерти/Силы) • Очень мощный корабль планетарного превосходства • Мощное оружие, сильная броня и щиты, медлителен • Может производить тактическое, ядерное и гипер оружие • Может строить и чинить аюсолютно все стандартные юниты в своих трюмах • Может совершать бомбардировки с орбиты • Автоматически производит персональную защиту от тактических и ядерных ракет • Штабной юнит в случае потери штаба • Испуользуйте корабль вместе с прикрытием",
         "en": "(Seven Kilometres of Death/Strength) • Very powerful planetary supremacy ship • Powerful weapons, strong armour and shields, slow • Can produce tactical, nuclear and hyper weapons • Can build and repair absolutely all standard units in its holds • Can conduct orbital bombardments • Automatically produces personal defence against tactical and nuclear missiles • HQ unit if the HQ is lost • Use the ship together with cover"
       },
-      "tags": ["T4", "super-space-ship", "AIR"],
-      "cost": 12000, "hp": 10000, "shield": 6500, "dps": 6000, "speed": 0.35, "range": 30000, "buildTime": 250
+      "tags": [
+        "T4",
+        "super-space-ship",
+        "AIR"
+      ],
+      "cost": 12000,
+      "energy": 0,
+      "hp": 10000,
+      "shield": 6500,
+      "speed": 0.35,
+      "range": 30000,
+      "buildTime": 250
     },
-
     {
       "id": "solfzr",
-      "name": { "ru": "Пехотинцы", "en": "Infantry" },
+      "name": {
+        "ru": "Пехотинцы",
+        "en": "Infantry"
+      },
       "faction": "fenearth",
-      "type": "ground",
       "desc": {
         "ru": "Лёгкая рядовая пехота • Вооружены магнитными автоматами и ракетницей против воздушных и наземных целей • Могут окапываться для снижения получаемого урона • Могут захватывать вражеские Т1-Т2 здания",
         "en": "Light regular infantry • Armed with magnetic rifles and a rocket launcher against air and ground targets • Can dig in to reduce incoming damage • Can capture enemy T1–T2 buildings"
       },
-      "tags": ["T1", "infantry", "LAND"],
-      "cost": 100, "hp": 250, "dps": 120, "speed": 0.75, "range": 180, "buildTime": 5
+      "tags": [
+        "T1",
+        "infantry",
+        "LAND"
+      ],
+      "cost": 100,
+      "energy": 0,
+      "hp": 250,
+      "speed": 0.75,
+      "range": 180,
+      "buildTime": 5
     },
-
     {
       "id": "solpe",
-      "name": { "ru": "Протонцы", "en": "Protonians" },
+      "name": {
+        "ru": "Протонцы",
+        "en": "Protonians"
+      },
       "faction": "proton",
-      "type": "ground",
       "desc": {
         "ru": "ПАТХОУ • Основная рядовая пехота • Вооружены лазерными пушками и гранатами против наземных целей • Могут захватывать здания • Хорошо плавают",
         "en": "PATHOU • Main regular infantry • Armed with laser guns and grenades against ground targets • Can capture buildings • Swim well"
       },
-      "tags": ["T1", "infantry", "HOVER"],
-      "cost": 60, "hp": 220, "dps": 97.5, "speed": 1, "range": 170, "buildTime": 6
+      "tags": [
+        "T1",
+        "infantry",
+        "HOVER"
+      ],
+      "cost": 60,
+      "energy": 0,
+      "hp": 220,
+      "speed": 1,
+      "range": 170,
+      "buildTime": 6
     },
-
     {
       "id": "spplpe",
-      "name": { "ru": "Самолет \"Небосвод\"", "en": "Aircraft \"Skyline\"" },
+      "name": {
+        "ru": "Самолет \"Небосвод\"",
+        "en": "Aircraft \"Skyline\""
+      },
       "faction": "proton",
-      "type": "air",
       "desc": {
         "ru": "Транспортный самолёт, перевозит и десантирует юниты • Есть возможность запуска базовых космических кораблей • При наличии 3 аэродромов появляется возможность запускать экспериментальные ракеты",
         "en": "Transport aircraft, carries and drops units • Can launch basic spaceships • With 3 aerodromes it can launch experimental missiles"
       },
-      "tags": ["T1", "plane", "AIR"],
-      "cost": 500, "hp": 750, "dps": 16920, "speed": 1.4, "range": 700, "buildTime": 30
+      "tags": [
+        "T1",
+        "plane",
+        "AIR"
+      ],
+      "cost": 500,
+      "energy": 0,
+      "hp": 750,
+      "speed": 1.4,
+      "range": 700,
+      "buildTime": 30
     },
-
     {
       "id": "starlet",
-      "name": { "ru": "ЗВЁЗДОЧКА", "en": "STARLET" },
+      "name": {
+        "ru": "ЗВЁЗДОЧКА",
+        "en": "STARLET"
+      },
       "faction": "fenearth",
-      "type": "air",
       "desc": {
         "ru": "Медленная, уязвимая, далеко стреляет • Имеет мощный лазер для стрельбы по поверхности • Производит и десантирует юниты с орбиты",
         "en": "Slow, vulnerable, shoots far • Has a powerful laser for surface strikes • Produces and drops units from orbit"
       },
-      "tags": ["titan", "super-plane", "AIR"],
-      "cost": 30000, "hp": 14000, "shield": 9000, "dps": 9000, "speed": 0.12, "range": 600, "buildTime": 50
+      "tags": [
+        "titan",
+        "super-plane",
+        "AIR"
+      ],
+      "cost": 30000,
+      "energy": 0,
+      "hp": 14000,
+      "shield": 9000,
+      "speed": 0.12,
+      "range": 600,
+      "buildTime": 50
     },
-
     {
       "id": "starwarrior",
-      "name": { "ru": "Звездный воитель II", "en": "Star Warrior II" },
+      "name": {
+        "ru": "Звездный воитель II",
+        "en": "Star Warrior II"
+      },
       "faction": "fenearth",
-      "type": "space",
       "desc": {
         "ru": "Сильный корабль планетарного превосходства • Хорошое оружие, броня и щиты, медлителен • Может производить тактическое и ядерное оружие • Может совершать бомбардировки с орбиты, есть торпеды • Может строить и чинить аюсолютно все Т2 юниты в своих трюмах • Автоматически производит персональную защиту от тактических ракет • Испуользуйте корабль вместе с прикрытием • (Народное прозвище: Дирижабль)",
         "en": "Powerful planetary supremacy ship • Good weapons, armour and shields, slow • Can produce tactical and nuclear weapons • Can conduct orbital bombardments, has torpedoes • Can build and repair absolutely all T2 units in its holds • Automatically produces personal defence against tactical missiles • Use the ship together with cover • (Nickname: Airship)"
       },
-      "tags": ["T2", "space-ship", "AIR"],
-      "cost": 7000, "hp": 6000, "shield": 4500, "dps": 2880, "speed": 0.5, "range": 30000, "buildTime": 170
+      "tags": [
+        "T2",
+        "space-ship",
+        "AIR"
+      ],
+      "cost": 7000,
+      "energy": 0,
+      "hp": 6000,
+      "shield": 4500,
+      "speed": 0.5,
+      "range": 30000,
+      "buildTime": 170
     },
-
     {
       "id": "stealthfzr",
-      "name": { "ru": "Стелс", "en": "Stealth" },
+      "name": {
+        "ru": "Стелс",
+        "en": "Stealth"
+      },
       "faction": "fenearth",
-      "type": "air",
       "desc": {
         "ru": "Термоядерный стратегический бомбардировщик • Стелс, имеет автопушку для защиты от различных атак • Автоматически производит бомбу, после чего её надо сбросить вручную рядом с целью • Внимание! Уводите самолет в безопасное место сразу после отдачи приказа бомбосброса, иначе самолет может задеть взрывом!",
         "en": "Thermonuclear strategic bomber • Stealth, has an autocannon for defence against various attacks • Automatically produces a bomb, which must then be dropped manually near the target • Attention! Move the aircraft to a safe place right after giving the bomb-drop order, otherwise the aircraft may be hit by the explosion!"
       },
-      "tags": ["T4", "super-plane", "AIR"],
-      "cost": 5000, "hp": 1800, "dps": 40000, "speed": 1.8, "range": 330, "buildTime": 200
+      "tags": [
+        "T4",
+        "super-plane",
+        "AIR"
+      ],
+      "cost": 5000,
+      "energy": 0,
+      "hp": 1800,
+      "speed": 1.8,
+      "range": 330,
+      "buildTime": 200
     },
-
     {
       "id": "subfzr",
-      "name": { "ru": "Подводная лодка \"Косатка\"", "en": "Submarine \"Orca\"" },
+      "name": {
+        "ru": "Подводная лодка \"Косатка\"",
+        "en": "Submarine \"Orca\""
+      },
       "faction": "fenearth",
-      "type": "naval",
       "desc": {
         "ru": "Стелс под водой, медленная, имеет сонар • Вооружена торпедами, может всплывать • Может стрелять по земле, воздуху и орбите после всплытия",
         "en": "Stealth underwater, slow, has sonar • Armed with torpedoes, can surface • Can shoot at ground, air and orbit after surfacing"
       },
-      "tags": ["T2", "ship", "WATER"],
-      "cost": 1300, "hp": 1500, "dps": 100, "speed": 0.8, "range": 300, "buildTime": 40
+      "tags": [
+        "T2",
+        "ship",
+        "WATER"
+      ],
+      "cost": 1300,
+      "energy": 0,
+      "hp": 1500,
+      "speed": 0.8,
+      "range": 300,
+      "buildTime": 40
     },
-
     {
       "id": "subuiair",
-      "name": { "ru": "Суперсамолет строитель", "en": "Superplane builder" },
+      "name": {
+        "ru": "Суперсамолет строитель",
+        "en": "Superplane builder"
+      },
       "faction": "fenearth",
-      "type": "air",
       "desc": {
         "ru": "Может строить здания и чинить • Есть флак-пушка для защиты от воздуха • Способен перевозить и десантировать юниты • Для строительства на льду, лаве, насыпях и мостах, юнит должен находиться над ними",
         "en": "Can build structures and repair • Has a flak gun for defence against air • Can transport and drop units • To build on ice, lava, mounds and bridges, the unit must be above them"
       },
-      "tags": ["T2", "plane", "AIR"],
-      "cost": 600, "hp": 1100, "speed": 2, "range": 130, "buildTime": 20
+      "tags": [
+        "T2",
+        "plane",
+        "AIR"
+      ],
+      "cost": 600,
+      "energy": 0,
+      "hp": 1100,
+      "speed": 2,
+      "range": 130,
+      "buildTime": 20
     },
-
     {
       "id": "subuibotfzr",
-      "name": { "ru": "Супербот строитель", "en": "Superbot builder" },
+      "name": {
+        "ru": "Супербот строитель",
+        "en": "Superbot builder"
+      },
       "faction": "fenearth",
-      "type": "ground",
       "desc": {
         "ru": "Может строить здания и чинить в небольшом радиусе • Маневренный, легкобронированный • Есть защита от ракет • Для строительства на льду, лаве, насыпях, мостах и в тоннелях, юнит должен находиться над ними/в них",
         "en": "Can build structures and repair in a small radius • Manoeuvrable, lightly armoured • Has missile protection • To build on ice, lava, mounds, bridges and in tunnels, the unit must be above/in them"
       },
-      "tags": ["T2", "bot", "OVER_CLIFF_WATER"],
-      "cost": 500, "hp": 750, "speed": 1.1, "range": 150, "buildTime": 17
+      "tags": [
+        "T2",
+        "bot",
+        "OVER_CLIFF_WATER"
+      ],
+      "cost": 500,
+      "energy": 0,
+      "hp": 750,
+      "speed": 1.1,
+      "range": 150,
+      "buildTime": 17
     },
-
     {
       "id": "subuilandfzr",
-      "name": { "ru": "Суперстроитель", "en": "Superbuilder" },
+      "name": {
+        "ru": "Суперстроитель",
+        "en": "Superbuilder"
+      },
       "faction": "fenearth",
-      "type": "ground",
       "desc": {
         "ru": "Может строить здания и чинить в большом радиусе • Тяжелобронированный, медленный • Есть орудия для защиты от земли и воздуха и защита от ракет • Для строительства на льду, лаве, насыпях, мостах и в тоннелях, юнит должен находиться над ними/в них",
         "en": "Can build structures and repair in a large radius • Heavily armoured, slow • Has guns for defence against ground and air and missile protection • To build on ice, lava, mounds, bridges and in tunnels, the unit must be above/in them"
       },
-      "tags": ["T2", "tank", "LAND"],
-      "cost": 500, "hp": 950, "dps": 40, "speed": 0.7, "range": 200, "buildTime": 15
+      "tags": [
+        "T2",
+        "tank",
+        "LAND"
+      ],
+      "cost": 500,
+      "energy": 0,
+      "hp": 950,
+      "speed": 0.7,
+      "range": 200,
+      "buildTime": 15
     },
-
     {
       "id": "taktring",
-      "name": { "ru": "Тактическое кольцо", "en": "Tactical ring" },
+      "name": {
+        "ru": "Тактическое кольцо",
+        "en": "Tactical ring"
+      },
       "faction": "proton",
-      "type": "support",
       "desc": {
         "ru": "Быстрое • Большой урон под себя",
         "en": "Fast • High damage underneath itself"
       },
-      "tags": ["T1", "AIR"],
-      "cost": 400, "hp": 700, "dps": 300, "speed": 1.8, "range": 40, "buildTime": 30
+      "tags": [
+        "T1",
+        "AIR"
+      ],
+      "cost": 400,
+      "energy": 0,
+      "hp": 700,
+      "speed": 1.8,
+      "range": 40,
+      "buildTime": 30
     },
-
     {
       "id": "tankt1fzr",
-      "name": { "ru": "Лёгкий танк", "en": "Light tank" },
+      "name": {
+        "ru": "Лёгкий танк",
+        "en": "Light tank"
+      },
       "faction": "fenearth",
-      "type": "ground",
       "desc": {
         "ru": "Быстрый, манёвренный • Хорошая прочность и урон • Хорошо подходит для штурмов на равнинной местности",
         "en": "Fast, manoeuvrable • Good durability and damage • Well suited for assaults on flat terrain"
       },
-      "tags": ["T1", "tank", "LAND"],
-      "cost": 150, "hp": 300, "dps": 38.2, "speed": 1.15, "range": 180, "buildTime": 6
+      "tags": [
+        "T1",
+        "tank",
+        "LAND"
+      ],
+      "cost": 150,
+      "energy": 0,
+      "hp": 300,
+      "speed": 1.15,
+      "range": 180,
+      "buildTime": 6
     },
-
     {
       "id": "tankt1pe",
-      "name": { "ru": "Шумрос", "en": "Shumros" },
+      "name": {
+        "ru": "Шумрос",
+        "en": "Shumros"
+      },
       "faction": "proton",
-      "type": "ground",
       "desc": {
         "ru": "Быстрый, манёвренный, дешёвый, но хрупкий • Средний урон при хорошей дальности • Хорошо подходит для штурмов на равнинной местности и резких менёвров • (Народное прозвище: Лазерная указка)",
         "en": "Fast, manoeuvrable, cheap but fragile • Medium damage with good range • Well suited for assaults on flat terrain and sharp manoeuvres • (Nickname: Laser pointer)"
       },
-      "tags": ["T1", "tank", "LAND"],
-      "cost": 120, "hp": 250, "dps": 180, "speed": 1.4, "range": 200, "buildTime": 6
+      "tags": [
+        "T1",
+        "tank",
+        "LAND"
+      ],
+      "cost": 120,
+      "energy": 0,
+      "hp": 250,
+      "speed": 1.4,
+      "range": 200,
+      "buildTime": 6
     },
-
     {
       "id": "tankt2fzr",
-      "name": { "ru": "Тяжелый танк", "en": "Heavy tank" },
+      "name": {
+        "ru": "Тяжелый танк",
+        "en": "Heavy tank"
+      },
       "faction": "fenearth",
-      "type": "ground",
       "desc": {
         "ru": "Медленный, тяжелобронированный • Вооружен тяжёлой пушкой • Есть защита от ракет",
         "en": "Slow, heavily armoured • Armed with a heavy gun • Has missile protection"
       },
-      "tags": ["T2", "tank", "LAND"],
-      "cost": 250, "hp": 700, "dps": 73.5, "speed": 0.75, "range": 190, "buildTime": 16
+      "tags": [
+        "T2",
+        "tank",
+        "LAND"
+      ],
+      "cost": 250,
+      "energy": 0,
+      "hp": 700,
+      "speed": 0.75,
+      "range": 190,
+      "buildTime": 16
     },
-
     {
       "id": "tankus",
-      "name": { "ru": "Танкус", "en": "Tankus" },
+      "name": {
+        "ru": "Танкус",
+        "en": "Tankus"
+      },
       "faction": "fenearth",
-      "type": "ground",
       "desc": {
         "ru": "Манёвренный средний танк • Может перейти в режим артиллерии",
         "en": "Manoeuvrable medium tank • Can switch to artillery mode"
       },
-      "tags": ["T2", "tank", "LAND"],
-      "cost": 240, "hp": 550, "dps": 39, "speed": 0.85, "range": 190, "buildTime": 15
+      "tags": [
+        "T2",
+        "tank",
+        "LAND"
+      ],
+      "cost": 240,
+      "energy": 0,
+      "hp": 550,
+      "speed": 0.85,
+      "range": 190,
+      "buildTime": 15
     },
-
     {
       "id": "tigron",
-      "name": { "ru": "Тигрон", "en": "Tigron" },
+      "name": {
+        "ru": "Тигрон",
+        "en": "Tigron"
+      },
       "faction": "fenearth",
-      "type": "ground",
       "desc": {
         "ru": "Стелс, средняя маневренность • Вооружен мощной дальнострельной лазерной пушкой • Может стрелять по космическим кораблям в атмосфере • Подходит для скрытых атак и засад",
         "en": "Stealth, medium manoeuvrability • Armed with a powerful long-range laser gun • Can shoot at spaceships in the atmosphere • Suited for stealth attacks and ambushes"
       },
-      "tags": ["T3", "super-tank", "LAND"],
-      "cost": 900, "hp": 1100, "dps": 128.6, "speed": 0.7, "range": 280, "buildTime": 35
+      "tags": [
+        "T3",
+        "super-tank",
+        "LAND"
+      ],
+      "cost": 900,
+      "energy": 0,
+      "hp": 1100,
+      "speed": 0.7,
+      "range": 280,
+      "buildTime": 35
     },
-
     {
       "id": "topchun",
-      "name": { "ru": "ТОПЧУН", "en": "TOPCHUN" },
+      "name": {
+        "ru": "ТОПЧУН",
+        "en": "TOPCHUN"
+      },
       "faction": "fenearth",
-      "type": "ground",
       "desc": {
         "ru": "Давит ближайшие вражеские юниты • Имеет дальнобойную плазма-пушку • Большой урон вблизи из скорострельныз пушек • Есть торпелный аппарат",
         "en": "Tramples nearby enemy units • Has a long-range plasma gun • High damage up close from rapid-fire guns • Has a torpedo tube"
       },
-      "tags": ["titan", "super-bot", "OVER_CLIFF_WATER"],
-      "cost": 15000, "hp": 13000, "dps": 175, "speed": 0.6, "range": 750, "buildTime": 600
+      "tags": [
+        "titan",
+        "super-bot",
+        "OVER_CLIFF_WATER"
+      ],
+      "cost": 15000,
+      "energy": 0,
+      "hp": 13000,
+      "speed": 0.6,
+      "range": 750,
+      "buildTime": 600
     },
-
     {
       "id": "torfzr",
-      "name": { "ru": "Торпедник", "en": "Torpedo boat" },
+      "name": {
+        "ru": "Торпедник",
+        "en": "Torpedo boat"
+      },
       "faction": "fenearth",
-      "type": "air",
       "desc": {
         "ru": "Большой урон по кораблям и подводным целям • Может отстреливаться от самолетов • Может так же бомбить крупные космические корабли в атмосфере",
         "en": "High damage to ships and underwater targets • Can shoot back at planes • Can also bomb large spaceships in the atmosphere"
       },
-      "tags": ["T2", "plane", "AIR"],
-      "cost": 650, "hp": 650, "dps": 870, "speed": 1.8, "range": 300, "buildTime": 20
+      "tags": [
+        "T2",
+        "plane",
+        "AIR"
+      ],
+      "cost": 650,
+      "energy": 0,
+      "hp": 650,
+      "speed": 1.8,
+      "range": 300,
+      "buildTime": 20
     },
-
     {
       "id": "tri",
-      "name": { "ru": "Тяжёлый истребитель \"Треугольнокрыл\"", "en": "Heavy fighter \"Triangularwing\"" },
+      "name": {
+        "ru": "Тяжёлый истребитель \"Треугольнокрыл\"",
+        "en": "Heavy fighter \"Triangularwing\""
+      },
       "faction": "fenearth",
-      "type": "space",
       "desc": {
         "ru": "Имеет хорошее оружие ближнего воздушного боя • Вооружен стан-ракетами, прочный, имеет турель • Может быть обслужен в некоторых юнитах как вертолёт • (Народное прозвище: Треугольник, Орёл)",
         "en": "Has good close air combat weapons • Armed with stun missiles, durable, has a turret • Can be serviced in some units like a helicopter • (Nicknames: Triangle, Eagle)"
       },
-      "tags": ["T2", "space-ship", "AIR"],
-      "cost": 900, "hp": 500, "shield": 400, "dps": 120, "speed": 1.3, "range": 310, "buildTime": 15
+      "tags": [
+        "T2",
+        "space-ship",
+        "AIR"
+      ],
+      "cost": 900,
+      "energy": 0,
+      "hp": 500,
+      "shield": 400,
+      "speed": 1.3,
+      "range": 310,
+      "buildTime": 15
     },
-
     {
       "id": "tridelot",
-      "name": { "ru": "Тридэлот", "en": "Tridelot" },
+      "name": {
+        "ru": "Тридэлот",
+        "en": "Tridelot"
+      },
       "faction": "fenearth",
-      "type": "ground",
       "desc": {
         "ru": "Имеет мощную дальнострельную турель и бронебойные пушки • Может строить и стрелять тактическими ракетами по земле и орбите • Имеет защиту от ракет, небольшой урон по воздуху • Способен перемещаться по горам и плавать",
         "en": "Has a powerful long-range turret and armour-piercing guns • Can build and fire tactical missiles at ground and orbit • Has missile protection, small air damage • Can move over mountains and swim"
       },
-      "tags": ["T4", "super-tank", "OVER_CLIFF_WATER"],
-      "cost": 3800, "hp": 6000, "dps": 10800, "speed": 0.75, "range": 1200, "buildTime": 95
+      "tags": [
+        "T4",
+        "super-tank",
+        "OVER_CLIFF_WATER"
+      ],
+      "cost": 3800,
+      "energy": 0,
+      "hp": 6000,
+      "speed": 0.75,
+      "range": 1200,
+      "buildTime": 95
     },
-
     {
       "id": "trident",
-      "name": { "ru": "Трезубец", "en": "Trident" },
+      "name": {
+        "ru": "Трезубец",
+        "en": "Trident"
+      },
       "faction": "fenearth",
-      "type": "space",
       "desc": {
         "ru": "(ОКМУ: Один Километр Ударный) • Вооружен мощным нескорострельным курсовым оружием • Далеко стреляет, есть турели для защиты • Способен производить и запускать с орбиты самолёты и малые звездолёты • Может наносить точечные наземные удары",
         "en": "(OKMU: One Kilometre Strike) • Armed with a powerful low-rate forward weapon • Shoots far, has turrets for defence • Can produce and launch aircraft and small spaceships from orbit • Can deliver pinpoint ground strikes"
       },
-      "tags": ["T2", "space-ship", "AIR"],
-      "cost": 3000, "hp": 3500, "shield": 2000, "dps": 50, "speed": 0.7, "range": 500, "buildTime": 70
+      "tags": [
+        "T2",
+        "space-ship",
+        "AIR"
+      ],
+      "cost": 3000,
+      "energy": 0,
+      "hp": 3500,
+      "shield": 2000,
+      "speed": 0.7,
+      "range": 500,
+      "buildTime": 70
     },
-
     {
       "id": "tring",
-      "name": { "ru": "Транспортное кольцо", "en": "Transport ring" },
+      "name": {
+        "ru": "Транспортное кольцо",
+        "en": "Transport ring"
+      },
       "faction": "proton",
-      "type": "support",
       "desc": {
         "ru": "Быстрое, дешевое • Становится экспериментальным стелс-юнитом при наличии 3 аэродромов • Может быть обслужен в некоторых юнитах как вертолёт",
         "en": "Fast, cheap • Becomes an experimental stealth unit with 3 aerodromes • Can be serviced in some units like a helicopter"
       },
-      "tags": ["T1", "AIR"],
-      "cost": 80, "hp": 300, "dps": 2400, "speed": 2.5, "buildTime": 10
+      "tags": [
+        "T1",
+        "AIR"
+      ],
+      "cost": 80,
+      "energy": 0,
+      "hp": 300,
+      "speed": 2.5,
+      "buildTime": 10
     },
-
     {
       "id": "tur",
-      "name": { "ru": "Оборонительная турель", "en": "Defensive turret" },
+      "name": {
+        "ru": "Оборонительная турель",
+        "en": "Defensive turret"
+      },
       "faction": "fenearth",
-      "type": "support",
       "desc": {
         "ru": "Высокий урон по не большому радиусу",
         "en": "High damage over a small radius"
       },
-      "tags": ["T1"],
-      "cost": 400, "hp": 800, "dps": 120, "range": 300, "buildTime": 9
+      "tags": [
+        "T1"
+      ],
+      "cost": 400,
+      "energy": 0,
+      "hp": 800,
+      "range": 300,
+      "buildTime": 9
     },
-
     {
       "id": "turmeran",
-      "name": { "ru": "Турмеран", "en": "Turmeran" },
+      "name": {
+        "ru": "Турмеран",
+        "en": "Turmeran"
+      },
       "faction": "fenearth",
-      "type": "ground",
       "desc": {
         "ru": "Имеет дальнострельную ракетницу, стреляющую по поверхности, воздуху и орбите • Турель наносит большой урон на малом расстоянии • Имеет мощный радар, хороший радиус обзора • Умеет плавать, вооружён глубинными бомбами • (4 черные штуки по бокам - это не колеса, а треугольные гусеницы!!!)",
         "en": "Has a long-range missile launcher that fires at the surface, air and orbit • The turret deals high damage at short range • Has a powerful radar, good view radius • Can swim, armed with depth charges • (The 4 black things on the sides are not wheels, but triangular tracks!!!)"
       },
-      "tags": ["T4", "super-tank", "HOVER"],
-      "cost": 2500, "hp": 4000, "dps": 2400, "speed": 0.6, "range": 410, "buildTime": 50
+      "tags": [
+        "T4",
+        "super-tank",
+        "HOVER"
+      ],
+      "cost": 2500,
+      "energy": 0,
+      "hp": 4000,
+      "speed": 0.6,
+      "range": 410,
+      "buildTime": 50
     },
-
     {
       "id": "universal",
-      "name": { "ru": "Универсал", "en": "Universal" },
+      "name": {
+        "ru": "Универсал",
+        "en": "Universal"
+      },
       "faction": "fenearth",
-      "type": "air",
       "desc": {
         "ru": "Тяжёлый ультимативный штурмовик • Имеет три режима боя: наземный, воздушный и подводный • Вооружён мощными автопушками • Запускает стан-плазма-ракету • Может быть обслужен в некоторых юнитах как вертолёт",
         "en": "Heavy ultimate assault unit • Has three combat modes: ground, air and underwater • Armed with powerful autocannons • Launches a stun plasma missile • Can be serviced in some units like a helicopter"
       },
-      "tags": ["T4", "super-plane", "AIR"],
-      "cost": 3500, "hp": 1500, "shield": 1000, "dps": 360, "speed": 1.8, "range": 250, "buildTime": 80
+      "tags": [
+        "T4",
+        "super-plane",
+        "AIR"
+      ],
+      "cost": 3500,
+      "energy": 0,
+      "hp": 1500,
+      "shield": 1000,
+      "speed": 1.8,
+      "range": 250,
+      "buildTime": 80
     },
-
     {
       "id": "wbdpe",
-      "name": { "ru": "Дрон-бомба", "en": "Bomb drone" },
+      "name": {
+        "ru": "Дрон-бомба",
+        "en": "Bomb drone"
+      },
       "faction": "proton",
-      "type": "naval",
-      "desc": { "ru": "Быстрый, дешёвый • Взрывается при соприкосновении с целью", "en": "Fast, cheap • Explodes on contact with the target" },
-      "tags": ["T1", "ship", "WATER"],
-      "cost": 100, "hp": 150, "dps": 650, "speed": 1.1, "range": 25, "buildTime": 12
+      "desc": {
+        "ru": "Быстрый, дешёвый • Взрывается при соприкосновении с целью",
+        "en": "Fast, cheap • Explodes on contact with the target"
+      },
+      "tags": [
+        "T1",
+        "ship",
+        "WATER"
+      ],
+      "cost": 100,
+      "energy": 0,
+      "hp": 150,
+      "speed": 1.1,
+      "range": 25,
+      "buildTime": 12
     },
-
     {
       "id": "wedge",
-      "name": { "ru": "Клин", "en": "Wedge" },
+      "name": {
+        "ru": "Клин",
+        "en": "Wedge"
+      },
       "faction": "proton",
-      "type": "air",
       "desc": {
         "ru": "Сильный основной боевой корабль • Хорошое оружие и броня • Может производить, перевозить и выпускать боевые колечки • Не может совершать бомбардировки с орбиты • Есть хорошая защита от ракет • Может строить защиту от тактических ракет",
         "en": "Strong main combat ship • Good weapons and armour • Can produce, transport and launch combat rings • Cannot conduct orbital bombardments • Has good missile protection • Can build tactical missile defence"
       },
-      "tags": ["T1", "plane", "AIR"],
-      "cost": 2500, "hp": 4500, "dps": 84.4, "speed": 0.6, "range": 450, "buildTime": 70
+      "tags": [
+        "T1",
+        "plane",
+        "AIR"
+      ],
+      "cost": 2500,
+      "energy": 0,
+      "hp": 4500,
+      "speed": 0.6,
+      "range": 450,
+      "buildTime": 70
     },
-
     {
       "id": "zenith",
-      "name": { "ru": "Артиллерийский комплекс \"ЗЕНИТ\"", "en": "Artillery complex \"ZENITH\"" },
+      "name": {
+        "ru": "Артиллерийский комплекс \"ЗЕНИТ\"",
+        "en": "Artillery complex \"ZENITH\""
+      },
       "faction": "fenearth",
-      "type": "ground",
       "desc": {
         "ru": "Медленный • Вооружен дальнобойной мощной артиллерией • Вооружён флак-зениткой",
         "en": "Slow • Armed with long-range powerful artillery • Armed with a flak gun"
       },
-      "tags": ["T3", "super-tank", "LAND"],
-      "cost": 1000, "hp": 1200, "dps": 30.9, "speed": 0.6, "range": 480, "buildTime": 30
+      "tags": [
+        "T3",
+        "super-tank",
+        "LAND"
+      ],
+      "cost": 1000,
+      "energy": 0,
+      "hp": 1200,
+      "speed": 0.6,
+      "range": 480,
+      "buildTime": 30
     },
-
     {
       "id": "zhwing",
-      "name": { "ru": "Ж-Крыл", "en": "Zh-Wing" },
+      "name": {
+        "ru": "Ж-Крыл",
+        "en": "Zh-Wing"
+      },
       "faction": "fenearth",
-      "type": "space",
       "desc": {
         "ru": "(ПСМЗ: Пять Сотен Метров Защитный/Эскортный) • Вооружен сильным кинетическим курсовым оружием • Далеко стреляет, есть турели для защиты • Использует флак-снаряды против легкобронированных целей • Может перевозить небольшое количество юнитов",
         "en": "(FSMZ: Five Hundred Metres Defensive/Escort) • Armed with a strong kinetic forward weapon • Shoots far, has turrets for defence • Uses flak shells against lightly armoured targets • Can transport a small number of units"
       },
-      "tags": ["T2", "space-ship", "AIR"],
-      "cost": 2000, "hp": 1500, "shield": 700, "dps": 36, "speed": 1, "range": 470, "buildTime": 50
+      "tags": [
+        "T2",
+        "space-ship",
+        "AIR"
+      ],
+      "cost": 2000,
+      "energy": 0,
+      "hp": 1500,
+      "shield": 700,
+      "speed": 1,
+      "range": 470,
+      "buildTime": 50
     }
   ]
 }

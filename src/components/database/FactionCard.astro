@@ -2,6 +2,7 @@
 /* ============================================================================
    WWN — карточка фракции. Статический рендер; эмблема подключается через
    import.meta.glob, ссылка на вики — только для опубликованных лор-статей.
+   Оформление намеренно совпадает с карточками юнитов и строений.
    ============================================================================ */
 
 import { t } from "@/i18n";
@@ -34,21 +35,21 @@ const initials = name.slice(0, 2).toUpperCase();
 ---
 
 <article
-  class="faction-card"
+  class="unit-card faction-card"
   data-card-id={faction.id}
   data-tab="factions"
   style={`--faction-color:${faction.color}`}
 >
-  <div class="faction-card__head">
-    <div class="faction-card__emblem">
+  <div class="unit-card__top">
+    <div class="unit-card__img faction-card__emblem">
       {
         emblemSrc ? (
           <img
             src={emblemSrc}
             alt={name}
             data-initials={initials}
-            width="74"
-            height="74"
+            width="128"
+            height="128"
             loading="lazy"
             decoding="async"
           />
@@ -57,24 +58,25 @@ const initials = name.slice(0, 2).toUpperCase();
         )
       }
     </div>
-    <div>
+    <div class="faction-card__title">
       <div class="faction-card__namerow">
-        <span class="faction-card__name">{name}</span>
+        <span class="unit-card__name">{name}</span>
         {faction.subfactionLabel && <span class="chip chip--sub">{faction.subfactionLabel}</span>}
       </div>
       {motto && <div class="faction-card__motto">{motto}</div>}
-      <div class="unit-card__sub" style="margin-top:8px">
-        <span class="chip">
-          {t(lang, "database.tab.units")}: {formatNumber(faction.counts.units, lang)}
-        </span>
-        <span class="chip">
-          {t(lang, "database.tab.buildings")}: {formatNumber(faction.counts.buildings, lang)}
-        </span>
-      </div>
     </div>
   </div>
 
-  {desc && <p class="faction-card__desc">{desc}</p>}
+  <div class="unit-card__sub">
+    <span class="chip">
+      {t(lang, "database.tab.units")}: {formatNumber(faction.counts.units, lang)}
+    </span>
+    <span class="chip">
+      {t(lang, "database.tab.buildings")}: {formatNumber(faction.counts.buildings, lang)}
+    </span>
+  </div>
+
+  {desc && <p class="unit-card__desc">{desc}</p>}
 
   <div class="faction-card__blocks">
     {
@@ -121,7 +123,7 @@ const initials = name.slice(0, 2).toUpperCase();
 
   {
     faction.wikiHref && (
-      <a class="btn btn--sm faction-card__link" href={faction.wikiHref}>
+      <a class="unit-card__detail" href={faction.wikiHref}>
         {t(lang, "database.openLore")}
       </a>
     )

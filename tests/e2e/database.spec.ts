@@ -169,6 +169,36 @@ test.describe("База данных", () => {
     await expect(page.locator(".compare-tray__count")).toHaveText("Выбрано: 1 из 4");
   });
 
+  test("первое открытие после перехода с главной не уводит на главную", async ({ page }) => {
+    await page.goto("./");
+    await page.getByRole("link", { name: "БАЗА ДАННЫХ" }).first().click();
+    await page.locator('#databaseTabs [data-tab="units"]').click();
+    await page.locator('[data-detail-id="ahaosa"]').click();
+    await expect(page.locator(".detail-dialog")).toBeVisible();
+    expect(new URL(page.url()).pathname).toContain("/database/");
+
+    await page.keyboard.press("Escape");
+    await page.locator('[data-compare-id="ahaosa"]').click();
+    await page.locator('[data-compare-id="akula"]').click();
+    await page.getByRole("button", { name: /Сравнить \(2\)/ }).click();
+    await expect(page.locator(".compare-dialog")).toBeVisible();
+    expect(new URL(page.url()).pathname).toContain("/database/");
+  });
+
+  test("полная карточка открывается, ссылка сохраняется в URL", async ({ page }) => {
+    await page.goto("database/#units");
+    await page.locator('[data-detail-id="ahaosa"]').click();
+    const dialog = page.locator(".detail-dialog");
+    await expect(dialog).toBeVisible();
+    await expect(dialog.locator("h2")).toContainText("Лодка ПВО");
+    await expect(dialog.locator(".weapon-table")).toHaveCount(0);
+    const url = new URL(page.url());
+    expect(url.searchParams.get("card")).toBe("units:ahaosa");
+    await dialog.getByRole("button", { name: "Закрыть карточку" }).first().click();
+    await expect(dialog).not.toBeVisible();
+    expect(new URL(page.url()).searchParams.get("card")).toBeNull();
+  });
+
   test("сравнение адаптировано под узкий экран", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("database/#units");

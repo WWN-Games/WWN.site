@@ -6,11 +6,13 @@ test.describe("Публичный API", () => {
     expect(response.status()).toBe(200);
     expect(response.headers()["content-type"]).toContain("application/json");
     const payload = await response.json();
-    expect(payload.schemaVersion).toBe(1);
+    expect(payload.schemaVersion).toBe(2);
     expect(payload.count).toBe(110);
     expect(payload.items).toHaveLength(110);
     expect(payload.items[0]).toHaveProperty("id");
     expect(payload.items[0]).toHaveProperty("name");
+    expect(payload.items[0]).toHaveProperty("energy");
+    expect(payload.items[0]).toHaveProperty("fullCost");
   });
 
   test("манифест перечисляет эндпоинты", async ({ request }) => {

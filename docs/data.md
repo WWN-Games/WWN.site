@@ -19,22 +19,49 @@
 
 ## Карточки: units.json и buildings.json
 
-Массивы `units` и `buildings`; набор полей одинаковый, отличается только `type`.
+Массивы `units` и `buildings`; набор полей одинаковый, тип карточки больше не хранится — классификация задаётся тегами.
 
 ```json
 {
   "id": "ahaosa",
   "name": { "ru": "Лодка ПВО", "en": "AA Boat" },
   "faction": "proton",
-  "type": "naval",
   "desc": { "ru": "…", "en": "…" },
   "tags": ["T1", "ship", "HOVER"],
-  "cost": 100, "hp": 320, "shield": 40, "selfRegen": 2, "shieldRegen": 5,
+  "cost": 100,
+  "energy": 40,
+  "hp": 320,
+  "shield": 40,
+  "armor": 5,
+  "selfRegen": 2,
+  "shieldRegen": 5,
+  "speed": 0.9,
+  "turnSpeed": 60,
+  "range": 245,
+  "buildTime": 6,
   "weapons": [
-    { "name": { "ru": "Главный калибр", "en": "Main gun" }, "damage": 80 },
-    { "name": { "ru": "Зенитка", "en": "AA gun" }, "damage": 40 }
+    {
+      "name": { "ru": "Главный калибр", "en": "Main gun" },
+      "count": 2,
+      "damage": 80,
+      "fireDelay": 1.5,
+      "tags": ["long", "splash", "front", "right"],
+      "spread": 12,
+      "splashRadius": 30
+    }
   ],
-  "speed": 0.9, "range": 245, "buildTime": 6
+  "builder": {
+    "buildRange": 300,
+    "repairSpeed": 15,
+    "buildSpeed": 10,
+    "healTags": ["tank", "bot"]
+  },
+  "factories": [
+    { "name": { "ru": "Аэродром", "en": "Aerodrome" }, "buildSpeed": 1.23, "producedUnits": ["ahaosa"] }
+  ],
+  "transports": [
+    { "name": { "ru": "Трюм", "en": "Hold" }, "seats": 4, "cargoTags": ["tank"], "unload": ["shore", "water"] }
+  ]
 }
 ```
 
@@ -43,20 +70,49 @@
 | `id` | да | Уникален; общий namespace у юнитов и строений |
 | `name`, `desc` | да | `{ ru, en }` |
 | `faction` | да | `id` из `factions.json` |
-| `type` | да | units: `ground` / `air` / `naval` / `space` / `support`; buildings: `economy` / `defense` / `structure` |
-| `tags` | да | Массив `id` из `tags.json` (может быть пустым) |
-| `cost`, `hp`, `buildTime` | да | Числа |
-| `shield`, `selfRegen`, `shieldRegen`, `dps`, `speed`, `range` | нет | Числа; можно не писать, если 0 |
-| `weapons` | нет | Массив орудий: `{ name: { ru, en }, damage }`. Если массив непустой, `dps` считается как сумма `damage` всех орудий и в JSON карточки показывается это значение. |
+| `tags` | да | Массив `id` обычных тегов из `tags.json` |
+| `cost`, `energy`, `hp`, `buildTime` | да | Числа; `energy` обязательна даже при 0 |
+| `shield`, `armor`, `selfRegen`, `shieldRegen`, `speed`, `turnSpeed`, `range` | нет | Числа; можно не писать, если 0 |
+| `weapons` | нет | Массив орудий (см. ниже) |
+| `builder` | нет | `{ buildRange, repairSpeed, buildSpeed, healTags }` |
+| `factories` | нет | Массив заводов `{ name, buildSpeed, producedUnits }` |
+| `transports` | нет | Массив отделений `{ name, seats, cargoTags, unload }` |
 | `image` | нет | Путь относительно `public/`; `""` — вместо картинки инициалы |
 | `role` | нет | `{ ru, en }` — роль, выводится чипом |
 | `strongVs`, `weakVs` | нет | Массив строк или `{ ru, en }` |
 | `draft` | нет | `true` — бейдж «Черновик» |
 | `new` | нет | `true` — бейдж «Новое» |
 
-- Картинка по умолчанию — `public/img/database/<id>.avif`. Поле `image` переопределяет путь (например `img/database/custom.avif`), `"image": ""` отключает картинку и показывает инициалы. Валидация проверяет существование файла (кроме `""`).
-- Полосы характеристик (прочность, щит, самореген, реген щита, урон, скорость, дальность) считаются на сборке по общей шкале всех карточек (`src/lib/database.ts`) — максимумы вручную не задаются.
-- В сравнении карточек орудия выводятся отдельными строками «Орудие 1», «Орудие 2» и т.д. с названием и уроном.
+- Полная стоимость: `cost + energy / 4`. В списке карточек показывается только она.
+- DPS карточки: сумма `count * damage / fireDelay` по всем орудиям. Без оружия DPS = 0.
+- `buildTime` — секунды при скорости 1; в полной карточке так и подписано.
+- Обычные теги карточки берутся из групп `tier | class | movement | mod`.
+- Картинка по умолчанию — `public/img/database/<id>.avif`. Поле `image` переопределяет путь, `"image": ""` отключает картинку.
+- Полосы характеристик (прочность, щит, броня, реген, реген щита, DPS, скорость, дальность) считаются на сборке по общей шкале всех карточек (`src/lib/database.ts`).
+
+### Оружие
+
+Поля орудия:
+
+| Поле | Обяз. | Правила |
+| --- | --- | --- |
+| `name` | да | `{ ru, en }` |
+| `count` | нет | Количество одинаковых орудий, по умолчанию 1; учитывается в DPS |
+| `damage` | да | Урон одного выстрела |
+| `fireDelay` | да | Задержка между выстрелами в секундах, больше нуля |
+| `tags` | нет | Теги из групп `weapon` и `sector` |
+| `spread` | нет | Разброс; показывается при теге `splash` |
+| `splashRadius` | нет | Радиус сплеша; показывается при теге `splash` |
+| `stunDuration` | нет | Длительность стана в секундах; показывается при теге `stun` |
+
+Теги оружия: `close`, `long`, `anti-air`, `anti-orbital`, `anti-sub`, `splash`, `stun`, `laser`, `plasma`, `blaster`, `rocket`, `space-only`, `surface-only`. Секторы: `front`, `left`, `right`, `rear`.
+
+### Строитель, заводы и транспорт
+
+- `builder` доступен и юнитам, и строениям; `healTags` — обычные теги карточек.
+- `factories` — несколько записей; каждая производит только юнитов (`producedUnits` — id из `units.json`).
+- `transports` — несколько отделений; `cargoTags` — обычные теги, `unload` — фиксированные значения `shore | water | air | underwater | space`.
+- Картинок у заводов и транспортных отделений пока нет.
 
 ## Фракции: factions.json
 
@@ -85,7 +141,7 @@
 
 ## Теги: tags.json
 
-Поля: `id`, `name` `{ ru, en }`, `group` — `tier` | `class` | `movement` | `mod`. Сначала добавьте запись сюда, потом впишите `id` в `tags` карточки. Незарегистрированный тег покажется как есть, но `pnpm validate` на нём упадёт.
+Поля: `id`, `name` `{ ru, en }`, `group` — `tier` | `class` | `movement` | `mod` | `weapon` | `sector`. Сначала добавьте запись сюда, потом впишите `id` в `tags` карточки или оружия. Незарегистрированный тег покажется как есть, но `pnpm validate` на нём упадёт.
 
 ## Разделы вики: sections.json
 
@@ -103,7 +159,7 @@
 
 Сборка публикует статические JSON-эндпоинты: `/api/v1/units.json`, `buildings.json`, `factions.json`, `tags.json`, `stats.json`, `index.json` (манифест).
 
-Общий конверт: `{ schemaVersion, generatedAt, count, items }`, `schemaVersion: 1`. Ответ формируется с заголовком `Cache-Control: public, max-age=3600`, но GitHub Pages отдаёт статические файлы без кастомных заголовков — фактический кэш зависит от хостинга/CDN. В `items` — данные коллекции, отсортированные по `id` (исключение — `factions.json`: по `order`, затем по `id`); в `stats.json` элементы `{ id, value }`, в `index.json` — `{ id, url, count }`.
+Общий конверт: `{ schemaVersion, generatedAt, count, items }`, `schemaVersion: 2`. Ответ формируется с заголовком `Cache-Control: public, max-age=3600`, но GitHub Pages отдаёт статические файлы без кастомных заголовков — фактический кэш зависит от хостинга/CDN. В `items` — данные коллекции, отсортированные по `id` (исключение — `factions.json`: по `order`, затем по `id`); в `stats.json` элементы `{ id, value }`, в `index.json` — `{ id, url, count }`.
 
 ## Сравнение карточек
 
@@ -115,6 +171,14 @@
 
 Формат: `<units|buildings>:<id>,<id>,<id>,<id>`. Ссылка открывает нужную вкладку, восстанавливает выбор и сразу показывает диалог сравнения. Неизвестные id и карточки другой вкладки отбрасываются. Максимум — `MAX_COMPARE` в `src/lib/compare.ts`; чистая логика метрик и URL покрыта `tests/unit/database-view.test.ts`.
 
+Полная карточка открывается в модальном окне и хранится в URL отдельно:
+
+```text
+/database/?card=units:ahaosa#units
+```
+
+В сравнении есть фильтр оружия по тегам (режимы И / ИЛИ). DPS по выбранным тегам считается только по подходящим орудиям, а эффективность — всегда по общему DPS на 100 полной стоимости.
+
 
 ## Валидация
 
@@ -122,4 +186,4 @@
 pnpm validate
 ```
 
-Проверяет Zod-схемы всех файлов; уникальность `id` (в том числе между `units.json` и `buildings.json`); ссылки `faction` и `tags` на существующие записи; существование картинок карточек; схему `stats.json`. Плюс проверки вики — см. `docs/content.md`.
+Проверяет Zod-схемы всех файлов; уникальность `id` (в том числе между `units.json` и `buildings.json`); ссылки `faction` и `tags` на существующие записи; теги оружия из групп `weapon`/`sector`; ссылки заводов на существующих юнитов; обычные теги строителя и транспорта; существование картинок карточек; схему `stats.json`. Плюс проверки вики — см. `docs/content.md`.

@@ -11,10 +11,11 @@ export type CardTab = (typeof CARD_TABS)[number];
 
 export const SORT_KEYS = [
   "name",
-  "cost",
+  "fullCost",
   "buildTime",
   "hp",
   "shield",
+  "armor",
   "dps",
   "speed",
   "range",

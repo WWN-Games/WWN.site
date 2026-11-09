@@ -5,18 +5,26 @@
   interface Props {
     selected: string[];
     available: Tag[];
+    groups?: readonly Tag["group"][];
     onchange: (ids: string[]) => void;
   }
 
-  const { selected, available, onchange }: Props = $props();
+  const {
+    selected,
+    available,
+    groups = ["tier", "class", "movement", "mod"],
+    onchange,
+  }: Props = $props();
 
   let search = $state("");
 
-  const groups = [
+  const groupDefs = [
     { id: "tier", label: "Тир" },
     { id: "class", label: "Класс" },
     { id: "movement", label: "Движение" },
     { id: "mod", label: "Мод" },
+    { id: "weapon", label: "Оружие" },
+    { id: "sector", label: "Сектор" },
   ] as const;
 
   const byId = $derived(new Map(available.map((tag) => [tag.id, tag])));
@@ -53,7 +61,7 @@
     aria-label="Поиск тега"
   />
   <div class="tag-picker__panel">
-    {#each groups as group}
+    {#each groupDefs.filter((group) => groups.includes(group.id)) as group}
       {@const tags = filtered.filter((tag) => tag.group === group.id)}
       {#if tags.length > 0}
         <div class="tag-group">

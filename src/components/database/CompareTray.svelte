@@ -66,7 +66,15 @@ function removeLabel(name: string): string {
   <div class="compare-tray__actions">
     {#if hint}<span class="compare-tray__hint">{hint}</span>{/if}
     <button class="btn btn--sm" type="button" onclick={onclear}>{labels.clear}</button>
-    <button class="btn btn--cyan btn--sm" type="button" disabled={items.length < 2} onclick={onopen}>
+    <button
+      class="btn btn--cyan btn--sm"
+      type="button"
+      disabled={items.length < 2}
+      onclick={(event) => {
+        event.preventDefault();
+        onopen();
+      }}
+    >
       {openText}
     </button>
   </div>

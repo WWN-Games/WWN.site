@@ -17,12 +17,18 @@ const { bars, color } = Astro.props;
 <div class="statbars">
   {
     bars.map((bar) => (
-      <div class="statbar" style={`--faction-color:${color};--median:${bar.medianPercent}%`} title={`${bar.label}: ${bar.display}`}>
+      <div
+        class="statbar"
+        data-stat={bar.key}
+        data-value={bar.value}
+        style={`--faction-color:${color};--median:${bar.medianPercent}%`}
+        title={`${bar.label}: ${bar.display}`}
+      >
         <span class="statbar__label">{bar.label}</span>
         <span class="statbar__track">
-          <span class="statbar__fill" style={`--w:${bar.percent}%`} />
+          <span class="statbar__fill" data-stat-fill style={`--w:${bar.percent}%`} />
         </span>
-        <span class="statbar__val">{bar.display}</span>
+        <span class="statbar__val" data-stat-value>{bar.display}</span>
       </div>
     ))
   }

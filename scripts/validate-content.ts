@@ -312,7 +312,12 @@ export function validateContent(): string[] {
 
   uniqueIds("units.json", units, errors);
   uniqueIds("buildings.json", buildings, errors);
+  const unitIds = new Set(units.map((unit) => unit.id));
   const cardIds = new Map<string, string>();
+  const tagGroups = new Map(tags.map((tag) => [tag.id, tag.group]));
+  const cardTagGroups = new Set(["tier", "class", "movement", "mod"]);
+  const weaponTagGroups = new Set(["weapon", "sector"]);
+
   for (const [file, cards] of [
     ["units.json", units],
     ["buildings.json", buildings],
@@ -328,8 +333,55 @@ export function validateContent(): string[] {
         errors.push(`src/data/${file}: ${card.id}: неизвестная фракция «${card.faction}»`);
       }
       for (const tag of card.tags) {
-        if (!tagIds.has(tag))
+        if (!tagIds.has(tag)) {
           errors.push(`src/data/${file}: ${card.id}: незарегистрированный тег «${tag}»`);
+        } else if (!cardTagGroups.has(tagGroups.get(tag) ?? "")) {
+          errors.push(`src/data/${file}: ${card.id}: тег «${tag}» не обычный тег карточки`);
+        }
+      }
+      for (const [index, weapon] of (card.weapons ?? []).entries()) {
+        for (const tag of weapon.tags) {
+          if (!tagIds.has(tag)) {
+            errors.push(
+              `src/data/${file}: ${card.id}: оружие ${index + 1}: незарегистрированный тег «${tag}»`,
+            );
+          } else if (!weaponTagGroups.has(tagGroups.get(tag) ?? "")) {
+            errors.push(
+              `src/data/${file}: ${card.id}: оружие ${index + 1}: тег «${tag}» не из групп weapon/sector`,
+            );
+          }
+        }
+      }
+      for (const tag of card.builder?.healTags ?? []) {
+        if (!tagIds.has(tag)) {
+          errors.push(`src/data/${file}: ${card.id}: строитель: незарегистрированный тег «${tag}»`);
+        } else if (!cardTagGroups.has(tagGroups.get(tag) ?? "")) {
+          errors.push(
+            `src/data/${file}: ${card.id}: строитель: тег «${tag}» не обычный тег карточки`,
+          );
+        }
+      }
+      for (const [index, factory] of (card.factories ?? []).entries()) {
+        for (const unitId of factory.producedUnits) {
+          if (!unitIds.has(unitId)) {
+            errors.push(
+              `src/data/${file}: ${card.id}: завод ${index + 1}: неизвестный юнит «${unitId}»`,
+            );
+          }
+        }
+      }
+      for (const [index, transport] of (card.transports ?? []).entries()) {
+        for (const tag of transport.cargoTags) {
+          if (!tagIds.has(tag)) {
+            errors.push(
+              `src/data/${file}: ${card.id}: транспорт ${index + 1}: незарегистрированный тег «${tag}»`,
+            );
+          } else if (!cardTagGroups.has(tagGroups.get(tag) ?? "")) {
+            errors.push(
+              `src/data/${file}: ${card.id}: транспорт ${index + 1}: тег «${tag}» не обычный тег карточки`,
+            );
+          }
+        }
       }
       if (card.image === "") continue;
       const image = card.image ?? `img/database/${card.id}.avif`;

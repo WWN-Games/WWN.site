@@ -8,16 +8,24 @@
 import { ArrowDown, ArrowUp, CloseSmall, Down, Search } from "@icon-park/svg";
 import { onDestroy, onMount } from "svelte";
 
+import CardDetailDialog from "@/components/database/CardDetailDialog.svelte";
 import CompareDialog from "@/components/database/CompareDialog.svelte";
 import CompareTray from "@/components/database/CompareTray.svelte";
 import { iconSvg } from "@/components/ui/icon";
-import { MAX_COMPARE, parseCompareParam, serializeCompareParam } from "@/lib/compare";
+import { barPercent, filteredWeaponDps, formatStat } from "@/lib/card-stats";
+import {
+  MAX_COMPARE,
+  parseCardParam,
+  parseCompareParam,
+  serializeCardParam,
+  serializeCompareParam,
+} from "@/lib/compare";
 import type {
   ExplorerFaction,
   ExplorerItem,
   ExplorerLabels,
   ExplorerTag,
-  ExplorerTypes,
+  StatScaleEntryLike,
 } from "@/lib/database";
 import {
   type CardTab,
@@ -36,12 +44,12 @@ interface Props {
   lang: Lang;
   items: ExplorerItem[];
   factions: ExplorerFaction[];
-  types: ExplorerTypes;
   tags: ExplorerTag[];
+  dpsScale: StatScaleEntryLike | null;
   labels: ExplorerLabels;
 }
 
-const { lang, items, factions, types, tags, labels }: Props = $props();
+const { lang, items, factions, tags, dpsScale, labels }: Props = $props();
 
 const TAB_IDS: TabId[] = [...TABS];
 const TAG_GROUP_ORDER: Record<ExplorerTag["group"], number> = {
@@ -49,6 +57,8 @@ const TAG_GROUP_ORDER: Record<ExplorerTag["group"], number> = {
   class: 1,
   movement: 2,
   mod: 3,
+  weapon: 4,
+  sector: 5,
 };
 const STORAGE_KEY = "wwn-db-compare:v1";
 
@@ -58,7 +68,6 @@ let tab = $state<TabId>("factions");
 let searchInput = $state("");
 let searchQuery = $state("");
 let faction = $state("all");
-let type = $state("all");
 let sort = $state<SortKey>("name");
 let direction = $state<SortDirection>("asc");
 let appliedTags = $state<string[]>([]);
@@ -69,16 +78,29 @@ let tagOpen = $state(false);
 let tagButton = $state<HTMLButtonElement | null>(null);
 let tagPanel = $state<HTMLDivElement | null>(null);
 
+let weaponTags = $state<string[]>([]);
+let weaponTagDraft = $state<string[]>([]);
+let weaponTagMode = $state<TagMatchMode>("all");
+let weaponTagModeDraft = $state<TagMatchMode>("all");
+let weaponTagOpen = $state(false);
+let weaponTagButton = $state<HTMLButtonElement | null>(null);
+let weaponTagPanel = $state<HTMLDivElement | null>(null);
+
 let selectedByTab = $state<Record<CardTab, string[]>>({ units: [], buildings: [] });
 let compareOpen = $state(false);
 let compareNotice = $state("");
 let noticeTimer: ReturnType<typeof setTimeout> | undefined;
+let detailItem = $state<ExplorerItem | null>(null);
+let detailOpen = $state(false);
 let restored = false;
 
 /** Сетка, которой уже проиграли анимацию полос. */
 let animatedTab: TabId | null = null;
 
-const typeOptions = $derived(types[tab]);
+const weaponTagIds = $derived(
+  new Set(tags.filter((tag) => tag.group === "weapon" || tag.group === "sector").map((tag) => tag.id)),
+);
+const weaponFilterActive = $derived(weaponTags.length > 0);
 
 /* Поисковый текст живёт в data-search статических карточек, а не в props
    острова: так гидратация не парсит десятки килобайт JSON. */
@@ -93,7 +115,13 @@ $effect(() => {
 });
 
 const searchableItems = $derived(
-  items.map((item) => ({ ...item, searchText: searchIndex[item.id] ?? "" })),
+  items.map((item) => ({
+    ...item,
+    dps: weaponFilterActive
+      ? filteredWeaponDps(item.weapons, weaponTags, weaponTagMode)
+      : item.dps,
+    searchText: searchIndex[item.id] ?? "",
+  })),
 );
 const tabItems = $derived(searchableItems.filter((item) => item.tab === tab));
 const availableTagIds = $derived(new Set(tabItems.flatMap((item) => item.tags)));
@@ -148,6 +176,54 @@ const tagGroups = $derived.by(() => {
   return groups;
 });
 
+const weaponTagCounts = $derived.by(() => {
+  const counts = new Map<string, number>();
+  for (const item of tabItems) {
+    const seen = new Set<string>();
+    for (const weapon of item.weapons) {
+      for (const id of weapon.tags) {
+        if (seen.has(id)) continue;
+        seen.add(id);
+        counts.set(id, (counts.get(id) ?? 0) + 1);
+      }
+    }
+  }
+  return counts;
+});
+
+const weaponTagOptions = $derived.by(() =>
+  tags
+    .filter((tag) => weaponTagIds.has(tag.id))
+    .map((tag) => ({
+      id: tag.id,
+      group: tag.group,
+      label: tag.name[lang],
+      count: weaponTagCounts.get(tag.id) ?? 0,
+    }))
+    .sort(
+      (a, b) =>
+        TAG_GROUP_ORDER[a.group] - TAG_GROUP_ORDER[b.group] ||
+        collator(lang).compare(a.label, b.label),
+    ),
+);
+
+const weaponTagGroups = $derived.by(() => {
+  const groups: {
+    id: ExplorerTag["group"];
+    title: string;
+    tags: { id: string; label: string; count: number }[];
+  }[] = [];
+  for (const option of weaponTagOptions) {
+    let group = groups.find((item) => item.id === option.group);
+    if (!group) {
+      group = { id: option.group, title: labels.tagGroups[option.group], tags: [] };
+      groups.push(group);
+    }
+    group.tags.push({ id: option.id, label: option.label, count: option.count });
+  }
+  return groups;
+});
+
 const visibleIds = $derived.by(() => {
   const tokens = searchTokens(searchQuery);
   if (tab === "factions") {
@@ -158,9 +234,10 @@ const visibleIds = $derived.by(() => {
   const filtered = filterItems(tabItems, {
     query: searchQuery,
     faction,
-    type,
     tags: appliedTags,
     tagMode,
+    weaponTags,
+    weaponTagMode,
   });
   return sortItems(filtered, sort, direction, lang).map((item) => item.id);
 });
@@ -174,18 +251,40 @@ const tagButtonLabel = $derived(
     ? `${labels.tag}: ${appliedTags.length} · ${labels.tagMode[tagMode]}`
     : labels.tag,
 );
+const weaponTagButtonLabel = $derived(
+  weaponTags.length
+    ? `${labels.weaponTag}: ${weaponTags.length} · ${labels.tagMode[weaponTagMode]}`
+    : labels.weaponTag,
+);
 const draftPreviewCount = $derived.by(() => {
   if (tab === "factions" || !tagOpen) return 0;
   return filterItems(tabItems, {
     query: searchQuery,
     faction,
-    type,
     tags: tagDraft,
     tagMode: tagModeDraft,
+    weaponTags,
+    weaponTagMode,
   }).length;
 });
 const showTagEmptyHint = $derived(
   tagModeDraft === "all" && tagDraft.length > 1 && draftPreviewCount === 0,
+);
+const weaponDraftPreviewCount = $derived.by(() => {
+  if (tab === "factions" || !weaponTagOpen) return 0;
+  return filterItems(tabItems, {
+    query: searchQuery,
+    faction,
+    tags: appliedTags,
+    tagMode,
+    weaponTags: weaponTagDraft,
+    weaponTagMode: weaponTagModeDraft,
+  }).length;
+});
+const showWeaponTagEmptyHint = $derived(
+  weaponTagModeDraft === "all" &&
+    weaponTagDraft.length > 1 &&
+    weaponDraftPreviewCount === 0,
 );
 
 interface ActiveFilter {
@@ -216,16 +315,6 @@ const activeFilters = $derived.by(() => {
       },
     });
   }
-  if (tab !== "factions" && type !== "all") {
-    const option = typeOptions.find((item) => item.value === type);
-    filters.push({
-      id: "type",
-      label: option?.label ?? type,
-      remove: () => {
-        type = "all";
-      },
-    });
-  }
   for (const id of appliedTags) {
     const option = tagOptions.find((item) => item.id === id);
     filters.push({
@@ -237,10 +326,43 @@ const activeFilters = $derived.by(() => {
       },
     });
   }
+  for (const id of weaponTags) {
+    const option = weaponTagOptions.find((item) => item.id === id);
+    filters.push({
+      id: `weapon-tag:${id}`,
+      label: option?.label ?? id,
+      remove: () => {
+        weaponTags = weaponTags.filter((tag) => tag !== id);
+        weaponTagDraft = weaponTagDraft.filter((tag) => tag !== id);
+      },
+    });
+  }
   return filters;
 });
 
 const directionLabel = $derived(direction === "asc" ? labels.sortAsc : labels.sortDesc);
+
+/* Пересчёт DPS на статических карточках при фильтре по тегам оружия. */
+$effect(() => {
+  const active = weaponFilterActive;
+  const selected = weaponTags;
+  const mode = weaponTagMode;
+  const scale = dpsScale;
+  for (const card of document.querySelectorAll<HTMLElement>("[data-card-id]")) {
+    const id = card.dataset.cardId;
+    const item = id ? itemById.get(id) : undefined;
+    if (!item) continue;
+    const dps = active ? filteredWeaponDps(item.weapons, selected, mode) : item.dps;
+    const bar = card.querySelector<HTMLElement>('[data-stat="dps"]');
+    if (!bar) continue;
+    bar.dataset.value = String(dps);
+    bar.title = `${labels.dps}: ${formatStat(dps)}`;
+    const value = bar.querySelector<HTMLElement>("[data-stat-value]");
+    if (value) value.textContent = formatStat(dps);
+    const fill = bar.querySelector<HTMLElement>("[data-stat-fill]");
+    if (fill) fill.style.setProperty("--w", `${barPercent(dps, scale)}%`);
+  }
+});
 
 /* Показ/скрытие и перестановка статического DOM; полосы перезапускаются
    одной анимацией при смене вкладки. */
@@ -293,11 +415,16 @@ $effect(() => {
   }
 });
 
-/* Позиция панели тегов, пока она открыта. */
+/* Позиция панелей тегов, пока они открыты. */
 $effect(() => {
-  if (!tagOpen) return;
+  const isTagOpen = tagOpen;
+  const isWeaponTagOpen = weaponTagOpen;
+  if (!isTagOpen && !isWeaponTagOpen) return;
   const controller = new AbortController();
-  const reposition = () => positionTagPanel();
+  const reposition = () => {
+    if (isTagOpen) positionPanel(tagButton, tagPanel);
+    if (isWeaponTagOpen) positionPanel(weaponTagButton, weaponTagPanel);
+  };
   window.addEventListener("scroll", reposition, { passive: true, signal: controller.signal });
   window.addEventListener("resize", reposition, { signal: controller.signal });
   return () => controller.abort();
@@ -383,14 +510,26 @@ onMount(() => {
     compareOpen = parsed.ids.length >= 2;
     return true;
   };
+  const applyCardFromUrl = (): boolean => {
+    const parsed = parseCardParam(new URLSearchParams(location.search).get("card"), itemById);
+    if (!parsed) return false;
+    const item = itemById.get(parsed.id);
+    if (!item) return false;
+    activate(parsed.tab);
+    detailItem = item;
+    detailOpen = true;
+    return true;
+  };
 
   const onPageLoad = () => {
     /* ClientRouter обновляет URL после подмены разметки: читаем query
        в следующем кадре, иначе после смены языка можно увидеть старый URL. */
     requestAnimationFrame(() => {
-      if (applyCompareFromUrl()) {
+      const compared = applyCompareFromUrl();
+      const detailed = applyCardFromUrl();
+      if (compared || detailed) {
         syncCompareDom();
-        syncCompareUrl();
+        syncUrl();
       }
     });
   };
@@ -402,9 +541,20 @@ onMount(() => {
     const compareButton = target.closest<HTMLButtonElement>("[data-compare-id]");
     if (compareButton) {
       event.preventDefault();
+      event.stopPropagation();
       const id = compareButton.dataset.compareId;
       const item = id ? itemById.get(id) : undefined;
       if (item) toggleCompare(item);
+      return;
+    }
+
+    const detailButton = target.closest<HTMLButtonElement>("[data-detail-id]");
+    if (detailButton) {
+      event.preventDefault();
+      event.stopPropagation();
+      const id = detailButton.dataset.detailId;
+      const item = id ? itemById.get(id) : undefined;
+      if (item) openDetail(item);
       return;
     }
 
@@ -433,12 +583,12 @@ onMount(() => {
   tablist?.addEventListener("keydown", onKeydown);
   window.addEventListener("hashchange", onHashChange);
   document.addEventListener("astro:page-load", onPageLoad);
-  document.addEventListener("click", onDocumentClick);
+  document.addEventListener("click", onDocumentClick, true);
 
   /* Прогрессивное улучшение: без JS карточки остаются статическими. */
   document.documentElement.dataset.dbEnhanced = "true";
   for (const element of document.querySelectorAll<HTMLElement>(
-    "[data-compare-id], [data-desc-toggle], [data-reset-filters]",
+    "[data-compare-id], [data-detail-id], [data-desc-toggle], [data-reset-filters]",
   )) {
     element.hidden = false;
   }
@@ -454,18 +604,27 @@ onMount(() => {
     const initial = location.hash.replace("#", "");
     if (isTabId(initial)) activate(initial);
   }
+  const parsedCard = parseCardParam(params.get("card"), itemById);
+  if (parsedCard) {
+    const item = itemById.get(parsedCard.id);
+    if (item) {
+      activate(parsedCard.tab);
+      detailItem = item;
+      detailOpen = true;
+    }
+  }
 
   restored = true;
-  syncCompareUrl();
+  syncUrl();
   syncCompareDom();
 
   /* После клиентской навигации URL может обновиться уже после mount. */
-  const urlTimer = parsed
+  const urlTimer = parsed || parsedCard
     ? undefined
     : setTimeout(() => {
-        if (applyCompareFromUrl()) {
+        if (applyCompareFromUrl() || applyCardFromUrl()) {
           syncCompareDom();
-          syncCompareUrl();
+          syncUrl();
         }
       }, 80);
 
@@ -475,7 +634,7 @@ onMount(() => {
     tablist?.removeEventListener("keydown", onKeydown);
     window.removeEventListener("hashchange", onHashChange);
     document.removeEventListener("astro:page-load", onPageLoad);
-    document.removeEventListener("click", onDocumentClick);
+    document.removeEventListener("click", onDocumentClick, true);
     document.body.classList.remove("has-compare-tray");
     delete document.documentElement.dataset.dbEnhanced;
     runSearch.cancel();
@@ -495,13 +654,16 @@ function activate(next: TabId, focus = false): void {
   if (next !== tab) {
     tab = next;
     compareOpen = false;
-    if (type !== "all" && !types[next].some((option) => option.value === type)) type = "all";
+    if (detailItem && detailItem.tab !== next) {
+      detailItem = null;
+      detailOpen = false;
+    }
     const available = new Set(
       items.filter((item) => item.tab === next).flatMap((item) => item.tags),
     );
     appliedTags = appliedTags.filter((id) => available.has(id));
     tagDraft = tagDraft.filter((id) => available.has(id));
-    if (restored) syncCompareUrl();
+    if (restored) syncUrl();
     else {
       try {
         const url = new URL(location.href);
@@ -546,26 +708,38 @@ function resetFilters(): void {
   searchInput = "";
   searchQuery = "";
   faction = "all";
-  type = "all";
   appliedTags = [];
   tagDraft = [];
   tagMode = "all";
   tagModeDraft = "all";
+  weaponTags = [];
+  weaponTagDraft = [];
+  weaponTagMode = "all";
+  weaponTagModeDraft = "all";
   if (tagPanel?.matches(":popover-open")) tagPanel.hidePopover();
+  if (weaponTagPanel?.matches(":popover-open")) weaponTagPanel.hidePopover();
 }
 
 function toggleAppliedTagMode(): void {
   tagMode = tagMode === "all" ? "any" : "all";
 }
 
+function toggleAppliedWeaponTagMode(): void {
+  weaponTagMode = weaponTagMode === "all" ? "any" : "all";
+}
+
 function setTagModeDraft(next: TagMatchMode): void {
   tagModeDraft = next;
+}
+
+function setWeaponTagModeDraft(next: TagMatchMode): void {
+  weaponTagModeDraft = next;
 }
 
 function onTagBeforeToggle(event: ToggleEvent): void {
   // Позиционируем панель синхронно до показа: toggle-событие popover асинхронное,
   // и без этого первый видимый кадр рисуется в [0, 0] и панель «прыгает».
-  if (event.newState === "open") positionTagPanel();
+  if (event.newState === "open") positionPanel(tagButton, tagPanel);
 }
 
 function onTagToggle(event: Event): void {
@@ -574,12 +748,32 @@ function onTagToggle(event: Event): void {
   if (!open) return;
   tagDraft = [...appliedTags];
   tagModeDraft = tagMode;
-  positionTagPanel();
-  requestAnimationFrame(positionTagPanel);
+  positionPanel(tagButton, tagPanel);
+  requestAnimationFrame(() => positionPanel(tagButton, tagPanel));
+}
+
+function onWeaponTagBeforeToggle(event: ToggleEvent): void {
+  if (event.newState === "open") positionPanel(weaponTagButton, weaponTagPanel);
+}
+
+function onWeaponTagToggle(event: Event): void {
+  const open = (event as ToggleEvent).newState === "open";
+  weaponTagOpen = open;
+  if (!open) return;
+  weaponTagDraft = [...weaponTags];
+  weaponTagModeDraft = weaponTagMode;
+  positionPanel(weaponTagButton, weaponTagPanel);
+  requestAnimationFrame(() => positionPanel(weaponTagButton, weaponTagPanel));
 }
 
 function toggleTag(id: string): void {
   tagDraft = tagDraft.includes(id) ? tagDraft.filter((tag) => tag !== id) : [...tagDraft, id];
+}
+
+function toggleWeaponTag(id: string): void {
+  weaponTagDraft = weaponTagDraft.includes(id)
+    ? weaponTagDraft.filter((tag) => tag !== id)
+    : [...weaponTagDraft, id];
 }
 
 function applyTags(): void {
@@ -588,14 +782,23 @@ function applyTags(): void {
   tagPanel?.hidePopover();
 }
 
+function applyWeaponTags(): void {
+  weaponTags = [...weaponTagDraft];
+  weaponTagMode = weaponTagModeDraft;
+  weaponTagPanel?.hidePopover();
+}
+
 function resetTags(): void {
   tagDraft = [];
   appliedTags = [];
 }
 
-function positionTagPanel(): void {
-  const button = tagButton;
-  const panel = tagPanel;
+function resetWeaponTags(): void {
+  weaponTagDraft = [];
+  weaponTags = [];
+}
+
+function positionPanel(button: HTMLElement | null, panel: HTMLElement | null): void {
   if (!button || !panel) return;
   const rect = button.getBoundingClientRect();
   const width = Math.min(360, window.innerWidth - 24);
@@ -650,7 +853,7 @@ function persistSelection(): void {
   }
 }
 
-function syncCompareUrl(): void {
+function syncUrl(): void {
   try {
     const url = new URL(location.href);
     url.hash = tab;
@@ -660,10 +863,35 @@ function syncCompareUrl(): void {
     } else {
       url.searchParams.delete("compare");
     }
+    if (detailOpen && detailItem) {
+      url.searchParams.set("card", serializeCardParam(detailItem.tab, detailItem.id));
+    } else {
+      url.searchParams.delete("card");
+    }
     history.replaceState(null, "", url);
   } catch {
     /* file:// и песочницы без History API */
   }
+}
+
+function openDetail(item: ExplorerItem): void {
+  detailItem = item;
+  detailOpen = true;
+  syncUrl();
+}
+
+function openDetailById(id: string): void {
+  const item = itemById.get(id);
+  if (item) openDetail(item);
+}
+
+function closeDetail(): void {
+  detailOpen = false;
+  syncUrl();
+}
+
+function toggleDetailCompare(item: ExplorerItem): void {
+  toggleCompare(item);
 }
 
 function showNotice(message: string): void {
@@ -689,7 +917,7 @@ function toggleCompare(item: ExplorerItem): void {
   selectedByTab = { ...selectedByTab, [item.tab]: next };
   if (next.length < 2) compareOpen = false;
   persistSelection();
-  syncCompareUrl();
+  syncUrl();
 }
 
 function removeCompare(id: string): void {
@@ -699,7 +927,7 @@ function removeCompare(id: string): void {
   selectedByTab = { ...selectedByTab, [item.tab]: list };
   if (list.length < 2) compareOpen = false;
   persistSelection();
-  syncCompareUrl();
+  syncUrl();
 }
 
 function clearCompare(): void {
@@ -707,7 +935,7 @@ function clearCompare(): void {
   selectedByTab = { ...selectedByTab, [currentCardTab]: [] };
   compareOpen = false;
   persistSelection();
-  syncCompareUrl();
+  syncUrl();
 }
 
 function openCompare(): void {
@@ -771,18 +999,6 @@ onDestroy(() => {
       {@html iconSvg(Down, "select-field__chevron")}
     </span>
 
-    {#if typeOptions.length > 0}
-      <span class="select-field">
-        <select bind:value={type} aria-label={labels.type}>
-          <option value="all">{labels.all}</option>
-          {#each typeOptions as option (option.value)}
-            <option value={option.value}>{option.label}</option>
-          {/each}
-        </select>
-        {@html iconSvg(Down, "select-field__chevron")}
-      </span>
-    {/if}
-
     {#if tagOptions.length > 0}
       <div class="tag-filter">
         <button
@@ -797,6 +1013,25 @@ onDestroy(() => {
           aria-label={tagButtonLabel}
         >
           <span class="wwn-select__value">{tagButtonLabel}</span>
+          {@html iconSvg(Down)}
+        </button>
+      </div>
+    {/if}
+
+    {#if weaponTagOptions.length > 0}
+      <div class="tag-filter tag-filter--weapon">
+        <button
+          type="button"
+          class="wwn-select__btn"
+          class:is-open={weaponTagOpen}
+          bind:this={weaponTagButton}
+          popovertarget="databaseWeaponTagPanel"
+          aria-haspopup="dialog"
+          aria-expanded={weaponTagOpen}
+          aria-controls="databaseWeaponTagPanel"
+          aria-label={weaponTagButtonLabel}
+        >
+          <span class="wwn-select__value">{weaponTagButtonLabel}</span>
           {@html iconSvg(Down)}
         </button>
       </div>
@@ -842,6 +1077,17 @@ onDestroy(() => {
           onclick={toggleAppliedTagMode}
         >
           {labels.tagMode[tagMode]}
+        </button>
+      {/if}
+      {#if weaponTags.length > 0}
+        <button
+          class="database-active__mode"
+          type="button"
+          title={labels.tagMode.label}
+          aria-label={`${labels.weaponTag}: ${labels.tagMode[weaponTagMode]}`}
+          onclick={toggleAppliedWeaponTagMode}
+        >
+          {labels.tagMode[weaponTagMode]}
         </button>
       {/if}
       <button class="database-active__reset" type="button" onclick={resetFilters}>
@@ -933,6 +1179,85 @@ onDestroy(() => {
     </div>
   </div>
 
+  <div
+    class="tag-panel"
+    id="databaseWeaponTagPanel"
+    popover="auto"
+    role="dialog"
+    aria-label={labels.weaponTag}
+    bind:this={weaponTagPanel}
+    onbeforetoggle={onWeaponTagBeforeToggle}
+    ontoggle={onWeaponTagToggle}
+  >
+    <div class="tag-panel__head">
+      <span class="tag-panel__title">{labels.weaponTagPanelTitle}</span>
+      <fieldset class="tag-mode">
+        <legend class="visually-hidden">{labels.tagMode.label}</legend>
+        <button
+          type="button"
+          class="tag-mode__btn"
+          class:is-active={weaponTagModeDraft === "all"}
+          aria-pressed={weaponTagModeDraft === "all"}
+          onclick={() => setWeaponTagModeDraft("all")}
+        >
+          {labels.tagMode.all}
+        </button>
+        <button
+          type="button"
+          class="tag-mode__btn"
+          class:is-active={weaponTagModeDraft === "any"}
+          aria-pressed={weaponTagModeDraft === "any"}
+          onclick={() => setWeaponTagModeDraft("any")}
+        >
+          {labels.tagMode.any}
+        </button>
+      </fieldset>
+    </div>
+    <p class="tag-panel__mode-hint">
+      {weaponTagModeDraft === "all" ? labels.tagMode.allHint : labels.tagMode.anyHint}
+    </p>
+    <div class="tag-panel__body">
+      {#each weaponTagGroups as group (group.id)}
+        <div class="tag-panel__group">
+          <div class="tag-panel__group-title">{group.title}</div>
+          <div class="tag-panel__chips">
+            {#each group.tags as tag (tag.id)}
+              <button
+                type="button"
+                class="tag-chip"
+                aria-pressed={weaponTagDraft.includes(tag.id)}
+                onclick={() => toggleWeaponTag(tag.id)}
+              >
+                {tag.label}<span class="tag-chip__count">{tag.count}</span>
+              </button>
+            {/each}
+          </div>
+        </div>
+      {/each}
+    </div>
+    <div class="tag-panel__preview" role="status" aria-live="polite">
+      <span class:is-empty={showWeaponTagEmptyHint}>
+        {formatTemplate(labels.tagMode.preview, { n: weaponDraftPreviewCount })}
+      </span>
+      {#if showWeaponTagEmptyHint}
+        <span class="tag-panel__warning">{labels.tagMode.emptyHint}</span>
+      {/if}
+    </div>
+    <div class="tag-panel__foot">
+      <button
+        type="button"
+        class="btn btn--sm tag-panel__reset"
+        disabled={weaponTagDraft.length === 0}
+        onclick={resetWeaponTags}
+      >
+        {labels.tagClear}
+      </button>
+      <button type="button" class="btn btn--cyan btn--sm tag-panel__apply" onclick={applyWeaponTags}>
+        {labels.tagApply}{weaponTagDraft.length ? ` (${weaponTagDraft.length})` : ""}
+      </button>
+    </div>
+  </div>
+
   {#if selectedItems.length > 0}
     <CompareTray
       items={selectedItems}
@@ -954,6 +1279,18 @@ onDestroy(() => {
     onremove={removeCompare}
     onclear={clearCompare}
     onadd={addAnother}
+    ondetail={openDetailById}
+  />
+
+  <CardDetailDialog
+    open={detailOpen}
+    item={detailItem}
+    {tags}
+    {lang}
+    compared={detailItem ? selectedByTab[detailItem.tab].includes(detailItem.id) : false}
+    onclose={closeDetail}
+    oncompare={toggleDetailCompare}
+    ondetail={openDetailById}
   />
 </div>
 

@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
 
-  import { BUILDING_TYPES, UNIT_TYPES } from "../../../src/lib/content-constants";
   import {
     type AskConfirm,
     type Bootstrap,
@@ -64,13 +63,10 @@
   let error = $state("");
   let search = $state("");
   let factionFilter = $state("all");
-  let typeFilter = $state("all");
   let statusFilter = $state("all");
 
   const factionById = $derived(new Map(bootstrap.factions.map((faction) => [faction.id, faction])));
   const tagById = $derived(new Map(bootstrap.tags.map((tag) => [tag.id, tag])));
-
-  const typeOptions = $derived(name === "units" ? [...UNIT_TYPES] : [...BUILDING_TYPES]);
 
   const query = $derived(search.trim().toLowerCase().replace(/ё/g, "е"));
 
@@ -86,7 +82,6 @@
         if (!isCard(item)) return false;
         const card = item;
         if (factionFilter !== "all" && card.faction !== factionFilter) return false;
-        if (typeFilter !== "all" && card.type !== typeFilter) return false;
         if (statusFilter === "draft" && !card.draft) return false;
         if (statusFilter === "new" && !card.new) return false;
         if (statusFilter === "published" && card.draft) return false;
@@ -163,7 +158,6 @@
   function resetFilters(): void {
     search = "";
     factionFilter = "all";
-    typeFilter = "all";
     statusFilter = "all";
   }
 
@@ -206,14 +200,6 @@
         </select>
       </div>
       <div class="field">
-        <select bind:value={typeFilter} aria-label="Тип">
-          <option value="all">Все типы</option>
-          {#each typeOptions as type}
-            <option value={type}>{type}</option>
-          {/each}
-        </select>
-      </div>
-      <div class="field">
         <select bind:value={statusFilter} aria-label="Статус">
           <option value="all">Любой статус</option>
           <option value="published">Опубликованные</option>
@@ -225,7 +211,7 @@
 
     <span class="toolbar__spacer"></span>
     <span class="badge">{formatCount(filtered.length)} из {formatCount(items.length)}</span>
-    {#if search || factionFilter !== "all" || typeFilter !== "all" || statusFilter !== "all"}
+    {#if search || factionFilter !== "all" || statusFilter !== "all"}
       <button class="btn btn--ghost btn--small" type="button" onclick={resetFilters}>Сбросить</button>
     {/if}
     <button class="icon-btn" type="button" title="Обновить" onclick={load}>
@@ -252,7 +238,6 @@
             <th></th>
             <th>Название</th>
             <th>Фракция</th>
-            <th>Тип</th>
             <th>Теги</th>
             <th>Статы</th>
             <th>Статус</th>
@@ -272,7 +257,6 @@
                 </div>
               </td>
               <td>{factionById.get(card.faction)?.name.ru ?? card.faction}</td>
-              <td><span class="badge">{card.type}</span></td>
               <td>
                 {#each card.tags.slice(0, 3) as tag}
                   <span class="badge">{tagById.get(tag)?.name.ru ?? tag}</span>
@@ -280,8 +264,9 @@
                 {#if card.tags.length > 3}<span class="badge">+{card.tags.length - 3}</span>{/if}
               </td>
               <td>
-                <span class="badge">cost {card.cost}</span>
+                <span class="badge">полная {card.cost + card.energy / 4}</span>
                 <span class="badge">hp {card.hp}</span>
+                {#if card.weapons?.length}<span class="badge">оружие {card.weapons.length}</span>{/if}
               </td>
               <td>
                 {#if card.draft}<span class="badge badge--warn">черновик</span>{/if}

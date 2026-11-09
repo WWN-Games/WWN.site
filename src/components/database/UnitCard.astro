@@ -18,7 +18,6 @@ import {
   resolveImage,
   type StatScale,
   tagLabel,
-  typeLabel,
 } from "@/lib/database";
 import type { Faction, Tag } from "@/lib/schemas";
 import type { Lang } from "@/lib/site";
@@ -43,9 +42,10 @@ const initials = initialsOf(name);
 const bars = buildBars(card, lang, scale);
 const strongVs = pickList(card.strongVs, lang);
 const weakVs = pickList(card.weakVs, lang);
-const hasCosts = card.cost > 0 || card.buildTime > 0;
+const hasCosts = card.fullCost > 0 || card.buildTime > 0;
 const canExpandDesc = desc.length > 220;
 const searchText = cardSearchText(card, lang, factions, tags);
+const detailLabel = t(lang, "database.detail");
 ---
 
 <article
@@ -58,6 +58,7 @@ const searchText = cardSearchText(card, lang, factions, tags);
   {card.isNew && <span class="unit-card__new">{t(lang, "database.new")}</span>}
 
   <button class="unit-card__compare" type="button" data-compare-id={card.id} hidden></button>
+  <button class="unit-card__detail" type="button" data-detail-id={card.id} hidden>{detailLabel}</button>
 
   <div class="unit-card__top">
     <div class="unit-card__img">
@@ -82,7 +83,6 @@ const searchText = cardSearchText(card, lang, factions, tags);
 
   <div class="unit-card__tags">
     <span class="chip chip--faction">{factionName(factions, card.faction, lang)}</span>
-    {card.type && <span class="chip">{typeLabel(card.type, lang)}</span>}
     {card.tags.map((id) => <span class="chip chip--tag">{tagLabel(tags, id, lang)}</span>)}
     {role && <span class="chip">{role}</span>}
     {card.draft && <span class="chip chip--draft">{t(lang, "database.draft")}</span>}
@@ -91,15 +91,15 @@ const searchText = cardSearchText(card, lang, factions, tags);
   {
     hasCosts && (
       <div class="unit-card__sub">
-        {card.cost > 0 && (
-          <span class="chip">
-            {t(lang, "database.cost")}: {formatNumber(card.cost, lang)}
+        {card.fullCost > 0 && (
+          <span class="chip chip--cost">
+            {t(lang, "database.fullCost")}: {formatNumber(card.fullCost, lang)}
           </span>
         )}
         {card.buildTime > 0 && (
           <span class="chip">
             {t(lang, "database.buildTime")}: {formatNumber(card.buildTime, lang)}
-            {t(lang, "database.seconds")} (1x)
+            {t(lang, "database.seconds")}
           </span>
         )}
       </div>

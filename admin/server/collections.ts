@@ -3,7 +3,7 @@ import path from "node:path";
 import { isDeepStrictEqual } from "node:util";
 import { withDerivedDps } from "../../src/lib/cards.ts";
 import type { CollectionName } from "../../src/lib/content-constants.ts";
-import { BUILDING_TYPES, UNIT_TYPES } from "../../src/lib/content-constants.ts";
+import { UNLOAD_OPTIONS } from "../../src/lib/content-constants.ts";
 import {
   buildingSchema,
   factionSchema,
@@ -79,7 +79,32 @@ function cardPayload(item: Card): Record<string, unknown> {
     weapons: derived.weapons?.map((weapon) => ({
       ...weapon,
       name: cleanText(weapon.name),
+      count: Math.max(1, Math.round(weapon.count ?? 1)),
+      tags: [...new Set(stringArray(weapon.tags))],
     })),
+    builder: item.builder
+      ? {
+          ...item.builder,
+          healTags: [...new Set(stringArray(item.builder.healTags))],
+        }
+      : undefined,
+    factories: item.factories?.length
+      ? item.factories.map((factory) => ({
+          ...factory,
+          name: cleanText(factory.name),
+          producedUnits: [...new Set(stringArray(factory.producedUnits))],
+        }))
+      : undefined,
+    transports: item.transports?.length
+      ? item.transports.map((transport) => ({
+          ...transport,
+          name: cleanText(transport.name),
+          cargoTags: [...new Set(stringArray(transport.cargoTags))],
+          unload: [...new Set(transport.unload)].filter((option) =>
+            (UNLOAD_OPTIONS as readonly string[]).includes(option),
+          ),
+        }))
+      : undefined,
   };
 }
 
@@ -145,18 +170,24 @@ async function validateCard(
   item.id = item.id.trim();
   item.faction = item.faction.trim();
   if (!isSlug(item.id)) throw new HttpError(400, "id: только латиница, цифры и дефис");
-  const typeValues = name === "units" ? UNIT_TYPES : BUILDING_TYPES;
-  if (!(typeValues as readonly string[]).includes(item.type)) {
-    throw new HttpError(400, `type: неизвестный тип «${item.type}»`);
-  }
   if (
     !Number.isFinite(item.cost) ||
+    !Number.isFinite(item.energy) ||
     !Number.isFinite(item.hp) ||
     !Number.isFinite(item.buildTime)
   ) {
-    throw new HttpError(400, "cost, hp и buildTime должны быть числами");
+    throw new HttpError(400, "cost, energy, hp и buildTime должны быть числами");
   }
-  for (const key of ["shield", "selfRegen", "shieldRegen", "dps", "speed", "range"] as const) {
+  if (item.energy < 0) throw new HttpError(400, "energy: не может быть отрицательной");
+  for (const key of [
+    "shield",
+    "armor",
+    "selfRegen",
+    "shieldRegen",
+    "speed",
+    "turnSpeed",
+    "range",
+  ] as const) {
     const value = item[key];
     if (value !== undefined && !Number.isFinite(value)) {
       throw new HttpError(400, `${key}: должно быть числом`);
@@ -168,17 +199,79 @@ async function validateCard(
     throw new HttpError(400, `Неизвестная фракция «${item.faction}»`);
   }
   const tags = await readTags();
-  const tagIds = new Set(tags.map((tag) => tag.id));
+  const tagMap = new Map(tags.map((tag) => [tag.id, tag]));
+  const cardTagGroups = new Set(["tier", "class", "movement", "mod"]);
+  const weaponTagGroups = new Set(["weapon", "sector"]);
   for (const tag of item.tags) {
-    if (!tagIds.has(tag)) throw new HttpError(400, `Незарегистрированный тег «${tag}»`);
+    const entry = tagMap.get(tag);
+    if (!entry) throw new HttpError(400, `Незарегистрированный тег «${tag}»`);
+    if (!cardTagGroups.has(entry.group)) {
+      throw new HttpError(400, `Тег «${tag}» не обычный тег карточки`);
+    }
+  }
+  for (const [index, weapon] of (item.weapons ?? []).entries()) {
+    if (!(weapon.fireDelay > 0)) {
+      throw new HttpError(400, `weapons.${index}.fireDelay: должно быть больше нуля`);
+    }
+    if (!Number.isInteger(weapon.count) || weapon.count < 1) {
+      throw new HttpError(400, `weapons.${index}.count: целое число больше нуля`);
+    }
+    for (const tag of weapon.tags) {
+      const entry = tagMap.get(tag);
+      if (!entry) throw new HttpError(400, `Оружие ${index + 1}: неизвестный тег «${tag}»`);
+      if (!weaponTagGroups.has(entry.group)) {
+        throw new HttpError(400, `Оружие ${index + 1}: тег «${tag}» не из групп weapon/sector`);
+      }
+    }
+  }
+  if (item.builder) {
+    for (const tag of item.builder.healTags) {
+      const entry = tagMap.get(tag);
+      if (!entry) throw new HttpError(400, `Строитель: неизвестный тег «${tag}»`);
+      if (!cardTagGroups.has(entry.group)) {
+        throw new HttpError(400, `Строитель: тег «${tag}» не обычный тег карточки`);
+      }
+    }
+  }
+  const units = await readItems<Card>("units");
+  const unitIds = new Set(units.map((unit) => unit.id));
+  for (const [index, factory] of (item.factories ?? []).entries()) {
+    if (!(factory.buildSpeed > 0)) {
+      throw new HttpError(400, `factories.${index}.buildSpeed: должно быть больше нуля`);
+    }
+    for (const unitId of factory.producedUnits) {
+      if (!unitIds.has(unitId)) {
+        throw new HttpError(400, `Завод ${index + 1}: неизвестный юнит «${unitId}»`);
+      }
+    }
+  }
+  for (const [index, transport] of (item.transports ?? []).entries()) {
+    if (!Number.isInteger(transport.seats) || transport.seats < 0) {
+      throw new HttpError(400, `transports.${index}.seats: целое число не меньше нуля`);
+    }
+    for (const tag of transport.cargoTags) {
+      const entry = tagMap.get(tag);
+      if (!entry) throw new HttpError(400, `Транспорт ${index + 1}: неизвестный тег «${tag}»`);
+      if (!cardTagGroups.has(entry.group)) {
+        throw new HttpError(400, `Транспорт ${index + 1}: тег «${tag}» не обычный тег карточки`);
+      }
+    }
   }
 
-  const units = await readItems<Card>("units");
   const buildings = await readItems<Card>("buildings");
   const other = [...units, ...buildings].find(
     (card) => card.id === item.id && card.id !== originalId,
   );
   if (other) throw new HttpError(409, `id «${item.id}» уже используется`);
+  if (originalId && originalId !== item.id) {
+    const refs = await checkUnitReferences(originalId);
+    if (refs.length > 0) {
+      throw new HttpError(
+        409,
+        `Нельзя переименовать: юнит производится заводами ${refs.slice(0, 5).join(", ")}`,
+      );
+    }
+  }
 
   let image = item.image;
   if (image === undefined) {
@@ -372,7 +465,22 @@ async function moveCardImage(oldId: string, newId: string, item: Card): Promise<
 async function checkCardReferences(id: string, kind: "faction" | "tag"): Promise<string[]> {
   const cards = [...(await readItems<Card>("units")), ...(await readItems<Card>("buildings"))];
   return cards
-    .filter((card) => (kind === "faction" ? card.faction === id : card.tags.includes(id)))
+    .filter((card) => {
+      if (kind === "faction") return card.faction === id;
+      return (
+        card.tags.includes(id) ||
+        (card.weapons ?? []).some((weapon) => weapon.tags.includes(id)) ||
+        (card.builder?.healTags ?? []).includes(id) ||
+        (card.transports ?? []).some((transport) => transport.cargoTags.includes(id))
+      );
+    })
+    .map((card) => card.id);
+}
+
+async function checkUnitReferences(id: string): Promise<string[]> {
+  const cards = [...(await readItems<Card>("units")), ...(await readItems<Card>("buildings"))];
+  return cards
+    .filter((card) => (card.factories ?? []).some((factory) => factory.producedUnits.includes(id)))
     .map((card) => card.id);
 }
 
@@ -503,6 +611,15 @@ export async function deleteCollectionItem(
     const refs = await checkCardReferences(id, "tag");
     if (refs.length > 0) {
       throw new HttpError(409, `Тег используется карточками: ${refs.slice(0, 5).join(", ")}`);
+    }
+  }
+  if (name === "units") {
+    const refs = await checkUnitReferences(id);
+    if (refs.length > 0) {
+      throw new HttpError(
+        409,
+        `Юнит производится заводами карточек: ${refs.slice(0, 5).join(", ")}`,
+      );
     }
   }
   if (name === "sections" && (await checkSectionArticles(id))) {

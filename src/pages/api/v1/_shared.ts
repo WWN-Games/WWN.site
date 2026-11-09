@@ -3,7 +3,7 @@
    Все эндпоинты отдают: { schemaVersion, generatedAt, count, items }.
    ============================================================================ */
 
-const API_SCHEMA_VERSION = 1;
+const API_SCHEMA_VERSION = 2;
 
 const API_HEADERS = {
   "Content-Type": "application/json; charset=utf-8",
@@ -20,7 +20,7 @@ interface ApiEnvelope<T> {
 /** Идентификаторы живых цифр stats.json (см. src/lib/stats.ts). */
 export const STAT_IDS = ["buildings", "cards", "factions", "maps", "tags", "units"] as const;
 
-export { withDerivedDps } from "../../../lib/cards.ts";
+export { withDerivedCard, withDerivedDps } from "../../../lib/cards.ts";
 
 /** Стабильный порядок по id. */
 export function byId<T extends { id: string }>(a: T, b: T): number {

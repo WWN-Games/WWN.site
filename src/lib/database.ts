@@ -7,20 +7,44 @@
 import { getCollection } from "astro:content";
 
 import { type DictKey, t } from "../i18n";
-import { withDerivedDps } from "./cards";
+import { barPercent, formatStat, type StatScaleEntryLike, weaponDps } from "./card-stats";
+import { withDerivedCard } from "./cards";
 import type { CompareGroup, CompareMetric } from "./compare";
-import type { CardTab, SortKey, TabId } from "./database-constants";
-import type { Building, Faction, Tag, Text, Unit, Weapon } from "./schemas";
+import type { CardTab, SortKey } from "./database-constants";
+import type {
+  Builder,
+  Building,
+  Faction,
+  Factory,
+  Tag,
+  Text,
+  Transport,
+  Unit,
+  Weapon,
+} from "./schemas";
 import { href, type Lang, localeHref } from "./site";
 import { foldSearch } from "./utils";
 import { entrySlug, getPublished } from "./wiki";
 
+export type { UnloadOption } from "./content-constants";
 export type { CardTab, SortDirection, SortKey, TabId } from "./database-constants";
 
 /* — константы и базовые типы — */
 
-const STAT_KEYS = ["hp", "shield", "selfRegen", "shieldRegen", "dps", "speed", "range"] as const;
+const STAT_KEYS = [
+  "hp",
+  "shield",
+  "armor",
+  "selfRegen",
+  "shieldRegen",
+  "dps",
+  "speed",
+  "range",
+] as const;
 type StatKey = (typeof STAT_KEYS)[number];
+
+/** Эти полосы показываются даже при нулевых значениях у всей базы. */
+const ALWAYS_VISIBLE_STATS = new Set<StatKey>(["dps", "armor"]);
 
 type TagGroup = Tag["group"];
 
@@ -39,6 +63,8 @@ export type StatScale = Record<StatKey, StatScaleEntry | null>;
 
 /** Готовая полоса: значения и проценты посчитаны на сборке. */
 export interface StatBarData {
+  key: StatKey;
+  value: number;
   label: string;
   display: string;
   percent: number;
@@ -51,21 +77,27 @@ export interface DatabaseCard {
   id: string;
   tab: CardTab;
   faction: string;
-  type: string;
   tags: string[];
   name: Text;
   desc: Text;
   role?: Text | undefined;
   cost: number;
+  energy: number;
+  fullCost: number;
   hp: number;
-  buildTime: number;
   shield: number;
+  armor: number;
   selfRegen: number;
   shieldRegen: number;
   dps: number;
   weapons: Weapon[];
+  builder?: Builder | undefined;
+  factories: Factory[];
+  transports: Transport[];
   speed: number;
+  turnSpeed: number;
   range: number;
+  buildTime: number;
   strongVs?: string[] | Text | undefined;
   weakVs?: string[] | Text | undefined;
   draft: boolean;
@@ -91,27 +123,68 @@ export interface DatabaseFaction {
 
 /* — сериализуемый индекс для острова — */
 
+export interface ExplorerWeapon {
+  name: string;
+  count: number;
+  damage: number;
+  fireDelay: number;
+  dps: number;
+  tags: string[];
+  spread?: number | undefined;
+  splashRadius?: number | undefined;
+  stunDuration?: number | undefined;
+}
+
+export interface ExplorerBuilder {
+  buildRange: number;
+  repairSpeed: number;
+  buildSpeed: number;
+  healTags: string[];
+}
+
+export interface ExplorerFactory {
+  name: string;
+  buildSpeed: number;
+  producedUnits: { id: string; name: string }[];
+}
+
+export interface ExplorerTransport {
+  name: string;
+  seats: number;
+  cargoTags: string[];
+  unload: string[];
+}
+
 export interface ExplorerItem {
   id: string;
   tab: CardTab;
   faction: string;
-  type: string;
   tags: string[];
   cost: number;
+  energy: number;
+  fullCost: number;
   hp: number;
   shield: number;
+  armor: number;
   selfRegen: number;
   shieldRegen: number;
   dps: number;
-  weapons: { name: string; damage: number }[];
+  weapons: ExplorerWeapon[];
+  builder?: ExplorerBuilder | undefined;
+  factories: ExplorerFactory[];
+  transports: ExplorerTransport[];
   speed: number;
+  turnSpeed: number;
   range: number;
   buildTime: number;
-  /** Локализованное имя: остров работает только с языком страницы. */
+  /** Локализованные поля для полной карточки. */
   name: string;
+  desc: string;
+  role: string;
+  strongVs: string[];
+  weakVs: string[];
   factionName: string;
   factionColor: string;
-  typeLabel: string;
   image: string | null;
   initials: string;
 }
@@ -124,14 +197,6 @@ export interface ExplorerFaction {
   searchText: string;
 }
 
-interface ExplorerTypeOption {
-  value: string;
-  label: string;
-}
-
-/** Опции типов по табам: у фракций типов нет. */
-export type ExplorerTypes = Record<TabId, ExplorerTypeOption[]>;
-
 export interface ExplorerTag {
   id: string;
   group: TagGroup;
@@ -143,14 +208,16 @@ export interface ExplorerLabels {
   clearSearch: string;
   all: string;
   faction: string;
-  type: string;
   tag: string;
+  weaponTag: string;
   sortLabel: string;
   sortAsc: string;
   sortDesc: string;
   resetFilters: string;
+  dps: string;
   sort: Record<SortKey, string>;
   tagPanelTitle: string;
+  weaponTagPanelTitle: string;
   tagApply: string;
   tagClear: string;
   tagMode: {
@@ -186,9 +253,13 @@ export interface ExplorerLabels {
     trayLabel: string;
     column: string;
     faction: string;
-    type: string;
     tags: string;
     weaponSlot: string;
+    weaponFilter: string;
+    weaponFilterEmpty: string;
+    builder: string;
+    factories: string;
+    transports: string;
     group: Record<CompareGroup, string>;
     metric: Record<CompareMetric, string>;
   };
@@ -197,9 +268,10 @@ export interface ExplorerLabels {
 interface ExplorerData {
   items: ExplorerItem[];
   factions: ExplorerFaction[];
-  types: ExplorerTypes;
   tags: ExplorerTag[];
   labels: ExplorerLabels;
+  /** Шкала DPS — острову нужна для пересчёта полосы при фильтре оружия. */
+  dpsScale: StatScaleEntryLike | null;
 }
 
 interface DatabaseData {
@@ -258,27 +330,6 @@ function emblemFileName(emblem: string): string | null {
   return file && /\.svg$/i.test(file) ? file : null;
 }
 
-/* — подписи типов — */
-
-const TYPE_KEYS: Record<string, DictKey> = {
-  ground: "database.type.ground",
-  air: "database.type.air",
-  naval: "database.type.naval",
-  space: "database.type.space",
-  support: "database.type.support",
-  economy: "database.type.economy",
-  defense: "database.type.defense",
-  structure: "database.type.structure",
-};
-
-export function typeLabel(type: string, lang: Lang): string {
-  const key = TYPE_KEYS[type];
-  return key ? t(lang, key) : type;
-}
-
-/** Канонический порядок типов в фильтре, а не порядок карточек в JSON. */
-const TYPE_ORDER = Object.keys(TYPE_KEYS);
-
 /* — шкала: логарифм с устойчивыми опорами p5/p95 и медианой — */
 
 function valueAt(values: number[], quantile: number): number {
@@ -300,7 +351,7 @@ function computeScale(cards: DatabaseCard[]): StatScale {
       .filter((value) => value > 0)
       .sort((a, b) => a - b);
     if (!values.length) {
-      scale[key] = null;
+      scale[key] = ALWAYS_VISIBLE_STATS.has(key) ? { lo: 1, hi: 1, median: 0 } : null;
       continue;
     }
     const lo = valueAt(values, 0.05);
@@ -311,32 +362,6 @@ function computeScale(cards: DatabaseCard[]): StatScale {
   return scale;
 }
 
-function barPercent(value: number, key: StatKey, scale: StatScale): number {
-  const entry = scale[key];
-  if (!(value > 0) || !entry) return 0;
-  const lo = Math.max(entry.lo, 0.01);
-  const hi = Math.max(entry.hi, lo * 1.01);
-  const span = Math.log(hi / lo);
-  if (!(span > 0)) return 100;
-  const position = Math.log(Math.max(value, lo) / lo) / span;
-  return Math.max(MIN_BAR, Math.min(100, Math.round(MIN_BAR + (100 - MIN_BAR) * position)));
-}
-
-/** Компактный формат значения полосы: 2 знака < 10, 1 знак < 1000, дальше целое. */
-function formatStat(value: number): string {
-  if (!Number.isFinite(value) || value === 0) return "0";
-  const magnitude = Math.abs(value);
-  if (magnitude < 10) {
-    const rounded = Math.round(value * 100) / 100;
-    return String(rounded);
-  }
-  if (magnitude < 1000) {
-    const rounded = Math.round(value * 10) / 10;
-    return String(rounded);
-  }
-  return String(Math.round(value));
-}
-
 export function buildBars(card: DatabaseCard, lang: Lang, scale: StatScale): StatBarData[] {
   const bars: StatBarData[] = [];
   for (const key of STAT_KEYS) {
@@ -344,10 +369,12 @@ export function buildBars(card: DatabaseCard, lang: Lang, scale: StatScale): Sta
     if (!entry) continue;
     const value = card[key];
     bars.push({
+      key,
+      value,
       label: t(lang, `database.${key}`),
       display: formatStat(value),
-      percent: barPercent(value, key, scale),
-      medianPercent: barPercent(entry.median, key, scale),
+      percent: barPercent(value, entry),
+      medianPercent: barPercent(entry.median, entry),
     });
   }
   return bars;
@@ -358,27 +385,32 @@ export function buildBars(card: DatabaseCard, lang: Lang, scale: StatScale): Sta
 type CardData = Unit | Building;
 
 function toCard(id: string, tab: CardTab, data: CardData): DatabaseCard {
-  const derived = withDerivedDps(data);
-  const weapons = derived.weapons ?? [];
+  const derived = withDerivedCard(data);
   return {
     id,
     tab,
     faction: data.faction,
-    type: data.type,
     tags: [...data.tags],
     name: data.name,
     desc: data.desc,
     role: data.role,
     cost: data.cost,
+    energy: data.energy,
+    fullCost: derived.fullCost,
     hp: data.hp,
-    buildTime: data.buildTime,
     shield: data.shield ?? 0,
+    armor: data.armor ?? 0,
     selfRegen: data.selfRegen ?? 0,
     shieldRegen: data.shieldRegen ?? 0,
-    dps: derived.dps ?? 0,
-    weapons,
+    dps: derived.dps,
+    weapons: derived.weapons ?? [],
+    builder: data.builder,
+    factories: data.factories ?? [],
+    transports: data.transports ?? [],
     speed: data.speed ?? 0,
+    turnSpeed: data.turnSpeed ?? 0,
     range: data.range ?? 0,
+    buildTime: data.buildTime,
     strongVs: data.strongVs,
     weakVs: data.weakVs,
     draft: data.draft ?? false,
@@ -396,9 +428,14 @@ export function cardSearchText(
 ): string {
   const name = card.name[lang];
   const tagText = [...new Set(card.tags.flatMap((id) => [id, tagLabel(tags, id, lang)]))].join(" ");
-  const weaponText = card.weapons.map((weapon) => weapon.name[lang]).join(" ");
+  const weaponText = card.weapons
+    .map((weapon) => {
+      const weaponTags = weapon.tags.map((id) => tagLabel(tags, id, lang)).join(" ");
+      return `${weapon.name[lang]} ${weaponTags}`;
+    })
+    .join(" ");
   return foldSearch(
-    `${name} ${factionName(factions, card.faction, lang)} ${typeLabel(card.type, lang)} ${card.role?.[lang] ?? ""} ${card.desc[lang]} ${tagText} ${weaponText}`,
+    `${name} ${factionName(factions, card.faction, lang)} ${card.role?.[lang] ?? ""} ${card.desc[lang]} ${tagText} ${weaponText}`,
   );
 }
 
@@ -408,23 +445,26 @@ function explorerLabels(lang: Lang): ExplorerLabels {
     clearSearch: t(lang, "database.search.clear"),
     all: t(lang, "database.filter.all"),
     faction: t(lang, "database.filter.faction"),
-    type: t(lang, "database.filter.type"),
     tag: t(lang, "database.filter.tag"),
+    weaponTag: t(lang, "database.filter.weaponTag"),
     sortLabel: t(lang, "database.sort.label"),
     sortAsc: t(lang, "database.sort.asc"),
     sortDesc: t(lang, "database.sort.desc"),
     resetFilters: t(lang, "database.filter.reset"),
+    dps: t(lang, "database.dps"),
     sort: {
       name: t(lang, "database.sort.name"),
-      cost: t(lang, "database.sort.cost"),
+      fullCost: t(lang, "database.sort.fullCost"),
       buildTime: t(lang, "database.sort.buildTime"),
       hp: t(lang, "database.sort.hp"),
       shield: t(lang, "database.sort.shield"),
+      armor: t(lang, "database.sort.armor"),
       dps: t(lang, "database.sort.dps"),
       speed: t(lang, "database.sort.speed"),
       range: t(lang, "database.sort.range"),
     },
     tagPanelTitle: t(lang, "database.tag.panelTitle"),
+    weaponTagPanelTitle: t(lang, "database.weaponTag.panelTitle"),
     tagApply: t(lang, "database.tag.apply"),
     tagClear: t(lang, "database.tag.clear"),
     tagMode: {
@@ -441,6 +481,8 @@ function explorerLabels(lang: Lang): ExplorerLabels {
       class: t(lang, "database.tagGroup.class"),
       movement: t(lang, "database.tagGroup.movement"),
       mod: t(lang, "database.tagGroup.mod"),
+      weapon: t(lang, "database.tagGroup.weapon"),
+      sector: t(lang, "database.tagGroup.sector"),
     },
     count: t(lang, "database.count"),
     compare: {
@@ -465,9 +507,13 @@ function explorerLabels(lang: Lang): ExplorerLabels {
       trayLabel: t(lang, "database.compare.trayLabel"),
       column: t(lang, "database.compare.column"),
       faction: t(lang, "database.compare.faction"),
-      type: t(lang, "database.compare.type"),
       tags: t(lang, "database.compare.tags"),
       weaponSlot: t(lang, "database.compare.weaponSlot"),
+      weaponFilter: t(lang, "database.compare.weaponFilter"),
+      weaponFilterEmpty: t(lang, "database.compare.weaponFilterEmpty"),
+      builder: t(lang, "database.compare.builder"),
+      factories: t(lang, "database.compare.factories"),
+      transports: t(lang, "database.compare.transports"),
       group: {
         identity: t(lang, "database.compare.group.identity"),
         cost: t(lang, "database.compare.group.cost"),
@@ -479,17 +525,22 @@ function explorerLabels(lang: Lang): ExplorerLabels {
       },
       metric: {
         cost: t(lang, "database.compare.metric.cost"),
+        energy: t(lang, "database.compare.metric.energy"),
+        fullCost: t(lang, "database.compare.metric.fullCost"),
         buildTime: t(lang, "database.compare.metric.buildTime"),
         hp: t(lang, "database.compare.metric.hp"),
         shield: t(lang, "database.compare.metric.shield"),
+        armor: t(lang, "database.compare.metric.armor"),
         selfRegen: t(lang, "database.compare.metric.selfRegen"),
         shieldRegen: t(lang, "database.compare.metric.shieldRegen"),
         totalHp: t(lang, "database.compare.metric.totalHp"),
         dps: t(lang, "database.compare.metric.dps"),
+        dpsAll: t(lang, "database.compare.metric.dpsAll"),
         range: t(lang, "database.compare.metric.range"),
         speed: t(lang, "database.compare.metric.speed"),
-        dpsPerCost: t(lang, "database.compare.metric.dpsPerCost"),
-        hpPerCost: t(lang, "database.compare.metric.hpPerCost"),
+        turnSpeed: t(lang, "database.compare.metric.turnSpeed"),
+        dpsPerFullCost: t(lang, "database.compare.metric.dpsPerFullCost"),
+        totalHpPerFullCost: t(lang, "database.compare.metric.totalHpPerFullCost"),
       },
     },
   };
@@ -556,28 +607,64 @@ export async function loadDatabase(lang: Lang): Promise<DatabaseData> {
 
   const items: ExplorerItem[] = cards.map((card) => {
     const name = card.name[lang];
-    const cardFactionName = factionName(factionMap, card.faction, lang);
-    const cardTypeLabel = typeLabel(card.type, lang);
     return {
       id: card.id,
       tab: card.tab,
       faction: card.faction,
-      type: card.type,
       tags: card.tags,
       cost: card.cost,
+      energy: card.energy,
+      fullCost: card.fullCost,
       hp: card.hp,
       shield: card.shield,
+      armor: card.armor,
       selfRegen: card.selfRegen,
       shieldRegen: card.shieldRegen,
       dps: card.dps,
-      weapons: card.weapons.map((weapon) => ({ name: weapon.name[lang], damage: weapon.damage })),
+      weapons: card.weapons.map((weapon) => ({
+        name: weapon.name[lang],
+        count: weapon.count,
+        damage: weapon.damage,
+        fireDelay: weapon.fireDelay,
+        dps: weaponDps(weapon),
+        tags: [...weapon.tags],
+        spread: weapon.spread,
+        splashRadius: weapon.splashRadius,
+        stunDuration: weapon.stunDuration,
+      })),
+      builder: card.builder
+        ? {
+            buildRange: card.builder.buildRange,
+            repairSpeed: card.builder.repairSpeed,
+            buildSpeed: card.builder.buildSpeed,
+            healTags: [...card.builder.healTags],
+          }
+        : undefined,
+      factories: card.factories.map((factory) => ({
+        name: factory.name[lang],
+        buildSpeed: factory.buildSpeed,
+        producedUnits: factory.producedUnits.map((id) => ({
+          id,
+          name: cards.find((entry) => entry.id === id)?.name[lang] ?? id,
+        })),
+      })),
+      transports: card.transports.map((transport) => ({
+        name: transport.name[lang],
+        seats: transport.seats,
+        cargoTags: [...transport.cargoTags],
+        unload: [...transport.unload],
+      })),
       speed: card.speed,
+      turnSpeed: card.turnSpeed,
       range: card.range,
       buildTime: card.buildTime,
       name,
-      factionName: cardFactionName,
+      desc: card.desc[lang],
+      role: card.role?.[lang] ?? "",
+      strongVs: pickList(card.strongVs, lang),
+      weakVs: pickList(card.weakVs, lang),
+      factionName: factionName(factionMap, card.faction, lang),
       factionColor: factionColor(factionMap, card.faction),
-      typeLabel: cardTypeLabel,
       image: resolveImage(card.image, card.id),
       initials: initialsOf(name),
     };
@@ -591,20 +678,6 @@ export async function loadDatabase(lang: Lang): Promise<DatabaseData> {
     searchText: foldSearch(`${faction.name[lang]} ${faction.desc[lang]}`),
   }));
 
-  const typeOptions = (tab: CardTab): ExplorerTypeOption[] => {
-    const present = new Set<string>();
-    for (const card of cards) {
-      if (card.tab === tab) present.add(card.type);
-    }
-    return [...present]
-      .sort(
-        (a, b) =>
-          TYPE_ORDER.indexOf(a) - TYPE_ORDER.indexOf(b) ||
-          typeLabel(a, lang).localeCompare(typeLabel(b, lang), lang),
-      )
-      .map((value) => ({ value, label: typeLabel(value, lang) }));
-  };
-
   return {
     cards,
     factions,
@@ -614,13 +687,16 @@ export async function loadDatabase(lang: Lang): Promise<DatabaseData> {
     explorer: {
       items,
       factions: explorerFactions,
-      types: { factions: [], units: typeOptions("units"), buildings: typeOptions("buildings") },
       tags: tagEntries.map((entry) => ({
         id: entry.id,
         group: entry.data.group,
         name: entry.data.name,
       })),
       labels: explorerLabels(lang),
+      dpsScale: scale.dps,
     },
   };
 }
+
+export type { DictKey, StatScaleEntryLike };
+export { MIN_BAR };
