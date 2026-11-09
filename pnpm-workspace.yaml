@@ -5,3 +5,9 @@ packages:
 allowBuilds:
   esbuild: true
   sharp: true
+
+minimumReleaseAgeExclude:
+  - "@astrojs/astro2tsx@0.1.4"
+
+overrides:
+  "@astrojs/astro2tsx": "0.1.4"
