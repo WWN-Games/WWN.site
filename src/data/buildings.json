@@ -7,12 +7,13 @@
     "cost, energy, hp, shield, armor, dps, speed, range, buildTime, turnSpeed — числа;",
     "energy обязательна (0, если энергии нет); полная стоимость = cost + energy / 4.",
     "tags — id обычных тегов из data/tags.json (tier | class | movement | mod).",
-    "weapons — массив орудий: name, count, damage, fireDelay, tags (группы weapon и sector), spread, splashRadius, stunDuration.",
-    "DPS считается из оружия: сумма count * damage / fireDelay. Без оружия DPS = 0.",
+    "weapons — массив орудий: name, count, projectileCount, projectileDelay, damage, fireDelay, armourIgnoreAmount, tags (группы weapon и sector), spread, splashRadius, stunDuration.",
+    "DPS = count * projectileCount * damage / fireDelay. Без оружия DPS = 0.",
     "builder — { buildRange, repairSpeed, buildSpeed, healTags }; factories — список заводов; transports — список отделений.",
-    "shield, armor, selfRegen, shieldRegen, speed, turnSpeed, range можно не писать, если значение 0.",
+    "shield, armor, selfRegen, shieldRegen, speed, turnSpeed, range можно не писать, если значение 0; допустимы дробные значения.",
+    "Способности: missileDefense/torpedoDefense { max, recharge } (зарядов/с), laserDefense, domeShield { radius, points, regen }, atmosphere { time }, ftlJump { type, chargeTime, cooldown, minDistance, energyCost? }.",
     "Необязательное поле image переопределяет картинку, image: \"\" — показать инициалы.",
-    "Необязательные поля карточки: role, strongVs, weakVs, draft, new (new: true — плашка «Новое»)."
+    "Необязательные поля карточки: role, strongVs, weakVs, draft, new, newUntil (плашка «Новинка!» до даты)."
   ],
   "buildings": [
     {

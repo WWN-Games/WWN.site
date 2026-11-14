@@ -51,7 +51,7 @@
 ```
 src/
 ├─ content/wiki/{ru,en}/<раздел>/<статья>.md  — статьи вики
-├─ data/            — units, buildings, factions, tags, sections, stats, news, gallery
+├─ data/            — units, buildings, misc, factions, tags, sections, maps, gallery, videos, feats, stats, news
 ├─ i18n/            — словари RU/EN (паритет гарантируется типами)
 ├─ lib/             — схемы, доступ к контенту, markdown-плагины, утилиты
 ├─ components/      — layout, home, wiki, database, search
@@ -77,13 +77,19 @@ docs/               — документация для редакторов к�
 поиском, фильтрами, сортировкой и сравнением. Фильтр тегов работает в режимах
 «И» (все выбранные теги) и «ИЛИ» (любой из выбранных), отдельный фильтр тегов
 оружия — так же. Выбранные карточки хранятся в `localStorage` и URL:
-`?compare=units:ahaosa,akula#units` (до четырёх, раздельно для юнитов и
-строений). Полная карточка открывается в модальном окне:
+`?compare=units:ahaosa,akula#units` (до четырёх, раздельно для юнитов,
+строений и разного). Полная карточка открывается в модальном окне:
 `?card=units:ahaosa#units`. Логика сравнения — `src/lib/compare.ts`,
 фильтрации — `src/lib/database-view.ts`.
+
+## Разделы
+
+Кроме базы и вики на сайте есть отдельные каталоги: `/maps/` (карты),
+`/gallery/` (скриншоты), `/videos/` (видео YouTube с фильтром RU/EN) и
+`/feats/` (подвиги). EN-версии — под `/en/`. Данные редактируются в админке.
 
 ## Публичный API данных
 
 Сборка публикует статические JSON-эндпоинты: `/api/v1/units.json`,
-`/buildings.json`, `/factions.json`, `/tags.json`, `/stats.json`,
-`/index.json` (манифест со `schemaVersion`).
+`/buildings.json`, `/misc.json`, `/maps.json`, `/factions.json`,
+`/tags.json`, `/stats.json`, `/index.json` (манифест со `schemaVersion`).

@@ -15,9 +15,14 @@
   const collectionLabels: Record<string, string> = {
     units: "Юниты",
     buildings: "Строения",
+    misc: "Разное",
     factions: "Фракции",
     tags: "Теги",
     sections: "Разделы",
+    maps: "Карты",
+    gallery: "Галерея",
+    videos: "Видео",
+    feats: "Подвиги",
   };
 
   const crumbs = $derived.by(() => {

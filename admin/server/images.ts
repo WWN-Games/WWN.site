@@ -18,7 +18,7 @@ const ALLOWED_RASTER_MIME = new Set([
   "image/webp",
 ]);
 
-export type UploadKind = "article" | "card" | "faction";
+export type UploadKind = "article" | "card" | "faction" | "map" | "gallery" | "feat";
 
 interface UploadInput {
   kind: UploadKind;
@@ -136,6 +136,51 @@ export async function saveUpload(input: UploadInput): Promise<UploadResult> {
     return {
       path: `img/database/${id}.avif`,
       url: `/media/public/img/database/${id}.avif`,
+      ...meta,
+    };
+  }
+
+  if (input.kind === "map") {
+    const id = (input.id ?? "").trim();
+    if (!isSlug(id)) throw new HttpError(400, "Сначала задайте корректный id карты");
+    const target = path.join(PUBLIC_ROOT, "img/maps", `${id}.avif`);
+    if (!isInside(path.join(PUBLIC_ROOT, "img/maps"), target)) {
+      throw new HttpError(400, "Некорректный путь изображения");
+    }
+    const meta = await saveRaster(buffer, target, 1600);
+    return {
+      path: `img/maps/${id}.avif`,
+      url: `/media/public/img/maps/${id}.avif`,
+      ...meta,
+    };
+  }
+
+  if (input.kind === "feat") {
+    const id = (input.id ?? "").trim();
+    if (!isSlug(id)) throw new HttpError(400, "Сначала задайте корректный id подвига");
+    const target = path.join(PUBLIC_ROOT, "img/feats", `${id}.avif`);
+    if (!isInside(path.join(PUBLIC_ROOT, "img/feats"), target)) {
+      throw new HttpError(400, "Некорректный путь изображения");
+    }
+    const meta = await saveRaster(buffer, target, 960);
+    return {
+      path: `img/feats/${id}.avif`,
+      url: `/media/public/img/feats/${id}.avif`,
+      ...meta,
+    };
+  }
+
+  if (input.kind === "gallery") {
+    const id = (input.id ?? "").trim();
+    if (!isSlug(id)) throw new HttpError(400, "Сначала задайте корректный id скриншота");
+    const target = path.join(ASSETS_ROOT, "img/gallery", `${id}.avif`);
+    if (!isInside(path.join(ASSETS_ROOT, "img/gallery"), target)) {
+      throw new HttpError(400, "Некорректный путь изображения");
+    }
+    const meta = await saveRaster(buffer, target, 1920);
+    return {
+      path: `assets/img/gallery/${id}.avif`,
+      url: `/media/assets/img/gallery/${id}.avif`,
       ...meta,
     };
   }

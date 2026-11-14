@@ -2,6 +2,13 @@ export function todayIso(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
+export function addMonthsIso(value: string, months: number): string {
+  const date = new Date(`${value}T00:00:00Z`);
+  if (Number.isNaN(date.getTime())) return value;
+  date.setUTCMonth(date.getUTCMonth() + months);
+  return date.toISOString().slice(0, 10);
+}
+
 export function isRealDate(value: string): boolean {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
   if (!match) return false;

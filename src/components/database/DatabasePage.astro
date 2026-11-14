@@ -24,12 +24,14 @@ const { lang } = Astro.props;
 const database = await loadDatabase(lang);
 const unitCards = database.cards.filter((card) => card.tab === "units");
 const buildingCards = database.cards.filter((card) => card.tab === "buildings");
+const miscCards = database.cards.filter((card) => card.tab === "misc");
 const total = database.cards.length;
 
 const tabCounts = {
   factions: database.factions.length,
   units: unitCards.length,
   buildings: buildingCards.length,
+  misc: miscCards.length,
 } as const;
 
 const tabs = [
@@ -39,6 +41,11 @@ const tabs = [
     id: "buildings",
     icon: "icon-park-outline:factory-building",
     label: t(lang, "database.tab.buildings"),
+  },
+  {
+    id: "misc",
+    icon: "icon-park-outline:application-menu",
+    label: t(lang, "database.tab.misc"),
   },
 ] as const;
 
@@ -136,6 +143,20 @@ const jsonLd = {
       <DatabaseGrid tab="buildings" hidden emptyText={emptyText} resetLabel={resetLabel}>
         {
           buildingCards.map((card) => (
+            <UnitCard
+              card={card}
+              lang={lang}
+              factions={database.factionMap}
+              tags={database.tagMap}
+              scale={database.scale}
+            />
+          ))
+        }
+      </DatabaseGrid>
+
+      <DatabaseGrid tab="misc" hidden emptyText={emptyText} resetLabel={resetLabel}>
+        {
+          miscCards.map((card) => (
             <UnitCard
               card={card}
               lang={lang}

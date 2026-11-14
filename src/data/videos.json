@@ -1,0 +1,7 @@
+{
+  "_schema": [
+    "Видео с YouTube. id — строковый идентификатор, youtubeId — id ролика.",
+    "lang — ru | en; title, desc — { ru, en }; date — дата публикации; order — порядок."
+  ],
+  "videos": []
+}

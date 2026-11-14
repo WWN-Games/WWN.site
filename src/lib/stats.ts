@@ -11,6 +11,7 @@ import { statsSchema } from "./schemas";
 export interface SiteStats {
   units: number;
   buildings: number;
+  misc: number;
   cards: number;
   factions: number;
   tags: number;
@@ -18,19 +19,23 @@ export interface SiteStats {
 }
 
 async function loadStats(): Promise<SiteStats> {
-  const [units, buildings, factions, tags] = await Promise.all([
+  const [units, buildings, misc, factions, tags, maps] = await Promise.all([
     getCollection("units"),
     getCollection("buildings"),
+    getCollection("misc"),
     getCollection("factions"),
     getCollection("tags"),
+    getCollection("maps"),
   ]);
   return {
     units: units.length,
     buildings: buildings.length,
-    cards: units.length + buildings.length,
+    misc: misc.length,
+    cards: units.length + buildings.length + misc.length,
     factions: factions.length,
     tags: tags.length,
-    maps: statsSchema.parse(statsJson).maps,
+    // Пока каталог пуст, сохраняем прежнюю цифру из stats.json.
+    maps: maps.length || statsSchema.parse(statsJson).maps,
   };
 }
 

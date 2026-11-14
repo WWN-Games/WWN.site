@@ -5,6 +5,7 @@
    ============================================================================ */
 
 import type { CardTab, ExplorerItem } from "./database";
+import { CARD_TABS } from "./database-constants";
 
 export const MAX_COMPARE = 4;
 
@@ -116,7 +117,7 @@ export interface CardSelection {
 }
 
 function isCardTab(value: string): value is CardTab {
-  return value === "units" || value === "buildings";
+  return (CARD_TABS as readonly string[]).includes(value);
 }
 
 /** `units:ahaosa,argo` → проверенный набор id (не более MAX_COMPARE). */

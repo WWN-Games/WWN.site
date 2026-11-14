@@ -15,6 +15,15 @@ function initYear(): void {
   if (year) year.textContent = String(new Date().getFullYear());
 }
 
+/** Плашка «Новинка!» исчезает по дате без пересборки сайта. */
+function initNewBadges(): void {
+  const today = new Date().toISOString().slice(0, 10);
+  for (const badge of document.querySelectorAll<HTMLElement>("[data-new-until]")) {
+    const until = badge.dataset.newUntil;
+    if (until && until < today) badge.remove();
+  }
+}
+
 function initMobileNav(signal: AbortSignal): void {
   const burger = document.querySelector<HTMLElement>("#burger");
   const mobileNav = document.querySelector<HTMLElement>("#mobileNav");
@@ -154,6 +163,7 @@ function boot(): void {
   const { signal } = controller;
 
   initYear();
+  initNewBadges();
   initMobileNav(signal);
   initScroll(signal);
   initReveal();

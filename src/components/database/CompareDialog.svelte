@@ -50,7 +50,7 @@
   const tagMap = $derived(new Map(tags.map((tag) => [tag.id, tag.name[lang]])));
   const locale = $derived(lang === "en" ? "en-US" : "ru-RU");
   const formatter = $derived(
-    new Intl.NumberFormat(locale, { maximumFractionDigits: 1, minimumFractionDigits: 0 }),
+    new Intl.NumberFormat(locale, { maximumFractionDigits: 2, minimumFractionDigits: 0 }),
   );
   const weaponTagOptions = $derived.by(() =>
     tags
@@ -209,9 +209,15 @@
         const weapon = weaponsFor(item)[index];
         if (!weapon) return { display: "—", best: false };
         const count = weapon.count > 1 ? ` ×${weapon.count}` : "";
+        const projectileCount = weapon.projectileCount ?? 1;
+        const volley = projectileCount > 1 ? ` ×${projectileCount}` : "";
+        const armour =
+          weapon.armourIgnoreAmount !== undefined
+            ? ` · ${t(lang, "database.weapon.armourIgnore")}: ${formatter.format(weapon.armourIgnoreAmount)}`
+            : "";
         return {
-          display: `${weapon.name}${count}`,
-          sub: `${formatter.format(weapon.damage)} / ${formatter.format(weapon.fireDelay)} = ${formatter.format(weapon.dps)} DPS · ${weapon.tags.map(tagName).join(", ") || "—"}`,
+          display: `${weapon.name}${count}${volley}`,
+          sub: `${formatter.format(weapon.damage)} / ${formatter.format(weapon.fireDelay)} = ${formatter.format(weapon.dps)} DPS${armour} · ${weapon.tags.map(tagName).join(", ") || "—"}`,
           best: false,
         };
       });

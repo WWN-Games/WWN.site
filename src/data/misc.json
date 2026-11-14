@@ -1,0 +1,12 @@
+{
+  "_schema": [
+    "Разное: вооружение и технологии. Поля те же, что у юнитов и строений.",
+    "id — строковый идентификатор (картинка: public/img/database/<id>.avif);",
+    "name, desc — { ru, en }; faction — id из factions.json;",
+    "cost, energy, hp, buildTime обязательны; остальные статы — по необходимости;",
+    "weapons — массив орудий: name, count, projectileCount, projectileDelay, damage, fireDelay, armourIgnoreAmount, tags, spread, splashRadius, stunDuration;",
+    "DPS = count * projectileCount * damage / fireDelay.",
+    "Необязательные поля карточки: role, strongVs, weakVs, draft, new, newUntil, способности."
+  ],
+  "misc": []
+}

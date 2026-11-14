@@ -75,18 +75,37 @@ async function safeGitStatus(): Promise<GitStatus> {
 }
 
 async function bootstrap(): Promise<Bootstrap> {
-  const [sections, factions, tags, articles, units, buildings, validation, git, running] =
-    await Promise.all([
-      readSections(),
-      readFactions(),
-      readTags(),
-      listArticles(),
-      readItems<{ id: string }>("units"),
-      readItems<{ id: string }>("buildings"),
-      Promise.resolve(runValidation()),
-      safeGitStatus(),
-      siteRunning(),
-    ]);
+  const [
+    sections,
+    factions,
+    tags,
+    articles,
+    units,
+    buildings,
+    misc,
+    maps,
+    gallery,
+    videos,
+    feats,
+    validation,
+    git,
+    running,
+  ] = await Promise.all([
+    readSections(),
+    readFactions(),
+    readTags(),
+    listArticles(),
+    readItems<{ id: string }>("units"),
+    readItems<{ id: string }>("buildings"),
+    readItems<{ id: string }>("misc"),
+    readItems<{ id: string }>("maps"),
+    readItems<{ id: string }>("gallery"),
+    readItems<{ id: string }>("videos"),
+    readItems<{ id: string }>("feats"),
+    Promise.resolve(runValidation()),
+    safeGitStatus(),
+    siteRunning(),
+  ]);
 
   const enrichedSections = sections.map((section) => {
     const inSection = articles.filter((article) => article.section === section.id);
@@ -110,9 +129,14 @@ async function bootstrap(): Promise<Bootstrap> {
       drafts: articles.filter((article) => article.draft).length,
       units: units.length,
       buildings: buildings.length,
+      misc: misc.length,
       factions: factions.length,
       tags: tags.length,
       sections: sections.length,
+      maps: maps.length,
+      gallery: gallery.length,
+      videos: videos.length,
+      feats: feats.length,
     },
     validation,
     git,
@@ -226,7 +250,14 @@ const apiRoutes: ApiRoute[] = [
         id?: unknown;
         alt?: unknown;
       };
-      if (body.kind !== "article" && body.kind !== "card" && body.kind !== "faction") {
+      if (
+        body.kind !== "article" &&
+        body.kind !== "card" &&
+        body.kind !== "faction" &&
+        body.kind !== "map" &&
+        body.kind !== "gallery" &&
+        body.kind !== "feat"
+      ) {
         throw new HttpError(400, "Неизвестный тип загрузки");
       }
       sendJson(

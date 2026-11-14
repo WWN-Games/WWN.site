@@ -41,6 +41,8 @@ function serializeArticle(file: ParsedFile): string {
     order: file.order,
     updated: file.updated,
     draft: file.draft,
+    new: file.new ?? false,
+    ...(file.newUntil ? { newUntil: file.newUntil } : {}),
   };
   return serializeArticleFrontMatter(data, file.body.trimEnd(), file.extra);
 }
@@ -134,6 +136,8 @@ export async function listArticles(): Promise<ArticleSummary[]> {
       order: base?.order ?? 0,
       updated: base?.updated ?? "",
       draft: base?.draft ?? false,
+      new: base?.new ?? false,
+      newUntil: base?.newUntil,
       hasRu: ru !== null,
       hasEn: en !== null,
       orderMismatch: ru !== null && en !== null && ru.order !== en.order,
@@ -190,6 +194,8 @@ export async function readArticle(slug: string): Promise<Article> {
     order: base?.order ?? 1,
     updated: base?.updated ?? todayIso(),
     draft: base?.draft ?? true,
+    new: base?.new ?? false,
+    newUntil: base?.newUntil,
     orderMismatch: ru !== null && en !== null && ru.order !== en.order,
     draftMismatch: ru !== null && en !== null && ru.draft !== en.draft,
     ru: toFile(ru, "ru"),
@@ -231,6 +237,10 @@ export async function saveArticle(input: ArticleSaveInput): Promise<{
   }
   if (!isRealDate(input.updated)) throw new HttpError(400, "Дата должна быть в формате YYYY-MM-DD");
   if (typeof input.draft !== "boolean") throw new HttpError(400, "draft должен быть boolean");
+  if (typeof input.new !== "boolean") throw new HttpError(400, "new должен быть boolean");
+  if (input.newUntil && !isRealDate(input.newUntil)) {
+    throw new HttpError(400, "newUntil должна быть датой YYYY-MM-DD");
+  }
 
   for (const lang of LANGS) {
     const file = input[lang];
@@ -294,6 +304,8 @@ export async function saveArticle(input: ArticleSaveInput): Promise<{
       order: input.order,
       updated: input.updated,
       draft: input.draft,
+      new: input.new,
+      ...(input.newUntil ? { newUntil: input.newUntil } : {}),
       extra: old?.extra ?? {},
       body: input[lang].body,
       file: toPosix(path.relative(SITE_ROOT, newPaths[index] as string)),
@@ -348,6 +360,7 @@ export async function duplicateArticle(slug: string): Promise<{
     order: order.order,
     updated: todayIso(),
     draft: true,
+    new: false,
     ru: {
       title: `${source.ru.title || source.en.title} (копия)`.trim(),
       desc: source.ru.desc || source.en.desc,

@@ -1,0 +1,27 @@
+{
+  "_schema": [
+    "Галерея скриншотов. image — путь относительно src/ (assets/img/gallery/<файл>.avif).",
+    "caption — подпись { ru, en }; wide — плитка в две колонки; order — порядок."
+  ],
+  "gallery": [
+    {
+      "id": "nuclear-strike",
+      "order": 1,
+      "image": "assets/img/gallery/screenshot-1.avif",
+      "wide": true,
+      "caption": { "ru": "Ядерный удар", "en": "Nuclear strike" }
+    },
+    {
+      "id": "fenearth-units",
+      "order": 2,
+      "image": "assets/img/gallery/screenshot-2.avif",
+      "caption": { "ru": "Фензем юниты", "en": "Fenearth units" }
+    },
+    {
+      "id": "proton-units",
+      "order": 3,
+      "image": "assets/img/gallery/screenshot-3.avif",
+      "caption": { "ru": "Протон юниты", "en": "Proton units" }
+    }
+  ]
+}

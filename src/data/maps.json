@@ -1,0 +1,9 @@
+{
+  "_schema": [
+    "Каталог карт. id — строковый идентификатор (картинка по умолчанию: public/img/maps/<id>.avif).",
+    "name, desc — { ru, en }; order — порядок в каталоге; players — максимум игроков;",
+    "size, mode, author — необязательные подписи { ru, en }; download — ссылка;",
+    "new/newUntil — плашка «Новинка!»."
+  ],
+  "maps": []
+}

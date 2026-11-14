@@ -3,10 +3,10 @@
    Не импортируют astro:content, поэтому их можно тянуть в Svelte-остров.
    ============================================================================ */
 
-export const TABS = ["factions", "units", "buildings"] as const;
+export const TABS = ["factions", "units", "buildings", "misc"] as const;
 export type TabId = (typeof TABS)[number];
 
-export const CARD_TABS = ["units", "buildings"] as const;
+export const CARD_TABS = ["units", "buildings", "misc"] as const;
 export type CardTab = (typeof CARD_TABS)[number];
 
 export const SORT_KEYS = [

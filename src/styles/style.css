@@ -293,6 +293,22 @@ select:focus-visible {
 }
 
 /* Чипы: один компонент для карточек, базы данных и фильтров. */
+.badge-new {
+  display: inline-block;
+  padding: 4px 10px;
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  border: 1px solid rgba(var(--gold-rgb), 0.45);
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(var(--gold-rgb), 0.2), rgba(var(--gold-rgb), 0.08)),
+    rgba(11, 22, 39, 0.9);
+  box-shadow: 0 0 16px rgba(var(--gold-rgb), 0.18);
+}
+
 .chip {
   display: inline-block;
   padding: 4px 10px;
@@ -1824,6 +1840,14 @@ body:has(.mobile-nav:popover-open) {
   }
   .footer__top {
     grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 901px) and (max-width: 1240px) {
+  .nav a {
+    padding: 9px 8px;
+    font-size: 11px;
+    letter-spacing: 0.05em;
   }
 }
 

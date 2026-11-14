@@ -11,7 +11,9 @@
   const { bootstrap, navigate }: Props = $props();
 
   const firstSection = $derived(bootstrap.sections[0]?.id ?? "misc");
-  const cards = $derived(bootstrap.counts.units + bootstrap.counts.buildings);
+  const cards = $derived(
+    bootstrap.counts.units + bootstrap.counts.buildings + bootstrap.counts.misc,
+  );
 </script>
 
 <div class="page-head">
@@ -43,7 +45,7 @@
     <div class="stat__label">Карточки</div>
     <div class="stat__value">{formatCount(cards)}</div>
     <div class="stat__hint">
-      {formatCount(bootstrap.counts.units)} юнитов · {formatCount(bootstrap.counts.buildings)} строений
+      {formatCount(bootstrap.counts.units)} юнитов · {formatCount(bootstrap.counts.buildings)} строений · {formatCount(bootstrap.counts.misc)} разное
     </div>
   </div>
   <div class="stat">

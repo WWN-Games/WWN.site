@@ -74,6 +74,13 @@ const initials = name.slice(0, 2).toUpperCase();
     <span class="chip">
       {t(lang, "database.tab.buildings")}: {formatNumber(faction.counts.buildings, lang)}
     </span>
+    {
+      faction.counts.misc > 0 && (
+        <span class="chip">
+          {t(lang, "database.tab.misc")}: {formatNumber(faction.counts.misc, lang)}
+        </span>
+      )
+    }
   </div>
 
   {desc && <p class="unit-card__desc">{desc}</p>}

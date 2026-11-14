@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
 
+  import { addMonthsIso, todayIso } from "../../shared/date";
   import type {
     AskConfirm,
     Bootstrap,
@@ -12,9 +13,13 @@
   import { dirty as dirtyStore } from "../lib/dirty.svelte";
   import CardForm from "./CardForm.svelte";
   import FactionForm from "./FactionForm.svelte";
+  import FeatForm from "./FeatForm.svelte";
+  import GalleryForm from "./GalleryForm.svelte";
   import Icon from "./Icon.svelte";
+  import MapForm from "./MapForm.svelte";
   import SectionForm from "./SectionForm.svelte";
   import TagForm from "./TagForm.svelte";
+  import VideoForm from "./VideoForm.svelte";
 
   interface Props {
     name: string;
@@ -31,12 +36,17 @@
   const labels: Record<string, { title: string; singular: string }> = {
     units: { title: "Юнит", singular: "юнит" },
     buildings: { title: "Строение", singular: "строение" },
+    misc: { title: "Разное", singular: "запись" },
     factions: { title: "Фракция", singular: "фракция" },
     tags: { title: "Тег", singular: "тег" },
     sections: { title: "Раздел", singular: "раздел" },
+    maps: { title: "Карта", singular: "карта" },
+    gallery: { title: "Скриншот", singular: "скриншот" },
+    videos: { title: "Видео", singular: "видео" },
+    feats: { title: "Подвиг", singular: "подвиг" },
   };
   const info = $derived(labels[name] ?? labels.units);
-  const isCards = $derived(name === "units" || name === "buildings");
+  const isCards = $derived(name === "units" || name === "buildings" || name === "misc");
   const isNew = $derived(!id);
 
   let item = $state<CollectionItem | null>(null);
@@ -56,7 +66,7 @@
 
   function createNew(): CollectionItem {
     const faction = bootstrap.factions[0]?.id ?? "";
-    if (name === "units" || name === "buildings") {
+    if (name === "units" || name === "buildings" || name === "misc") {
       return {
         id: "",
         name: { ru: "", en: "" },
@@ -73,6 +83,7 @@
         image: "",
         draft: false,
         new: true,
+        newUntil: addMonthsIso(todayIso(), 2),
       };
     }
     if (name === "factions") {
@@ -88,6 +99,45 @@
     }
     if (name === "tags") {
       return { id: "", name: { ru: "", en: "" }, group: "tier" };
+    }
+    if (name === "maps") {
+      return {
+        id: "",
+        order: 0,
+        name: { ru: "", en: "" },
+        desc: { ru: "", en: "" },
+        image: "",
+        new: false,
+      };
+    }
+    if (name === "gallery") {
+      return {
+        id: "",
+        order: 0,
+        image: "",
+        caption: { ru: "", en: "" },
+        wide: false,
+      };
+    }
+    if (name === "videos") {
+      return {
+        id: "",
+        order: 0,
+        youtubeId: "",
+        lang: "ru",
+        title: { ru: "", en: "" },
+        desc: { ru: "", en: "" },
+      };
+    }
+    if (name === "feats") {
+      return {
+        id: "",
+        order: 0,
+        name: { ru: "", en: "" },
+        desc: { ru: "", en: "" },
+        image: "",
+        new: false,
+      };
     }
     return {
       id: "",
@@ -241,11 +291,19 @@
   <div class="editor-layout">
     <section class="panel" style="min-width: 0">
       {#if isCards}
-        <CardForm name={name as "units" | "buildings"} bind:item={item} {bootstrap} {toast} />
+        <CardForm name={name as "units" | "buildings" | "misc"} bind:item={item} {bootstrap} {toast} />
       {:else if name === "factions"}
         <FactionForm bind:item={item} {bootstrap} {toast} />
       {:else if name === "tags"}
         <TagForm bind:item={item} />
+      {:else if name === "maps"}
+        <MapForm bind:item={item} {toast} />
+      {:else if name === "gallery"}
+        <GalleryForm bind:item={item} {toast} />
+      {:else if name === "videos"}
+        <VideoForm bind:item={item} />
+      {:else if name === "feats"}
+        <FeatForm bind:item={item} {toast} />
       {:else}
         <SectionForm bind:item={item} />
       {/if}

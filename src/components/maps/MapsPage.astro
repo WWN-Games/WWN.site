@@ -1,0 +1,166 @@
+---
+import { getCollection } from "astro:content";
+import { existsSync } from "node:fs";
+import path from "node:path";
+
+import { t } from "@/i18n";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { isBadgeNew } from "@/lib/cards";
+import { href, type Lang, localeHref, SITE } from "@/lib/site";
+import { formatNumber } from "@/lib/utils";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const publicRoot = path.join(process.cwd(), "public");
+const entries = (await getCollection("maps")).sort(
+  (a, b) => a.data.order - b.data.order || a.data.name[lang].localeCompare(b.data.name[lang], lang),
+);
+const description = t(lang, "meta.desc.maps");
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: t(lang, "meta.title.maps"),
+  description,
+  url: `${SITE}${localeHref(lang, "maps/")}`,
+  inLanguage: lang,
+  mainEntity: { "@type": "ItemList", numberOfItems: entries.length },
+};
+---
+
+<BaseLayout
+  lang={lang}
+  title={t(lang, "meta.title.maps")}
+  description={description}
+  path="maps/"
+  jsonLd={jsonLd}
+>
+  <section class="section section--bordered">
+    <div class="wrap">
+      <div class="section__head">
+        <span class="kicker">{t(lang, "maps.kicker")}</span>
+        <h1 class="section__title">{t(lang, "maps.title")}</h1>
+        <p>{t(lang, "maps.subtitle")}</p>
+      </div>
+
+      {
+        entries.length > 0 ? (
+          <div class="maps-grid">
+            {entries.map((entry) => {
+              const data = entry.data;
+              const showNew = isBadgeNew(data.new, data.newUntil);
+              const defaultImage = `img/maps/${entry.id}.avif`;
+              const image =
+                data.image || existsSync(path.join(publicRoot, defaultImage))
+                  ? href(data.image ?? defaultImage)
+                  : null;
+              return (
+                <article class="map-card" style="--faction-color:#29b8ff">
+                  {showNew && (
+                    <span class="badge-new" data-new-until={data.newUntil}>
+                      {t(lang, "database.new")}
+                    </span>
+                  )}
+                  {image ? (
+                    <a class="map-card__img" href={image} target="_blank" rel="noopener">
+                      <img src={image} alt={data.name[lang]} width="640" height="360" loading="lazy" />
+                    </a>
+                  ) : (
+                    <div class="map-card__img map-card__img--empty">{data.name[lang].slice(0, 2)}</div>
+                  )}
+                  <h2>{data.name[lang]}</h2>
+                  <div class="map-card__chips">
+                    {data.players !== undefined && (
+                      <span class="chip">
+                        {t(lang, "maps.players")}: {formatNumber(data.players, lang)}
+                      </span>
+                    )}
+                    {data.mode && <span class="chip">{data.mode[lang]}</span>}
+                    {data.size && (
+                      <span class="chip">
+                        {t(lang, "maps.size")}: {data.size[lang]}
+                      </span>
+                    )}
+                    {data.author && (
+                      <span class="chip">
+                        {t(lang, "maps.author")}: {data.author[lang]}
+                      </span>
+                    )}
+                  </div>
+                  <p>{data.desc[lang]}</p>
+                  {data.download && (
+                    <a class="btn btn--sm" href={data.download} target="_blank" rel="noopener">
+                      {t(lang, "maps.download")}
+                    </a>
+                  )}
+                </article>
+              );
+            })}
+          </div>
+        ) : (
+          <p class="empty-block">{t(lang, "maps.empty")}</p>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .maps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 18px;
+  }
+  .map-card :global(.badge-new) {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 1;
+  }
+  .map-card {
+    position: relative;
+    display: grid;
+    gap: 10px;
+    align-content: start;
+    padding: 14px;
+    border: 1px solid var(--line);
+    border-top: 2px solid var(--cyan);
+    border-radius: var(--radius);
+    background: var(--surface-1);
+  }
+  .map-card__img {
+    display: block;
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius-xs);
+    background: var(--surface-2);
+  }
+  .map-card__img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .map-card__img--empty {
+    display: grid;
+    place-items: center;
+    font-family: var(--font-display);
+    font-size: 34px;
+    color: var(--cyan);
+  }
+  .map-card h2 {
+    margin: 0;
+    font-size: 18px;
+  }
+  .map-card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 13.5px;
+  }
+  .map-card__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+</style>

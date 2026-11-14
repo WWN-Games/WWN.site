@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
-  import { todayIso } from "../../shared/date";
+  import { addMonthsIso, todayIso } from "../../shared/date";
   import type {
     Article,
     ArticleFile,
@@ -39,6 +39,8 @@
   let order = $state(1);
   let updated = $state(todayIso());
   let draft = $state(true);
+  let isNewBadge = $state(false);
+  let newUntil = $state<string | undefined>(undefined);
   let ru = $state<ArticleFile>({ title: "", desc: "", body: "", file: "", exists: false });
   let en = $state<ArticleFile>({ title: "", desc: "", body: "", file: "", exists: false });
   let originalSlug = $state<string | undefined>(undefined);
@@ -62,6 +64,8 @@
       order,
       updated,
       draft,
+      isNewBadge,
+      newUntil,
       ru: { title: ru.title, desc: ru.desc, body: ru.body },
       en: { title: en.title, desc: en.desc, body: en.body },
     });
@@ -90,6 +94,8 @@
     order = article.order;
     updated = article.updated;
     draft = article.draft;
+    isNewBadge = article.new;
+    newUntil = article.newUntil;
     ru = { ...article.ru };
     en = { ...article.en };
     originalSlug = article.slug;
@@ -105,6 +111,8 @@
     order = info?.nextOrder ?? 1;
     updated = todayIso();
     draft = true;
+    isNewBadge = false;
+    newUntil = undefined;
     name = "";
     ru = emptyFile();
     en = emptyFile();
@@ -140,6 +148,9 @@
     }
     if (!Number.isInteger(order) || order <= 0) issues.push("Порядок должен быть целым числом больше нуля");
     if (!/^\d{4}-\d{2}-\d{2}$/.test(updated)) issues.push("Дата должна быть в формате YYYY-MM-DD");
+    if (isNewBadge && newUntil && !/^\d{4}-\d{2}-\d{2}$/.test(newUntil)) {
+      issues.push("Дата окончания плашки должна быть в формате YYYY-MM-DD");
+    }
     for (const [lang, file] of [["RU", ru], ["EN", en]] as const) {
       if (!file.title.trim()) issues.push(`Заголовок ${lang} не заполнен`);
       if (!file.desc.trim()) issues.push(`Описание ${lang} не заполнено`);
@@ -166,6 +177,8 @@
         order,
         updated,
         draft,
+        new: isNewBadge,
+        newUntil,
         ru: { title: ru.title, desc: ru.desc, body: ru.body },
         en: { title: en.title, desc: en.desc, body: en.body },
       });
@@ -388,6 +401,33 @@
           />
           <label for="article-draft">Черновик</label>
         </div>
+
+        <div class="field field--inline">
+          <input
+            id="article-new"
+            type="checkbox"
+            checked={isNewBadge}
+            onchange={(event) => {
+              isNewBadge = event.currentTarget.checked;
+              newUntil = isNewBadge
+                ? (newUntil ?? addMonthsIso(todayIso(), 2))
+                : undefined;
+            }}
+          />
+          <label for="article-new">Новинка!</label>
+        </div>
+
+        {#if isNewBadge}
+          <div class="field">
+            <label for="article-new-until">Плашка до</label>
+            <input
+              id="article-new-until"
+              type="date"
+              value={newUntil ?? ""}
+              oninput={(event) => (newUntil = event.currentTarget.value || undefined)}
+            />
+          </div>
+        {/if}
       </div>
 
       <div class="editor-tabs">

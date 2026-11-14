@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { filteredWeaponDps, fullCost, weaponDps } from "../../src/lib/card-stats";
+import { isBadgeNew } from "../../src/lib/cards";
 import {
   bestIndexes,
   MAX_COMPARE,
@@ -176,6 +177,7 @@ describe("card stats", () => {
   it("считает полную стоимость и DPS с количеством пушек", () => {
     expect(fullCost(100, 40)).toBe(110);
     expect(weaponDps({ count: 2, damage: 10, fireDelay: 0.5 })).toBe(40);
+    expect(weaponDps({ count: 2, projectileCount: 3, damage: 10, fireDelay: 0.5 })).toBe(120);
     expect(
       filteredWeaponDps(
         [
@@ -186,6 +188,15 @@ describe("card stats", () => {
         "all",
       ),
     ).toBe(10);
+  });
+});
+
+describe("new badge", () => {
+  it("скрывает плашку после даты", () => {
+    expect(isBadgeNew(true, undefined, "2026-11-13")).toBe(true);
+    expect(isBadgeNew(true, "2026-11-13", "2026-11-13")).toBe(true);
+    expect(isBadgeNew(true, "2026-11-12", "2026-11-13")).toBe(false);
+    expect(isBadgeNew(false, "2099-01-01", "2026-11-13")).toBe(false);
   });
 });
 

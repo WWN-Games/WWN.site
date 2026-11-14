@@ -48,9 +48,12 @@ const external = { target: "_blank", rel: "noopener" } as const;
         <ul>
           <li><a href={`${home}#features`}>{t(lang, "nav.features")}</a></li>
           <li><a href={`${home}#factions`}>{t(lang, "nav.factions")}</a></li>
-          <li><a href={`${home}#gallery`}>{t(lang, "nav.gallery")}</a></li>
+          <li><a href={localeHref(lang, "gallery/")}>{t(lang, "nav.gallery")}</a></li>
+          <li><a href={localeHref(lang, "maps/")}>{t(lang, "nav.maps")}</a></li>
+          <li><a href={localeHref(lang, "videos/")}>{t(lang, "nav.videos")}</a></li>
           <li><a href={localeHref(lang, "wiki/")}>{t(lang, "nav.wiki")}</a></li>
           <li><a href={localeHref(lang, "database/")}>{t(lang, "database.title")}</a></li>
+          <li><a href={localeHref(lang, "feats/")}>{t(lang, "nav.feats")}</a></li>
         </ul>
       </div>
 

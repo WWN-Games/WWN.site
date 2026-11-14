@@ -53,10 +53,35 @@
       singular: "раздел",
       newLabel: "Новый раздел",
     },
+    misc: {
+      title: "Разное",
+      singular: "запись",
+      newLabel: "Новая запись",
+    },
+    maps: {
+      title: "Карты",
+      singular: "карта",
+      newLabel: "Новая карта",
+    },
+    gallery: {
+      title: "Галерея",
+      singular: "скриншот",
+      newLabel: "Новый скриншот",
+    },
+    videos: {
+      title: "Видео",
+      singular: "видео",
+      newLabel: "Новое видео",
+    },
+    feats: {
+      title: "Подвиги",
+      singular: "подвиг",
+      newLabel: "Новый подвиг",
+    },
   };
 
   const info = $derived(meta[name] ?? meta.units);
-  const isCards = $derived(name === "units" || name === "buildings");
+  const isCards = $derived(name === "units" || name === "buildings" || name === "misc");
 
   let items = $state<CollectionItem[]>([]);
   let loading = $state(true);
@@ -73,6 +98,7 @@
   function labelOf(item: CollectionItem): string {
     if ("name" in item) return item.name.ru || item.name.en || item.id;
     if ("title" in item) return item.title.ru || item.title.en || item.id;
+    if ("caption" in item) return item.caption.ru || item.caption.en || item.id;
     return item.id;
   }
 
@@ -102,6 +128,12 @@
         }
         return true;
       }
+      if (name === "maps" || name === "gallery" || name === "videos" || name === "feats") {
+        if (query && !JSON.stringify(item).toLowerCase().replace(/ё/g, "е").includes(query)) {
+          return false;
+        }
+        return true;
+      }
       if (name === "tags") {
         if (!isTag(item)) return false;
         if (query && !`${item.id} ${item.name.ru} ${item.name.en}`.toLowerCase().includes(query)) return false;
@@ -120,6 +152,13 @@
     return [...list].sort((a, b) => {
       if (isFaction(a) && isFaction(b)) return a.order - b.order;
       if (isSection(a) && isSection(b)) return a.order - b.order;
+      if (
+        (name === "maps" || name === "gallery" || name === "videos" || name === "feats") &&
+        "order" in a &&
+        "order" in b
+      ) {
+        return a.order - b.order || labelOf(a).localeCompare(labelOf(b), "ru");
+      }
       return labelOf(a).localeCompare(labelOf(b), "ru");
     });
   });
@@ -372,6 +411,48 @@
               </td>
             </tr>
             {/if}
+          {/each}
+        </tbody>
+      </table>
+    </div>
+  {:else if name === "maps" || name === "gallery" || name === "videos" || name === "feats"}
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Название</th>
+            <th>ID</th>
+            <th>Порядок</th>
+            <th>Статус</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {#each filtered as item (item.id)}
+            {@const order = "order" in item ? item.order : 0}
+            {@const isNewItem = "new" in item && item.new}
+            <tr class="is-clickable" onclick={() => navigate(`/collections/${name}/${item.id}`)}>
+              <td><b>{labelOf(item)}</b></td>
+              <td><code>{item.id}</code></td>
+              <td>{order}</td>
+              <td>
+                {#if isNewItem}
+                  <span class="badge badge--cyan">новинка</span>
+                {:else}
+                  <span class="badge badge--ok">ок</span>
+                {/if}
+              </td>
+              <td>
+                <div class="table__actions">
+                  <a class="icon-btn" href={`#/collections/${name}/${item.id}`} title="Редактировать" onclick={(event) => event.stopPropagation()}>
+                    <Icon name="edit" size={15} />
+                  </a>
+                  <button class="icon-btn icon-btn--danger" type="button" title="Удалить" onclick={(event) => { event.stopPropagation(); remove(item); }}>
+                    <Icon name="trash" size={15} />
+                  </button>
+                </div>
+              </td>
+            </tr>
           {/each}
         </tbody>
       </table>

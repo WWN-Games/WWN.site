@@ -17,20 +17,18 @@ const anchor = (id: string) => (isHome ? `#${id}` : `${home}#${id}`);
 const navItems = [
   { key: "nav.features", href: anchor("features") },
   { key: "nav.factions", href: anchor("factions") },
-  { key: "nav.gallery", href: anchor("gallery") },
-  { key: "nav.download", href: anchor("download") },
+  { key: "nav.gallery", href: localeHref(lang, "gallery/"), section: "gallery" },
+  { key: "nav.maps", href: localeHref(lang, "maps/"), section: "maps" },
+  { key: "nav.videos", href: localeHref(lang, "videos/"), section: "videos" },
   { key: "nav.wiki", href: localeHref(lang, "wiki/"), section: "wiki" },
   { key: "database.title", href: localeHref(lang, "database/"), section: "database" },
+  { key: "nav.feats", href: localeHref(lang, "feats/"), section: "feats" },
 ] as const;
 
 const mobileItems = [
-  navItems[0],
-  navItems[1],
-  navItems[2],
+  ...navItems,
+  { key: "nav.download", href: anchor("download") },
   { key: "nav.news", href: anchor("news") },
-  navItems[3],
-  navItems[4],
-  navItems[5],
   { key: "nav.faq", href: anchor("faq") },
 ] as const;
 

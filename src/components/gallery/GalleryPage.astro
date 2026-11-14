@@ -1,0 +1,79 @@
+---
+import { Image } from "astro:assets";
+
+import GalleryLightbox from "@/components/home/GalleryLightbox.svelte";
+import { t } from "@/i18n";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { loadGallery } from "@/lib/gallery";
+import { type Lang, localeHref, SITE } from "@/lib/site";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const items = await loadGallery(lang);
+const lightboxItems = items.map((item) => ({ src: item.lightboxSrc, caption: item.caption }));
+const labels = {
+  dialog: t(lang, "a11y.gallery"),
+  close: t(lang, "gallery.close"),
+  prev: t(lang, "gallery.prev"),
+  next: t(lang, "gallery.next"),
+};
+const description = t(lang, "meta.desc.gallery");
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ImageGallery",
+  name: t(lang, "meta.title.gallery"),
+  description,
+  url: `${SITE}${localeHref(lang, "gallery/")}`,
+  inLanguage: lang,
+};
+---
+
+<BaseLayout
+  lang={lang}
+  title={t(lang, "meta.title.gallery")}
+  description={description}
+  path="gallery/"
+  jsonLd={jsonLd}
+>
+  <section class="section section--bordered">
+    <div class="wrap">
+      <div class="section__head">
+        <span class="kicker">{t(lang, "gallery.pageTitle")}</span>
+        <h1 class="section__title">{t(lang, "gallery.pageSubtitle")}</h1>
+      </div>
+
+      {
+        items.length > 0 ? (
+          <div class="gallery">
+            {items.map((item, index) => (
+              <button
+                type="button"
+                class={`gallery__item${item.wide ? " gallery__item--wide" : ""}`}
+                data-gallery-index={index}
+                aria-label={item.caption}
+              >
+                <Image
+                  src={item.image}
+                  alt={item.caption}
+                  widths={[320, 480, 640, 960, 1440]}
+                  sizes="(max-width: 700px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  format="avif"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <span class="gallery__cap">{item.caption}</span>
+              </button>
+            ))}
+          </div>
+        ) : (
+          <p class="empty-block">{t(lang, "gallery.empty")}</p>
+        )
+      }
+    </div>
+  </section>
+
+  <GalleryLightbox client:idle items={lightboxItems} labels={labels} />
+</BaseLayout>

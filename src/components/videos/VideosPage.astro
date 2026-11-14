@@ -1,0 +1,65 @@
+---
+import { getCollection } from "astro:content";
+
+import VideosExplorer from "@/components/videos/VideosExplorer.svelte";
+import { t } from "@/i18n";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { LINKS } from "@/lib/config";
+import { type Lang, localeHref, SITE } from "@/lib/site";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const items = (await getCollection("videos"))
+  .sort(
+    (a, b) =>
+      a.data.order - b.data.order ||
+      (b.data.date ?? "").localeCompare(a.data.date ?? "") ||
+      a.id.localeCompare(b.id),
+  )
+  .map((entry) => entry.data);
+const description = t(lang, "meta.desc.videos");
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: t(lang, "meta.title.videos"),
+  description,
+  url: `${SITE}${localeHref(lang, "videos/")}`,
+  inLanguage: lang,
+  mainEntity: { "@type": "ItemList", numberOfItems: items.length },
+};
+---
+
+<BaseLayout
+  lang={lang}
+  title={t(lang, "meta.title.videos")}
+  description={description}
+  path="videos/"
+  jsonLd={jsonLd}
+>
+  <section class="section section--bordered">
+    <div class="wrap">
+      <div class="section__head">
+        <span class="kicker">{t(lang, "videos.kicker")}</span>
+        <h1 class="section__title">{t(lang, "videos.title")}</h1>
+        <p>{t(lang, "videos.subtitle")}</p>
+        <div class="videos-channels">
+          <a class="btn btn--ghost btn--sm" href={LINKS.youtubeRu} target="_blank" rel="noopener">YouTube RU</a>
+          <a class="btn btn--ghost btn--sm" href={LINKS.youtubeEn} target="_blank" rel="noopener">YouTube EN</a>
+        </div>
+      </div>
+
+      <VideosExplorer client:idle {lang} {items} />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .videos-channels {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+  }
+</style>

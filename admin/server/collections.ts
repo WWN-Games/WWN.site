@@ -7,12 +7,27 @@ import { UNLOAD_OPTIONS } from "../../src/lib/content-constants.ts";
 import {
   buildingSchema,
   factionSchema,
+  featSchema,
+  gallerySchema,
+  mapSchema,
+  miscSchema,
   sectionSchema,
   tagSchema,
   unitSchema,
+  videoSchema,
 } from "../../src/lib/schemas.ts";
 import { isSlug, isTagId } from "../shared/slug.ts";
-import type { Card, CollectionItem, Faction, Section, Tag } from "../shared/types.ts";
+import type {
+  Card,
+  CollectionItem,
+  Faction,
+  FeatItem,
+  GalleryItemData,
+  MapItem,
+  Section,
+  Tag,
+  VideoItem,
+} from "../shared/types.ts";
 import { SITE_ROOT } from "./config.ts";
 import { collectionPath, readFactions, readItems, readSections, readTags } from "./data.ts";
 import { atomicWrite, fileExists, HttpError, isInside, readText } from "./http.ts";
@@ -25,9 +40,14 @@ const SRC_ROOT = path.join(SITE_ROOT, "src");
 const COLLECTION_SCHEMAS = {
   units: unitSchema,
   buildings: buildingSchema,
+  misc: miscSchema,
   factions: factionSchema,
   tags: tagSchema,
   sections: sectionSchema,
+  maps: mapSchema,
+  gallery: gallerySchema,
+  videos: videoSchema,
+  feats: featSchema,
 } as const;
 
 function stringArray(value: unknown): string[] {
@@ -80,6 +100,8 @@ function cardPayload(item: Card): Record<string, unknown> {
       ...weapon,
       name: cleanText(weapon.name),
       count: Math.max(1, Math.round(weapon.count ?? 1)),
+      projectileCount: Math.max(1, Math.round(weapon.projectileCount ?? 1)),
+      projectileDelay: Math.max(0, weapon.projectileDelay ?? 0),
       tags: [...new Set(stringArray(weapon.tags))],
     })),
     builder: item.builder
@@ -163,7 +185,7 @@ function orderLike(
 }
 
 async function validateCard(
-  name: "units" | "buildings",
+  name: "units" | "buildings" | "misc",
   item: Card,
   originalId: string | undefined,
 ): Promise<Card> {
@@ -216,6 +238,18 @@ async function validateCard(
     if (!Number.isInteger(weapon.count) || weapon.count < 1) {
       throw new HttpError(400, `weapons.${index}.count: целое число больше нуля`);
     }
+    if (!Number.isInteger(weapon.projectileCount ?? 1) || (weapon.projectileCount ?? 1) < 1) {
+      throw new HttpError(400, `weapons.${index}.projectileCount: целое число больше нуля`);
+    }
+    if (!Number.isFinite(weapon.projectileDelay ?? 0) || (weapon.projectileDelay ?? 0) < 0) {
+      throw new HttpError(400, `weapons.${index}.projectileDelay: число не меньше нуля`);
+    }
+    if (
+      weapon.armourIgnoreAmount !== undefined &&
+      (!Number.isFinite(weapon.armourIgnoreAmount) || weapon.armourIgnoreAmount < 0)
+    ) {
+      throw new HttpError(400, `weapons.${index}.armourIgnoreAmount: число не меньше нуля`);
+    }
     for (const tag of weapon.tags) {
       const entry = tagMap.get(tag);
       if (!entry) throw new HttpError(400, `Оружие ${index + 1}: неизвестный тег «${tag}»`);
@@ -259,7 +293,8 @@ async function validateCard(
   }
 
   const buildings = await readItems<Card>("buildings");
-  const other = [...units, ...buildings].find(
+  const misc = await readItems<Card>("misc");
+  const other = [...units, ...buildings, ...misc].find(
     (card) => card.id === item.id && card.id !== originalId,
   );
   if (other) throw new HttpError(409, `id «${item.id}» уже используется`);
@@ -287,7 +322,7 @@ async function validateCard(
   }
   item.image = image?.replace(/^\/+/, "");
 
-  const schema = name === "units" ? unitSchema : buildingSchema;
+  const schema = name === "units" ? unitSchema : name === "buildings" ? buildingSchema : miscSchema;
   const parsed = schema.safeParse(cardPayload(item));
   if (!parsed.success) {
     throw new HttpError(400, "Проверьте поля карточки", zodMessages(name, parsed.error));
@@ -441,6 +476,117 @@ async function validateSection(item: Section, originalId: string | undefined): P
   return parsed.data;
 }
 
+function ensureUniqueId(
+  items: { id: string }[],
+  id: string,
+  originalId: string | undefined,
+  label: string,
+): void {
+  if (items.some((item) => item.id === id && item.id !== originalId)) {
+    throw new HttpError(409, `${label} «${id}» уже существует`);
+  }
+}
+
+function cleanOptionalText(value: { ru?: string; en?: string } | undefined) {
+  return cleanText(value);
+}
+
+async function validateMap(item: MapItem, originalId: string | undefined): Promise<MapItem> {
+  item.id = item.id.trim();
+  if (!isSlug(item.id)) throw new HttpError(400, "id: только латиница, цифры и дефис");
+  item.image = item.image?.trim().replace(/^\/+/, "") || undefined;
+  item.download = item.download?.trim() || undefined;
+  const payload = {
+    ...item,
+    name: cleanText(item.name),
+    desc: cleanText(item.desc),
+    size: cleanOptionalText(item.size),
+    mode: cleanOptionalText(item.mode),
+    author: cleanOptionalText(item.author),
+  };
+  if (item.image) {
+    const target = path.resolve(PUBLIC_ROOT, item.image);
+    if (!isInside(PUBLIC_ROOT, target)) {
+      throw new HttpError(400, "image: путь выходит за пределы public/");
+    }
+    if (!(await fileExists(target))) {
+      throw new HttpError(400, `image: файл public/${item.image} не найден`);
+    }
+  }
+  const parsed = mapSchema.safeParse(payload);
+  if (!parsed.success) {
+    throw new HttpError(400, "Проверьте поля карты", zodMessages("map", parsed.error));
+  }
+  ensureUniqueId(await readItems<MapItem>("maps"), item.id, originalId, "Карта");
+  return parsed.data;
+}
+
+async function validateGallery(
+  item: GalleryItemData,
+  originalId: string | undefined,
+): Promise<GalleryItemData> {
+  item.id = item.id.trim();
+  if (!isSlug(item.id)) throw new HttpError(400, "id: только латиница, цифры и дефис");
+  item.image = (item.image ?? "")
+    .trim()
+    .replace(/^\/+/, "")
+    .replace(/^src\//, "");
+  const target = path.resolve(SRC_ROOT, item.image);
+  if (!isInside(path.join(SRC_ROOT, "assets/img/gallery"), target)) {
+    throw new HttpError(400, "image: путь должен вести в src/assets/img/gallery");
+  }
+  if (!(await fileExists(target))) {
+    throw new HttpError(400, `image: файл src/${item.image} не найден`);
+  }
+  const parsed = gallerySchema.safeParse({ ...item, caption: cleanText(item.caption) });
+  if (!parsed.success) {
+    throw new HttpError(400, "Проверьте поля галереи", zodMessages("gallery", parsed.error));
+  }
+  ensureUniqueId(await readItems<GalleryItemData>("gallery"), item.id, originalId, "Скриншот");
+  return parsed.data;
+}
+
+async function validateVideo(item: VideoItem, originalId: string | undefined): Promise<VideoItem> {
+  item.id = item.id.trim();
+  if (!isSlug(item.id)) throw new HttpError(400, "id: только латиница, цифры и дефис");
+  item.youtubeId = (item.youtubeId ?? "").trim();
+  const parsed = videoSchema.safeParse({
+    ...item,
+    title: cleanText(item.title),
+    desc: cleanOptionalText(item.desc),
+  });
+  if (!parsed.success) {
+    throw new HttpError(400, "Проверьте поля видео", zodMessages("video", parsed.error));
+  }
+  ensureUniqueId(await readItems<VideoItem>("videos"), item.id, originalId, "Видео");
+  return parsed.data;
+}
+
+async function validateFeat(item: FeatItem, originalId: string | undefined): Promise<FeatItem> {
+  item.id = item.id.trim();
+  if (!isSlug(item.id)) throw new HttpError(400, "id: только латиница, цифры и дефис");
+  item.image = item.image?.trim().replace(/^\/+/, "") || undefined;
+  if (item.image) {
+    const target = path.resolve(PUBLIC_ROOT, item.image);
+    if (!isInside(PUBLIC_ROOT, target)) {
+      throw new HttpError(400, "image: путь выходит за пределы public/");
+    }
+    if (!(await fileExists(target))) {
+      throw new HttpError(400, `image: файл public/${item.image} не найден`);
+    }
+  }
+  const parsed = featSchema.safeParse({
+    ...item,
+    name: cleanText(item.name),
+    desc: cleanText(item.desc),
+  });
+  if (!parsed.success) {
+    throw new HttpError(400, "Проверьте поля подвига", zodMessages("feat", parsed.error));
+  }
+  ensureUniqueId(await readItems<FeatItem>("feats"), item.id, originalId, "Подвиг");
+  return parsed.data;
+}
+
 async function moveCardImage(oldId: string, newId: string, item: Card): Promise<void> {
   const oldDefault = path.join(PUBLIC_ROOT, "img/database", `${oldId}.avif`);
   const newDefault = path.join(PUBLIC_ROOT, "img/database", `${newId}.avif`);
@@ -463,7 +609,11 @@ async function moveCardImage(oldId: string, newId: string, item: Card): Promise<
 }
 
 async function checkCardReferences(id: string, kind: "faction" | "tag"): Promise<string[]> {
-  const cards = [...(await readItems<Card>("units")), ...(await readItems<Card>("buildings"))];
+  const cards = [
+    ...(await readItems<Card>("units")),
+    ...(await readItems<Card>("buildings")),
+    ...(await readItems<Card>("misc")),
+  ];
   return cards
     .filter((card) => {
       if (kind === "faction") return card.faction === id;
@@ -478,7 +628,11 @@ async function checkCardReferences(id: string, kind: "faction" | "tag"): Promise
 }
 
 async function checkUnitReferences(id: string): Promise<string[]> {
-  const cards = [...(await readItems<Card>("units")), ...(await readItems<Card>("buildings"))];
+  const cards = [
+    ...(await readItems<Card>("units")),
+    ...(await readItems<Card>("buildings")),
+    ...(await readItems<Card>("misc")),
+  ];
   return cards
     .filter((card) => (card.factories ?? []).some((factory) => factory.producedUnits.includes(id)))
     .map((card) => card.id);
@@ -522,6 +676,7 @@ export async function saveCollectionItem(
   switch (name) {
     case "units":
     case "buildings":
+    case "misc":
       normalized = (await validateCard(name, item as Card, originalId)) as unknown as Record<
         string,
         unknown
@@ -541,6 +696,30 @@ export async function saveCollectionItem(
       break;
     case "sections":
       normalized = (await validateSection(item as Section, originalId)) as unknown as Record<
+        string,
+        unknown
+      >;
+      break;
+    case "maps":
+      normalized = (await validateMap(item as MapItem, originalId)) as unknown as Record<
+        string,
+        unknown
+      >;
+      break;
+    case "gallery":
+      normalized = (await validateGallery(
+        item as GalleryItemData,
+        originalId,
+      )) as unknown as Record<string, unknown>;
+      break;
+    case "videos":
+      normalized = (await validateVideo(item as VideoItem, originalId)) as unknown as Record<
+        string,
+        unknown
+      >;
+      break;
+    case "feats":
+      normalized = (await validateFeat(item as FeatItem, originalId)) as unknown as Record<
         string,
         unknown
       >;
@@ -633,7 +812,7 @@ export async function deleteCollectionItem(
   const raw = await readText(file);
   await atomicWrite(file, deleteJsonItem(raw, name, id));
 
-  if (name === "units" || name === "buildings") {
+  if (name === "units" || name === "buildings" || name === "misc") {
     const card = item as Card;
     const imageRoot = path.join(PUBLIC_ROOT, "img/database");
     const image = card.image?.replace(/^\/+/, "");
@@ -646,6 +825,23 @@ export async function deleteCollectionItem(
       await fs.rm(target, { force: true });
     }
   }
+  if (name === "maps" || name === "feats") {
+    const data = item as MapItem | FeatItem;
+    const folder = name === "maps" ? "maps" : "feats";
+    const root = path.join(PUBLIC_ROOT, `img/${folder}`);
+    const image = data.image?.replace(/^\/+/, "");
+    const relative = image ?? `img/${folder}/${data.id}.avif`;
+    const target = path.resolve(PUBLIC_ROOT, relative);
+    const usedElsewhere = items.some((other) => {
+      const value = (other as MapItem | FeatItem).image?.replace(/^\/+/, "");
+      return (value ?? `img/${folder}/${other.id}.avif`) === relative;
+    });
+    if (!usedElsewhere && isInside(root, target)) {
+      await fs.rm(target, { force: true });
+    }
+  }
+  // Картинку галереи не удаляем: один файл может использоваться несколькими
+  // записями, а Astro всё равно не хранит ссылки на неё в JSON автоматически.
 
   return runValidation();
 }

@@ -1,5 +1,6 @@
 ---
 import { t } from "@/i18n";
+import { isBadgeNew } from "@/lib/cards";
 import type { Lang } from "@/lib/site";
 import { formatDate } from "@/lib/utils";
 
@@ -10,14 +11,18 @@ interface Props {
   /** Дата обновления в формате YYYY-MM-DD. */
   updated: string;
   draft: boolean;
+  new?: boolean | undefined;
+  newUntil?: string | undefined;
 }
 
-const { lang, sectionTitle, readingTime, updated, draft } = Astro.props;
+const { lang, sectionTitle, readingTime, updated, draft, new: isNew, newUntil } = Astro.props;
+const showNew = isBadgeNew(isNew, newUntil);
 ---
 
 <div class="article__meta" data-pagefind-ignore>
   <span>{sectionTitle}</span>
   <span>{readingTime} {t(lang, "wiki.readingTime")}</span>
   <span>{t(lang, "wiki.updated")}: {formatDate(updated, lang)}</span>
+  {showNew && <span class="badge-new" data-new-until={newUntil}>{t(lang, "database.new")}</span>}
   {draft && <span class="badge-draft">{t(lang, "wiki.draft")}</span>}
 </div>

@@ -3,13 +3,44 @@
    не расходились. Здесь остаются только DTO самого интерфейса. */
 
 import type { CollectionName } from "../../src/lib/content-constants.ts";
-import type { Building, Faction, Section, Tag, Text, Unit } from "../../src/lib/schemas.ts";
+import type {
+  Building,
+  Faction,
+  FeatItem,
+  GalleryItemData,
+  MapItem,
+  Misc,
+  Section,
+  Tag,
+  Text,
+  Unit,
+  VideoItem,
+} from "../../src/lib/schemas.ts";
 import type { Lang } from "../../src/lib/site.ts";
 
-export type { CollectionName, Faction, Lang, Section, Tag, Text };
+export type {
+  CollectionName,
+  Faction,
+  FeatItem,
+  GalleryItemData,
+  Lang,
+  MapItem,
+  Section,
+  Tag,
+  Text,
+  VideoItem,
+};
 export type LocalizedText = Text;
-export type Card = Unit | Building;
-export type CollectionItem = Card | Faction | Tag | Section;
+export type Card = Unit | Building | Misc;
+export type CollectionItem =
+  | Card
+  | Faction
+  | Tag
+  | Section
+  | MapItem
+  | GalleryItemData
+  | VideoItem
+  | FeatItem;
 
 /** Section из bootstrap дополняется вычисляемым nextOrder. */
 export type SectionView = Section & { nextOrder?: number };
@@ -45,6 +76,8 @@ export interface Article {
   order: number;
   updated: string;
   draft: boolean;
+  new: boolean;
+  newUntil?: string | undefined;
   orderMismatch: boolean;
   draftMismatch: boolean;
   ru: ArticleFile;
@@ -59,6 +92,8 @@ export interface ArticleSummary {
   order: number;
   updated: string;
   draft: boolean;
+  new: boolean;
+  newUntil?: string | undefined;
   hasRu: boolean;
   hasEn: boolean;
   orderMismatch: boolean;
@@ -98,9 +133,14 @@ export interface Bootstrap {
     drafts: number;
     units: number;
     buildings: number;
+    misc: number;
     factions: number;
     tags: number;
     sections: number;
+    maps: number;
+    gallery: number;
+    videos: number;
+    feats: number;
   };
   validation: ValidationState;
   git: GitStatus;
@@ -116,6 +156,8 @@ export interface ArticleSaveInput {
   order: number;
   updated: string;
   draft: boolean;
+  new: boolean;
+  newUntil?: string | undefined;
   ru: Omit<ArticleFile, "file" | "exists">;
   en: Omit<ArticleFile, "file" | "exists">;
 }

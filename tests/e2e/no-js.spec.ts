@@ -13,5 +13,6 @@ test.describe("Без JavaScript", () => {
     await page.goto("database/");
     await expect(page.locator("#databaseGrid-units")).toBeVisible();
     await expect(page.locator("#databaseGrid-buildings")).toBeVisible();
+    await expect(page.locator("#databaseGrid-misc")).toBeVisible();
   });
 });

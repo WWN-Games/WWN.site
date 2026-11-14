@@ -7,6 +7,7 @@ import heroEn1x from "@/assets/img/lore/tc-en-960.avif";
 import heroRu2x from "@/assets/img/lore/tc-ru.avif";
 import heroRu1x from "@/assets/img/lore/tc-ru-960.avif";
 import { plural, t } from "@/i18n";
+import { isBadgeNew } from "@/lib/cards";
 import type { Lang } from "@/lib/site";
 import { formatDate, formatNumber } from "@/lib/utils";
 import { entryHref, entrySection } from "@/lib/wiki";
@@ -115,6 +116,11 @@ const recent = [...articles]
           {section.articles.map((article) => (
             <li>
               <a href={entryHref(article)}>{article.data.title}</a>
+              {isBadgeNew(article.data.new, article.data.newUntil) && (
+                <span class="badge-new" data-new-until={article.data.newUntil}>
+                  {t(lang, "database.new")}
+                </span>
+              )}
             </li>
           ))}
         </ul>

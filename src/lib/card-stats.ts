@@ -8,6 +8,7 @@ import type { TagMatchMode } from "./database-constants";
 
 export interface WeaponLike {
   count?: number | undefined;
+  projectileCount?: number | undefined;
   damage: number;
   fireDelay: number;
   tags?: readonly string[] | undefined;
@@ -24,11 +25,14 @@ export function fullCost(cost: number, energy: number): number {
   return cost + Math.max(0, energy) / 4;
 }
 
-/** DPS одного орудия с учётом количества одинаковых пушек. */
+/** DPS одного орудия: пушки × снаряды за выстрел × урон снаряда / задержка. */
 export function weaponDps(weapon: WeaponLike): number {
   const count = Number.isFinite(weapon.count) ? Math.max(1, weapon.count ?? 1) : 1;
+  const projectiles = Number.isFinite(weapon.projectileCount)
+    ? Math.max(1, weapon.projectileCount ?? 1)
+    : 1;
   if (!(weapon.damage > 0) || !(weapon.fireDelay > 0)) return 0;
-  return (count * weapon.damage) / weapon.fireDelay;
+  return (count * projectiles * weapon.damage) / weapon.fireDelay;
 }
 
 /** Суммарный DPS всех орудий. */

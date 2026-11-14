@@ -538,6 +538,16 @@ html[data-db-enhanced] .unit-card__desc.is-expanded {
   overflow: visible;
   -webkit-line-clamp: initial;
 }
+.unit-card__abilities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.chip--ability {
+  color: var(--gold);
+  border-color: rgba(var(--gold-rgb), 0.34);
+  background: rgba(var(--gold-rgb), 0.08);
+}
 .unit-card__sub {
   display: flex;
   flex-wrap: wrap;
@@ -1570,10 +1580,19 @@ body.has-compare-tray .database-page {
   margin: auto;
   padding: 0;
   color: var(--text);
-  border: 1px solid var(--line-strong);
+  border: 1px solid color-mix(in srgb, var(--faction-color, var(--cyan)) 42%, var(--line-strong));
+  border-top: 3px solid var(--faction-color, var(--cyan));
   border-radius: 20px;
-  background: linear-gradient(180deg, rgba(12, 26, 46, 0.995), rgba(4, 9, 17, 0.998));
-  box-shadow: 0 34px 100px rgba(0, 0, 0, 0.75);
+  background:
+    radial-gradient(
+      120% 80% at 50% 0%,
+      color-mix(in srgb, var(--faction-color, var(--cyan)) 12%, transparent),
+      transparent 60%
+    ),
+    linear-gradient(180deg, rgba(12, 26, 46, 0.995), rgba(4, 9, 17, 0.998));
+  box-shadow:
+    0 34px 100px rgba(0, 0, 0, 0.75),
+    0 0 44px color-mix(in srgb, var(--faction-color, var(--cyan)) 18%, transparent);
   overflow: hidden;
 }
 .detail-dialog::backdrop {

@@ -1,0 +1,133 @@
+---
+import { getCollection } from "astro:content";
+import { existsSync } from "node:fs";
+import path from "node:path";
+
+import { t } from "@/i18n";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { isBadgeNew } from "@/lib/cards";
+import { href, type Lang, localeHref, SITE } from "@/lib/site";
+import { formatDate } from "@/lib/utils";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const publicRoot = path.join(process.cwd(), "public");
+const entries = (await getCollection("feats")).sort(
+  (a, b) => a.data.order - b.data.order || a.data.name[lang].localeCompare(b.data.name[lang], lang),
+);
+const description = t(lang, "meta.desc.feats");
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: t(lang, "meta.title.feats"),
+  description,
+  url: `${SITE}${localeHref(lang, "feats/")}`,
+  inLanguage: lang,
+  mainEntity: { "@type": "ItemList", numberOfItems: entries.length },
+};
+---
+
+<BaseLayout
+  lang={lang}
+  title={t(lang, "meta.title.feats")}
+  description={description}
+  path="feats/"
+  jsonLd={jsonLd}
+>
+  <section class="section section--bordered">
+    <div class="wrap">
+      <div class="section__head">
+        <span class="kicker">{t(lang, "feats.kicker")}</span>
+        <h1 class="section__title">{t(lang, "feats.title")}</h1>
+        <p>{t(lang, "feats.subtitle")}</p>
+      </div>
+
+      {
+        entries.length > 0 ? (
+          <div class="feats-grid">
+            {entries.map((entry) => {
+              const data = entry.data;
+              const showNew = isBadgeNew(data.new, data.newUntil);
+              const defaultImage = `img/feats/${entry.id}.avif`;
+              const image =
+                data.image || existsSync(path.join(publicRoot, defaultImage))
+                  ? href(data.image ?? defaultImage)
+                  : null;
+              return (
+                <article class="feat-card">
+                  {showNew && (
+                    <span class="badge-new" data-new-until={data.newUntil}>
+                      {t(lang, "database.new")}
+                    </span>
+                  )}
+                  {image && (
+                    <a class="feat-card__img" href={image} target="_blank" rel="noopener">
+                      <img src={image} alt={data.name[lang]} width="480" height="270" loading="lazy" />
+                    </a>
+                  )}
+                  <h2>{data.name[lang]}</h2>
+                  {data.date && (
+                    <span class="chip">
+                      {t(lang, "feats.date")}: {formatDate(data.date, lang)}
+                    </span>
+                  )}
+                  <p>{data.desc[lang]}</p>
+                </article>
+              );
+            })}
+          </div>
+        ) : (
+          <p class="empty-block">{t(lang, "feats.empty")}</p>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .feats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 18px;
+  }
+  .feat-card :global(.badge-new) {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 1;
+  }
+  .feat-card {
+    position: relative;
+    display: grid;
+    gap: 10px;
+    align-content: start;
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface-1);
+  }
+  .feat-card__img {
+    display: block;
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius-xs);
+    background: var(--surface-2);
+  }
+  .feat-card__img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .feat-card h2 {
+    margin: 0;
+    font-size: 18px;
+  }
+  .feat-card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 13.5px;
+  }
+</style>

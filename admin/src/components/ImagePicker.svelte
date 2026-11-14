@@ -5,7 +5,7 @@
   import Icon from "./Icon.svelte";
 
   interface Props {
-    kind: "card" | "faction";
+    kind: "card" | "faction" | "map" | "gallery" | "feat";
     id: string;
     path: string | undefined;
     label: string;
@@ -22,7 +22,12 @@
   const url = $derived.by(() => {
     if (path === "") return "";
     if (path) return assetUrl(path);
-    return kind === "card" && id ? `/media/public/img/database/${id}.avif` : "";
+    if (!id) return "";
+    if (kind === "card") return `/media/public/img/database/${id}.avif`;
+    if (kind === "map") return `/media/public/img/maps/${id}.avif`;
+    if (kind === "feat") return `/media/public/img/feats/${id}.avif`;
+    if (kind === "gallery") return `/media/assets/img/gallery/${id}.avif`;
+    return "";
   });
 
   $effect(() => {
@@ -44,7 +49,7 @@
       toast("Эмблема должна быть SVG", "warn");
       return;
     }
-    if (kind === "card" && !file.type.startsWith("image/")) {
+    if (kind !== "faction" && !file.type.startsWith("image/")) {
       toast("Нужен файл изображения", "warn");
       return;
     }
@@ -87,7 +92,11 @@
       <img src={url} alt="" onerror={() => (failed = true)} />
     {:else}
       <div class="image-picker__empty">
-        {kind === "faction" ? "Нет эмблемы — загрузите SVG" : "Без картинки — будут инициалы"}
+        {kind === "faction"
+          ? "Нет эмблемы — загрузите SVG"
+          : kind === "card"
+            ? "Без картинки — будут инициалы"
+            : "Нет изображения"}
       </div>
     {/if}
   </div>
@@ -103,7 +112,16 @@
     {/if}
   </div>
   <div class="image-picker__path">
-    {path || (kind === "card" && id ? `img/database/${id}.avif (по умолчанию)` : "—")}
+    {path ||
+      (kind === "card" && id
+        ? `img/database/${id}.avif (по умолчанию)`
+        : kind === "map" && id
+          ? `img/maps/${id}.avif (по умолчанию)`
+          : kind === "feat" && id
+            ? `img/feats/${id}.avif (по умолчанию)`
+            : kind === "gallery" && id
+              ? `assets/img/gallery/${id}.avif (по умолчанию)`
+              : "—")}
   </div>
   <input
     bind:this={input}

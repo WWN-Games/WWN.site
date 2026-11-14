@@ -34,6 +34,15 @@ test.describe("База данных", () => {
     await expect(page.locator("#databaseTabs")).toBeVisible();
   });
 
+  test("вкладка «Разное» доступна", async ({ page }) => {
+    await page.goto("database/#misc");
+    await expect(page.locator('#databaseTabs [data-tab="misc"]')).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
+    await expect(page.locator("#databaseGrid-misc")).toBeVisible();
+  });
+
   test("порядок фракций: Фензем, Протон, затем остальные", async ({ page }) => {
     await page.goto("database/");
     const ids = await page

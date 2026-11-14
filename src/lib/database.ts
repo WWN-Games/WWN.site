@@ -8,14 +8,19 @@ import { getCollection } from "astro:content";
 
 import { type DictKey, t } from "../i18n";
 import { barPercent, formatStat, type StatScaleEntryLike, weaponDps } from "./card-stats";
-import { withDerivedCard } from "./cards";
+import { isBadgeNew, withDerivedCard } from "./cards";
 import type { CompareGroup, CompareMetric } from "./compare";
 import type { CardTab, SortKey } from "./database-constants";
 import type {
+  Atmosphere,
   Builder,
   Building,
+  ChargeDefense,
+  DomeShield,
   Faction,
   Factory,
+  FtlJump,
+  Misc,
   Tag,
   Text,
   Transport,
@@ -91,6 +96,12 @@ export interface DatabaseCard {
   shieldRegen: number;
   dps: number;
   weapons: Weapon[];
+  missileDefense?: ChargeDefense | undefined;
+  torpedoDefense?: ChargeDefense | undefined;
+  laserDefense: boolean;
+  domeShield?: DomeShield | undefined;
+  atmosphere?: Atmosphere | undefined;
+  ftlJump?: FtlJump | undefined;
   builder?: Builder | undefined;
   factories: Factory[];
   transports: Transport[];
@@ -102,6 +113,7 @@ export interface DatabaseCard {
   weakVs?: string[] | Text | undefined;
   draft: boolean;
   isNew: boolean;
+  newUntil?: string | undefined;
   image?: string | undefined;
 }
 
@@ -117,7 +129,7 @@ export interface DatabaseFaction {
   strengths: string[];
   weaknesses: string[];
   subfactionLabel: string | null;
-  counts: { units: number; buildings: number };
+  counts: { units: number; buildings: number; misc: number };
   wikiHref: string | null;
 }
 
@@ -126,8 +138,11 @@ export interface DatabaseFaction {
 export interface ExplorerWeapon {
   name: string;
   count: number;
+  projectileCount?: number | undefined;
+  projectileDelay?: number | undefined;
   damage: number;
   fireDelay: number;
+  armourIgnoreAmount?: number | undefined;
   dps: number;
   tags: string[];
   spread?: number | undefined;
@@ -170,6 +185,12 @@ export interface ExplorerItem {
   shieldRegen: number;
   dps: number;
   weapons: ExplorerWeapon[];
+  missileDefense?: ChargeDefense | undefined;
+  torpedoDefense?: ChargeDefense | undefined;
+  laserDefense?: boolean | undefined;
+  domeShield?: DomeShield | undefined;
+  atmosphere?: Atmosphere | undefined;
+  ftlJump?: FtlJump | undefined;
   builder?: ExplorerBuilder | undefined;
   factories: ExplorerFactory[];
   transports: ExplorerTransport[];
@@ -193,7 +214,7 @@ export interface ExplorerFaction {
   id: string;
   name: Text;
   color: string;
-  counts: { units: number; buildings: number };
+  counts: { units: number; buildings: number; misc: number };
   searchText: string;
 }
 
@@ -382,7 +403,7 @@ export function buildBars(card: DatabaseCard, lang: Lang, scale: StatScale): Sta
 
 /* — сборка данных страницы — */
 
-type CardData = Unit | Building;
+type CardData = Unit | Building | Misc;
 
 function toCard(id: string, tab: CardTab, data: CardData): DatabaseCard {
   const derived = withDerivedCard(data);
@@ -404,6 +425,12 @@ function toCard(id: string, tab: CardTab, data: CardData): DatabaseCard {
     shieldRegen: data.shieldRegen ?? 0,
     dps: derived.dps,
     weapons: derived.weapons ?? [],
+    missileDefense: data.missileDefense,
+    torpedoDefense: data.torpedoDefense,
+    laserDefense: data.laserDefense ?? false,
+    domeShield: data.domeShield,
+    atmosphere: data.atmosphere,
+    ftlJump: data.ftlJump,
     builder: data.builder,
     factories: data.factories ?? [],
     transports: data.transports ?? [],
@@ -414,7 +441,8 @@ function toCard(id: string, tab: CardTab, data: CardData): DatabaseCard {
     strongVs: data.strongVs,
     weakVs: data.weakVs,
     draft: data.draft ?? false,
-    isNew: data.new ?? false,
+    isNew: isBadgeNew(data.new, data.newUntil),
+    newUntil: data.newUntil,
     image: data.image,
   };
 }
@@ -434,8 +462,18 @@ export function cardSearchText(
       return `${weapon.name[lang]} ${weaponTags}`;
     })
     .join(" ");
+  const abilityText = [
+    card.missileDefense ? t(lang, "database.ability.missile") : "",
+    card.torpedoDefense ? t(lang, "database.ability.torpedo") : "",
+    card.laserDefense ? t(lang, "database.ability.laser") : "",
+    card.domeShield ? t(lang, "database.ability.dome") : "",
+    card.atmosphere ? t(lang, "database.ability.atmosphere") : "",
+    card.ftlJump ? t(lang, "database.ability.ftl") : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
   return foldSearch(
-    `${name} ${factionName(factions, card.faction, lang)} ${card.role?.[lang] ?? ""} ${card.desc[lang]} ${tagText} ${weaponText}`,
+    `${name} ${factionName(factions, card.faction, lang)} ${card.role?.[lang] ?? ""} ${card.desc[lang]} ${tagText} ${weaponText} ${abilityText}`,
   );
 }
 
@@ -548,13 +586,15 @@ function explorerLabels(lang: Lang): ExplorerLabels {
 
 /** Полный набор данных страницы для языка. Только сервер: содержит Map. */
 export async function loadDatabase(lang: Lang): Promise<DatabaseData> {
-  const [unitEntries, buildingEntries, factionEntries, tagEntries, published] = await Promise.all([
-    getCollection("units"),
-    getCollection("buildings"),
-    getCollection("factions"),
-    getCollection("tags"),
-    getPublished(lang),
-  ]);
+  const [unitEntries, buildingEntries, miscEntries, factionEntries, tagEntries, published] =
+    await Promise.all([
+      getCollection("units"),
+      getCollection("buildings"),
+      getCollection("misc"),
+      getCollection("factions"),
+      getCollection("tags"),
+      getPublished(lang),
+    ]);
 
   // Порядок фракций задаётся полем order: сначала Фенземская Республика и
   // Движение Протон, затем остальные (см. src/data/factions.json).
@@ -563,12 +603,15 @@ export async function loadDatabase(lang: Lang): Promise<DatabaseData> {
   const tagMap = new Map(tagEntries.map((entry) => [entry.id, entry.data]));
   const factionMap = new Map(factionEntries.map((entry) => [entry.id, entry.data]));
 
-  const counts = new Map<string, { units: number; buildings: number }>();
-  for (const entry of factionEntries) counts.set(entry.id, { units: 0, buildings: 0 });
+  const counts = new Map<string, { units: number; buildings: number; misc: number }>();
+  for (const entry of factionEntries) {
+    counts.set(entry.id, { units: 0, buildings: 0, misc: 0 });
+  }
 
   const cards: DatabaseCard[] = [
     ...unitEntries.map((entry) => toCard(entry.id, "units", entry.data)),
     ...buildingEntries.map((entry) => toCard(entry.id, "buildings", entry.data)),
+    ...miscEntries.map((entry) => toCard(entry.id, "misc", entry.data)),
   ];
   for (const card of cards) {
     const counter = counts.get(card.faction);
@@ -600,7 +643,7 @@ export async function loadDatabase(lang: Lang): Promise<DatabaseData> {
       strengths: data.strengths?.[lang] ?? [],
       weaknesses: data.weaknesses?.[lang] ?? [],
       subfactionLabel,
-      counts: counts.get(entry.id) ?? { units: 0, buildings: 0 },
+      counts: counts.get(entry.id) ?? { units: 0, buildings: 0, misc: 0 },
       wikiHref: hasWiki ? localeHref(lang, `wiki/${data.lore}/`) : null,
     };
   });
@@ -624,14 +667,23 @@ export async function loadDatabase(lang: Lang): Promise<DatabaseData> {
       weapons: card.weapons.map((weapon) => ({
         name: weapon.name[lang],
         count: weapon.count,
+        projectileCount: weapon.projectileCount,
+        projectileDelay: weapon.projectileDelay,
         damage: weapon.damage,
         fireDelay: weapon.fireDelay,
+        armourIgnoreAmount: weapon.armourIgnoreAmount,
         dps: weaponDps(weapon),
         tags: [...weapon.tags],
         spread: weapon.spread,
         splashRadius: weapon.splashRadius,
         stunDuration: weapon.stunDuration,
       })),
+      missileDefense: card.missileDefense,
+      torpedoDefense: card.torpedoDefense,
+      laserDefense: card.laserDefense,
+      domeShield: card.domeShield,
+      atmosphere: card.atmosphere,
+      ftlJump: card.ftlJump,
       builder: card.builder
         ? {
             buildRange: card.builder.buildRange,

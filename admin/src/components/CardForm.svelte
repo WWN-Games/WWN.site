@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import { weaponDps } from "../../../src/lib/card-stats";
   import { UNLOAD_OPTIONS, type UnloadOption } from "../../../src/lib/content-constants";
+  import { addMonthsIso, todayIso } from "../../shared/date";
   import type { Bootstrap, Card, ToastFn } from "../../shared/types";
   import { api } from "../lib/api";
   import ImagePicker from "./ImagePicker.svelte";
@@ -10,7 +11,7 @@
   import UnitPicker from "./UnitPicker.svelte";
 
   interface Props {
-    name: "units" | "buildings";
+    name: "units" | "buildings" | "misc";
     item: Card;
     bootstrap: Bootstrap;
     toast: ToastFn;
@@ -54,7 +55,15 @@
   function addWeapon(): void {
     item.weapons = [
       ...weapons,
-      { name: { ru: "", en: "" }, count: 1, damage: 0, fireDelay: 1, tags: [] },
+      {
+        name: { ru: "", en: "" },
+        count: 1,
+        projectileCount: 1,
+        projectileDelay: 0,
+        damage: 0,
+        fireDelay: 1,
+        tags: [],
+      },
     ];
   }
 
@@ -83,6 +92,72 @@
 
   function setOptionalNumber(key: keyof Card, value: string): void {
     item[key] = (value === "" ? undefined : Number(value)) as never;
+  }
+
+  function toggleNew(checked: boolean): void {
+    item.new = checked;
+    item.newUntil = checked ? (item.newUntil ?? addMonthsIso(todayIso(), 2)) : undefined;
+  }
+
+  function toggleMissileDefense(checked: boolean): void {
+    item.missileDefense = checked ? (item.missileDefense ?? { max: 0, recharge: 0 }) : undefined;
+  }
+
+  function toggleTorpedoDefense(checked: boolean): void {
+    item.torpedoDefense = checked ? (item.torpedoDefense ?? { max: 0, recharge: 0 }) : undefined;
+  }
+
+  function toggleDomeShield(checked: boolean): void {
+    item.domeShield = checked
+      ? (item.domeShield ?? { radius: 0, points: 0, regen: 0 })
+      : undefined;
+  }
+
+  function toggleAtmosphere(checked: boolean): void {
+    item.atmosphere = checked ? (item.atmosphere ?? { time: 0 }) : undefined;
+  }
+
+  function toggleFtlJump(checked: boolean): void {
+    item.ftlJump = checked
+      ? (item.ftlJump ?? {
+          type: "siv",
+          chargeTime: 0,
+          cooldown: 0,
+          minDistance: 0,
+        })
+      : undefined;
+  }
+
+  function updateChargeDefense(
+    key: "missileDefense" | "torpedoDefense",
+    patch: Partial<{ max: number; recharge: number }>,
+  ): void {
+    const current = item[key];
+    if (!current) return;
+    item[key] = { ...current, ...patch };
+  }
+
+  function updateDomeShield(patch: Partial<{ radius: number; points: number; regen: number }>): void {
+    if (!item.domeShield) return;
+    item.domeShield = { ...item.domeShield, ...patch };
+  }
+
+  function updateAtmosphere(time: number): void {
+    if (!item.atmosphere) return;
+    item.atmosphere = { ...item.atmosphere, time };
+  }
+
+  function updateFtlJump(
+    patch: Partial<{
+      type: "siv" | "plasma";
+      chargeTime: number;
+      cooldown: number;
+      minDistance: number;
+      energyCost: number | undefined;
+    }>,
+  ): void {
+    if (!item.ftlJump) return;
+    item.ftlJump = { ...item.ftlJump, ...patch };
   }
 
   function toggleBuilder(checked: boolean): void {
@@ -202,7 +277,7 @@
         </button>
       </div>
       <LocalizedInput label="Название орудия" value={weapon.name} placeholder="Например: Главный калибр" />
-      <div class="form-grid form-grid--three">
+      <div class="form-grid form-grid--four">
         <div class="field">
           <label for={`weapon-${index}-count`}>Количество одинаковых</label>
           <input
@@ -215,7 +290,29 @@
           />
         </div>
         <div class="field">
-          <label for={`weapon-${index}-damage`}>Урон</label>
+          <label for={`weapon-${index}-projectiles`}>Снарядов за выстрел</label>
+          <input
+            id={`weapon-${index}-projectiles`}
+            type="number"
+            min="1"
+            step="1"
+            value={weapon.projectileCount}
+            oninput={(event) => updateWeapon(index, { projectileCount: Math.max(1, Number(event.currentTarget.value) || 1) })}
+          />
+        </div>
+        <div class="field">
+          <label for={`weapon-${index}-projectile-delay`}>Интервал между снарядами, с</label>
+          <input
+            id={`weapon-${index}-projectile-delay`}
+            type="number"
+            min="0"
+            step="any"
+            value={weapon.projectileDelay}
+            oninput={(event) => updateWeapon(index, { projectileDelay: Number(event.currentTarget.value) || 0 })}
+          />
+        </div>
+        <div class="field">
+          <label for={`weapon-${index}-damage`}>Урон одного снаряда</label>
           <input
             id={`weapon-${index}-damage`}
             type="number"
@@ -234,6 +331,18 @@
             step="any"
             value={weapon.fireDelay}
             oninput={(event) => updateWeapon(index, { fireDelay: Number(event.currentTarget.value) || 0.001 })}
+          />
+        </div>
+        <div class="field">
+          <label for={`weapon-${index}-armour`}>Бронебойность</label>
+          <input
+            id={`weapon-${index}-armour`}
+            type="number"
+            min="0"
+            step="any"
+            value={weapon.armourIgnoreAmount ?? ""}
+            placeholder="—"
+            oninput={(event) => updateWeapon(index, { armourIgnoreAmount: event.currentTarget.value === "" ? undefined : Number(event.currentTarget.value) })}
           />
         </div>
       </div>
@@ -315,7 +424,7 @@
       <input id="card-hp" type="number" step="any" value={numberValue("hp")} oninput={(event) => setNumber("hp", event.currentTarget.value)} />
     </div>
     <div class="field">
-      <label for="card-build">Время постройки, с (при скорости 1)</label>
+      <label for="card-build">Время постройки, с (×1)</label>
       <input id="card-build" type="number" step="any" value={numberValue("buildTime")} oninput={(event) => setNumber("buildTime", event.currentTarget.value)} />
     </div>
     <div class="field">
@@ -337,7 +446,7 @@
     <div class="field">
       <label for="card-dps">DPS</label>
       <input id="card-dps" value={computedDps.toFixed(2)} readonly />
-      <span class="field__hint">сумма count × урон / задержка</span>
+      <span class="field__hint">count × снарядов × урон / задержка</span>
     </div>
     <div class="field">
       <label for="card-speed">Скорость</label>
@@ -354,6 +463,119 @@
       <input id="card-range" type="number" step="any" value={numberValue("range")} placeholder="—" oninput={(event) => setOptionalNumber("range", event.currentTarget.value)} />
     </div>
   </div>
+</div>
+
+<div class="form-section">
+  <div class="form-section__title">Способности <span>необязательно</span></div>
+  <div class="form-grid form-grid--two">
+    <div class="field">
+      <label class="tag-option" style="padding: 6px 0">
+        <input type="checkbox" checked={!!item.missileDefense} onchange={(event) => toggleMissileDefense(event.currentTarget.checked)} />
+        <span>Защита от ракет</span>
+      </label>
+      {#if item.missileDefense}
+        <div class="form-grid form-grid--two">
+          <div class="field">
+            <label for="missile-max">Макс. зарядов</label>
+            <input id="missile-max" type="number" min="0" step="1" value={item.missileDefense.max} oninput={(event) => updateChargeDefense("missileDefense", { max: Math.max(0, Math.round(Number(event.currentTarget.value) || 0)) })} />
+          </div>
+          <div class="field">
+            <label for="missile-recharge">Восстановление, зарядов/с</label>
+            <input id="missile-recharge" type="number" min="0" step="any" value={item.missileDefense.recharge} oninput={(event) => updateChargeDefense("missileDefense", { recharge: Number(event.currentTarget.value) || 0 })} />
+          </div>
+        </div>
+      {/if}
+    </div>
+    <div class="field">
+      <label class="tag-option" style="padding: 6px 0">
+        <input type="checkbox" checked={!!item.torpedoDefense} onchange={(event) => toggleTorpedoDefense(event.currentTarget.checked)} />
+        <span>Защита от торпед</span>
+      </label>
+      {#if item.torpedoDefense}
+        <div class="form-grid form-grid--two">
+          <div class="field">
+            <label for="torpedo-max">Макс. зарядов</label>
+            <input id="torpedo-max" type="number" min="0" step="1" value={item.torpedoDefense.max} oninput={(event) => updateChargeDefense("torpedoDefense", { max: Math.max(0, Math.round(Number(event.currentTarget.value) || 0)) })} />
+          </div>
+          <div class="field">
+            <label for="torpedo-recharge">Восстановление, зарядов/с</label>
+            <input id="torpedo-recharge" type="number" min="0" step="any" value={item.torpedoDefense.recharge} oninput={(event) => updateChargeDefense("torpedoDefense", { recharge: Number(event.currentTarget.value) || 0 })} />
+          </div>
+        </div>
+      {/if}
+    </div>
+  </div>
+
+  <label class="tag-option" style="padding: 6px 0">
+    <input type="checkbox" checked={item.laserDefense ?? false} onchange={(event) => (item.laserDefense = event.currentTarget.checked)} />
+    <span>Лазерная защита</span>
+  </label>
+
+  <label class="tag-option" style="padding: 6px 0">
+    <input type="checkbox" checked={!!item.domeShield} onchange={(event) => toggleDomeShield(event.currentTarget.checked)} />
+    <span>Купольный щит</span>
+  </label>
+  {#if item.domeShield}
+    <div class="form-grid form-grid--three">
+      <div class="field">
+        <label for="dome-radius">Радиус</label>
+        <input id="dome-radius" type="number" min="0" step="any" value={item.domeShield.radius} oninput={(event) => updateDomeShield({ radius: Number(event.currentTarget.value) || 0 })} />
+      </div>
+      <div class="field">
+        <label for="dome-points">Очков защиты</label>
+        <input id="dome-points" type="number" min="0" step="any" value={item.domeShield.points} oninput={(event) => updateDomeShield({ points: Number(event.currentTarget.value) || 0 })} />
+      </div>
+      <div class="field">
+        <label for="dome-regen">Восстановление, очков/с</label>
+        <input id="dome-regen" type="number" min="0" step="any" value={item.domeShield.regen} oninput={(event) => updateDomeShield({ regen: Number(event.currentTarget.value) || 0 })} />
+      </div>
+    </div>
+  {/if}
+
+  <label class="tag-option" style="padding: 6px 0">
+    <input type="checkbox" checked={!!item.atmosphere} onchange={(event) => toggleAtmosphere(event.currentTarget.checked)} />
+    <span>Способен входить в атмосферу</span>
+  </label>
+  {#if item.atmosphere}
+    <div class="field">
+      <label for="atmosphere-time">Время входа, с</label>
+      <input id="atmosphere-time" type="number" min="0" step="any" value={item.atmosphere.time} oninput={(event) => updateAtmosphere(Number(event.currentTarget.value) || 0)} />
+    </div>
+  {/if}
+
+  <label class="tag-option" style="padding: 6px 0">
+    <input type="checkbox" checked={!!item.ftlJump} onchange={(event) => toggleFtlJump(event.currentTarget.checked)} />
+    <span>Сверхсветовой прыжок</span>
+  </label>
+  {#if item.ftlJump}
+    <div class="form-grid form-grid--three">
+      <div class="field">
+        <label for="ftl-type">Тип</label>
+        <select id="ftl-type" value={item.ftlJump.type} onchange={(event) => updateFtlJump({ type: event.currentTarget.value as "siv" | "plasma" })}>
+          <option value="siv">СИВ</option>
+          <option value="plasma">Плазма</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="ftl-charge">Зарядка, с</label>
+        <input id="ftl-charge" type="number" min="0" step="any" value={item.ftlJump.chargeTime} oninput={(event) => updateFtlJump({ chargeTime: Number(event.currentTarget.value) || 0 })} />
+      </div>
+      <div class="field">
+        <label for="ftl-cooldown">Перезарядка, с</label>
+        <input id="ftl-cooldown" type="number" min="0" step="any" value={item.ftlJump.cooldown} oninput={(event) => updateFtlJump({ cooldown: Number(event.currentTarget.value) || 0 })} />
+      </div>
+      <div class="field">
+        <label for="ftl-min">Мин. дистанция</label>
+        <input id="ftl-min" type="number" min="0" step="any" value={item.ftlJump.minDistance} oninput={(event) => updateFtlJump({ minDistance: Number(event.currentTarget.value) || 0 })} />
+      </div>
+      {#if item.ftlJump.type === "plasma"}
+        <div class="field">
+          <label for="ftl-energy">Стоимость энергии</label>
+          <input id="ftl-energy" type="number" min="0" step="any" value={item.ftlJump.energyCost ?? ""} placeholder="—" oninput={(event) => updateFtlJump({ energyCost: event.currentTarget.value === "" ? undefined : Number(event.currentTarget.value) })} />
+        </div>
+      {/if}
+    </div>
+  {/if}
 </div>
 
 <div class="form-section">
@@ -538,9 +760,21 @@
         <span>Черновик — показать бейдж «Черновик»</span>
       </label>
       <label class="tag-option" style="padding: 6px 0">
-        <input type="checkbox" checked={item.new ?? false} onchange={(event) => (item.new = event.currentTarget.checked)} />
-        <span>Новое — показать бейдж «Новое»</span>
+        <input type="checkbox" checked={item.new ?? false} onchange={(event) => toggleNew(event.currentTarget.checked)} />
+        <span>Новинка! — золотая плашка</span>
       </label>
+      {#if item.new}
+        <div class="field">
+          <label for="card-new-until">Показывать до</label>
+          <input
+            id="card-new-until"
+            type="date"
+            value={item.newUntil ?? ""}
+            oninput={(event) => (item.newUntil = event.currentTarget.value || undefined)}
+          />
+          <span class="field__hint">По умолчанию +2 месяца; плашка исчезает по дате.</span>
+        </div>
+      {/if}
       <p class="field__hint" style="margin-top: 8px">
         <code>public/img/database</code>
       </p>

@@ -11,9 +11,14 @@ import { COLLECTION_FILES } from "./lib/content-constants";
 import {
   buildingSchema,
   factionSchema,
+  featSchema,
+  gallerySchema,
+  mapSchema,
+  miscSchema,
   sectionSchema,
   tagSchema,
   unitSchema,
+  videoSchema,
   wikiSchema,
 } from "./lib/schemas";
 
@@ -42,6 +47,11 @@ const buildings = defineCollection({
   schema: buildingSchema,
 });
 
+const misc = defineCollection({
+  loader: file(`./${COLLECTION_FILES.misc}`, { parser: jsonArray("misc") }),
+  schema: miscSchema,
+});
+
 const factions = defineCollection({
   loader: file(`./${COLLECTION_FILES.factions}`, { parser: jsonArray("factions") }),
   schema: factionSchema,
@@ -57,4 +67,36 @@ const sections = defineCollection({
   schema: sectionSchema,
 });
 
-export const collections = { wiki, units, buildings, factions, tags, sections };
+const maps = defineCollection({
+  loader: file(`./${COLLECTION_FILES.maps}`, { parser: jsonArray("maps") }),
+  schema: mapSchema,
+});
+
+const gallery = defineCollection({
+  loader: file(`./${COLLECTION_FILES.gallery}`, { parser: jsonArray("gallery") }),
+  schema: gallerySchema,
+});
+
+const videos = defineCollection({
+  loader: file(`./${COLLECTION_FILES.videos}`, { parser: jsonArray("videos") }),
+  schema: videoSchema,
+});
+
+const feats = defineCollection({
+  loader: file(`./${COLLECTION_FILES.feats}`, { parser: jsonArray("feats") }),
+  schema: featSchema,
+});
+
+export const collections = {
+  wiki,
+  units,
+  buildings,
+  misc,
+  factions,
+  tags,
+  sections,
+  maps,
+  gallery,
+  videos,
+  feats,
+};

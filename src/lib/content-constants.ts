@@ -31,9 +31,14 @@ export type UnloadOption = (typeof UNLOAD_OPTIONS)[number];
 export const COLLECTION_FILES = {
   units: "src/data/units.json",
   buildings: "src/data/buildings.json",
+  misc: "src/data/misc.json",
   factions: "src/data/factions.json",
   tags: "src/data/tags.json",
   sections: "src/data/sections.json",
+  maps: "src/data/maps.json",
+  gallery: "src/data/gallery.json",
+  videos: "src/data/videos.json",
+  feats: "src/data/feats.json",
 } as const;
 
 export type CollectionName = keyof typeof COLLECTION_FILES;

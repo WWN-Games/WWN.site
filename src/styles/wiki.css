@@ -451,6 +451,33 @@
   border: 1px solid rgba(var(--gold-rgb), 0.35);
   letter-spacing: 0.12em;
 }
+.badge-new {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  font-family: var(--font-display);
+  font-size: 9px;
+  text-transform: uppercase;
+  vertical-align: middle;
+  border-radius: 999px;
+  color: var(--gold);
+  border: 1px solid rgba(var(--gold-rgb), 0.45);
+  background: rgba(var(--gold-rgb), 0.1);
+  letter-spacing: 0.1em;
+}
+.article__meta .badge-new {
+  padding: 4px 11px;
+  font-family: var(--font-display);
+  font-size: 10px;
+  text-transform: uppercase;
+  border-radius: 999px;
+  color: var(--gold);
+  background:
+    linear-gradient(180deg, rgba(var(--gold-rgb), 0.2), rgba(var(--gold-rgb), 0.08)),
+    rgba(11, 22, 39, 0.9);
+  border: 1px solid rgba(var(--gold-rgb), 0.45);
+  letter-spacing: 0.12em;
+}
 
 .article__body {
   font-size: 16.5px;

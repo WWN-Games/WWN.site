@@ -8,7 +8,7 @@
 | --- | --- |
 | `fonts/` | woff2: Onest (вариативный 100–900, полный набор — латиница и кириллица), Geist Mono (сабсеты latin/cyrillic), Science Gothic (сабсеты latin/cyrillic), рядом лицензии `OFL-*.txt`. Подключаются через Fonts API в `astro.config.ts` (`cssVariable`: `--font-body`, `--font-mono`, `--font-display`), `<Font>` в `src/layouts/BaseLayout.astro` подключает их (display и body — с preload) |
 | `img/lore/` | картинки статей вики (карты эпох, портреты, территории). Astro оптимизирует их в AVIF |
-| `img/gallery/` | скриншоты галереи главной; список и подписи — `src/data/gallery.ts` |
+| `img/gallery/` | скриншоты галереи; список и подписи — `src/data/gallery.json` |
 | `img/bg/` | `banner-1440.avif` — фон первого экрана: `Hero.astro` импортирует его и через `<Image widths={[960, 1440]}>` получает оба размера |
 | `img/factions/` | SVG-эмблемы фракций; `FactionCard` подключает их через `import.meta.glob`, имя файла указано в `factions.json` |
 
@@ -19,6 +19,8 @@
 | `img/brand/` | `logo.svg`, `favicon.svg`, `icon-192.png`, `icon-512.png` — бренд и иконки PWA |
 | `img/bg/og-banner.webp` | превью для соцсетей (`og:image`, 1200×630). **Остаётся WebP** — скраперы не понимают AVIF |
 | `img/database/` | иконки карточек `<id>.avif`, ширина не более 256 px (бокс карточки 256 px) |
+| `img/maps/` | скриншоты карт `<id>.avif` |
+| `img/feats/` | картинки подвигов `<id>.avif` |
 | `audio/` | mp3: гимны фракций, пример речи; подключаются в статьях через `<audio src="../assets/audio/...">` |
 | `robots.txt` | `Allow: /` и ссылка на `sitemap-index.xml` |
 | `site.webmanifest` | PWA-манифест: имя, `start_url`, иконки из `img/brand/` |
@@ -26,7 +28,7 @@
 ## Правила замены
 
 - Замена картинки — положить новый файл **с тем же именем** на место старого; ссылки менять не нужно.
-- Переименование или смена формата — обновить все ссылки: путь в статье вики, `image`/`emblem` в `src/data/*.json`, `src` в `src/data/gallery.ts`.
+- Переименование или смена формата — обновить все ссылки: путь в статье вики, `image`/`emblem` в `src/data/*.json`, `image` в `src/data/gallery.json`.
 - Новая иконка базы — `public/img/database/<id>.avif` (имя = `id` карточки), не шире 256 px.
 - Картинки статей — только `src/assets/img/lore/`, скриншоты — только `src/assets/img/gallery/`; галерея и статьи не смешиваются.
 - Все картинки контента — AVIF. Image service (`src/lib/image-service.ts`) по умолчанию переводит изображения Astro в AVIF, SVG не трогает. Исключения: `og-banner.webp` и PNG-иконки манифеста.

@@ -1,10 +1,9 @@
 ---
-import { getImage, Image } from "astro:assets";
-import type { ImageMetadata } from "astro";
+import { Image } from "astro:assets";
 
-import { gallery } from "@/data/gallery";
 import { t } from "@/i18n";
-import type { Lang } from "@/lib/site";
+import { loadGallery } from "@/lib/gallery";
+import { type Lang, localeHref } from "@/lib/site";
 
 import GalleryLightbox from "./GalleryLightbox.svelte";
 
@@ -12,46 +11,11 @@ interface Props {
   lang: Lang;
 }
 
-interface ResolvedGalleryItem {
-  image: ImageMetadata;
-  caption: string;
-  wide: boolean;
-  lightboxSrc: string;
-}
-
 const GALLERY_SIZES =
   "(max-width: 580px) 100vw, (max-width: 1120px) 50vw, (max-width: 1400px) 33vw, 25vw";
 
 const { lang } = Astro.props;
-
-/* Картинки галереи берём из src/assets/img/gallery на сборке: данные хранят
-   только имя файла, а модули изображений резолвит Vite. */
-const galleryImages = import.meta.glob<{ default: ImageMetadata }>(
-  "/src/assets/img/gallery/*.avif",
-  { eager: true },
-);
-
-const resolved = (
-  await Promise.all(
-    gallery.map(async (item): Promise<ResolvedGalleryItem | null> => {
-      const file = item.src;
-      const entry = galleryImages[`/src/assets/img/gallery/${file}`];
-      if (!entry) return null;
-      const lightbox = await getImage({
-        src: entry.default,
-        width: Math.min(1240, entry.default.width),
-        format: "avif",
-      });
-      return {
-        image: entry.default,
-        caption: item.caption[lang],
-        wide: item.wide === true,
-        lightboxSrc: lightbox.src,
-      };
-    }),
-  )
-).filter((item): item is ResolvedGalleryItem => item !== null);
-
+const resolved = await loadGallery(lang, 3);
 const lightboxItems = resolved.map((item) => ({ src: item.lightboxSrc, caption: item.caption }));
 const lightboxLabels = {
   dialog: t(lang, "a11y.gallery"),
@@ -91,6 +55,10 @@ const lightboxLabels = {
             </button>
           ))}
         </div>
+
+        <div class="section__actions">
+          <a class="btn btn--ghost" href={localeHref(lang, "gallery/")}>{t(lang, "gallery.all")}</a>
+        </div>
       </div>
     </section>
 
@@ -107,5 +75,10 @@ const lightboxLabels = {
     font: inherit;
     color: inherit;
     text-align: inherit;
+  }
+  .section__actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 22px;
   }
 </style>

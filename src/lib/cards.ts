@@ -29,3 +29,13 @@ export function withDerivedCard<T extends CardLike>(
     fullCost: fullCost(item.cost ?? 0, item.energy ?? 0),
   };
 }
+
+/** Плашка «Новинка!»: флаг и необязательная дата окончания показа. */
+export function isBadgeNew(
+  flag: boolean | undefined,
+  until: string | undefined,
+  today = new Date().toISOString().slice(0, 10),
+): boolean {
+  if (!flag) return false;
+  return !until || until >= today;
+}

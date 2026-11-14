@@ -14,10 +14,15 @@ import { parseArticleFrontMatter } from "../src/lib/frontmatter.ts";
 import {
   buildingSchema,
   factionSchema,
+  featSchema,
+  gallerySchema,
+  mapSchema,
+  miscSchema,
   sectionSchema,
   statsSchema,
   tagSchema,
   unitSchema,
+  videoSchema,
   type WikiFrontMatter,
   wikiSchema,
 } from "../src/lib/schemas.ts";
@@ -230,6 +235,12 @@ export function validateContent(): string[] {
           `вики: у статьи «${slug}» draft не совпадает (ru: ${ru.data.draft}, en: ${en.data.draft})`,
         );
       }
+      if ((ru.data.new ?? false) !== (en.data.new ?? false)) {
+        errors.push(`вики: у статьи «${slug}» флаг new не совпадает в RU/EN`);
+      }
+      if (ru.data.newUntil !== en.data.newUntil) {
+        errors.push(`вики: у статьи «${slug}» newUntil не совпадает в RU/EN`);
+      }
     }
   }
 
@@ -309,9 +320,44 @@ export function validateContent(): string[] {
     buildingSchema,
     errors,
   );
+  const misc = parseItems(
+    "misc.json",
+    arrayOf(loadJson("misc.json", errors), "misc", "misc.json", errors),
+    miscSchema,
+    errors,
+  );
+  const maps = parseItems(
+    "maps.json",
+    arrayOf(loadJson("maps.json", errors), "maps", "maps.json", errors),
+    mapSchema,
+    errors,
+  );
+  const gallery = parseItems(
+    "gallery.json",
+    arrayOf(loadJson("gallery.json", errors), "gallery", "gallery.json", errors),
+    gallerySchema,
+    errors,
+  );
+  const videos = parseItems(
+    "videos.json",
+    arrayOf(loadJson("videos.json", errors), "videos", "videos.json", errors),
+    videoSchema,
+    errors,
+  );
+  const feats = parseItems(
+    "feats.json",
+    arrayOf(loadJson("feats.json", errors), "feats", "feats.json", errors),
+    featSchema,
+    errors,
+  );
 
   uniqueIds("units.json", units, errors);
   uniqueIds("buildings.json", buildings, errors);
+  uniqueIds("misc.json", misc, errors);
+  uniqueIds("maps.json", maps, errors);
+  uniqueIds("gallery.json", gallery, errors);
+  uniqueIds("videos.json", videos, errors);
+  uniqueIds("feats.json", feats, errors);
   const unitIds = new Set(units.map((unit) => unit.id));
   const cardIds = new Map<string, string>();
   const tagGroups = new Map(tags.map((tag) => [tag.id, tag.group]));
@@ -321,6 +367,7 @@ export function validateContent(): string[] {
   for (const [file, cards] of [
     ["units.json", units],
     ["buildings.json", buildings],
+    ["misc.json", misc],
   ] as const) {
     for (const card of cards) {
       const previous = cardIds.get(card.id);
@@ -391,6 +438,35 @@ export function validateContent(): string[] {
       } else if (!existsSync(target)) {
         errors.push(`src/data/${file}: ${card.id}: нет картинки public/${image}`);
       }
+    }
+  }
+
+  for (const map of maps) {
+    if (map.image === undefined) continue;
+    const target = path.resolve(PUBLIC_DIR, map.image);
+    if (!isPathSafe(target, PUBLIC_DIR)) {
+      errors.push(`src/data/maps.json: ${map.id}: картинка «${map.image}» выходит за public/`);
+    } else if (!existsSync(target)) {
+      errors.push(`src/data/maps.json: ${map.id}: нет картинки public/${map.image}`);
+    }
+  }
+  for (const feat of feats) {
+    if (feat.image === undefined) continue;
+    const target = path.resolve(PUBLIC_DIR, feat.image);
+    if (!isPathSafe(target, PUBLIC_DIR)) {
+      errors.push(`src/data/feats.json: ${feat.id}: картинка «${feat.image}» выходит за public/`);
+    } else if (!existsSync(target)) {
+      errors.push(`src/data/feats.json: ${feat.id}: нет картинки public/${feat.image}`);
+    }
+  }
+  for (const item of gallery) {
+    const target = path.resolve(ROOT, "src", item.image);
+    if (!isPathSafe(target, path.join(ROOT, "src", "assets/img/gallery"))) {
+      errors.push(
+        `src/data/gallery.json: ${item.id}: картинка «${item.image}» вне assets/img/gallery`,
+      );
+    } else if (!existsSync(target)) {
+      errors.push(`src/data/gallery.json: ${item.id}: нет файла src/${item.image}`);
     }
   }
 

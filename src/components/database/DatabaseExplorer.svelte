@@ -86,7 +86,7 @@ let weaponTagOpen = $state(false);
 let weaponTagButton = $state<HTMLButtonElement | null>(null);
 let weaponTagPanel = $state<HTMLDivElement | null>(null);
 
-let selectedByTab = $state<Record<CardTab, string[]>>({ units: [], buildings: [] });
+let selectedByTab = $state<Record<CardTab, string[]>>({ units: [], buildings: [], misc: [] });
 let compareOpen = $state(false);
 let compareNotice = $state("");
 let noticeTimer: ReturnType<typeof setTimeout> | undefined;
@@ -452,7 +452,7 @@ function syncCompareDom(selection: Record<CardTab, string[]> = selectedByTab): v
   for (const button of document.querySelectorAll<HTMLButtonElement>("[data-compare-id]")) {
     const id = button.dataset.compareId;
     const cardTab = button.closest<HTMLElement>(".unit-card")?.dataset.tab;
-    if (!id || (cardTab !== "units" && cardTab !== "buildings")) continue;
+    if (!id || (cardTab !== "units" && cardTab !== "buildings" && cardTab !== "misc")) continue;
     const isSelected = selection[cardTab].includes(id);
     const item = itemById.get(id);
     const name = item?.name ?? id;
@@ -822,13 +822,13 @@ function positionPanel(button: HTMLElement | null, panel: HTMLElement | null): v
 }
 
 function readStoredSelection(): Record<CardTab, string[]> {
-  const empty: Record<CardTab, string[]> = { units: [], buildings: [] };
+  const empty: Record<CardTab, string[]> = { units: [], buildings: [], misc: [] };
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return empty;
     const parsed: unknown = JSON.parse(raw);
     if (!parsed || typeof parsed !== "object") return empty;
-    for (const tabId of ["units", "buildings"] as const) {
+    for (const tabId of ["units", "buildings", "misc"] as const) {
       const value = (parsed as Record<string, unknown>)[tabId];
       if (!Array.isArray(value)) continue;
       empty[tabId] = [

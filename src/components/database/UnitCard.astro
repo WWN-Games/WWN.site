@@ -46,6 +46,14 @@ const hasCosts = card.fullCost > 0 || card.buildTime > 0;
 const canExpandDesc = desc.length > 220;
 const searchText = cardSearchText(card, lang, factions, tags);
 const detailLabel = t(lang, "database.detail");
+const abilities = [
+  card.missileDefense && t(lang, "database.ability.missile"),
+  card.torpedoDefense && t(lang, "database.ability.torpedo"),
+  card.laserDefense && t(lang, "database.ability.laser"),
+  card.domeShield && t(lang, "database.ability.dome"),
+  card.atmosphere && t(lang, "database.ability.atmosphere"),
+  card.ftlJump && t(lang, "database.ability.ftl"),
+].filter((value): value is string => Boolean(value));
 ---
 
 <article
@@ -55,7 +63,13 @@ const detailLabel = t(lang, "database.detail");
   data-search={searchText}
   style={`--faction-color:${color}`}
 >
-  {card.isNew && <span class="unit-card__new">{t(lang, "database.new")}</span>}
+  {
+    card.isNew && (
+      <span class="unit-card__new" data-new-until={card.newUntil}>
+        {t(lang, "database.new")}
+      </span>
+    )
+  }
 
   <button class="unit-card__compare" type="button" data-compare-id={card.id} hidden></button>
   <button class="unit-card__detail" type="button" data-detail-id={card.id} hidden>{detailLabel}</button>
@@ -89,6 +103,16 @@ const detailLabel = t(lang, "database.detail");
   </div>
 
   {
+    abilities.length > 0 && (
+      <div class="unit-card__abilities">
+        {abilities.map((ability) => (
+          <span class="chip chip--ability">{ability}</span>
+        ))}
+      </div>
+    )
+  }
+
+  {
     hasCosts && (
       <div class="unit-card__sub">
         {card.fullCost > 0 && (
@@ -99,7 +123,7 @@ const detailLabel = t(lang, "database.detail");
         {card.buildTime > 0 && (
           <span class="chip">
             {t(lang, "database.buildTime")}: {formatNumber(card.buildTime, lang)}
-            {t(lang, "database.seconds")}
+            {t(lang, "database.secondsAtSpeed1")}
           </span>
         )}
       </div>

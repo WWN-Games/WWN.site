@@ -18,7 +18,15 @@ interface ApiEnvelope<T> {
 }
 
 /** Идентификаторы живых цифр stats.json (см. src/lib/stats.ts). */
-export const STAT_IDS = ["buildings", "cards", "factions", "maps", "tags", "units"] as const;
+export const STAT_IDS = [
+  "buildings",
+  "cards",
+  "factions",
+  "maps",
+  "misc",
+  "tags",
+  "units",
+] as const;
 
 export { withDerivedCard, withDerivedDps } from "../../../lib/cards.ts";
 
