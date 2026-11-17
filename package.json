@@ -6,7 +6,7 @@
   "engines": {
     "node": ">=26"
   },
-  "packageManager": "pnpm@12.19.0+sha512.87327b6619853205834e4be59ba3a231e303d9f5e435912ede3312b7539b79af890942f6513b05a4690745666888045c09b33fc420c2cd2d3bd95c01ba21dbeb",
+  "packageManager": "pnpm@12.21.0+sha512.66fd8278ee28935ce951792d34367ff3af5c432a2756445823029533835b8da529bbe0be5130afd56ed0713fb8789e47bad82d93bd5ae2fe54b15562d6276ef0",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
@@ -21,11 +21,11 @@
     "admin": "pnpm --dir admin start"
   },
   "dependencies": {
-    "@astrojs/markdown-remark": "^7.3.8",
-    "@astrojs/sitemap": "^3.7.4",
-    "@astrojs/svelte": "^9.1.5",
+    "@astrojs/markdown-remark": "^7.3.9",
+    "@astrojs/sitemap": "^3.7.5",
+    "@astrojs/svelte": "^9.1.6",
     "@icon-park/svg": "^1.4.2",
-    "astro": "^7.4.11",
+    "astro": "^7.4.12",
     "astro-icon": "^1.2.0",
     "astro-pagefind": "^2.0.1",
     "rehype-autolink-headings": "^7.1.0",
@@ -36,10 +36,10 @@
   "devDependencies": {
     "@astrojs/ts-content-mapper": "^0.2.0",
     "@axe-core/playwright": "^4.14.0",
-    "@biomejs/biome": "^2.6.7",
+    "@biomejs/biome": "^2.6.8",
     "@iconify-json/icon-park-outline": "^1.2.4",
     "@iconify-json/simple-icons": "^1.2.102",
-    "@playwright/test": "^1.65.0",
+    "@playwright/test": "^1.65.1",
     "@types/hast": "^3.0.5",
     "@types/mdast": "^4.0.4",
     "@types/node": "^26.6.6",

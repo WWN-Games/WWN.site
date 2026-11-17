@@ -16,8 +16,9 @@
 | `gallery.json` | `gallery` | скриншоты |
 | `videos.json` | `videos` | видео с YouTube |
 | `feats.json` | `feats` | подвиги |
+| `news.json` | `news` | новости главной и страницы `/news/` |
+| `ratings.json` | `ratings` | рейтинг: ник и числовой рейтинг |
 | `stats.json` | — (импорт) | резервное число карт, пока каталог пуст |
-| `news.ts` | — | новости главной (TypeScript) |
 
 - В JSON допустимы ключи-комментарии `_schema`/`_comment`: загрузчик читает только массив (`units`, `buildings`, `factions`, `tags`, `sections`).
 - Все подписи — `{ "ru": "...", "en": "..." }`. Если `en` не писать, он станет равен `ru` (нормализация на границе данных). **Русский — источник истины.**
@@ -170,6 +171,8 @@
 - `gallery.json` — `id`, `order`, `image` (путь относительно `src/`, например `assets/img/gallery/screenshot-1.avif`), `caption`, `wide`.
 - `videos.json` — `id`, `order`, `youtubeId`, `lang` (`ru` / `en`), `title`, `desc`, `date`.
 - `feats.json` — `id`, `order`, `name`, `desc`, `image` (по умолчанию `img/feats/<id>.avif`), `date`, `new`, `newUntil`.
+- `news.json` — `id`, `date`, `tag` (`update` / `news`), `link` (строка или `{ ru, en }`), `title`, `text`, `featured`, `draft`, `order`. На главной закреплённые идут первыми, затем последние по дате; на `/news/` — все опубликованные.
+- `ratings.json` — `id`, `nickname`, `rating`. Страница `/rating/` сортирует записи по `rating` по убыванию автоматически.
 
 Все четыре коллекции редактируются в локальной админке; картинки загружаются через форму.
 
@@ -212,4 +215,4 @@
 pnpm validate
 ```
 
-Проверяет Zod-схемы всех файлов; уникальность `id` (в том числе между `units.json`, `buildings.json` и `misc.json`); ссылки `faction` и `tags` на существующие записи; теги оружия из групп `weapon`/`sector`; ссылки заводов на существующих юнитов; обычные теги строителя и транспорта; существование картинок карточек, карт, подвигов и галереи; схему `stats.json`. Плюс проверки вики — см. `docs/content.md`.
+Проверяет Zod-схемы всех файлов; уникальность `id` (в том числе между `units.json`, `buildings.json` и `misc.json`); ссылки `faction` и `tags` на существующие записи; теги оружия из групп `weapon`/`sector`; ссылки заводов на существующих юнитов; обычные теги строителя и транспорта; существование картинок карточек, карт, подвигов и галереи; схему `stats.json`; новости и рейтинг. Плюс проверки вики — см. `docs/content.md`.

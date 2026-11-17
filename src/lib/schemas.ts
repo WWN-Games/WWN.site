@@ -208,6 +208,35 @@ export type Tag = z.infer<typeof tagSchema>;
 export type Section = z.infer<typeof sectionSchema>;
 export type WikiFrontMatter = z.infer<typeof wikiSchema>;
 
+/* — новости и рейтинг — */
+
+export const NEWS_TAGS = ["update", "news"] as const;
+export type NewsTag = (typeof NEWS_TAGS)[number];
+
+export const newsSchema = z.object({
+  id: z.string().min(1),
+  date: dateString,
+  tag: z.enum(NEWS_TAGS),
+  /** Внешняя ссылка или локальный путь; можно задать отдельно для RU/EN. */
+  link: z.union([z.string().min(1), text]).optional(),
+  title: text,
+  text: text,
+  /** Закрепить на главной. */
+  featured: z.boolean().default(false),
+  draft: z.boolean().default(false),
+  order: z.number().int().nonnegative().default(0),
+});
+
+export type NewsItem = z.infer<typeof newsSchema>;
+
+export const ratingSchema = z.object({
+  id: z.string().min(1),
+  nickname: z.string().min(1),
+  rating: z.number(),
+});
+
+export type RatingEntry = z.infer<typeof ratingSchema>;
+
 /* — карты, галерея, видео и подвиги — */
 
 export const mapSchema = z.object({

@@ -51,7 +51,7 @@
 ```
 src/
 ├─ content/wiki/{ru,en}/<раздел>/<статья>.md  — статьи вики
-├─ data/            — units, buildings, misc, factions, tags, sections, maps, gallery, videos, feats, stats, news
+├─ data/            — units, buildings, misc, factions, tags, sections, maps, gallery, videos, feats, news, ratings, stats
 ├─ i18n/            — словари RU/EN (паритет гарантируется типами)
 ├─ lib/             — схемы, доступ к контенту, markdown-плагины, утилиты
 ├─ components/      — layout, home, wiki, database, search
@@ -84,9 +84,10 @@ docs/               — документация для редакторов к�
 
 ## Разделы
 
-Кроме базы и вики на сайте есть отдельные каталоги: `/maps/` (карты),
-`/gallery/` (скриншоты), `/videos/` (видео YouTube с фильтром RU/EN) и
-`/feats/` (подвиги). EN-версии — под `/en/`. Данные редактируются в админке.
+Кроме базы и вики на сайте есть отдельные страницы: `/news/` (новости),
+`/rating/` (таблица игроков), `/maps/` (карты), `/gallery/` (скриншоты),
+`/videos/` (видео YouTube с фильтром RU/EN) и `/feats/` (подвиги).
+EN-версии — под `/en/`. Данные редактируются в админке.
 
 ## Публичный API данных
 

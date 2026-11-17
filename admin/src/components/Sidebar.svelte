@@ -23,6 +23,8 @@
   const items = $derived([
     { key: "dashboard", label: "Обзор", icon: "dashboard", href: "#/", count: null, active: route.view === "dashboard" },
     { key: "articles", label: "Статьи", icon: "article", href: "#/articles", count: counts.articles, active: isArticles },
+    { key: "news", label: "Новости", icon: "article", href: "#/collections/news", count: counts.news, active: activeCollection === "news" },
+    { key: "ratings", label: "Рейтинг", icon: "shield", href: "#/collections/ratings", count: counts.ratings, active: activeCollection === "ratings" },
     { key: "units", label: "Юниты", icon: "cube", href: "#/collections/units", count: counts.units, active: activeCollection === "units" },
     { key: "buildings", label: "Строения", icon: "building", href: "#/collections/buildings", count: counts.buildings, active: activeCollection === "buildings" },
     { key: "misc", label: "Разное", icon: "layers", href: "#/collections/misc", count: counts.misc, active: activeCollection === "misc" },

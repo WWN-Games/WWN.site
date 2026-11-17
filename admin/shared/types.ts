@@ -10,6 +10,8 @@ import type {
   GalleryItemData,
   MapItem,
   Misc,
+  NewsItem,
+  RatingEntry,
   Section,
   Tag,
   Text,
@@ -25,6 +27,8 @@ export type {
   GalleryItemData,
   Lang,
   MapItem,
+  NewsItem,
+  RatingEntry,
   Section,
   Tag,
   Text,
@@ -40,7 +44,9 @@ export type CollectionItem =
   | MapItem
   | GalleryItemData
   | VideoItem
-  | FeatItem;
+  | FeatItem
+  | NewsItem
+  | RatingEntry;
 
 /** Section из bootstrap дополняется вычисляемым nextOrder. */
 export type SectionView = Section & { nextOrder?: number };
@@ -141,6 +147,8 @@ export interface Bootstrap {
     gallery: number;
     videos: number;
     feats: number;
+    news: number;
+    ratings: number;
   };
   validation: ValidationState;
   git: GitStatus;

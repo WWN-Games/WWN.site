@@ -1462,12 +1462,22 @@ body:has(.mobile-nav:popover-open) {
 }
 .news__meta {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 10px;
   font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--muted);
+}
+.news__featured {
+  padding: 3px 9px;
+  font-family: var(--font-display);
+  font-size: 9px;
+  color: var(--gold);
+  border: 1px solid rgba(var(--gold-rgb), 0.4);
+  border-radius: 999px;
+  background: rgba(var(--gold-rgb), 0.1);
 }
 .tag {
   padding: 4px 11px;

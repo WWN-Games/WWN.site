@@ -18,6 +18,8 @@ import {
   gallerySchema,
   mapSchema,
   miscSchema,
+  newsSchema,
+  ratingSchema,
   sectionSchema,
   statsSchema,
   tagSchema,
@@ -350,6 +352,18 @@ export function validateContent(): string[] {
     featSchema,
     errors,
   );
+  const news = parseItems(
+    "news.json",
+    arrayOf(loadJson("news.json", errors), "news", "news.json", errors),
+    newsSchema,
+    errors,
+  );
+  const ratings = parseItems(
+    "ratings.json",
+    arrayOf(loadJson("ratings.json", errors), "ratings", "ratings.json", errors),
+    ratingSchema,
+    errors,
+  );
 
   uniqueIds("units.json", units, errors);
   uniqueIds("buildings.json", buildings, errors);
@@ -358,6 +372,8 @@ export function validateContent(): string[] {
   uniqueIds("gallery.json", gallery, errors);
   uniqueIds("videos.json", videos, errors);
   uniqueIds("feats.json", feats, errors);
+  uniqueIds("news.json", news, errors);
+  uniqueIds("ratings.json", ratings, errors);
   const unitIds = new Set(units.map((unit) => unit.id));
   const cardIds = new Map<string, string>();
   const tagGroups = new Map(tags.map((tag) => [tag.id, tag.group]));

@@ -9,6 +9,8 @@
     isFaction,
     isSection,
     isTag,
+    type NewsItem,
+    type RatingEntry,
     type ToastFn,
   } from "../../shared/types";
   import { api } from "../lib/api";
@@ -78,6 +80,16 @@
       singular: "подвиг",
       newLabel: "Новый подвиг",
     },
+    news: {
+      title: "Новости",
+      singular: "новость",
+      newLabel: "Новая новость",
+    },
+    ratings: {
+      title: "Рейтинг",
+      singular: "запись рейтинга",
+      newLabel: "Новая запись",
+    },
   };
 
   const info = $derived(meta[name] ?? meta.units);
@@ -99,6 +111,7 @@
     if ("name" in item) return item.name.ru || item.name.en || item.id;
     if ("title" in item) return item.title.ru || item.title.en || item.id;
     if ("caption" in item) return item.caption.ru || item.caption.en || item.id;
+    if ("nickname" in item) return item.nickname || item.id;
     return item.id;
   }
 
@@ -128,7 +141,14 @@
         }
         return true;
       }
-      if (name === "maps" || name === "gallery" || name === "videos" || name === "feats") {
+      if (
+        name === "maps" ||
+        name === "gallery" ||
+        name === "videos" ||
+        name === "feats" ||
+        name === "news" ||
+        name === "ratings"
+      ) {
         if (query && !JSON.stringify(item).toLowerCase().replace(/ё/g, "е").includes(query)) {
           return false;
         }
@@ -152,6 +172,16 @@
     return [...list].sort((a, b) => {
       if (isFaction(a) && isFaction(b)) return a.order - b.order;
       if (isSection(a) && isSection(b)) return a.order - b.order;
+      if (name === "news" && "date" in a && "date" in b) {
+        return (
+          b.date.localeCompare(a.date) ||
+          (("order" in a ? a.order : 0) - ("order" in b ? b.order : 0)) ||
+          labelOf(a).localeCompare(labelOf(b), "ru")
+        );
+      }
+      if (name === "ratings" && "rating" in a && "rating" in b) {
+        return b.rating - a.rating || labelOf(a).localeCompare(labelOf(b), "ru");
+      }
       if (
         (name === "maps" || name === "gallery" || name === "videos" || name === "feats") &&
         "order" in a &&
@@ -411,6 +441,87 @@
               </td>
             </tr>
             {/if}
+          {/each}
+        </tbody>
+      </table>
+    </div>
+  {:else if name === "news"}
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Дата</th>
+            <th>Заголовок</th>
+            <th>Тег</th>
+            <th>Главная</th>
+            <th>Статус</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {#each filtered as item (item.id)}
+            {@const news = item as NewsItem}
+            <tr class="is-clickable" onclick={() => navigate(`/collections/news/${news.id}`)}>
+              <td>{news.date}</td>
+              <td>
+                <div class="table__title">
+                  <b>{news.title.ru || news.title.en}</b>
+                  <small>{news.id}</small>
+                </div>
+              </td>
+              <td><span class="badge">{news.tag}</span></td>
+              <td>{news.featured ? "да" : "—"}</td>
+              <td>
+                {#if news.draft}
+                  <span class="badge badge--warn">черновик</span>
+                {:else}
+                  <span class="badge badge--ok">опубликовано</span>
+                {/if}
+              </td>
+              <td>
+                <div class="table__actions">
+                  <a class="icon-btn" href={`#/collections/news/${news.id}`} title="Редактировать" onclick={(event) => event.stopPropagation()}>
+                    <Icon name="edit" size={15} />
+                  </a>
+                  <button class="icon-btn icon-btn--danger" type="button" title="Удалить" onclick={(event) => { event.stopPropagation(); remove(news); }}>
+                    <Icon name="trash" size={15} />
+                  </button>
+                </div>
+              </td>
+            </tr>
+          {/each}
+        </tbody>
+      </table>
+    </div>
+  {:else if name === "ratings"}
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Ник</th>
+            <th>ID</th>
+            <th>Рейтинг</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {#each filtered as item (item.id)}
+            {@const entry = item as RatingEntry}
+            <tr class="is-clickable" onclick={() => navigate(`/collections/ratings/${entry.id}`)}>
+              <td><b>{entry.nickname}</b></td>
+              <td><code>{entry.id}</code></td>
+              <td><span class="badge badge--cyan">{entry.rating}</span></td>
+              <td>
+                <div class="table__actions">
+                  <a class="icon-btn" href={`#/collections/ratings/${entry.id}`} title="Редактировать" onclick={(event) => event.stopPropagation()}>
+                    <Icon name="edit" size={15} />
+                  </a>
+                  <button class="icon-btn icon-btn--danger" type="button" title="Удалить" onclick={(event) => { event.stopPropagation(); remove(entry); }}>
+                    <Icon name="trash" size={15} />
+                  </button>
+                </div>
+              </td>
+            </tr>
           {/each}
         </tbody>
       </table>

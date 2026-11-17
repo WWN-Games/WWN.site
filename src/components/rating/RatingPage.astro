@@ -1,0 +1,125 @@
+---
+import { getCollection } from "astro:content";
+
+import { t } from "@/i18n";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { type Lang, localeHref, SITE } from "@/lib/site";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const entries = (await getCollection("ratings"))
+  .map((entry) => entry.data)
+  .sort(
+    (a, b) =>
+      b.rating - a.rating ||
+      a.nickname.localeCompare(b.nickname, lang),
+  );
+const formatter = new Intl.NumberFormat(lang === "en" ? "en-US" : "ru-RU", {
+  maximumFractionDigits: 2,
+});
+const description = t(lang, "meta.desc.rating");
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: t(lang, "meta.title.rating"),
+  description,
+  url: `${SITE}${localeHref(lang, "rating/")}`,
+  inLanguage: lang,
+  mainEntity: { "@type": "ItemList", numberOfItems: entries.length },
+};
+---
+
+<BaseLayout
+  lang={lang}
+  title={t(lang, "meta.title.rating")}
+  description={description}
+  path="rating/"
+  jsonLd={jsonLd}
+>
+  <section class="section section--bordered">
+    <div class="wrap">
+      <div class="section__head">
+        <span class="kicker">{t(lang, "rating.kicker")}</span>
+        <h1 class="section__title">{t(lang, "rating.title")}</h1>
+        <p>{t(lang, "rating.subtitle")}</p>
+      </div>
+
+      {
+        entries.length > 0 ? (
+          <div class="rating-table-wrap">
+            <table class="rating-table">
+              <thead>
+                <tr>
+                  <th scope="col">{t(lang, "rating.rank")}</th>
+                  <th scope="col">{t(lang, "rating.player")}</th>
+                  <th scope="col">{t(lang, "rating.score")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {entries.map((entry, index) => (
+                  <tr class:rating-table__top={index < 3}>
+                    <td>{index + 1}</td>
+                    <td>{entry.nickname}</td>
+                    <td>{formatter.format(entry.rating)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p class="empty-block">{t(lang, "rating.empty")}</p>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .rating-table-wrap {
+    overflow-x: auto;
+  }
+  .rating-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--surface-1);
+  }
+  .rating-table th,
+  .rating-table td {
+    padding: 13px 18px;
+    text-align: left;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .rating-table th {
+    font-family: var(--font-display);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .rating-table tr:last-child td {
+    border-bottom: 0;
+  }
+  .rating-table td:first-child {
+    width: 80px;
+    font-family: var(--font-mono);
+    color: var(--muted);
+  }
+  .rating-table td:last-child {
+    width: 160px;
+    text-align: right;
+    color: var(--cyan);
+    font-weight: 700;
+  }
+  .rating-table__top td:first-child {
+    color: var(--gold);
+  }
+  .rating-table__top td:last-child {
+    color: var(--gold);
+  }
+</style>

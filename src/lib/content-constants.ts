@@ -39,6 +39,8 @@ export const COLLECTION_FILES = {
   gallery: "src/data/gallery.json",
   videos: "src/data/videos.json",
   feats: "src/data/feats.json",
+  news: "src/data/news.json",
+  ratings: "src/data/ratings.json",
 } as const;
 
 export type CollectionName = keyof typeof COLLECTION_FILES;

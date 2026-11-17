@@ -1,0 +1,59 @@
+---
+import { getCollection } from "astro:content";
+
+import NewsCard from "@/components/news/NewsCard.astro";
+import { t } from "@/i18n";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { sortNews } from "@/lib/news";
+import { type Lang, localeHref, SITE } from "@/lib/site";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const items = (await getCollection("news"))
+  .filter((entry) => !entry.data.draft)
+  .map((entry) => entry.data)
+  .sort(sortNews);
+const description = t(lang, "meta.desc.news");
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: t(lang, "meta.title.news"),
+  description,
+  url: `${SITE}${localeHref(lang, "news/")}`,
+  inLanguage: lang,
+  mainEntity: { "@type": "ItemList", numberOfItems: items.length },
+};
+---
+
+<BaseLayout
+  lang={lang}
+  title={t(lang, "meta.title.news")}
+  description={description}
+  path="news/"
+  jsonLd={jsonLd}
+>
+  <section class="section section--bordered">
+    <div class="wrap">
+      <div class="section__head">
+        <span class="kicker">{t(lang, "news.kicker")}</span>
+        <h1 class="section__title">{t(lang, "news.pageTitle")}</h1>
+        <p>{t(lang, "news.pageSubtitle")}</p>
+      </div>
+
+      {
+        items.length > 0 ? (
+          <div class="news">
+            {items.map((item) => (
+              <NewsCard {item} {lang} />
+            ))}
+          </div>
+        ) : (
+          <p class="empty-block">{t(lang, "news.empty")}</p>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>

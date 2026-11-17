@@ -11,11 +11,14 @@ import {
   gallerySchema,
   mapSchema,
   miscSchema,
+  newsSchema,
+  ratingSchema,
   sectionSchema,
   tagSchema,
   unitSchema,
   videoSchema,
 } from "../../src/lib/schemas.ts";
+import { isRealDate } from "../shared/date.ts";
 import { isSlug, isTagId } from "../shared/slug.ts";
 import type {
   Card,
@@ -24,6 +27,8 @@ import type {
   FeatItem,
   GalleryItemData,
   MapItem,
+  NewsItem,
+  RatingEntry,
   Section,
   Tag,
   VideoItem,
@@ -48,6 +53,8 @@ const COLLECTION_SCHEMAS = {
   gallery: gallerySchema,
   videos: videoSchema,
   feats: featSchema,
+  news: newsSchema,
+  ratings: ratingSchema,
 } as const;
 
 function stringArray(value: unknown): string[] {
@@ -587,6 +594,49 @@ async function validateFeat(item: FeatItem, originalId: string | undefined): Pro
   return parsed.data;
 }
 
+function cleanNewsLink(value: NewsItem["link"]): NewsItem["link"] | undefined {
+  if (!value) return undefined;
+  if (typeof value === "string") return value.trim() || undefined;
+  return cleanText(value) as NewsItem["link"];
+}
+
+async function validateNews(item: NewsItem, originalId: string | undefined): Promise<NewsItem> {
+  item.id = item.id.trim();
+  if (!isSlug(item.id)) throw new HttpError(400, "id: только латиница, цифры и дефис");
+  if (!isRealDate(item.date)) throw new HttpError(400, "date: нужна дата YYYY-MM-DD");
+  const parsed = newsSchema.safeParse({
+    ...item,
+    title: cleanText(item.title),
+    text: cleanText(item.text),
+    link: cleanNewsLink(item.link),
+    featured: Boolean(item.featured),
+    draft: Boolean(item.draft),
+    order: Number.isInteger(item.order) ? item.order : 0,
+  });
+  if (!parsed.success) {
+    throw new HttpError(400, "Проверьте поля новости", zodMessages("news", parsed.error));
+  }
+  ensureUniqueId(await readItems<NewsItem>("news"), item.id, originalId, "Новость");
+  return parsed.data;
+}
+
+async function validateRating(
+  item: RatingEntry,
+  originalId: string | undefined,
+): Promise<RatingEntry> {
+  item.id = item.id.trim();
+  item.nickname = item.nickname.trim();
+  if (!isSlug(item.id)) throw new HttpError(400, "id: только латиница, цифры и дефис");
+  if (!item.nickname) throw new HttpError(400, "nickname: укажите ник");
+  if (!Number.isFinite(item.rating)) throw new HttpError(400, "rating: должно быть числом");
+  const parsed = ratingSchema.safeParse(item);
+  if (!parsed.success) {
+    throw new HttpError(400, "Проверьте поля рейтинга", zodMessages("rating", parsed.error));
+  }
+  ensureUniqueId(await readItems<RatingEntry>("ratings"), item.id, originalId, "Запись рейтинга");
+  return parsed.data;
+}
+
 async function moveCardImage(oldId: string, newId: string, item: Card): Promise<void> {
   const oldDefault = path.join(PUBLIC_ROOT, "img/database", `${oldId}.avif`);
   const newDefault = path.join(PUBLIC_ROOT, "img/database", `${newId}.avif`);
@@ -720,6 +770,18 @@ export async function saveCollectionItem(
       break;
     case "feats":
       normalized = (await validateFeat(item as FeatItem, originalId)) as unknown as Record<
+        string,
+        unknown
+      >;
+      break;
+    case "news":
+      normalized = (await validateNews(item as NewsItem, originalId)) as unknown as Record<
+        string,
+        unknown
+      >;
+      break;
+    case "ratings":
+      normalized = (await validateRating(item as RatingEntry, originalId)) as unknown as Record<
         string,
         unknown
       >;

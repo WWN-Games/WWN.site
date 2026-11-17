@@ -23,7 +23,7 @@
     const article = /src\/content\/wiki\/(?:ru|en)\/([^/]+)\/(.+?)\.md/.exec(error);
     if (article) return `/article/${article[1]}/${article[2]}`;
     const data =
-      /src\/data\/(units|buildings|misc|factions|tags|sections|maps|gallery|videos|feats)\.json/.exec(
+      /src\/data\/(units|buildings|misc|factions|tags|sections|maps|gallery|videos|feats|news|ratings)\.json/.exec(
         error,
       );
     if (data) return `/collections/${data[1]}`;

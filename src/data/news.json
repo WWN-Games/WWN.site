@@ -1,0 +1,40 @@
+{
+  "_schema": [
+    "Новости сайта и мода. id — строковый идентификатор; date — дата YYYY-MM-DD.",
+    "tag — update | news; title/text — { ru, en }; link — внешняя ссылка или путь (например, wiki/).",
+    "featured — закрепить на главной; draft — скрыть с сайта; order — дополнительный порядок."
+  ],
+  "news": [
+    {
+      "id": "wiki-launch",
+      "date": "2026-09-17",
+      "tag": "update",
+      "featured": true,
+      "order": 0,
+      "link": "wiki/",
+      "title": {
+        "ru": "Вики WWN: лор, фракции и гайды",
+        "en": "WWN wiki: lore, factions and guides"
+      },
+      "text": {
+        "ru": "История галактики, фракции, юниты и руководства — в отдельном разделе сайта. Начни с обзора вселенной WWN.",
+        "en": "Galaxy history, factions, units and guides — in a dedicated section of the site. Start with the WWN universe overview."
+      }
+    },
+    {
+      "id": "anniversary-10",
+      "date": "2026-08-16",
+      "tag": "news",
+      "featured": false,
+      "order": 1,
+      "title": {
+        "ru": "Вселенной WWN исполняется 10 лет 🏆",
+        "en": "The WWN universe is turning 10 years old 🏆"
+      },
+      "text": {
+        "ru": "С юбилеем, WWN!",
+        "en": "Happy Anniversary, WWN!"
+      }
+    }
+  ]
+}

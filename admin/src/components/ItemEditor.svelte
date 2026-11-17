@@ -17,6 +17,8 @@
   import GalleryForm from "./GalleryForm.svelte";
   import Icon from "./Icon.svelte";
   import MapForm from "./MapForm.svelte";
+  import NewsForm from "./NewsForm.svelte";
+  import RatingForm from "./RatingForm.svelte";
   import SectionForm from "./SectionForm.svelte";
   import TagForm from "./TagForm.svelte";
   import VideoForm from "./VideoForm.svelte";
@@ -44,6 +46,8 @@
     gallery: { title: "Скриншот", singular: "скриншот" },
     videos: { title: "Видео", singular: "видео" },
     feats: { title: "Подвиг", singular: "подвиг" },
+    news: { title: "Новость", singular: "новость" },
+    ratings: { title: "Рейтинг", singular: "запись рейтинга" },
   };
   const info = $derived(labels[name] ?? labels.units);
   const isCards = $derived(name === "units" || name === "buildings" || name === "misc");
@@ -137,6 +141,25 @@
         desc: { ru: "", en: "" },
         image: "",
         new: false,
+      };
+    }
+    if (name === "news") {
+      return {
+        id: "",
+        date: todayIso(),
+        tag: "news",
+        title: { ru: "", en: "" },
+        text: { ru: "", en: "" },
+        featured: false,
+        draft: true,
+        order: 0,
+      };
+    }
+    if (name === "ratings") {
+      return {
+        id: "",
+        nickname: "",
+        rating: 0,
       };
     }
     return {
@@ -304,6 +327,10 @@
         <VideoForm bind:item={item} />
       {:else if name === "feats"}
         <FeatForm bind:item={item} {toast} />
+      {:else if name === "news"}
+        <NewsForm bind:item={item} />
+      {:else if name === "ratings"}
+        <RatingForm bind:item={item} />
       {:else}
         <SectionForm bind:item={item} />
       {/if}

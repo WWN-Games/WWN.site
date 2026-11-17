@@ -23,6 +23,8 @@
     gallery: "Галерея",
     videos: "Видео",
     feats: "Подвиги",
+    news: "Новости",
+    ratings: "Рейтинг",
   };
 
   const crumbs = $derived.by(() => {

@@ -15,6 +15,8 @@ import {
   gallerySchema,
   mapSchema,
   miscSchema,
+  newsSchema,
+  ratingSchema,
   sectionSchema,
   tagSchema,
   unitSchema,
@@ -87,6 +89,16 @@ const feats = defineCollection({
   schema: featSchema,
 });
 
+const news = defineCollection({
+  loader: file(`./${COLLECTION_FILES.news}`, { parser: jsonArray("news") }),
+  schema: newsSchema,
+});
+
+const ratings = defineCollection({
+  loader: file(`./${COLLECTION_FILES.ratings}`, { parser: jsonArray("ratings") }),
+  schema: ratingSchema,
+});
+
 export const collections = {
   wiki,
   units,
@@ -99,4 +111,6 @@ export const collections = {
   gallery,
   videos,
   feats,
+  news,
+  ratings,
 };

@@ -1,42 +1,21 @@
 ---
-import { type NewsItem, news, newsTagLabels } from "@/data/news";
+import { getCollection } from "astro:content";
+
+import NewsCard from "@/components/news/NewsCard.astro";
 import { t } from "@/i18n";
+import { sortNews } from "@/lib/news";
 import { type Lang, localeHref } from "@/lib/site";
-import { formatDate } from "@/lib/utils";
 
 interface Props {
   lang: Lang;
 }
 
-interface ResolvedLink {
-  href: string;
-  external: boolean;
-}
-
 const { lang } = Astro.props;
-
-/* Ссылка новости: строка или { ru, en }. Внешние — только http(s), всё
-   остальное считаем относительным путём; javascript:/data: отсекаем. */
-function resolveLink(link: NewsItem["link"], lang: Lang): ResolvedLink | null {
-  if (link === undefined) return null;
-  const raw = typeof link === "string" ? link : link[lang];
-  if (!raw) return null;
-  if (/^https?:\/\//i.test(raw)) return { href: raw, external: true };
-  if (/^[a-z][a-z0-9+.-]*:/i.test(raw)) return null;
-  return { href: localeHref(lang, raw), external: false };
-}
-
-const cards = news.map((item) => {
-  const tag = item.tag;
-  return {
-    date: item.date,
-    tag,
-    tagLabel: newsTagLabels[tag][lang],
-    title: item.title[lang],
-    text: item.text[lang],
-    link: resolveLink(item.link, lang),
-  };
-});
+const items = (await getCollection("news"))
+  .filter((entry) => !entry.data.draft)
+  .map((entry) => entry.data)
+  .sort(sortNews)
+  .slice(0, 3);
 ---
 
 <section class="section" id="news">
@@ -45,39 +24,27 @@ const cards = news.map((item) => {
       <span class="kicker">{t(lang, "news.title")}</span>
       <h2 class="section__title">{t(lang, "news.subtitle")}</h2>
     </div>
-    <div class="news" id="newsGrid" data-reveal>
-      {
-        cards.map((card) => (
-          <article class="news__card">
-            <div class="news__meta">
-              <span class={card.tag === "update" ? "tag" : `tag tag--${card.tag}`}>
-                {card.tagLabel}
-              </span>
-              <time datetime={card.date}>{formatDate(card.date, lang)}</time>
-            </div>
-            <h3>
-              {card.link ? (
-                <a
-                  class={card.link.external ? "news__link news__link--external" : "news__link"}
-                  href={card.link.href}
-                  target={card.link.external ? "_blank" : undefined}
-                  rel={card.link.external ? "noopener" : undefined}
-                >
-                  {card.title}
-                  {card.link.external && (
-                    <span class="news__arrow" aria-hidden="true">
-                      ↗
-                    </span>
-                  )}
-                </a>
-              ) : (
-                card.title
-              )}
-            </h3>
-            <p>{card.text}</p>
-          </article>
-        ))
-      }
+    {
+      items.length > 0 ? (
+        <div class="news" id="newsGrid" data-reveal>
+          {items.map((item) => (
+            <NewsCard {item} {lang} />
+          ))}
+        </div>
+      ) : (
+        <p class="empty-block">{t(lang, "news.empty")}</p>
+      )
+    }
+    <div class="section__actions">
+      <a class="btn btn--ghost" href={localeHref(lang, "news/")}>{t(lang, "news.all")}</a>
     </div>
   </div>
 </section>
+
+<style>
+  .section__actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 22px;
+  }
+</style>

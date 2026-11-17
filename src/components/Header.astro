@@ -11,26 +11,19 @@ interface Props {
 
 const { lang, path } = Astro.props;
 const home = localeHref(lang, "");
-const isHome = path === "";
-const anchor = (id: string) => (isHome ? `#${id}` : `${home}#${id}`);
 
 const navItems = [
-  { key: "nav.features", href: anchor("features") },
-  { key: "nav.factions", href: anchor("factions") },
-  { key: "nav.gallery", href: localeHref(lang, "gallery/"), section: "gallery" },
-  { key: "nav.maps", href: localeHref(lang, "maps/"), section: "maps" },
-  { key: "nav.videos", href: localeHref(lang, "videos/"), section: "videos" },
-  { key: "nav.wiki", href: localeHref(lang, "wiki/"), section: "wiki" },
+  { key: "nav.news", href: localeHref(lang, "news/"), section: "news" },
   { key: "database.title", href: localeHref(lang, "database/"), section: "database" },
+  { key: "nav.wiki", href: localeHref(lang, "wiki/"), section: "wiki" },
+  { key: "nav.maps", href: localeHref(lang, "maps/"), section: "maps" },
+  { key: "nav.gallery", href: localeHref(lang, "gallery/"), section: "gallery" },
+  { key: "nav.videos", href: localeHref(lang, "videos/"), section: "videos" },
   { key: "nav.feats", href: localeHref(lang, "feats/"), section: "feats" },
+  { key: "nav.rating", href: localeHref(lang, "rating/"), section: "rating" },
 ] as const;
 
-const mobileItems = [
-  ...navItems,
-  { key: "nav.download", href: anchor("download") },
-  { key: "nav.news", href: anchor("news") },
-  { key: "nav.faq", href: anchor("faq") },
-] as const;
+const mobileItems = navItems;
 
 const isActive = (section?: string) => Boolean(section && path.startsWith(section));
 ---

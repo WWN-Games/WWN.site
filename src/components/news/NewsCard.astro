@@ -1,0 +1,44 @@
+---
+import { t } from "@/i18n";
+import { NEWS_TAG_LABELS, resolveNewsLink } from "@/lib/news";
+import type { NewsItem } from "@/lib/schemas";
+import type { Lang } from "@/lib/site";
+import { formatDate } from "@/lib/utils";
+
+interface Props {
+  item: NewsItem;
+  lang: Lang;
+}
+
+const { item, lang } = Astro.props;
+const tagLabel = NEWS_TAG_LABELS[item.tag][lang];
+const link = resolveNewsLink(item.link, lang);
+---
+
+<article class="news__card">
+  <div class="news__meta">
+    <span class={item.tag === "update" ? "tag" : `tag tag--${item.tag}`}>{tagLabel}</span>
+    {item.featured && <span class="news__featured">{t(lang, "news.featured")}</span>}
+    <time datetime={item.date}>{formatDate(item.date, lang)}</time>
+  </div>
+  <h3>
+    {link ? (
+      <a
+        class={link.external ? "news__link news__link--external" : "news__link"}
+        href={link.href}
+        target={link.external ? "_blank" : undefined}
+        rel={link.external ? "noopener" : undefined}
+      >
+        {item.title[lang]}
+        {link.external && (
+          <span class="news__arrow" aria-hidden="true">
+            ↗
+          </span>
+        )}
+      </a>
+    ) : (
+      item.title[lang]
+    )}
+  </h3>
+  <p>{item.text[lang]}</p>
+</article>
