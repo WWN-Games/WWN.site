@@ -8,6 +8,6 @@ export const prerender = true;
 
 export const GET: APIRoute = async () => {
   const stats = await collectStats();
-  const items = STAT_IDS.map((id) => ({ id, value: stats[id] })).sort(byId);
+  const items = STAT_IDS.map((id) => ({ id, value: stats[id] })).toSorted(byId);
   return jsonResponse(items);
 };

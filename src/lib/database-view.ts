@@ -8,7 +8,7 @@ import type { ExplorerItem, SortDirection, SortKey } from "./database";
 import type { TagMatchMode } from "./database-constants";
 import { collator, foldSearch } from "./utils";
 
-export interface DatabaseFilters {
+interface DatabaseFilters {
   query: string;
   faction: string;
   tags: string[];
@@ -26,7 +26,7 @@ export interface SearchableExplorerItem extends ExplorerItem {
   searchText: string;
 }
 
-export function matchesSearch(item: SearchableExplorerItem, tokens: readonly string[]): boolean {
+function matchesSearch(item: SearchableExplorerItem, tokens: readonly string[]): boolean {
   return tokens.every((token) => item.searchText.includes(token));
 }
 
@@ -62,18 +62,15 @@ export function sortItems(
 ): ExplorerItem[] {
   const collate = collator(lang);
   const compareName = (a: ExplorerItem, b: ExplorerItem): number => collate.compare(a.name, b.name);
-  const sorted = [...items];
   const sign = direction === "asc" ? 1 : -1;
 
   if (sort === "name") {
-    sorted.sort((a, b) => sign * compareName(a, b));
-    return sorted;
+    return items.toSorted((a, b) => sign * compareName(a, b));
   }
 
   const key = sort;
-  sorted.sort((a, b) => {
+  return items.toSorted((a, b) => {
     const diff = (a[key] ?? 0) - (b[key] ?? 0);
     return diff ? sign * diff : compareName(a, b);
   });
-  return sorted;
 }

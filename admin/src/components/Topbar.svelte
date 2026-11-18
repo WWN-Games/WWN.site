@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { COLLECTION_META } from "../../shared/collections";
   import type { Bootstrap } from "../../shared/types";
   import type { Route } from "../lib/routes";
   import Icon from "./Icon.svelte";
@@ -11,21 +12,6 @@
   }
 
   const { route, bootstrap, onmenu, onrefresh }: Props = $props();
-
-  const collectionLabels: Record<string, string> = {
-    units: "Юниты",
-    buildings: "Строения",
-    misc: "Разное",
-    factions: "Фракции",
-    tags: "Теги",
-    sections: "Разделы",
-    maps: "Карты",
-    gallery: "Галерея",
-    videos: "Видео",
-    feats: "Подвиги",
-    news: "Новости",
-    ratings: "Рейтинг",
-  };
 
   const crumbs = $derived.by(() => {
     switch (route.view) {
@@ -40,10 +26,10 @@
         return ["Статьи", section?.title.ru ?? sectionId, route.slug.split("/").slice(1).join("/")];
       }
       case "collections":
-        return [collectionLabels[route.name] ?? route.name];
+        return [(COLLECTION_META as Record<string, { title: string }>)[route.name]?.title ?? route.name];
       case "item":
         return [
-          collectionLabels[route.name] ?? route.name,
+          (COLLECTION_META as Record<string, { title: string }>)[route.name]?.title ?? route.name,
           route.id ? route.id : "Новая запись",
         ];
       case "validation":

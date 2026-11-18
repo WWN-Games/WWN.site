@@ -11,7 +11,7 @@ import { rehypeArticleFeatures } from "./rehype-article";
 import { rehypeAssetUrls } from "./rehype-asset-urls";
 import { remarkWikiLinks } from "./remark-wiki-links";
 
-export const AUTOLINK_HEADINGS_OPTIONS = {
+const AUTOLINK_HEADINGS_OPTIONS = {
   behavior: "append" as const,
   properties: { className: ["article__anchor"], tabIndex: 0 },
 };

@@ -7,45 +7,27 @@
 import { createReadStream } from "node:fs";
 import { stat } from "node:fs/promises";
 import { createServer } from "node:http";
-import { extname, isAbsolute, join, relative as relativePath, resolve } from "node:path";
+import path from "node:path";
 
-const DIST = resolve("dist");
+import { MIME_TYPES } from "../src/lib/mime.ts";
+
+const DIST = path.resolve(import.meta.dirname, "..", "dist");
 const BASE = "/WWN.site";
 const PORT = Number(process.env.PORT ?? 4321);
 
-const MIME = {
-  ".html": "text/html; charset=utf-8",
-  ".css": "text/css; charset=utf-8",
-  ".js": "text/javascript; charset=utf-8",
-  ".mjs": "text/javascript; charset=utf-8",
-  ".json": "application/json; charset=utf-8",
-  ".xml": "application/xml; charset=utf-8",
-  ".txt": "text/plain; charset=utf-8",
-  ".svg": "image/svg+xml",
-  ".png": "image/png",
-  ".webp": "image/webp",
-  ".avif": "image/avif",
-  ".woff2": "font/woff2",
-  ".mp3": "audio/mpeg",
-  ".wasm": "application/wasm",
-  ".map": "application/json; charset=utf-8",
-  ".ico": "image/x-icon",
-  ".webmanifest": "application/manifest+json",
-};
-
-async function fileFor(pathname) {
-  let decoded;
+async function fileFor(pathname: string): Promise<string | null> {
+  let decoded: string;
   try {
     decoded = decodeURIComponent(pathname);
   } catch {
     return null;
   }
-  const target = join(DIST, decoded);
-  const rel = relativePath(DIST, target);
-  if (rel.startsWith("..") || isAbsolute(rel)) return null;
+  const target = path.join(DIST, decoded);
+  const relative = path.relative(DIST, target);
+  if (relative.startsWith("..") || path.isAbsolute(relative)) return null;
   try {
     const info = await stat(target);
-    if (info.isDirectory()) return join(target, "index.html");
+    if (info.isDirectory()) return path.join(target, "index.html");
     return target;
   } catch {
     return null;
@@ -62,13 +44,13 @@ const server = createServer(async (request, response) => {
   const relative = url.pathname.slice(BASE.length) || "/";
   const file = await fileFor(relative);
   if (!file) {
-    const fallback = join(DIST, "404.html");
-    response.writeHead(404, { "Content-Type": MIME[".html"] });
+    const fallback = path.join(DIST, "404.html");
+    response.writeHead(404, { "Content-Type": MIME_TYPES[".html"] });
     createReadStream(fallback).pipe(response);
     return;
   }
   response.writeHead(200, {
-    "Content-Type": MIME[extname(file)] ?? "application/octet-stream",
+    "Content-Type": MIME_TYPES[path.extname(file)] ?? "application/octet-stream",
     "Cache-Control": "no-store",
   });
   if (request.method === "HEAD") {

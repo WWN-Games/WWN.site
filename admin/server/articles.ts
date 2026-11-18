@@ -95,7 +95,7 @@ async function walk(dir: string, prefix = ""): Promise<string[]> {
       result.push(rel.slice(0, -3));
     }
   }
-  return result.sort((a, b) => a.localeCompare(b));
+  return result.toSorted((a, b) => a.localeCompare(b));
 }
 
 export async function listArticles(): Promise<ArticleSummary[]> {
@@ -147,7 +147,7 @@ export async function listArticles(): Promise<ArticleSummary[]> {
     });
   }
 
-  return summaries.sort((a, b) => {
+  return summaries.toSorted((a, b) => {
     const sectionA = sectionOrder.get(a.section) ?? 999;
     const sectionB = sectionOrder.get(b.section) ?? 999;
     return (
@@ -203,9 +203,7 @@ export async function readArticle(slug: string): Promise<Article> {
   };
 }
 
-export async function articleDefaults(
-  section: string,
-): Promise<{ order: number; section: string }> {
+async function articleDefaults(section: string): Promise<{ order: number; section: string }> {
   const articles = await listArticles();
   const inSection = articles.filter((article) => article.section === section);
   const max = inSection.reduce((value, article) => Math.max(value, article.order), 0);

@@ -11,7 +11,7 @@ export const NEWS_TAG_LABELS = {
   news: { ru: "Новости", en: "News" },
 } satisfies Record<NewsTag, Text>;
 
-export interface ResolvedNewsLink {
+interface ResolvedNewsLink {
   href: string;
   external: boolean;
 }

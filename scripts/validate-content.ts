@@ -6,30 +6,14 @@
 
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 
 import type { ZodType } from "astro/zod";
-
+import { COLLECTION_SCHEMAS } from "../src/lib/collections.ts";
+import { CARD_TAG_GROUPS, WEAPON_TAG_GROUPS } from "../src/lib/content-constants.ts";
 import { parseArticleFrontMatter } from "../src/lib/frontmatter.ts";
-import {
-  buildingSchema,
-  factionSchema,
-  featSchema,
-  gallerySchema,
-  mapSchema,
-  miscSchema,
-  newsSchema,
-  ratingSchema,
-  sectionSchema,
-  statsSchema,
-  tagSchema,
-  unitSchema,
-  videoSchema,
-  type WikiFrontMatter,
-  wikiSchema,
-} from "../src/lib/schemas.ts";
+import { statsSchema, type WikiFrontMatter, wikiSchema } from "../src/lib/schemas.ts";
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const ROOT = path.resolve(import.meta.dirname, "..");
 const WIKI_DIR = path.join(ROOT, "src", "content", "wiki");
 const DATA_DIR = path.join(ROOT, "src", "data");
 const PUBLIC_DIR = path.join(ROOT, "public");
@@ -58,7 +42,7 @@ function listFiles(dir: string, extension: string): string[] {
     if (entry.isDirectory()) files.push(...listFiles(full, extension));
     else if (entry.isFile() && entry.name.endsWith(extension)) files.push(full);
   }
-  return files.sort((a, b) => a.localeCompare(b));
+  return files.toSorted((a, b) => a.localeCompare(b));
 }
 
 /** Убирает блоки кода и инлайн-код: там ссылки и картинки не рендерятся. */
@@ -145,7 +129,7 @@ export function validateContent(): string[] {
   const sections = parseItems(
     "sections.json",
     arrayOf(loadJson("sections.json", errors), "sections", "sections.json", errors),
-    sectionSchema,
+    COLLECTION_SCHEMAS.sections,
     errors,
   );
   const sectionIds = new Set(uniqueIds("sections.json", sections, errors).keys());
@@ -219,7 +203,7 @@ export function validateContent(): string[] {
     }
     langs.set(article.lang, article);
   }
-  for (const [slug, langs] of [...bySlug.entries()].sort(([a], [b]) => a.localeCompare(b))) {
+  for (const [slug, langs] of [...bySlug.entries()].toSorted(([a], [b]) => a.localeCompare(b))) {
     for (const lang of LANGS) {
       if (!langs.has(lang))
         errors.push(`вики: у статьи «${slug}» нет версии ${lang.toUpperCase()}`);
@@ -297,7 +281,7 @@ export function validateContent(): string[] {
   const factions = parseItems(
     "factions.json",
     arrayOf(loadJson("factions.json", errors), "factions", "factions.json", errors),
-    factionSchema,
+    COLLECTION_SCHEMAS.factions,
     errors,
   );
   const factionIds = new Set(uniqueIds("factions.json", factions, errors).keys());
@@ -305,7 +289,7 @@ export function validateContent(): string[] {
   const tags = parseItems(
     "tags.json",
     arrayOf(loadJson("tags.json", errors), "tags", "tags.json", errors),
-    tagSchema,
+    COLLECTION_SCHEMAS.tags,
     errors,
   );
   const tagIds = new Set(uniqueIds("tags.json", tags, errors).keys());
@@ -313,55 +297,55 @@ export function validateContent(): string[] {
   const units = parseItems(
     "units.json",
     arrayOf(loadJson("units.json", errors), "units", "units.json", errors),
-    unitSchema,
+    COLLECTION_SCHEMAS.units,
     errors,
   );
   const buildings = parseItems(
     "buildings.json",
     arrayOf(loadJson("buildings.json", errors), "buildings", "buildings.json", errors),
-    buildingSchema,
+    COLLECTION_SCHEMAS.buildings,
     errors,
   );
   const misc = parseItems(
     "misc.json",
     arrayOf(loadJson("misc.json", errors), "misc", "misc.json", errors),
-    miscSchema,
+    COLLECTION_SCHEMAS.misc,
     errors,
   );
   const maps = parseItems(
     "maps.json",
     arrayOf(loadJson("maps.json", errors), "maps", "maps.json", errors),
-    mapSchema,
+    COLLECTION_SCHEMAS.maps,
     errors,
   );
   const gallery = parseItems(
     "gallery.json",
     arrayOf(loadJson("gallery.json", errors), "gallery", "gallery.json", errors),
-    gallerySchema,
+    COLLECTION_SCHEMAS.gallery,
     errors,
   );
   const videos = parseItems(
     "videos.json",
     arrayOf(loadJson("videos.json", errors), "videos", "videos.json", errors),
-    videoSchema,
+    COLLECTION_SCHEMAS.videos,
     errors,
   );
   const feats = parseItems(
     "feats.json",
     arrayOf(loadJson("feats.json", errors), "feats", "feats.json", errors),
-    featSchema,
+    COLLECTION_SCHEMAS.feats,
     errors,
   );
   const news = parseItems(
     "news.json",
     arrayOf(loadJson("news.json", errors), "news", "news.json", errors),
-    newsSchema,
+    COLLECTION_SCHEMAS.news,
     errors,
   );
   const ratings = parseItems(
     "ratings.json",
     arrayOf(loadJson("ratings.json", errors), "ratings", "ratings.json", errors),
-    ratingSchema,
+    COLLECTION_SCHEMAS.ratings,
     errors,
   );
 
@@ -377,8 +361,8 @@ export function validateContent(): string[] {
   const unitIds = new Set(units.map((unit) => unit.id));
   const cardIds = new Map<string, string>();
   const tagGroups = new Map(tags.map((tag) => [tag.id, tag.group]));
-  const cardTagGroups = new Set(["tier", "class", "movement", "mod"]);
-  const weaponTagGroups = new Set(["weapon", "sector"]);
+  const cardTagGroups = new Set<string>(CARD_TAG_GROUPS);
+  const weaponTagGroups = new Set<string>(WEAPON_TAG_GROUPS);
 
   for (const [file, cards] of [
     ["units.json", units],
@@ -496,12 +480,7 @@ export function validateContent(): string[] {
   return errors;
 }
 
-const invokedDirectly =
-  process.argv[1] !== undefined &&
-  path.resolve(process.argv[1]) === fileURLToPath(import.meta.url) &&
-  import.meta.url.startsWith("file:");
-
-if (invokedDirectly) {
+if (import.meta.main) {
   const errors = validateContent();
   if (errors.length > 0) {
     console.error(`validate-content: найдено ошибок — ${errors.length}`);

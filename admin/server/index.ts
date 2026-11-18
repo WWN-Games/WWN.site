@@ -147,7 +147,7 @@ async function bootstrap(): Promise<Bootstrap> {
     validation,
     git,
     site: { running, url: SITE_DEV_URL },
-    recentArticles: [...articles].sort((a, b) => b.mtime - a.mtime).slice(0, 8),
+    recentArticles: articles.toSorted((a, b) => b.mtime - a.mtime).slice(0, 8),
     warnings,
   };
 }

@@ -6,7 +6,8 @@ import path from "node:path";
 import { t } from "@/i18n";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { isBadgeNew } from "@/lib/cards";
-import { href, type Lang, localeHref, SITE } from "@/lib/site";
+import { collectionJsonLd } from "@/lib/seo";
+import { href, type Lang } from "@/lib/site";
 import { formatNumber } from "@/lib/utils";
 
 interface Props {
@@ -15,19 +16,17 @@ interface Props {
 
 const { lang } = Astro.props;
 const publicRoot = path.join(process.cwd(), "public");
-const entries = (await getCollection("maps")).sort(
+const entries = (await getCollection("maps")).toSorted(
   (a, b) => a.data.order - b.data.order || a.data.name[lang].localeCompare(b.data.name[lang], lang),
 );
 const description = t(lang, "meta.desc.maps");
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "CollectionPage",
-  name: t(lang, "meta.title.maps"),
+const jsonLd = collectionJsonLd({
+  lang,
+  path: "maps/",
+  title: t(lang, "meta.title.maps"),
   description,
-  url: `${SITE}${localeHref(lang, "maps/")}`,
-  inLanguage: lang,
-  mainEntity: { "@type": "ItemList", numberOfItems: entries.length },
-};
+  count: entries.length,
+});
 ---
 
 <BaseLayout

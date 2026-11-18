@@ -1,23 +1,13 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import { isDeepStrictEqual } from "node:util";
-import { withDerivedDps } from "../../src/lib/cards.ts";
+import { COLLECTION_SCHEMAS } from "../../src/lib/collections.ts";
 import type { CollectionName } from "../../src/lib/content-constants.ts";
-import { UNLOAD_OPTIONS } from "../../src/lib/content-constants.ts";
 import {
-  buildingSchema,
-  factionSchema,
-  featSchema,
-  gallerySchema,
-  mapSchema,
-  miscSchema,
-  newsSchema,
-  ratingSchema,
-  sectionSchema,
-  tagSchema,
-  unitSchema,
-  videoSchema,
-} from "../../src/lib/schemas.ts";
+  CARD_TAG_GROUPS,
+  UNLOAD_OPTIONS,
+  WEAPON_TAG_GROUPS,
+} from "../../src/lib/content-constants.ts";
 import { isRealDate } from "../shared/date.ts";
 import { isSlug, isTagId } from "../shared/slug.ts";
 import type {
@@ -41,21 +31,6 @@ import { runValidation } from "./validation.ts";
 
 const PUBLIC_ROOT = path.join(SITE_ROOT, "public");
 const SRC_ROOT = path.join(SITE_ROOT, "src");
-
-const COLLECTION_SCHEMAS = {
-  units: unitSchema,
-  buildings: buildingSchema,
-  misc: miscSchema,
-  factions: factionSchema,
-  tags: tagSchema,
-  sections: sectionSchema,
-  maps: mapSchema,
-  gallery: gallerySchema,
-  videos: videoSchema,
-  feats: featSchema,
-  news: newsSchema,
-  ratings: ratingSchema,
-} as const;
 
 function stringArray(value: unknown): string[] {
   if (!Array.isArray(value)) return [];
@@ -91,9 +66,8 @@ function cleanTextOrList(
 }
 
 function cardPayload(item: Card): Record<string, unknown> {
-  const derived = withDerivedDps(item);
   return {
-    ...derived,
+    ...item,
     id: item.id.trim(),
     name: cleanText(item.name),
     faction: item.faction.trim(),
@@ -103,7 +77,7 @@ function cardPayload(item: Card): Record<string, unknown> {
     role: cleanText(item.role),
     strongVs: cleanTextOrList(item.strongVs),
     weakVs: cleanTextOrList(item.weakVs),
-    weapons: derived.weapons?.map((weapon) => ({
+    weapons: item.weapons?.map((weapon) => ({
       ...weapon,
       name: cleanText(weapon.name),
       count: Math.max(1, Math.round(weapon.count ?? 1)),
@@ -229,8 +203,8 @@ async function validateCard(
   }
   const tags = await readTags();
   const tagMap = new Map(tags.map((tag) => [tag.id, tag]));
-  const cardTagGroups = new Set(["tier", "class", "movement", "mod"]);
-  const weaponTagGroups = new Set(["weapon", "sector"]);
+  const cardTagGroups = new Set<string>(CARD_TAG_GROUPS);
+  const weaponTagGroups = new Set<string>(WEAPON_TAG_GROUPS);
   for (const tag of item.tags) {
     const entry = tagMap.get(tag);
     if (!entry) throw new HttpError(400, `Незарегистрированный тег «${tag}»`);
@@ -329,8 +303,7 @@ async function validateCard(
   }
   item.image = image?.replace(/^\/+/, "");
 
-  const schema = name === "units" ? unitSchema : name === "buildings" ? buildingSchema : miscSchema;
-  const parsed = schema.safeParse(cardPayload(item));
+  const parsed = COLLECTION_SCHEMAS[name].safeParse(cardPayload(item));
   if (!parsed.success) {
     throw new HttpError(400, "Проверьте поля карточки", zodMessages(name, parsed.error));
   }
@@ -423,7 +396,7 @@ async function validateFaction(item: Faction, originalId: string | undefined): P
     }
   }
 
-  const parsed = factionSchema.safeParse(factionPayload(item));
+  const parsed = COLLECTION_SCHEMAS.factions.safeParse(factionPayload(item));
   if (!parsed.success) {
     throw new HttpError(400, "Проверьте поля фракции", zodMessages("faction", parsed.error));
   }
@@ -435,7 +408,7 @@ async function validateTag(item: Tag, originalId: string | undefined): Promise<T
   if (!isTagId(item.id)) {
     throw new HttpError(400, "id: латиница, цифры, дефис, подчёркивание и +");
   }
-  const parsed = tagSchema.safeParse(tagPayload(item));
+  const parsed = COLLECTION_SCHEMAS.tags.safeParse(tagPayload(item));
   if (!parsed.success) {
     throw new HttpError(400, "Проверьте поля тега", zodMessages("tag", parsed.error));
   }
@@ -461,7 +434,7 @@ async function validateSection(item: Section, originalId: string | undefined): P
   if (!Number.isInteger(item.order) || item.order <= 0) {
     throw new HttpError(400, "order: целое число больше нуля");
   }
-  const parsed = sectionSchema.safeParse(sectionPayload(item));
+  const parsed = COLLECTION_SCHEMAS.sections.safeParse(sectionPayload(item));
   if (!parsed.success) {
     throw new HttpError(400, "Проверьте поля раздела", zodMessages("section", parsed.error));
   }
@@ -520,7 +493,7 @@ async function validateMap(item: MapItem, originalId: string | undefined): Promi
       throw new HttpError(400, `image: файл public/${item.image} не найден`);
     }
   }
-  const parsed = mapSchema.safeParse(payload);
+  const parsed = COLLECTION_SCHEMAS.maps.safeParse(payload);
   if (!parsed.success) {
     throw new HttpError(400, "Проверьте поля карты", zodMessages("map", parsed.error));
   }
@@ -545,7 +518,10 @@ async function validateGallery(
   if (!(await fileExists(target))) {
     throw new HttpError(400, `image: файл src/${item.image} не найден`);
   }
-  const parsed = gallerySchema.safeParse({ ...item, caption: cleanText(item.caption) });
+  const parsed = COLLECTION_SCHEMAS.gallery.safeParse({
+    ...item,
+    caption: cleanText(item.caption),
+  });
   if (!parsed.success) {
     throw new HttpError(400, "Проверьте поля галереи", zodMessages("gallery", parsed.error));
   }
@@ -557,7 +533,7 @@ async function validateVideo(item: VideoItem, originalId: string | undefined): P
   item.id = item.id.trim();
   if (!isSlug(item.id)) throw new HttpError(400, "id: только латиница, цифры и дефис");
   item.youtubeId = (item.youtubeId ?? "").trim();
-  const parsed = videoSchema.safeParse({
+  const parsed = COLLECTION_SCHEMAS.videos.safeParse({
     ...item,
     title: cleanText(item.title),
     desc: cleanOptionalText(item.desc),
@@ -582,7 +558,7 @@ async function validateFeat(item: FeatItem, originalId: string | undefined): Pro
       throw new HttpError(400, `image: файл public/${item.image} не найден`);
     }
   }
-  const parsed = featSchema.safeParse({
+  const parsed = COLLECTION_SCHEMAS.feats.safeParse({
     ...item,
     name: cleanText(item.name),
     desc: cleanText(item.desc),
@@ -604,7 +580,7 @@ async function validateNews(item: NewsItem, originalId: string | undefined): Pro
   item.id = item.id.trim();
   if (!isSlug(item.id)) throw new HttpError(400, "id: только латиница, цифры и дефис");
   if (!isRealDate(item.date)) throw new HttpError(400, "date: нужна дата YYYY-MM-DD");
-  const parsed = newsSchema.safeParse({
+  const parsed = COLLECTION_SCHEMAS.news.safeParse({
     ...item,
     title: cleanText(item.title),
     text: cleanText(item.text),
@@ -629,7 +605,7 @@ async function validateRating(
   if (!isSlug(item.id)) throw new HttpError(400, "id: только латиница, цифры и дефис");
   if (!item.nickname) throw new HttpError(400, "nickname: укажите ник");
   if (!Number.isFinite(item.rating)) throw new HttpError(400, "rating: должно быть числом");
-  const parsed = ratingSchema.safeParse(item);
+  const parsed = COLLECTION_SCHEMAS.ratings.safeParse(item);
   if (!parsed.success) {
     throw new HttpError(400, "Проверьте поля рейтинга", zodMessages("rating", parsed.error));
   }

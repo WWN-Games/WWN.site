@@ -8,7 +8,7 @@ import { getCollection } from "astro:content";
 import statsJson from "../data/stats.json";
 import { statsSchema } from "./schemas";
 
-export interface SiteStats {
+interface SiteStats {
   units: number;
   buildings: number;
   misc: number;

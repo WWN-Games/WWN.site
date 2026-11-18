@@ -50,7 +50,7 @@
           .replace(/ё/g, "е");
         return haystack.includes(normalizedSearch);
       })
-      .sort((a, b) => {
+      .toSorted((a, b) => {
         const sectionA = sectionOrder.get(a.section) ?? 999;
         const sectionB = sectionOrder.get(b.section) ?? 999;
         return sectionA - sectionB || a.order - b.order || a.title.ru.localeCompare(b.title.ru, "ru");

@@ -54,7 +54,6 @@ const ALWAYS_VISIBLE_STATS = new Set<StatKey>(["dps", "armor"]);
 type TagGroup = Tag["group"];
 
 const FALLBACK_COLOR = "#29b8ff";
-const MIN_BAR = 10;
 
 /* — шкала статов — */
 
@@ -135,7 +134,7 @@ export interface DatabaseFaction {
 
 /* — сериализуемый индекс для острова — */
 
-export interface ExplorerWeapon {
+interface ExplorerWeapon {
   name: string;
   count: number;
   projectileCount?: number | undefined;
@@ -150,20 +149,20 @@ export interface ExplorerWeapon {
   stunDuration?: number | undefined;
 }
 
-export interface ExplorerBuilder {
+interface ExplorerBuilder {
   buildRange: number;
   repairSpeed: number;
   buildSpeed: number;
   healTags: string[];
 }
 
-export interface ExplorerFactory {
+interface ExplorerFactory {
   name: string;
   buildSpeed: number;
   producedUnits: { id: string; name: string }[];
 }
 
-export interface ExplorerTransport {
+interface ExplorerTransport {
   name: string;
   seats: number;
   cargoTags: string[];
@@ -224,7 +223,95 @@ export interface ExplorerTag {
   name: Text;
 }
 
+const DETAIL_LABEL_KEYS = {
+  title: "database.detail.title",
+  characteristics: "database.detail.characteristics",
+  close: "database.detail.close",
+  addCompare: "database.detail.addCompare",
+  removeCompare: "database.detail.removeCompare",
+  detailLabel: "database.detail",
+  openUnit: "database.detail.openUnit",
+  fullCost: "database.fullCost",
+  cost: "database.cost",
+  energy: "database.energy",
+  buildTime: "database.buildTime",
+  hp: "database.hp",
+  shield: "database.shield",
+  armor: "database.armor",
+  selfRegen: "database.selfRegen",
+  shieldRegen: "database.shieldRegen",
+  speed: "database.speed",
+  turnSpeed: "database.turnSpeed",
+  range: "database.range",
+  dpsAll: "database.dpsAll",
+  dpsPerFullCost: "database.compare.metric.dpsPerFullCost",
+  totalHpPerFullCost: "database.compare.metric.totalHpPerFullCost",
+  strong: "database.strong",
+  weak: "database.weak",
+  abilities: "database.abilities",
+  abilityMissile: "database.ability.missile",
+  abilityTorpedo: "database.ability.torpedo",
+  abilityLaser: "database.ability.laser",
+  abilityDome: "database.ability.dome",
+  abilityAtmosphere: "database.ability.atmosphere",
+  abilityFtl: "database.ability.ftl",
+  ftlSiv: "database.ability.ftl.siv",
+  ftlPlasma: "database.ability.ftl.plasma",
+  charges: "database.ability.charges",
+  perSecond: "database.ability.perSecond",
+  yes: "database.ability.yes",
+  weapons: "database.weapons",
+  noWeapons: "database.weapon.noWeapons",
+  weaponName: "database.weapon.name",
+  weaponCount: "database.weapon.count",
+  weaponProjectiles: "database.weapon.projectiles",
+  weaponProjectileDelay: "database.weapon.projectileDelay",
+  weaponDamage: "database.weapon.damage",
+  weaponFireDelay: "database.weapon.fireDelay",
+  weaponArmourIgnore: "database.weapon.armourIgnore",
+  weaponDps: "database.weapon.dps",
+  weaponTags: "database.weapon.tags",
+  weaponSpread: "database.weapon.spread",
+  weaponSplash: "database.weapon.splash",
+  weaponStun: "database.weapon.stun",
+  weaponOrder: "database.weapon.order",
+  builder: "database.builder",
+  builderBuildRange: "database.builder.buildRange",
+  builderRepairSpeed: "database.builder.repairSpeed",
+  builderBuildSpeed: "database.builder.buildSpeed",
+  builderHeals: "database.builder.heals",
+  factories: "database.factories",
+  factorySpeed: "database.factory.speed",
+  factoryUnits: "database.factory.units",
+  transports: "database.transports",
+  transportSeats: "database.transport.seats",
+  transportCargo: "database.transport.cargo",
+  transportUnload: "database.transport.unload",
+  unloadShore: "database.unload.shore",
+  unloadWater: "database.unload.water",
+  unloadAir: "database.unload.air",
+  unloadUnderwater: "database.unload.underwater",
+  unloadSpace: "database.unload.space",
+  seconds: "database.seconds",
+  secondsShort: "database.secondsShort",
+  secondsAtSpeed1: "database.secondsAtSpeed1",
+  sortAsc: "database.sort.asc",
+  sortDesc: "database.sort.desc",
+  tagClear: "database.tag.clear",
+  tagModeAll: "database.tag.mode.all",
+  tagModeAny: "database.tag.mode.any",
+} as const satisfies Record<string, DictKey>;
+
+export type DetailLabels = { [K in keyof typeof DETAIL_LABEL_KEYS]: string };
+
+export function detailLabels(lang: Lang): DetailLabels {
+  return Object.fromEntries(
+    Object.entries(DETAIL_LABEL_KEYS).map(([key, dictKey]) => [key, t(lang, dictKey)]),
+  ) as DetailLabels;
+}
+
 export interface ExplorerLabels {
+  detail: DetailLabels;
   search: string;
   clearSearch: string;
   all: string;
@@ -370,7 +457,7 @@ function computeScale(cards: DatabaseCard[]): StatScale {
     const values = cards
       .map((card) => card[key])
       .filter((value) => value > 0)
-      .sort((a, b) => a - b);
+      .toSorted((a, b) => a - b);
     if (!values.length) {
       scale[key] = ALWAYS_VISIBLE_STATS.has(key) ? { lo: 1, hi: 1, median: 0 } : null;
       continue;
@@ -479,6 +566,7 @@ export function cardSearchText(
 
 function explorerLabels(lang: Lang): ExplorerLabels {
   return {
+    detail: detailLabels(lang),
     search: t(lang, "database.search.placeholder"),
     clearSearch: t(lang, "database.search.clear"),
     all: t(lang, "database.filter.all"),
@@ -598,7 +686,7 @@ export async function loadDatabase(lang: Lang): Promise<DatabaseData> {
 
   // Порядок фракций задаётся полем order: сначала Фенземская Республика и
   // Движение Протон, затем остальные (см. src/data/factions.json).
-  factionEntries.sort((a, b) => a.data.order - b.data.order);
+  const sortedFactions = factionEntries.toSorted((a, b) => a.data.order - b.data.order);
 
   const tagMap = new Map(tagEntries.map((entry) => [entry.id, entry.data]));
   const factionMap = new Map(factionEntries.map((entry) => [entry.id, entry.data]));
@@ -621,7 +709,7 @@ export async function loadDatabase(lang: Lang): Promise<DatabaseData> {
   const scale = computeScale(cards);
 
   const publishedSlugs = new Set(published.map((entry) => entrySlug(entry)));
-  const factions: DatabaseFaction[] = factionEntries.map((entry) => {
+  const factions: DatabaseFaction[] = sortedFactions.map((entry) => {
     const data = entry.data;
     const parent =
       typeof data.subfaction === "string" ? factionMap.get(data.subfaction) : undefined;
@@ -749,6 +837,3 @@ export async function loadDatabase(lang: Lang): Promise<DatabaseData> {
     },
   };
 }
-
-export type { DictKey, StatScaleEntryLike };
-export { MIN_BAR };

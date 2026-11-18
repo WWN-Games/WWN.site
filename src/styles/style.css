@@ -1072,6 +1072,11 @@ body:has(.mobile-nav:popover-open) {
   font-size: 16.5px;
   max-width: 640px;
 }
+.section__actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 22px;
+}
 
 .hero__stats {
   position: relative;

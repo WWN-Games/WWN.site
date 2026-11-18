@@ -14,7 +14,7 @@ const galleryImages = import.meta.glob<{ default: ImageMetadata }>(
   { eager: true },
 );
 
-export interface ResolvedGalleryItem {
+interface ResolvedGalleryItem {
   id: string;
   image: ImageMetadata;
   caption: string;
@@ -24,7 +24,7 @@ export interface ResolvedGalleryItem {
 
 export async function loadGallery(lang: Lang, limit?: number): Promise<ResolvedGalleryItem[]> {
   const entries = (await getCollection("gallery"))
-    .sort((a, b) => a.data.order - b.data.order || a.id.localeCompare(b.id))
+    .toSorted((a, b) => a.data.order - b.data.order || a.id.localeCompare(b.id))
     .slice(0, limit);
 
   const resolved = await Promise.all(

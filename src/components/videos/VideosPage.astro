@@ -5,7 +5,8 @@ import VideosExplorer from "@/components/videos/VideosExplorer.svelte";
 import { t } from "@/i18n";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { LINKS } from "@/lib/config";
-import { type Lang, localeHref, SITE } from "@/lib/site";
+import { collectionJsonLd } from "@/lib/seo";
+import type { Lang } from "@/lib/site";
 
 interface Props {
   lang: Lang;
@@ -13,23 +14,29 @@ interface Props {
 
 const { lang } = Astro.props;
 const items = (await getCollection("videos"))
-  .sort(
+  .toSorted(
     (a, b) =>
       a.data.order - b.data.order ||
       (b.data.date ?? "").localeCompare(a.data.date ?? "") ||
       a.id.localeCompare(b.id),
   )
   .map((entry) => entry.data);
-const description = t(lang, "meta.desc.videos");
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "CollectionPage",
-  name: t(lang, "meta.title.videos"),
-  description,
-  url: `${SITE}${localeHref(lang, "videos/")}`,
-  inLanguage: lang,
-  mainEntity: { "@type": "ItemList", numberOfItems: items.length },
+const labels = {
+  title: t(lang, "videos.title"),
+  all: t(lang, "videos.all"),
+  ru: t(lang, "videos.ru"),
+  en: t(lang, "videos.en"),
+  watch: t(lang, "videos.watch"),
+  empty: t(lang, "videos.empty"),
 };
+const description = t(lang, "meta.desc.videos");
+const jsonLd = collectionJsonLd({
+  lang,
+  path: "videos/",
+  title: t(lang, "meta.title.videos"),
+  description,
+  count: items.length,
+});
 ---
 
 <BaseLayout
@@ -51,7 +58,7 @@ const jsonLd = {
         </div>
       </div>
 
-      <VideosExplorer client:idle {lang} {items} />
+      <VideosExplorer client:idle {lang} {items} {labels} />
     </div>
   </section>
 </BaseLayout>

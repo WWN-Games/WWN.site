@@ -28,15 +28,15 @@ export async function readItems<T>(name: CollectionName): Promise<T[]> {
 
 export async function readSections(): Promise<Section[]> {
   const sections = await readItems<Section>("sections");
-  return [...sections].sort((a, b) => a.order - b.order || a.id.localeCompare(b.id));
+  return sections.toSorted((a, b) => a.order - b.order || a.id.localeCompare(b.id));
 }
 
 export async function readFactions(): Promise<Faction[]> {
   const factions = await readItems<Faction>("factions");
-  return [...factions].sort((a, b) => a.order - b.order || a.id.localeCompare(b.id));
+  return factions.toSorted((a, b) => a.order - b.order || a.id.localeCompare(b.id));
 }
 
 export async function readTags(): Promise<Tag[]> {
   const tags = await readItems<Tag>("tags");
-  return [...tags].sort((a, b) => a.id.localeCompare(b.id));
+  return tags.toSorted((a, b) => a.id.localeCompare(b.id));
 }

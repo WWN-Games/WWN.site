@@ -3,6 +3,7 @@ import { Icon } from "astro-icon/components";
 
 import { t } from "@/i18n";
 import { LINKS, youtubeFor } from "@/lib/config";
+import { NAV_ITEMS } from "@/lib/nav";
 import { href, type Lang, localeHref } from "@/lib/site";
 
 interface Props {
@@ -45,14 +46,13 @@ const external = { target: "_blank", rel: "noopener" } as const;
       <div>
         <h3>{t(lang, "footer.nav")}</h3>
         <ul>
-          <li><a href={localeHref(lang, "news/")}>{t(lang, "nav.news")}</a></li>
-          <li><a href={localeHref(lang, "database/")}>{t(lang, "database.title")}</a></li>
-          <li><a href={localeHref(lang, "wiki/")}>{t(lang, "nav.wiki")}</a></li>
-          <li><a href={localeHref(lang, "maps/")}>{t(lang, "nav.maps")}</a></li>
-          <li><a href={localeHref(lang, "gallery/")}>{t(lang, "nav.gallery")}</a></li>
-          <li><a href={localeHref(lang, "videos/")}>{t(lang, "nav.videos")}</a></li>
-          <li><a href={localeHref(lang, "feats/")}>{t(lang, "nav.feats")}</a></li>
-          <li><a href={localeHref(lang, "rating/")}>{t(lang, "nav.rating")}</a></li>
+          {
+            NAV_ITEMS.map((item) => (
+              <li>
+                <a href={localeHref(lang, item.path)}>{t(lang, item.key)}</a>
+              </li>
+            ))
+          }
         </ul>
       </div>
 

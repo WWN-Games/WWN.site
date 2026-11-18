@@ -46,7 +46,7 @@ let sectionsPromise: Promise<Awaited<ReturnType<typeof loadSections>>> | null = 
 
 async function loadSections() {
   const sections = await getCollection("sections");
-  return sections.sort((a, b) => a.data.order - b.data.order);
+  return sections.toSorted((a, b) => a.data.order - b.data.order);
 }
 
 async function getSections() {
@@ -64,7 +64,7 @@ async function loadEntries(lang: Lang): Promise<WikiEntry[]> {
   return entries
     .filter((entry) => entryLang(entry) === lang)
     .filter((entry) => includeDrafts || !entry.data.draft)
-    .sort((a, b) => bySectionThenOrder(a, b, sectionOrder));
+    .toSorted((a, b) => bySectionThenOrder(a, b, sectionOrder));
 }
 
 /** Все статьи языка (в dev — включая черновики), в порядке разделов и order. */

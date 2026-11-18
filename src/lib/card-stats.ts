@@ -44,7 +44,7 @@ export function totalWeaponDps(weapons: readonly WeaponLike[] | undefined): numb
 }
 
 /** Подходит ли оружие под выбранные теги с учётом режима И / ИЛИ. */
-export function weaponMatchesTags(
+function weaponMatchesTags(
   weapon: WeaponLike,
   tags: readonly string[],
   mode: TagMatchMode,

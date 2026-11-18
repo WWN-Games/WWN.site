@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import sharp from "sharp";
@@ -73,7 +74,7 @@ async function saveRaster(
   target: string,
   width: number,
 ): Promise<{ width: number; height: number; size: number }> {
-  const tmp = `${target}.${process.pid}.${Date.now()}.tmp`;
+  const tmp = `${target}.${process.pid}.${randomUUID()}.tmp`;
   await fs.mkdir(path.dirname(target), { recursive: true });
   try {
     await sharp(buffer, { failOn: "none", limitInputPixels: 50_000_000 })

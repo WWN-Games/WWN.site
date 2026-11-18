@@ -1,28 +1,16 @@
 /* ============================================================================
    WWN — коллекции контента Astro (Content Layer + Zod).
    wiki  — Markdown-статьи: src/content/wiki/{ru,en}/<раздел>/<статья>.md
-   units / buildings / factions / tags / sections — данные базы.
+   units / buildings / factions / tags / sections и т.д. — JSON-данные.
    ============================================================================ */
 
 import { defineCollection } from "astro:content";
 import { file, glob } from "astro/loaders";
+import type { ZodType } from "astro/zod";
 
-import { COLLECTION_FILES } from "./lib/content-constants";
-import {
-  buildingSchema,
-  factionSchema,
-  featSchema,
-  gallerySchema,
-  mapSchema,
-  miscSchema,
-  newsSchema,
-  ratingSchema,
-  sectionSchema,
-  tagSchema,
-  unitSchema,
-  videoSchema,
-  wikiSchema,
-} from "./lib/schemas";
+import { COLLECTION_SCHEMAS } from "./lib/collections";
+import { COLLECTION_FILES, type CollectionName } from "./lib/content-constants";
+import { wikiSchema } from "./lib/schemas";
 
 const jsonArray =
   <T>(key: string) =>
@@ -34,83 +22,29 @@ const jsonArray =
     return value as T[];
   };
 
+const jsonCollection = <S extends ZodType>(name: CollectionName, schema: S) =>
+  defineCollection({
+    loader: file(`./${COLLECTION_FILES[name]}`, { parser: jsonArray(name) }),
+    schema,
+  });
+
 const wiki = defineCollection({
   loader: glob({ base: "./src/content/wiki", pattern: "**/*.md" }),
   schema: wikiSchema,
 });
 
-const units = defineCollection({
-  loader: file(`./${COLLECTION_FILES.units}`, { parser: jsonArray("units") }),
-  schema: unitSchema,
-});
-
-const buildings = defineCollection({
-  loader: file(`./${COLLECTION_FILES.buildings}`, { parser: jsonArray("buildings") }),
-  schema: buildingSchema,
-});
-
-const misc = defineCollection({
-  loader: file(`./${COLLECTION_FILES.misc}`, { parser: jsonArray("misc") }),
-  schema: miscSchema,
-});
-
-const factions = defineCollection({
-  loader: file(`./${COLLECTION_FILES.factions}`, { parser: jsonArray("factions") }),
-  schema: factionSchema,
-});
-
-const tags = defineCollection({
-  loader: file(`./${COLLECTION_FILES.tags}`, { parser: jsonArray("tags") }),
-  schema: tagSchema,
-});
-
-const sections = defineCollection({
-  loader: file(`./${COLLECTION_FILES.sections}`, { parser: jsonArray("sections") }),
-  schema: sectionSchema,
-});
-
-const maps = defineCollection({
-  loader: file(`./${COLLECTION_FILES.maps}`, { parser: jsonArray("maps") }),
-  schema: mapSchema,
-});
-
-const gallery = defineCollection({
-  loader: file(`./${COLLECTION_FILES.gallery}`, { parser: jsonArray("gallery") }),
-  schema: gallerySchema,
-});
-
-const videos = defineCollection({
-  loader: file(`./${COLLECTION_FILES.videos}`, { parser: jsonArray("videos") }),
-  schema: videoSchema,
-});
-
-const feats = defineCollection({
-  loader: file(`./${COLLECTION_FILES.feats}`, { parser: jsonArray("feats") }),
-  schema: featSchema,
-});
-
-const news = defineCollection({
-  loader: file(`./${COLLECTION_FILES.news}`, { parser: jsonArray("news") }),
-  schema: newsSchema,
-});
-
-const ratings = defineCollection({
-  loader: file(`./${COLLECTION_FILES.ratings}`, { parser: jsonArray("ratings") }),
-  schema: ratingSchema,
-});
-
 export const collections = {
   wiki,
-  units,
-  buildings,
-  misc,
-  factions,
-  tags,
-  sections,
-  maps,
-  gallery,
-  videos,
-  feats,
-  news,
-  ratings,
+  units: jsonCollection("units", COLLECTION_SCHEMAS.units),
+  buildings: jsonCollection("buildings", COLLECTION_SCHEMAS.buildings),
+  misc: jsonCollection("misc", COLLECTION_SCHEMAS.misc),
+  factions: jsonCollection("factions", COLLECTION_SCHEMAS.factions),
+  tags: jsonCollection("tags", COLLECTION_SCHEMAS.tags),
+  sections: jsonCollection("sections", COLLECTION_SCHEMAS.sections),
+  maps: jsonCollection("maps", COLLECTION_SCHEMAS.maps),
+  gallery: jsonCollection("gallery", COLLECTION_SCHEMAS.gallery),
+  videos: jsonCollection("videos", COLLECTION_SCHEMAS.videos),
+  feats: jsonCollection("feats", COLLECTION_SCHEMAS.feats),
+  news: jsonCollection("news", COLLECTION_SCHEMAS.news),
+  ratings: jsonCollection("ratings", COLLECTION_SCHEMAS.ratings),
 };

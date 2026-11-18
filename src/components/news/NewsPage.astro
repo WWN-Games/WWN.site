@@ -5,7 +5,8 @@ import NewsCard from "@/components/news/NewsCard.astro";
 import { t } from "@/i18n";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { sortNews } from "@/lib/news";
-import { type Lang, localeHref, SITE } from "@/lib/site";
+import { collectionJsonLd } from "@/lib/seo";
+import type { Lang } from "@/lib/site";
 
 interface Props {
   lang: Lang;
@@ -15,17 +16,15 @@ const { lang } = Astro.props;
 const items = (await getCollection("news"))
   .filter((entry) => !entry.data.draft)
   .map((entry) => entry.data)
-  .sort(sortNews);
+  .toSorted(sortNews);
 const description = t(lang, "meta.desc.news");
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "CollectionPage",
-  name: t(lang, "meta.title.news"),
+const jsonLd = collectionJsonLd({
+  lang,
+  path: "news/",
+  title: t(lang, "meta.title.news"),
   description,
-  url: `${SITE}${localeHref(lang, "news/")}`,
-  inLanguage: lang,
-  mainEntity: { "@type": "ItemList", numberOfItems: items.length },
-};
+  count: items.length,
+});
 ---
 
 <BaseLayout

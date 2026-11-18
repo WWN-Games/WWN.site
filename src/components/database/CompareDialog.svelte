@@ -8,7 +8,6 @@
   import { onDestroy } from "svelte";
 
   import { iconSvg } from "@/components/ui/icon";
-  import { t } from "@/i18n";
   import { filteredWeaponDps, filterWeapons } from "@/lib/card-stats";
   import {
     bestIndexes,
@@ -18,7 +17,7 @@
     type CompareMetric,
     metricValue,
   } from "@/lib/compare";
-  import type { ExplorerItem, ExplorerLabels, ExplorerTag } from "@/lib/database";
+  import type { DetailLabels, ExplorerItem, ExplorerLabels, ExplorerTag } from "@/lib/database";
   import type { TagMatchMode } from "@/lib/database-constants";
   import type { Lang } from "@/lib/site";
   import { formatTemplate } from "@/lib/utils";
@@ -29,6 +28,7 @@
     tags: ExplorerTag[];
     lang: Lang;
     labels: ExplorerLabels["compare"];
+    detail: DetailLabels;
     onclose: () => void;
     onremove: (id: string) => void;
     onclear: () => void;
@@ -36,7 +36,7 @@
     ondetail: (id: string) => void;
   }
 
-  let { open, items, tags, lang, labels, onclose, onremove, onclear, onadd, ondetail }: Props = $props();
+  let { open, items, tags, lang, labels, detail, onclose, onremove, onclear, onadd, ondetail }: Props = $props();
 
   let dialog = $state<HTMLDialogElement | null>(null);
   let onlyDiff = $state(false);
@@ -55,7 +55,7 @@
   const weaponTagOptions = $derived.by(() =>
     tags
       .filter((tag) => tag.group === "weapon" || tag.group === "sector")
-      .sort(
+      .toSorted(
         (a, b) =>
           (a.group === "weapon" ? 0 : 1) - (b.group === "weapon" ? 0 : 1) ||
           a.name[lang].localeCompare(b.name[lang], lang),
@@ -72,7 +72,7 @@
     if (weaponSort === "order") return list;
     const collate = new Intl.Collator(locale);
     const sign = weaponSortDirection === "asc" ? 1 : -1;
-    return [...list].sort((a, b) => {
+    return list.toSorted((a, b) => {
       const diff =
         weaponSort === "name" || weaponSort === "tags"
           ? collate.compare(
@@ -213,7 +213,7 @@
         const volley = projectileCount > 1 ? ` ×${projectileCount}` : "";
         const armour =
           weapon.armourIgnoreAmount !== undefined
-            ? ` · ${t(lang, "database.weapon.armourIgnore")}: ${formatter.format(weapon.armourIgnoreAmount)}`
+            ? ` · ${detail.weaponArmourIgnore}: ${formatter.format(weapon.armourIgnoreAmount)}`
             : "";
         return {
           display: `${weapon.name}${count}${volley}`,
@@ -323,7 +323,7 @@
               aria-pressed={weaponTagMode === "all"}
               onclick={() => (weaponTagMode = "all")}
             >
-              {t(lang, "database.tag.mode.all")}
+              {detail.tagModeAll}
             </button>
             <button
               type="button"
@@ -332,26 +332,26 @@
               aria-pressed={weaponTagMode === "any"}
               onclick={() => (weaponTagMode = "any")}
             >
-              {t(lang, "database.tag.mode.any")}
+              {detail.tagModeAny}
             </button>
           </fieldset>
           <div class="compare-weapon-filter__sort">
             <label>
-              <span>{t(lang, "database.weapon.order")}</span>
+              <span>{detail.weaponOrder}</span>
               <select bind:value={weaponSort}>
-                <option value="order">{t(lang, "database.weapon.order")}</option>
-                <option value="name">{t(lang, "database.weapon.name")}</option>
-                <option value="damage">{t(lang, "database.weapon.damage")}</option>
-                <option value="fireDelay">{t(lang, "database.weapon.fireDelay")}</option>
-                <option value="dps">{t(lang, "database.weapon.dps")}</option>
-                <option value="tags">{t(lang, "database.weapon.tags")}</option>
+                <option value="order">{detail.weaponOrder}</option>
+                <option value="name">{detail.weaponName}</option>
+                <option value="damage">{detail.weaponDamage}</option>
+                <option value="fireDelay">{detail.weaponFireDelay}</option>
+                <option value="dps">{detail.weaponDps}</option>
+                <option value="tags">{detail.weaponTags}</option>
               </select>
             </label>
             <button
               class="icon-btn compare-weapon-filter__direction"
               type="button"
-              aria-label={weaponSortDirection === "asc" ? t(lang, "database.sort.asc") : t(lang, "database.sort.desc")}
-              title={weaponSortDirection === "asc" ? t(lang, "database.sort.asc") : t(lang, "database.sort.desc")}
+              aria-label={weaponSortDirection === "asc" ? detail.sortAsc : detail.sortDesc}
+              title={weaponSortDirection === "asc" ? detail.sortAsc : detail.sortDesc}
               onclick={() => (weaponSortDirection = weaponSortDirection === "asc" ? "desc" : "asc")}
             >
               {weaponSortDirection === "asc" ? "↑" : "↓"}
@@ -371,7 +371,7 @@
           </div>
           {#if selectedWeaponTags.length > 0}
             <button class="btn btn--ghost btn--sm" type="button" onclick={() => (selectedWeaponTags = [])}>
-              {t(lang, "database.tag.clear")}
+              {detail.tagClear}
             </button>
           {/if}
         </div>
@@ -408,8 +408,8 @@
                     <button
                       class="compare-cardhead__img"
                       type="button"
-                      title={t(lang, "database.detail")}
-                      aria-label={formatTemplate(t(lang, "database.detail.openUnit"), { name: item.name })}
+                      title={detail.detailLabel}
+                      aria-label={formatTemplate(detail.openUnit, { name: item.name })}
                       onclick={() => ondetail(item.id)}
                     >
                       {#if item.image}

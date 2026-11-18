@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte";
-
+  import { onMount } from "svelte";
+  import { COLLECTION_META, isCardCollection } from "../../shared/collections";
   import { addMonthsIso, todayIso } from "../../shared/date";
   import type {
     AskConfirm,
@@ -35,22 +35,8 @@
 
   const { name, id, bootstrap, navigate, refresh, toast, askConfirm }: Props = $props();
 
-  const labels: Record<string, { title: string; singular: string }> = {
-    units: { title: "Юнит", singular: "юнит" },
-    buildings: { title: "Строение", singular: "строение" },
-    misc: { title: "Разное", singular: "запись" },
-    factions: { title: "Фракция", singular: "фракция" },
-    tags: { title: "Тег", singular: "тег" },
-    sections: { title: "Раздел", singular: "раздел" },
-    maps: { title: "Карта", singular: "карта" },
-    gallery: { title: "Скриншот", singular: "скриншот" },
-    videos: { title: "Видео", singular: "видео" },
-    feats: { title: "Подвиг", singular: "подвиг" },
-    news: { title: "Новость", singular: "новость" },
-    ratings: { title: "Рейтинг", singular: "запись рейтинга" },
-  };
-  const info = $derived(labels[name] ?? labels.units);
-  const isCards = $derived(name === "units" || name === "buildings" || name === "misc");
+  const info = $derived(COLLECTION_META[name as keyof typeof COLLECTION_META] ?? COLLECTION_META.units);
+  const isCards = $derived(isCardCollection(name));
   const isNew = $derived(!id);
 
   let item = $state<CollectionItem | null>(null);
@@ -257,10 +243,6 @@
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  });
-
-  onDestroy(() => {
-    dirtyStore.value = false;
   });
 </script>
 

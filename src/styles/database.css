@@ -853,28 +853,14 @@ html[data-db-enhanced] .unit-card__desc.is-expanded {
   object-fit: contain;
   padding: 7px;
 }
-.faction-card__head {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-}
 .faction-card__motto {
   color: var(--faction-color, var(--cyan));
   font-size: 13px;
   margin-top: 4px;
 }
-.faction-card__desc {
-  color: var(--muted);
-  font-size: 14.5px;
-}
 .unit-card__img {
   border: 1px solid color-mix(in srgb, var(--faction-color, var(--cyan)) 26%, transparent);
   background: color-mix(in srgb, var(--faction-color, var(--cyan)) 9%, rgba(6, 12, 22, 0.9));
-}
-.faction-card__name {
-  font-family: var(--font-display);
-  font-size: 21px;
-  color: #fff;
 }
 .faction-card__namerow {
   display: flex;
@@ -916,11 +902,6 @@ html[data-db-enhanced] .unit-card__desc.is-expanded {
   font-size: 13px;
   color: var(--text-soft);
 }
-.faction-card__link {
-  align-self: flex-start;
-  margin-top: auto;
-}
-
 /* — пустое состояние — */
 .database-grid .empty-block {
   display: flex;
@@ -1310,8 +1291,7 @@ body.has-compare-tray .database-page {
   flex-wrap: wrap;
   gap: 4px;
 }
-.compare-cardhead__faction,
-.compare-cardhead__type {
+.compare-cardhead__faction {
   max-width: 170px;
   overflow: hidden;
   padding: 2px 7px;
@@ -1323,11 +1303,6 @@ body.has-compare-tray .database-page {
   border-radius: var(--radius-pill);
   background: color-mix(in srgb, var(--faction-color, var(--cyan)) 10%, transparent);
   color: var(--faction-color, var(--cyan));
-}
-.compare-cardhead__type {
-  color: var(--text-soft);
-  border-color: var(--border-1);
-  background: var(--surface-1);
 }
 .compare-dialog__foot {
   display: flex;

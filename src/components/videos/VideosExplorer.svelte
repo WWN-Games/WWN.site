@@ -1,26 +1,28 @@
 <script lang="ts">
-  import { t } from "@/i18n";
   import type { VideoItem } from "@/lib/schemas";
   import type { Lang } from "@/lib/site";
+
+  interface Labels {
+    title: string;
+    all: string;
+    ru: string;
+    en: string;
+    watch: string;
+    empty: string;
+  }
 
   interface Props {
     lang: Lang;
     items: VideoItem[];
+    labels: Labels;
   }
 
-  const { lang, items }: Props = $props();
+  const { lang, items, labels }: Props = $props();
 
   let filter = $state<"all" | "ru" | "en">("all");
   let playing = $state<Record<string, boolean>>({});
 
   const visible = $derived(items.filter((item) => filter === "all" || item.lang === filter));
-  const labels = $derived({
-    all: t(lang, "videos.all"),
-    ru: t(lang, "videos.ru"),
-    en: t(lang, "videos.en"),
-    watch: t(lang, "videos.watch"),
-    empty: t(lang, "videos.empty"),
-  });
 
   function play(item: VideoItem): void {
     playing = { ...playing, [item.id]: true };
@@ -28,7 +30,7 @@
 </script>
 
 <fieldset class="videos-filter">
-  <legend class="visually-hidden">{t(lang, "videos.title")}</legend>
+  <legend class="visually-hidden">{labels.title}</legend>
   <button type="button" class:is-active={filter === "all"} aria-pressed={filter === "all"} onclick={() => (filter = "all")}>
     {labels.all}
   </button>

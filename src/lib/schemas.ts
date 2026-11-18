@@ -63,7 +63,7 @@ const weaponSchema = z.object({
 
 export type Weapon = z.infer<typeof weaponSchema>;
 
-export const builderSchema = z.object({
+const builderSchema = z.object({
   buildRange: z.number().nonnegative(),
   repairSpeed: z.number().nonnegative(),
   buildSpeed: z.number().nonnegative(),
@@ -73,7 +73,7 @@ export const builderSchema = z.object({
 
 export type Builder = z.infer<typeof builderSchema>;
 
-export const factorySchema = z.object({
+const factorySchema = z.object({
   name: text,
   buildSpeed: z.number().positive(),
   /** id юнитов, которые производит завод. */
@@ -82,7 +82,7 @@ export const factorySchema = z.object({
 
 export type Factory = z.infer<typeof factorySchema>;
 
-export const transportSchema = z.object({
+const transportSchema = z.object({
   name: text,
   seats: z.number().int().nonnegative().default(0),
   /** Обычные теги: кого можно перевозить. */
@@ -93,14 +93,14 @@ export const transportSchema = z.object({
 export type Transport = z.infer<typeof transportSchema>;
 
 /** Активная защита: максимум зарядов и восстановление зарядов в секунду. */
-export const chargeDefenseSchema = z.object({
+const chargeDefenseSchema = z.object({
   max: z.number().int().nonnegative(),
   recharge: z.number().nonnegative(),
 });
 
 export type ChargeDefense = z.infer<typeof chargeDefenseSchema>;
 
-export const domeShieldSchema = z.object({
+const domeShieldSchema = z.object({
   radius: z.number().nonnegative(),
   points: z.number().nonnegative(),
   regen: z.number().nonnegative(),
@@ -108,16 +108,15 @@ export const domeShieldSchema = z.object({
 
 export type DomeShield = z.infer<typeof domeShieldSchema>;
 
-export const atmosphereSchema = z.object({
+const atmosphereSchema = z.object({
   time: z.number().nonnegative(),
 });
 
 export type Atmosphere = z.infer<typeof atmosphereSchema>;
 
-export const FTL_JUMP_TYPES = ["siv", "plasma"] as const;
-export type FtlJumpType = (typeof FTL_JUMP_TYPES)[number];
+const FTL_JUMP_TYPES = ["siv", "plasma"] as const;
 
-export const ftlJumpSchema = z.object({
+const ftlJumpSchema = z.object({
   type: z.enum(FTL_JUMP_TYPES),
   chargeTime: z.number().nonnegative(),
   cooldown: z.number().nonnegative(),
@@ -210,7 +209,7 @@ export type WikiFrontMatter = z.infer<typeof wikiSchema>;
 
 /* — новости и рейтинг — */
 
-export const NEWS_TAGS = ["update", "news"] as const;
+const NEWS_TAGS = ["update", "news"] as const;
 export type NewsTag = (typeof NEWS_TAGS)[number];
 
 export const newsSchema = z.object({
@@ -269,8 +268,7 @@ export const gallerySchema = z.object({
 
 export type GalleryItemData = z.infer<typeof gallerySchema>;
 
-export const VIDEO_LANGS = ["ru", "en"] as const;
-export type VideoLang = (typeof VIDEO_LANGS)[number];
+const VIDEO_LANGS = ["ru", "en"] as const;
 
 export const videoSchema = z.object({
   id: z.string().min(1),

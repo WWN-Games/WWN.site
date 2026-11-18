@@ -99,6 +99,7 @@ test.describe("База данных", () => {
 
   test("очистка поиска отменяет отложенный запрос", async ({ page }) => {
     await page.goto("database/#units");
+    await page.waitForFunction(() => document.documentElement.dataset.dbEnhanced === "true");
     const search = page.getByRole("searchbox");
     await search.fill("акула");
     await page.getByRole("button", { name: "Очистить поиск" }).click();

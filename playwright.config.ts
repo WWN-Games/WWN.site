@@ -12,7 +12,7 @@ export default defineConfig({
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: {
-    command: "node scripts/preview.mjs",
+    command: "node scripts/preview.ts",
     url: "http://localhost:4321/WWN.site/",
     reuseExistingServer: !process.env.CI,
   },

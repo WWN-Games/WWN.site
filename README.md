@@ -61,7 +61,7 @@ src/
 └─ styles/          — глобальный CSS
 admin/              — локальная админка (Vite + Svelte, часть workspace)
 public/             — robots, manifest, иконки базы, аудио, брендинг
-scripts/            — validate-content.ts, typecheck.ts, preview.mjs (для e2e)
+scripts/            — validate-content.ts, typecheck.ts, preview.ts (для e2e)
 tests/              — unit (Vitest) и e2e (Playwright)
 docs/               — документация для редакторов контента
 ```

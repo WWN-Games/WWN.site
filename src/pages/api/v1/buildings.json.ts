@@ -7,6 +7,6 @@ export const prerender = true;
 
 export const GET: APIRoute = async () => {
   const entries = await getCollection("buildings");
-  const items = entries.map((entry) => withDerivedCard(entry.data)).sort(byId);
+  const items = entries.map((entry) => withDerivedCard(entry.data)).toSorted(byId);
   return jsonResponse(items);
 };

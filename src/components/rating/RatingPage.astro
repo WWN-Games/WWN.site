@@ -3,7 +3,8 @@ import { getCollection } from "astro:content";
 
 import { t } from "@/i18n";
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { type Lang, localeHref, SITE } from "@/lib/site";
+import { collectionJsonLd } from "@/lib/seo";
+import type { Lang } from "@/lib/site";
 
 interface Props {
   lang: Lang;
@@ -12,7 +13,7 @@ interface Props {
 const { lang } = Astro.props;
 const entries = (await getCollection("ratings"))
   .map((entry) => entry.data)
-  .sort(
+  .toSorted(
     (a, b) =>
       b.rating - a.rating ||
       a.nickname.localeCompare(b.nickname, lang),
@@ -21,15 +22,13 @@ const formatter = new Intl.NumberFormat(lang === "en" ? "en-US" : "ru-RU", {
   maximumFractionDigits: 2,
 });
 const description = t(lang, "meta.desc.rating");
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "CollectionPage",
-  name: t(lang, "meta.title.rating"),
+const jsonLd = collectionJsonLd({
+  lang,
+  path: "rating/",
+  title: t(lang, "meta.title.rating"),
   description,
-  url: `${SITE}${localeHref(lang, "rating/")}`,
-  inLanguage: lang,
-  mainEntity: { "@type": "ItemList", numberOfItems: entries.length },
-};
+  count: entries.length,
+});
 ---
 
 <BaseLayout

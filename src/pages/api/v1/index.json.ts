@@ -17,6 +17,6 @@ export const GET: APIRoute = async () => {
     { id: "stats", url: canonical("api/v1/stats.json"), count: STAT_IDS.length },
     { id: "tags", url: canonical("api/v1/tags.json"), count: stats.tags },
     { id: "units", url: canonical("api/v1/units.json"), count: stats.units },
-  ].sort(byId);
+  ].toSorted(byId);
   return jsonResponse(items);
 };

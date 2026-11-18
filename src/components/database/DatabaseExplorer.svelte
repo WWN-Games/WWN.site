@@ -6,13 +6,19 @@
    ============================================================================ */
 
 import { ArrowDown, ArrowUp, CloseSmall, Down, Search } from "@icon-park/svg";
-import { onDestroy, onMount } from "svelte";
+import { onMount } from "svelte";
 
 import CardDetailDialog from "@/components/database/CardDetailDialog.svelte";
 import CompareDialog from "@/components/database/CompareDialog.svelte";
 import CompareTray from "@/components/database/CompareTray.svelte";
+import TagFilterPanel from "@/components/database/TagFilterPanel.svelte";
 import { iconSvg } from "@/components/ui/icon";
-import { barPercent, filteredWeaponDps, formatStat } from "@/lib/card-stats";
+import {
+  barPercent,
+  filteredWeaponDps,
+  formatStat,
+  type StatScaleEntryLike,
+} from "@/lib/card-stats";
 import {
   MAX_COMPARE,
   parseCardParam,
@@ -25,7 +31,6 @@ import type {
   ExplorerItem,
   ExplorerLabels,
   ExplorerTag,
-  StatScaleEntryLike,
 } from "@/lib/database";
 import {
   type CardTab,
@@ -152,7 +157,7 @@ const tagOptions = $derived.by(() =>
       label: tag.name[lang],
       count: tagCounts.get(tag.id) ?? 0,
     }))
-    .sort(
+    .toSorted(
       (a, b) =>
         TAG_GROUP_ORDER[a.group] - TAG_GROUP_ORDER[b.group] ||
         collator(lang).compare(a.label, b.label),
@@ -200,7 +205,7 @@ const weaponTagOptions = $derived.by(() =>
       label: tag.name[lang],
       count: weaponTagCounts.get(tag.id) ?? 0,
     }))
-    .sort(
+    .toSorted(
       (a, b) =>
         TAG_GROUP_ORDER[a.group] - TAG_GROUP_ORDER[b.group] ||
         collator(lang).compare(a.label, b.label),
@@ -341,6 +346,17 @@ const activeFilters = $derived.by(() => {
 });
 
 const directionLabel = $derived(direction === "asc" ? labels.sortAsc : labels.sortDesc);
+const tagModeLabels = $derived({
+  label: labels.tagMode.label,
+  all: labels.tagMode.all,
+  any: labels.tagMode.any,
+  allHint: labels.tagMode.allHint,
+  anyHint: labels.tagMode.anyHint,
+  preview: labels.tagMode.preview,
+  emptyHint: labels.tagMode.emptyHint,
+  clear: labels.tagClear,
+  apply: labels.tagApply,
+});
 
 /* Пересчёт DPS на статических карточках при фильтре по тегам оружия. */
 $effect(() => {
@@ -956,14 +972,6 @@ function addAnother(): void {
       ?.focus();
   });
 }
-
-onDestroy(() => {
-  if (typeof document === "undefined") return;
-  document.body.classList.remove("has-compare-tray");
-  delete document.documentElement.dataset.dbEnhanced;
-  runSearch.cancel();
-  if (noticeTimer) clearTimeout(noticeTimer);
-});
 </script>
 
 <div class="database-explorer">
@@ -1000,41 +1008,52 @@ onDestroy(() => {
     </span>
 
     {#if tagOptions.length > 0}
-      <div class="tag-filter">
-        <button
-          type="button"
-          class="wwn-select__btn"
-          class:is-open={tagOpen}
-          bind:this={tagButton}
-          popovertarget="databaseTagPanel"
-          aria-haspopup="dialog"
-          aria-expanded={tagOpen}
-          aria-controls="databaseTagPanel"
-          aria-label={tagButtonLabel}
-        >
-          <span class="wwn-select__value">{tagButtonLabel}</span>
-          {@html iconSvg(Down)}
-        </button>
-      </div>
+      <TagFilterPanel
+        id="databaseTagPanel"
+        label={labels.tag}
+        title={labels.tagPanelTitle}
+        buttonLabel={tagButtonLabel}
+        open={tagOpen}
+        groups={tagGroups}
+        draft={tagDraft}
+        mode={tagModeDraft}
+        modeLabels={tagModeLabels}
+        previewCount={draftPreviewCount}
+        emptyHint={showTagEmptyHint}
+        bind:button={tagButton}
+        bind:panel={tagPanel}
+        onbeforetoggle={onTagBeforeToggle}
+        ontoggle={onTagToggle}
+        onmode={setTagModeDraft}
+        ontag={toggleTag}
+        onclear={resetTags}
+        onapply={applyTags}
+      />
     {/if}
 
     {#if weaponTagOptions.length > 0}
-      <div class="tag-filter tag-filter--weapon">
-        <button
-          type="button"
-          class="wwn-select__btn"
-          class:is-open={weaponTagOpen}
-          bind:this={weaponTagButton}
-          popovertarget="databaseWeaponTagPanel"
-          aria-haspopup="dialog"
-          aria-expanded={weaponTagOpen}
-          aria-controls="databaseWeaponTagPanel"
-          aria-label={weaponTagButtonLabel}
-        >
-          <span class="wwn-select__value">{weaponTagButtonLabel}</span>
-          {@html iconSvg(Down)}
-        </button>
-      </div>
+      <TagFilterPanel
+        id="databaseWeaponTagPanel"
+        label={labels.weaponTag}
+        title={labels.weaponTagPanelTitle}
+        buttonLabel={weaponTagButtonLabel}
+        weapon
+        open={weaponTagOpen}
+        groups={weaponTagGroups}
+        draft={weaponTagDraft}
+        mode={weaponTagModeDraft}
+        modeLabels={tagModeLabels}
+        previewCount={weaponDraftPreviewCount}
+        emptyHint={showWeaponTagEmptyHint}
+        bind:button={weaponTagButton}
+        bind:panel={weaponTagPanel}
+        onbeforetoggle={onWeaponTagBeforeToggle}
+        ontoggle={onWeaponTagToggle}
+        onmode={setWeaponTagModeDraft}
+        ontag={toggleWeaponTag}
+        onclear={resetWeaponTags}
+        onapply={applyWeaponTags}
+      />
     {/if}
 
     <span class="select-field select-field--sort">
@@ -1100,164 +1119,6 @@ onDestroy(() => {
     {compareNotice}
   </p>
 
-  <div
-    class="tag-panel"
-    id="databaseTagPanel"
-    popover="auto"
-    role="dialog"
-    aria-label={labels.tag}
-    bind:this={tagPanel}
-    onbeforetoggle={onTagBeforeToggle}
-    ontoggle={onTagToggle}
-  >
-    <div class="tag-panel__head">
-      <span class="tag-panel__title">{labels.tagPanelTitle}</span>
-      <fieldset class="tag-mode">
-        <legend class="visually-hidden">{labels.tagMode.label}</legend>
-        <button
-          type="button"
-          class="tag-mode__btn"
-          class:is-active={tagModeDraft === "all"}
-          aria-pressed={tagModeDraft === "all"}
-          onclick={() => setTagModeDraft("all")}
-        >
-          {labels.tagMode.all}
-        </button>
-        <button
-          type="button"
-          class="tag-mode__btn"
-          class:is-active={tagModeDraft === "any"}
-          aria-pressed={tagModeDraft === "any"}
-          onclick={() => setTagModeDraft("any")}
-        >
-          {labels.tagMode.any}
-        </button>
-      </fieldset>
-    </div>
-    <p class="tag-panel__mode-hint">
-      {tagModeDraft === "all" ? labels.tagMode.allHint : labels.tagMode.anyHint}
-    </p>
-    <div class="tag-panel__body">
-      {#each tagGroups as group (group.id)}
-        <div class="tag-panel__group">
-          <div class="tag-panel__group-title">{group.title}</div>
-          <div class="tag-panel__chips">
-            {#each group.tags as tag (tag.id)}
-              <button
-                type="button"
-                class="tag-chip"
-                aria-pressed={tagDraft.includes(tag.id)}
-                onclick={() => toggleTag(tag.id)}
-              >
-                {tag.label}<span class="tag-chip__count">{tag.count}</span>
-              </button>
-            {/each}
-          </div>
-        </div>
-      {/each}
-    </div>
-    <div class="tag-panel__preview" role="status" aria-live="polite">
-      <span class:is-empty={showTagEmptyHint}>
-        {formatTemplate(labels.tagMode.preview, { n: draftPreviewCount })}
-      </span>
-      {#if showTagEmptyHint}
-        <span class="tag-panel__warning">{labels.tagMode.emptyHint}</span>
-      {/if}
-    </div>
-    <div class="tag-panel__foot">
-      <button
-        type="button"
-        class="btn btn--sm tag-panel__reset"
-        disabled={tagDraft.length === 0}
-        onclick={resetTags}
-      >
-        {labels.tagClear}
-      </button>
-      <button type="button" class="btn btn--cyan btn--sm tag-panel__apply" onclick={applyTags}>
-        {labels.tagApply}{tagDraft.length ? ` (${tagDraft.length})` : ""}
-      </button>
-    </div>
-  </div>
-
-  <div
-    class="tag-panel"
-    id="databaseWeaponTagPanel"
-    popover="auto"
-    role="dialog"
-    aria-label={labels.weaponTag}
-    bind:this={weaponTagPanel}
-    onbeforetoggle={onWeaponTagBeforeToggle}
-    ontoggle={onWeaponTagToggle}
-  >
-    <div class="tag-panel__head">
-      <span class="tag-panel__title">{labels.weaponTagPanelTitle}</span>
-      <fieldset class="tag-mode">
-        <legend class="visually-hidden">{labels.tagMode.label}</legend>
-        <button
-          type="button"
-          class="tag-mode__btn"
-          class:is-active={weaponTagModeDraft === "all"}
-          aria-pressed={weaponTagModeDraft === "all"}
-          onclick={() => setWeaponTagModeDraft("all")}
-        >
-          {labels.tagMode.all}
-        </button>
-        <button
-          type="button"
-          class="tag-mode__btn"
-          class:is-active={weaponTagModeDraft === "any"}
-          aria-pressed={weaponTagModeDraft === "any"}
-          onclick={() => setWeaponTagModeDraft("any")}
-        >
-          {labels.tagMode.any}
-        </button>
-      </fieldset>
-    </div>
-    <p class="tag-panel__mode-hint">
-      {weaponTagModeDraft === "all" ? labels.tagMode.allHint : labels.tagMode.anyHint}
-    </p>
-    <div class="tag-panel__body">
-      {#each weaponTagGroups as group (group.id)}
-        <div class="tag-panel__group">
-          <div class="tag-panel__group-title">{group.title}</div>
-          <div class="tag-panel__chips">
-            {#each group.tags as tag (tag.id)}
-              <button
-                type="button"
-                class="tag-chip"
-                aria-pressed={weaponTagDraft.includes(tag.id)}
-                onclick={() => toggleWeaponTag(tag.id)}
-              >
-                {tag.label}<span class="tag-chip__count">{tag.count}</span>
-              </button>
-            {/each}
-          </div>
-        </div>
-      {/each}
-    </div>
-    <div class="tag-panel__preview" role="status" aria-live="polite">
-      <span class:is-empty={showWeaponTagEmptyHint}>
-        {formatTemplate(labels.tagMode.preview, { n: weaponDraftPreviewCount })}
-      </span>
-      {#if showWeaponTagEmptyHint}
-        <span class="tag-panel__warning">{labels.tagMode.emptyHint}</span>
-      {/if}
-    </div>
-    <div class="tag-panel__foot">
-      <button
-        type="button"
-        class="btn btn--sm tag-panel__reset"
-        disabled={weaponTagDraft.length === 0}
-        onclick={resetWeaponTags}
-      >
-        {labels.tagClear}
-      </button>
-      <button type="button" class="btn btn--cyan btn--sm tag-panel__apply" onclick={applyWeaponTags}>
-        {labels.tagApply}{weaponTagDraft.length ? ` (${weaponTagDraft.length})` : ""}
-      </button>
-    </div>
-  </div>
-
   {#if selectedItems.length > 0}
     <CompareTray
       items={selectedItems}
@@ -1275,6 +1136,7 @@ onDestroy(() => {
     {tags}
     {lang}
     labels={labels.compare}
+    detail={labels.detail}
     onclose={closeCompare}
     onremove={removeCompare}
     onclear={clearCompare}
@@ -1287,6 +1149,7 @@ onDestroy(() => {
     item={detailItem}
     {tags}
     {lang}
+    detail={labels.detail}
     compared={detailItem ? selectedByTab[detailItem.tab].includes(detailItem.id) : false}
     onclose={closeDetail}
     oncompare={toggleDetailCompare}

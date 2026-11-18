@@ -14,7 +14,7 @@ const { lang } = Astro.props;
 const items = (await getCollection("news"))
   .filter((entry) => !entry.data.draft)
   .map((entry) => entry.data)
-  .sort(sortNews)
+  .toSorted(sortNews)
   .slice(0, 3);
 ---
 
@@ -40,11 +40,3 @@ const items = (await getCollection("news"))
     </div>
   </div>
 </section>
-
-<style>
-  .section__actions {
-    display: flex;
-    justify-content: center;
-    margin-top: 22px;
-  }
-</style>

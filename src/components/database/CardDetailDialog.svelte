@@ -8,8 +8,7 @@
   import { Close } from "@icon-park/svg";
 
   import { iconSvg } from "@/components/ui/icon";
-  import { type DictKey, t } from "@/i18n";
-  import type { ExplorerItem, ExplorerTag } from "@/lib/database";
+  import type { DetailLabels, ExplorerItem, ExplorerTag } from "@/lib/database";
   import type { Lang } from "@/lib/site";
 
   interface Props {
@@ -17,13 +16,14 @@
     item: ExplorerItem | null;
     tags: ExplorerTag[];
     lang: Lang;
+    detail: DetailLabels;
     compared: boolean;
     onclose: () => void;
     oncompare: (item: ExplorerItem) => void;
     ondetail: (id: string) => void;
   }
 
-  let { open, item, tags, lang, compared, onclose, oncompare, ondetail }: Props = $props();
+  let { open, item, tags, lang, detail, compared, onclose, oncompare, ondetail }: Props = $props();
 
   let dialog = $state<HTMLDialogElement | null>(null);
   type WeaponSortKey =
@@ -44,13 +44,13 @@
 
   const tagMap = $derived(new Map(tags.map((tag) => [tag.id, tag.name[lang]])));
   const detailColor = $derived(item?.factionColor ?? "#29b8ff");
-  const unloadKeys: Record<string, DictKey> = {
-    shore: "database.unload.shore",
-    water: "database.unload.water",
-    air: "database.unload.air",
-    underwater: "database.unload.underwater",
-    space: "database.unload.space",
-  };
+  const unloadLabels = $derived.by((): Record<string, string> => ({
+    shore: detail.unloadShore,
+    water: detail.unloadWater,
+    air: detail.unloadAir,
+    underwater: detail.unloadUnderwater,
+    space: detail.unloadSpace,
+  }));
   const locale = $derived(lang === "en" ? "en-US" : "ru-RU");
   const formatter = $derived(
     new Intl.NumberFormat(locale, { maximumFractionDigits: 2, minimumFractionDigits: 0 }),
@@ -104,7 +104,7 @@
       }
       return diff ? sign * diff : collate.compare(a.name, b.name);
     };
-    return list.sort(compare);
+    return list.toSorted(compare);
   });
 
   function toggleSort(key: typeof sortKey): void {
@@ -162,7 +162,7 @@
           {/if}
         </div>
         <div class="detail-hero__body">
-          <span class="kicker">{t(lang, "database.detail.title")}</span>
+          <span class="kicker">{detail.title}</span>
           <h2 id="detailDialogTitle">{item.name}</h2>
           <div class="detail-hero__badges">
             <span class="chip chip--faction">{item.factionName}</span>
@@ -173,79 +173,79 @@
           </div>
           {#if item.desc}<p class="detail-hero__desc">{item.desc}</p>{/if}
         </div>
-        <button class="icon-btn detail-dialog__close" type="button" aria-label={t(lang, "database.detail.close")} onclick={onclose}>
+        <button class="icon-btn detail-dialog__close" type="button" aria-label={detail.close} onclick={onclose}>
           {@html iconSvg(Close)}
         </button>
       </header>
 
       <div class="detail-dialog__body">
         <section class="detail-section">
-          <h3>{t(lang, "database.detail.characteristics")}</h3>
+          <h3>{detail.characteristics}</h3>
           <div class="detail-stats">
-            <div><span>{t(lang, "database.fullCost")}</span><b>{number(item.fullCost)}</b></div>
-            <div><span>{t(lang, "database.cost")}</span><b>{number(item.cost)}</b></div>
-            <div><span>{t(lang, "database.energy")}</span><b>{number(item.energy)}</b></div>
-            <div><span>{t(lang, "database.buildTime")}</span><b>{number(item.buildTime)}{t(lang, "database.secondsAtSpeed1")}</b></div>
-            <div><span>{t(lang, "database.hp")}</span><b>{number(item.hp)}</b></div>
-            <div><span>{t(lang, "database.shield")}</span><b>{number(item.shield)}</b></div>
-            <div><span>{t(lang, "database.armor")}</span><b>{number(item.armor)}</b></div>
-            <div><span>{t(lang, "database.selfRegen")}</span><b>{number(item.selfRegen)}</b></div>
-            <div><span>{t(lang, "database.shieldRegen")}</span><b>{number(item.shieldRegen)}</b></div>
-            <div><span>{t(lang, "database.speed")}</span><b>{number(item.speed)}</b></div>
+            <div><span>{detail.fullCost}</span><b>{number(item.fullCost)}</b></div>
+            <div><span>{detail.cost}</span><b>{number(item.cost)}</b></div>
+            <div><span>{detail.energy}</span><b>{number(item.energy)}</b></div>
+            <div><span>{detail.buildTime}</span><b>{number(item.buildTime)}{detail.secondsAtSpeed1}</b></div>
+            <div><span>{detail.hp}</span><b>{number(item.hp)}</b></div>
+            <div><span>{detail.shield}</span><b>{number(item.shield)}</b></div>
+            <div><span>{detail.armor}</span><b>{number(item.armor)}</b></div>
+            <div><span>{detail.selfRegen}</span><b>{number(item.selfRegen)}</b></div>
+            <div><span>{detail.shieldRegen}</span><b>{number(item.shieldRegen)}</b></div>
+            <div><span>{detail.speed}</span><b>{number(item.speed)}</b></div>
             {#if item.tab === "units"}
-              <div><span>{t(lang, "database.turnSpeed")}</span><b>{number(item.turnSpeed)}</b></div>
+              <div><span>{detail.turnSpeed}</span><b>{number(item.turnSpeed)}</b></div>
             {/if}
-            <div><span>{t(lang, "database.range")}</span><b>{number(item.range)}</b></div>
-            <div><span>{t(lang, "database.dpsAll")}</span><b>{number(item.dps)}</b></div>
-            <div><span>{t(lang, "database.compare.metric.dpsPerFullCost")}</span><b>{item.fullCost > 0 ? formatter.format((item.dps / item.fullCost) * 100) : "—"}</b></div>
-            <div><span>{t(lang, "database.compare.metric.totalHpPerFullCost")}</span><b>{item.fullCost > 0 ? formatter.format(((item.hp + item.shield) / item.fullCost) * 100) : "—"}</b></div>
+            <div><span>{detail.range}</span><b>{number(item.range)}</b></div>
+            <div><span>{detail.dpsAll}</span><b>{number(item.dps)}</b></div>
+            <div><span>{detail.dpsPerFullCost}</span><b>{item.fullCost > 0 ? formatter.format((item.dps / item.fullCost) * 100) : "—"}</b></div>
+            <div><span>{detail.totalHpPerFullCost}</span><b>{item.fullCost > 0 ? formatter.format(((item.hp + item.shield) / item.fullCost) * 100) : "—"}</b></div>
           </div>
           {#if item.strongVs.length > 0 || item.weakVs.length > 0}
             <div class="detail-vs">
-              {#if item.strongVs.length > 0}<div><b>{t(lang, "database.strong")}:</b> <span class="vs-strong">{item.strongVs.join(", ")}</span></div>{/if}
-              {#if item.weakVs.length > 0}<div><b>{t(lang, "database.weak")}:</b> <span class="vs-weak">{item.weakVs.join(", ")}</span></div>{/if}
+              {#if item.strongVs.length > 0}<div><b>{detail.strong}:</b> <span class="vs-strong">{item.strongVs.join(", ")}</span></div>{/if}
+              {#if item.weakVs.length > 0}<div><b>{detail.weak}:</b> <span class="vs-weak">{item.weakVs.join(", ")}</span></div>{/if}
             </div>
           {/if}
         </section>
 
         {#if item.missileDefense || item.torpedoDefense || item.laserDefense || item.domeShield || item.atmosphere || item.ftlJump}
           <section class="detail-section">
-            <h3>{t(lang, "database.abilities")}</h3>
+            <h3>{detail.abilities}</h3>
             <div class="detail-stats">
               {#if item.missileDefense}
                 <div>
-                  <span>{t(lang, "database.ability.missile")}</span>
-                  <b>{item.missileDefense.max} {t(lang, "database.ability.charges")} · {formatter.format(item.missileDefense.recharge)} {t(lang, "database.ability.perSecond")}</b>
+                  <span>{detail.abilityMissile}</span>
+                  <b>{item.missileDefense.max} {detail.charges} · {formatter.format(item.missileDefense.recharge)} {detail.perSecond}</b>
                 </div>
               {/if}
               {#if item.torpedoDefense}
                 <div>
-                  <span>{t(lang, "database.ability.torpedo")}</span>
-                  <b>{item.torpedoDefense.max} {t(lang, "database.ability.charges")} · {formatter.format(item.torpedoDefense.recharge)} {t(lang, "database.ability.perSecond")}</b>
+                  <span>{detail.abilityTorpedo}</span>
+                  <b>{item.torpedoDefense.max} {detail.charges} · {formatter.format(item.torpedoDefense.recharge)} {detail.perSecond}</b>
                 </div>
               {/if}
               {#if item.laserDefense}
-                <div><span>{t(lang, "database.ability.laser")}</span><b>{t(lang, "database.ability.yes")}</b></div>
+                <div><span>{detail.abilityLaser}</span><b>{detail.yes}</b></div>
               {/if}
               {#if item.domeShield}
                 <div>
-                  <span>{t(lang, "database.ability.dome")}</span>
-                  <b>{formatter.format(item.domeShield.radius)} · {formatter.format(item.domeShield.points)} · {formatter.format(item.domeShield.regen)}/{t(lang, "database.secondsShort")}</b>
+                  <span>{detail.abilityDome}</span>
+                  <b>{formatter.format(item.domeShield.radius)} · {formatter.format(item.domeShield.points)} · {formatter.format(item.domeShield.regen)}/{detail.secondsShort}</b>
                 </div>
               {/if}
               {#if item.atmosphere}
-                <div><span>{t(lang, "database.ability.atmosphere")}</span><b>{formatter.format(item.atmosphere.time)}{t(lang, "database.seconds")}</b></div>
+                <div><span>{detail.abilityAtmosphere}</span><b>{formatter.format(item.atmosphere.time)}{detail.seconds}</b></div>
               {/if}
               {#if item.ftlJump}
                 <div>
-                  <span>{t(lang, "database.ability.ftl")}</span>
+                  <span>{detail.abilityFtl}</span>
                   <b>
-                    {item.ftlJump.type === "plasma" ? t(lang, "database.ability.ftl.plasma") : t(lang, "database.ability.ftl.siv")}
-                    · {formatter.format(item.ftlJump.chargeTime)}{t(lang, "database.seconds")}
-                    · {formatter.format(item.ftlJump.cooldown)}{t(lang, "database.seconds")}
+                    {item.ftlJump.type === "plasma" ? detail.ftlPlasma : detail.ftlSiv}
+                    · {formatter.format(item.ftlJump.chargeTime)}{detail.seconds}
+                    · {formatter.format(item.ftlJump.cooldown)}{detail.seconds}
                     · {formatter.format(item.ftlJump.minDistance)}
                     {#if item.ftlJump.type === "plasma" && item.ftlJump.energyCost !== undefined}
-                      · {formatter.format(item.ftlJump.energyCost)} {t(lang, "database.energy")}
+                      · {formatter.format(item.ftlJump.energyCost)} {detail.energy}
                     {/if}
                   </b>
                 </div>
@@ -255,26 +255,26 @@
         {/if}
 
         <section class="detail-section">
-          <h3>{t(lang, "database.weapons")} <span class="detail-section__count">{item.weapons.length}</span></h3>
+          <h3>{detail.weapons} <span class="detail-section__count">{item.weapons.length}</span></h3>
           {#if item.weapons.length === 0}
-            <p class="detail-empty">{t(lang, "database.weapon.noWeapons")}</p>
+            <p class="detail-empty">{detail.noWeapons}</p>
           {:else}
             <div class="weapon-table-wrap">
               <table class="weapon-table">
                 <thead>
                   <tr>
-                    <th scope="col" aria-sort={ariaSort("name")}><button type="button" onclick={() => toggleSort("name")}>{t(lang, "database.weapon.name")}</button></th>
-                    <th scope="col" aria-sort={ariaSort("count")}><button type="button" onclick={() => toggleSort("count")}>{t(lang, "database.weapon.count")}</button></th>
-                    <th scope="col" aria-sort={ariaSort("projectileCount")}><button type="button" onclick={() => toggleSort("projectileCount")}>{t(lang, "database.weapon.projectiles")}</button></th>
-                    <th scope="col" aria-sort={ariaSort("projectileDelay")}><button type="button" onclick={() => toggleSort("projectileDelay")}>{t(lang, "database.weapon.projectileDelay")}</button></th>
-                    <th scope="col" aria-sort={ariaSort("damage")}><button type="button" onclick={() => toggleSort("damage")}>{t(lang, "database.weapon.damage")}</button></th>
-                    <th scope="col" aria-sort={ariaSort("fireDelay")}><button type="button" onclick={() => toggleSort("fireDelay")}>{t(lang, "database.weapon.fireDelay")}</button></th>
-                    <th scope="col" aria-sort={ariaSort("armourIgnoreAmount")}><button type="button" onclick={() => toggleSort("armourIgnoreAmount")}>{t(lang, "database.weapon.armourIgnore")}</button></th>
-                    <th scope="col" aria-sort={ariaSort("dps")}><button type="button" onclick={() => toggleSort("dps")}>{t(lang, "database.weapon.dps")}</button></th>
-                    <th scope="col" aria-sort={ariaSort("tags")}><button type="button" onclick={() => toggleSort("tags")}>{t(lang, "database.weapon.tags")}</button></th>
-                    <th scope="col" aria-sort={ariaSort("spread")}><button type="button" onclick={() => toggleSort("spread")}>{t(lang, "database.weapon.spread")}</button></th>
-                    <th scope="col" aria-sort={ariaSort("splashRadius")}><button type="button" onclick={() => toggleSort("splashRadius")}>{t(lang, "database.weapon.splash")}</button></th>
-                    <th scope="col" aria-sort={ariaSort("stunDuration")}><button type="button" onclick={() => toggleSort("stunDuration")}>{t(lang, "database.weapon.stun")}</button></th>
+                    <th scope="col" aria-sort={ariaSort("name")}><button type="button" onclick={() => toggleSort("name")}>{detail.weaponName}</button></th>
+                    <th scope="col" aria-sort={ariaSort("count")}><button type="button" onclick={() => toggleSort("count")}>{detail.weaponCount}</button></th>
+                    <th scope="col" aria-sort={ariaSort("projectileCount")}><button type="button" onclick={() => toggleSort("projectileCount")}>{detail.weaponProjectiles}</button></th>
+                    <th scope="col" aria-sort={ariaSort("projectileDelay")}><button type="button" onclick={() => toggleSort("projectileDelay")}>{detail.weaponProjectileDelay}</button></th>
+                    <th scope="col" aria-sort={ariaSort("damage")}><button type="button" onclick={() => toggleSort("damage")}>{detail.weaponDamage}</button></th>
+                    <th scope="col" aria-sort={ariaSort("fireDelay")}><button type="button" onclick={() => toggleSort("fireDelay")}>{detail.weaponFireDelay}</button></th>
+                    <th scope="col" aria-sort={ariaSort("armourIgnoreAmount")}><button type="button" onclick={() => toggleSort("armourIgnoreAmount")}>{detail.weaponArmourIgnore}</button></th>
+                    <th scope="col" aria-sort={ariaSort("dps")}><button type="button" onclick={() => toggleSort("dps")}>{detail.weaponDps}</button></th>
+                    <th scope="col" aria-sort={ariaSort("tags")}><button type="button" onclick={() => toggleSort("tags")}>{detail.weaponTags}</button></th>
+                    <th scope="col" aria-sort={ariaSort("spread")}><button type="button" onclick={() => toggleSort("spread")}>{detail.weaponSpread}</button></th>
+                    <th scope="col" aria-sort={ariaSort("splashRadius")}><button type="button" onclick={() => toggleSort("splashRadius")}>{detail.weaponSplash}</button></th>
+                    <th scope="col" aria-sort={ariaSort("stunDuration")}><button type="button" onclick={() => toggleSort("stunDuration")}>{detail.weaponStun}</button></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -283,9 +283,9 @@
                       <td class="weapon-table__name">{weapon.name}</td>
                       <td>{weapon.count}</td>
                       <td>{weapon.projectileCount ?? 1}</td>
-                      <td>{formatter.format(weapon.projectileDelay ?? 0)}{t(lang, "database.seconds")}</td>
+                      <td>{formatter.format(weapon.projectileDelay ?? 0)}{detail.seconds}</td>
                       <td>{formatter.format(weapon.damage)}</td>
-                      <td>{formatter.format(weapon.fireDelay)}{t(lang, "database.seconds")}</td>
+                      <td>{formatter.format(weapon.fireDelay)}{detail.seconds}</td>
                       <td>{weapon.armourIgnoreAmount !== undefined ? formatter.format(weapon.armourIgnoreAmount) : "—"}</td>
                       <td class="weapon-table__dps">{formatter.format(weapon.dps)}</td>
                       <td>
@@ -298,7 +298,7 @@
                       </td>
                       <td>{weapon.spread !== undefined ? formatter.format(weapon.spread) : "—"}</td>
                       <td>{weapon.splashRadius !== undefined ? formatter.format(weapon.splashRadius) : "—"}</td>
-                      <td>{weapon.stunDuration !== undefined ? `${formatter.format(weapon.stunDuration)}${t(lang, "database.seconds")}` : "—"}</td>
+                      <td>{weapon.stunDuration !== undefined ? `${formatter.format(weapon.stunDuration)}${detail.seconds}` : "—"}</td>
                     </tr>
                   {/each}
                 </tbody>
@@ -309,27 +309,27 @@
 
         {#if item.builder}
           <section class="detail-section">
-            <h3>{t(lang, "database.builder")}</h3>
+            <h3>{detail.builder}</h3>
             <div class="detail-stats detail-stats--builder">
-              <div><span>{t(lang, "database.builder.buildRange")}</span><b>{number(item.builder.buildRange)}</b></div>
-              <div><span>{t(lang, "database.builder.repairSpeed")}</span><b>{number(item.builder.repairSpeed)}</b></div>
-              <div><span>{t(lang, "database.builder.buildSpeed")}</span><b>{number(item.builder.buildSpeed)}</b></div>
-              <div class="detail-stats__wide"><span>{t(lang, "database.builder.heals")}</span><b>{item.builder.healTags.length ? item.builder.healTags.map(tagName).join(", ") : "—"}</b></div>
+              <div><span>{detail.builderBuildRange}</span><b>{number(item.builder.buildRange)}</b></div>
+              <div><span>{detail.builderRepairSpeed}</span><b>{number(item.builder.repairSpeed)}</b></div>
+              <div><span>{detail.builderBuildSpeed}</span><b>{number(item.builder.buildSpeed)}</b></div>
+              <div class="detail-stats__wide"><span>{detail.builderHeals}</span><b>{item.builder.healTags.length ? item.builder.healTags.map(tagName).join(", ") : "—"}</b></div>
             </div>
           </section>
         {/if}
 
         {#if item.factories.length > 0}
           <section class="detail-section">
-            <h3>{t(lang, "database.factories")} <span class="detail-section__count">{item.factories.length}</span></h3>
+            <h3>{detail.factories} <span class="detail-section__count">{item.factories.length}</span></h3>
             <div class="detail-cards">
               {#each item.factories as factory, index (factory.name + index)}
                 <article class="detail-card">
                   <div class="detail-card__head">
                     <b>{factory.name}</b>
-                    <span class="badge">{t(lang, "database.factory.speed")}: ×{formatter.format(factory.buildSpeed)}</span>
+                    <span class="badge">{detail.factorySpeed}: ×{formatter.format(factory.buildSpeed)}</span>
                   </div>
-                  <div class="detail-card__label">{t(lang, "database.factory.units")}</div>
+                  <div class="detail-card__label">{detail.factoryUnits}</div>
                   <div class="detail-links">
                     {#each factory.producedUnits as unit (unit.id)}
                       <button class="detail-link" type="button" onclick={() => openUnit(unit.id)}>
@@ -346,23 +346,23 @@
 
         {#if item.transports.length > 0}
           <section class="detail-section">
-            <h3>{t(lang, "database.transports")} <span class="detail-section__count">{item.transports.length}</span></h3>
+            <h3>{detail.transports} <span class="detail-section__count">{item.transports.length}</span></h3>
             <div class="detail-cards">
               {#each item.transports as transport, index (transport.name + index)}
                 <article class="detail-card">
                   <div class="detail-card__head">
                     <b>{transport.name}</b>
-                    <span class="badge">{t(lang, "database.transport.seats")}: {transport.seats}</span>
+                    <span class="badge">{detail.transportSeats}: {transport.seats}</span>
                   </div>
-                  <div class="detail-card__label">{t(lang, "database.transport.cargo")}</div>
+                  <div class="detail-card__label">{detail.transportCargo}</div>
                   <div class="weapon-table__tags">
                     {#each transport.cargoTags as id (id)}<span class="chip chip--tag">{tagName(id)}</span>{/each}
                     {#if transport.cargoTags.length === 0}—{/if}
                   </div>
-                  <div class="detail-card__label">{t(lang, "database.transport.unload")}</div>
+                  <div class="detail-card__label">{detail.transportUnload}</div>
                   <div class="detail-unload">
                     {#each transport.unload as option (option)}
-                      <span class="chip">{t(lang, unloadKeys[option] ?? "database.unload.shore")}</span>
+                      <span class="chip">{unloadLabels[option] ?? detail.unloadShore}</span>
                     {/each}
                     {#if transport.unload.length === 0}—{/if}
                   </div>
@@ -375,10 +375,10 @@
 
       <footer class="detail-dialog__foot">
         <button class="btn btn--sm" type="button" onclick={() => oncompare(item)}>
-          {compared ? t(lang, "database.detail.removeCompare") : t(lang, "database.detail.addCompare")}
+          {compared ? detail.removeCompare : detail.addCompare}
         </button>
         <button class="btn btn--ghost btn--sm" type="button" onclick={onclose}>
-          {t(lang, "database.detail.close")}
+          {detail.close}
         </button>
       </footer>
     </div>

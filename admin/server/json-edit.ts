@@ -209,7 +209,7 @@ function replaceRange(raw: string, start: number, end: number, text: string): st
 export function updateJsonItem(
   raw: string,
   collectionKey: string,
-  item: { id: string },
+  item: { id: string; [key: string]: unknown },
   originalId?: string,
 ): string {
   const array = findArray(raw, collectionKey);

@@ -45,8 +45,8 @@ const articleCount = (count: number) =>
 
 const quickLinks = sections.find((section) => section.id === "start")?.articles.slice(0, 3) ?? [];
 const sectionTitles = new Map(sections.map((section) => [section.id, section.title[lang]]));
-const recent = [...articles]
-  .sort((a, b) => b.data.updated.localeCompare(a.data.updated))
+const recent = articles
+  .toSorted((a, b) => b.data.updated.localeCompare(a.data.updated))
   .slice(0, 4)
   .map((article) => ({
     article,

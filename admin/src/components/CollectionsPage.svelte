@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-
+  import { COLLECTION_META, isCardCollection } from "../../shared/collections";
   import {
     type AskConfirm,
     type Bootstrap,
@@ -29,71 +29,8 @@
 
   const { name, bootstrap, navigate, toast, askConfirm, refresh }: Props = $props();
 
-  const meta: Record<string, { title: string; singular: string; newLabel: string }> = {
-    units: {
-      title: "Юниты",
-      singular: "юнит",
-      newLabel: "Новый юнит",
-    },
-    buildings: {
-      title: "Строения",
-      singular: "строение",
-      newLabel: "Новое строение",
-    },
-    factions: {
-      title: "Фракции",
-      singular: "фракция",
-      newLabel: "Новая фракция",
-    },
-    tags: {
-      title: "Теги",
-      singular: "тег",
-      newLabel: "Новый тег",
-    },
-    sections: {
-      title: "Разделы вики",
-      singular: "раздел",
-      newLabel: "Новый раздел",
-    },
-    misc: {
-      title: "Разное",
-      singular: "запись",
-      newLabel: "Новая запись",
-    },
-    maps: {
-      title: "Карты",
-      singular: "карта",
-      newLabel: "Новая карта",
-    },
-    gallery: {
-      title: "Галерея",
-      singular: "скриншот",
-      newLabel: "Новый скриншот",
-    },
-    videos: {
-      title: "Видео",
-      singular: "видео",
-      newLabel: "Новое видео",
-    },
-    feats: {
-      title: "Подвиги",
-      singular: "подвиг",
-      newLabel: "Новый подвиг",
-    },
-    news: {
-      title: "Новости",
-      singular: "новость",
-      newLabel: "Новая новость",
-    },
-    ratings: {
-      title: "Рейтинг",
-      singular: "запись рейтинга",
-      newLabel: "Новая запись",
-    },
-  };
-
-  const info = $derived(meta[name] ?? meta.units);
-  const isCards = $derived(name === "units" || name === "buildings" || name === "misc");
+  const info = $derived(COLLECTION_META[name as keyof typeof COLLECTION_META] ?? COLLECTION_META.units);
+  const isCards = $derived(isCardCollection(name));
 
   let items = $state<CollectionItem[]>([]);
   let loading = $state(true);
@@ -169,7 +106,7 @@
       return true;
     });
 
-    return [...list].sort((a, b) => {
+    return list.toSorted((a, b) => {
       if (isFaction(a) && isFaction(b)) return a.order - b.order;
       if (isSection(a) && isSection(b)) return a.order - b.order;
       if (name === "news" && "date" in a && "date" in b) {

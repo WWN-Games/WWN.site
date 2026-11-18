@@ -1,5 +1,6 @@
 ---
 import { t } from "@/i18n";
+import { NAV_ITEMS } from "@/lib/nav";
 import { href, type Lang, localeHref } from "@/lib/site";
 import LangSwitch from "./LangSwitch.astro";
 
@@ -11,21 +12,9 @@ interface Props {
 
 const { lang, path } = Astro.props;
 const home = localeHref(lang, "");
+const navItems = NAV_ITEMS.map((item) => ({ ...item, href: localeHref(lang, item.path) }));
 
-const navItems = [
-  { key: "nav.news", href: localeHref(lang, "news/"), section: "news" },
-  { key: "database.title", href: localeHref(lang, "database/"), section: "database" },
-  { key: "nav.wiki", href: localeHref(lang, "wiki/"), section: "wiki" },
-  { key: "nav.maps", href: localeHref(lang, "maps/"), section: "maps" },
-  { key: "nav.gallery", href: localeHref(lang, "gallery/"), section: "gallery" },
-  { key: "nav.videos", href: localeHref(lang, "videos/"), section: "videos" },
-  { key: "nav.feats", href: localeHref(lang, "feats/"), section: "feats" },
-  { key: "nav.rating", href: localeHref(lang, "rating/"), section: "rating" },
-] as const;
-
-const mobileItems = navItems;
-
-const isActive = (section?: string) => Boolean(section && path.startsWith(section));
+const isActive = (section: string) => path.startsWith(section);
 ---
 
 <header class="header" id="header">
@@ -38,7 +27,7 @@ const isActive = (section?: string) => Boolean(section && path.startsWith(sectio
     <nav class="nav" id="mainNav" aria-label={t(lang, "a11y.nav")}>
       {
         navItems.map((item) => {
-          const active = isActive("section" in item ? item.section : undefined);
+          const active = isActive(item.section);
           return (
             <a href={item.href} class={active ? "is-active" : undefined} aria-current={active ? "page" : undefined}>
               {t(lang, item.key)}
@@ -67,8 +56,8 @@ const isActive = (section?: string) => Boolean(section && path.startsWith(sectio
 
 <div class="mobile-nav" id="mobileNav" popover="auto">
   {
-    mobileItems.map((item) => {
-      const active = isActive("section" in item ? item.section : undefined);
+    navItems.map((item) => {
+      const active = isActive(item.section);
       return (
         <a href={item.href} aria-current={active ? "page" : undefined}>
           {t(lang, item.key)}

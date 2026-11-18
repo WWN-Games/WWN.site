@@ -3,6 +3,7 @@ import { createReadStream, promises as fs } from "node:fs";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import path from "node:path";
 
+import { MIME_TYPES } from "../../src/lib/mime.ts";
 import { SITE_ROOT } from "./config.ts";
 
 export class HttpError extends Error {
@@ -104,27 +105,6 @@ export async function readJsonBody(
   }
 }
 
-const MIME: Record<string, string> = {
-  ".avif": "image/avif",
-  ".css": "text/css; charset=utf-8",
-  ".gif": "image/gif",
-  ".html": "text/html; charset=utf-8",
-  ".jpeg": "image/jpeg",
-  ".jpg": "image/jpeg",
-  ".js": "text/javascript; charset=utf-8",
-  ".json": "application/json; charset=utf-8",
-  ".map": "application/json; charset=utf-8",
-  ".mp3": "audio/mpeg",
-  ".ogg": "audio/ogg",
-  ".png": "image/png",
-  ".svg": "image/svg+xml",
-  ".ts": "text/javascript; charset=utf-8",
-  ".wav": "audio/wav",
-  ".webp": "image/webp",
-  ".woff2": "font/woff2",
-  ".woff": "font/woff",
-};
-
 const ALLOWED_MEDIA_ROOTS = [
   { prefix: "/media/public/", root: "public" },
   { prefix: "/media/assets/", root: "src/assets" },
@@ -166,7 +146,7 @@ export async function serveMedia(
     }
     const extension = path.extname(realTarget).toLowerCase();
     res.statusCode = 200;
-    res.setHeader("Content-Type", MIME[extension] ?? "application/octet-stream");
+    res.setHeader("Content-Type", MIME_TYPES[extension] ?? "application/octet-stream");
     res.setHeader("Content-Length", stat.size);
     res.setHeader("Cache-Control", "no-store");
     if (extension === ".svg") {

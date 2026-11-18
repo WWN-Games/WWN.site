@@ -44,5 +44,5 @@ export function jsonResponse<T>(items: T[]): Response {
     count: items.length,
     items,
   };
-  return new Response(`${JSON.stringify(payload)}\n`, { headers: API_HEADERS });
+  return Response.json(payload, { headers: API_HEADERS });
 }

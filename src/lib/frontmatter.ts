@@ -21,7 +21,7 @@ const PARSE_OPTIONS: ParseOptions & SchemaOptions = {
   schema: "core",
 };
 
-export interface ParsedFrontMatter {
+interface ParsedFrontMatter {
   data: Record<string, unknown>;
   body: string;
   unknownKeys: string[];

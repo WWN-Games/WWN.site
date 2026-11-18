@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte";
+  import { onMount } from "svelte";
   import { addMonthsIso, todayIso } from "../../shared/date";
   import type {
     Article,
@@ -283,10 +283,6 @@
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  });
-
-  onDestroy(() => {
-    dirtyStore.value = false;
   });
 </script>
 

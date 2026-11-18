@@ -34,7 +34,7 @@ const CYRILLIC: Record<string, string> = {
   я: "ya",
 };
 
-export function transliterate(value: string): string {
+function transliterate(value: string): string {
   return [...value.toLowerCase()].map((char) => CYRILLIC[char] ?? char).join("");
 }
 
