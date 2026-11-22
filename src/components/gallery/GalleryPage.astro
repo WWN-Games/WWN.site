@@ -2,6 +2,7 @@
 import { Image } from "astro:assets";
 
 import GalleryLightbox from "@/components/home/GalleryLightbox.svelte";
+import PageIntro from "@/components/ui/PageIntro.astro";
 import { t } from "@/i18n";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { loadGallery } from "@/lib/gallery";
@@ -40,10 +41,7 @@ const jsonLd = {
 >
   <section class="section section--bordered">
     <div class="wrap">
-      <div class="section__head">
-        <span class="kicker">{t(lang, "gallery.pageTitle")}</span>
-        <h1 class="section__title">{t(lang, "gallery.pageSubtitle")}</h1>
-      </div>
+      <PageIntro title={t(lang, "gallery.pageSubtitle")} kicker={t(lang, "gallery.pageTitle")} />
 
       {
         items.length > 0 ? (

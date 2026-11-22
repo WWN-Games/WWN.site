@@ -15,8 +15,8 @@ export interface NavItem {
 
 export const NAV_ITEMS: readonly NavItem[] = [
   { key: "nav.news", path: "news/", section: "news" },
-  { key: "database.title", path: "database/", section: "database" },
   { key: "nav.wiki", path: "wiki/", section: "wiki" },
+  { key: "database.title", path: "database/", section: "database" },
   { key: "nav.maps", path: "maps/", section: "maps" },
   { key: "nav.gallery", path: "gallery/", section: "gallery" },
   { key: "nav.videos", path: "videos/", section: "videos" },

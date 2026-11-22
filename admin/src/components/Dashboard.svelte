@@ -63,7 +63,7 @@
 </div>
 
 {#if bootstrap.warnings.length > 0}
-  <div class="warning-list" style="margin-bottom: 18px">
+  <div class="warning-list warning-list--spaced">
     {#each bootstrap.warnings as warning}
       <div class="warning" class:warning--error={!bootstrap.validation.ok}>
         <Icon name="warning" size={15} />
@@ -74,7 +74,7 @@
 {/if}
 
 <div class="dashboard-grid">
-  <div style="display: grid; gap: 16px; min-width: 0">
+  <div class="dashboard-column">
     <section class="panel">
       <div class="panel__head">
         <h2>Последние статьи</h2>
@@ -154,7 +154,7 @@
     </section>
   </div>
 
-  <div style="display: grid; gap: 16px; align-content: start">
+  <div class="dashboard-column dashboard-column--aside">
     <section class="panel">
       <div class="panel__head">
         <h2>Валидация</h2>
@@ -164,12 +164,12 @@
           <span class="badge badge--bad">{bootstrap.validation.errors.length}</span>
         {/if}
       </div>
-      <div class="panel__body" style="display: grid; gap: 10px">
+      <div class="panel__body panel__body--stack">
         {#if bootstrap.validation.ok}
           <div class="success-box">Схемы, ссылки, картинки и RU/EN-паритет в порядке.</div>
         {:else}
           {#each bootstrap.validation.errors.slice(0, 4) as error}
-            <div class="warning warning--error" style="font-family: var(--font-mono); font-size: 11px">
+            <div class="warning warning--error warning--mono">
               {error}
             </div>
           {/each}

@@ -51,9 +51,12 @@ ffmpeg -i in.png -c:v libwebp -quality 78 -compression_level 6 out.webp
 
 ## CSS и шрифты
 
-- `src/styles/style.css` — общая дизайн-система, подключена в `BaseLayout`.
+- `src/styles/tokens.css` — дизайн-токены, общие для сайта и админки.
+- `src/styles/ui.css` — общие UI-примитивы (page-intro, карточки, таблицы, тулбары).
+- `src/styles/style.css` — базовая типографика, каркас сайта и главная.
 - `src/styles/wiki.css` — только страницы вики.
 - `src/styles/database.css` — только страница базы данных.
+- `admin/src/app.css` — только локальная админка.
 - Трансформер — Lightning CSS (`vite.css.transformer: "lightningcss"` в `astro.config.ts`).
 - Переменные `--font-display`, `--font-body`, `--font-mono` создаёт Fonts API: локальные woff2, `display: swap`. Onest — один вариативный файл 100–900 (latin + cyrillic), Geist Mono и Science Gothic — сабсеты latin/cyrillic с `unicode-range`. Меняете набор или веса — правьте блок `fonts` в `astro.config.ts`; внешние Google Fonts не используются.
 - Onest обновляется из релиза [simpals/onest](https://github.com/simpals/onest/releases) (файл `fonts/webfonts/Onest[wght].woff2` + `OFL.txt`), Geist Mono — из набора Geist, Science Gothic — из Google Fonts (сабсеты уже нарезаны и лежат в репозитории).

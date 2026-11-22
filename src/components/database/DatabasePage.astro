@@ -10,6 +10,7 @@ import DatabaseExplorer from "@/components/database/DatabaseExplorer.svelte";
 import DatabaseGrid from "@/components/database/DatabaseGrid.astro";
 import FactionCard from "@/components/database/FactionCard.astro";
 import UnitCard from "@/components/database/UnitCard.astro";
+import PageIntro from "@/components/ui/PageIntro.astro";
 import { t } from "@/i18n";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { loadDatabase } from "@/lib/database";
@@ -83,11 +84,11 @@ const jsonLd = {
 >
   <section class="database-page">
     <div class="wrap">
-      <div class="database-head">
-        <span class="kicker">{t(lang, "database.kicker")}</span>
-        <h1>{t(lang, "database.title")}</h1>
-        <p>{t(lang, "database.subtitle")}</p>
-      </div>
+      <PageIntro
+        kicker={t(lang, "database.kicker")}
+        title={t(lang, "database.title")}
+        subtitle={t(lang, "database.subtitle")}
+      />
 
       <div class="tabs" id="databaseTabs" role="tablist" aria-label={t(lang, "database.title")}>
         {
@@ -112,7 +113,7 @@ const jsonLd = {
 
       <div class="database-toolbar" id="databaseToolbar">
         <DatabaseExplorer
-          client:idle
+          client:load
           lang={lang}
           items={database.explorer.items}
           factions={database.explorer.factions}

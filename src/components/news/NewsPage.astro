@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 
 import NewsCard from "@/components/news/NewsCard.astro";
+import PageIntro from "@/components/ui/PageIntro.astro";
 import { t } from "@/i18n";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { sortNews } from "@/lib/news";
@@ -36,11 +37,11 @@ const jsonLd = collectionJsonLd({
 >
   <section class="section section--bordered">
     <div class="wrap">
-      <div class="section__head">
-        <span class="kicker">{t(lang, "news.kicker")}</span>
-        <h1 class="section__title">{t(lang, "news.pageTitle")}</h1>
-        <p>{t(lang, "news.pageSubtitle")}</p>
-      </div>
+      <PageIntro
+        kicker={t(lang, "news.kicker")}
+        title={t(lang, "news.pageTitle")}
+        subtitle={t(lang, "news.pageSubtitle")}
+      />
 
       {
         items.length > 0 ? (

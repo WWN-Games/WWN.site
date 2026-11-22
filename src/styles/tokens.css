@@ -1,0 +1,172 @@
+/* ============================================================================
+   WWN — дизайн-токены. Один источник значений для сайта и админки.
+   Здесь только CSS-переменные: без селекторов, сброса и компонентов.
+   ============================================================================ */
+
+:root {
+  color-scheme: dark;
+
+  /* — палитра — */
+  --bg-0: #02040a;
+
+  --line: rgba(88, 168, 255, 0.14);
+  --line-soft: rgba(88, 168, 255, 0.08);
+  --line-strong: rgba(88, 178, 255, 0.42);
+
+  --cyan: #2cb6ff;
+  --cyan-hi: #8ee0ff;
+  --cyan-rgb: 44, 182, 255;
+
+  --red: #ff4157;
+  --red-rgb: 255, 65, 87;
+
+  --gold: #ffc266;
+  --gold-rgb: 255, 194, 102;
+
+  --green: #46d39a;
+  --green-rgb: 70, 211, 154;
+
+  --ink: #03101d;
+
+  --text: #eef5ff;
+  --text-soft: #c6d8f0;
+  --muted: #8ba6c9;
+  --muted-2: #6c86a8;
+
+  /* семантические псевдонимы */
+  --color-bg: var(--bg-0);
+  --color-surface-1: rgba(148, 163, 184, 0.12);
+  --color-surface-2: rgba(148, 163, 184, 0.2);
+  --color-surface-3: rgba(148, 163, 184, 0.28);
+  --color-surface-on: rgba(var(--cyan-rgb), 0.18);
+  --color-border: var(--line);
+  --color-border-strong: var(--line-strong);
+  --color-text: var(--text);
+  --color-text-soft: var(--text-soft);
+  --color-muted: var(--muted);
+  --color-muted-2: var(--muted-2);
+  --color-accent: var(--cyan);
+  --color-accent-hi: var(--cyan-hi);
+  --color-danger: var(--red);
+  --color-warning: var(--gold);
+  --color-success: var(--green);
+
+  --surface-1: var(--color-surface-1);
+  --surface-2: var(--color-surface-2);
+  --surface-3: var(--color-surface-3);
+  --surface-on: var(--color-surface-on);
+  --border-1: rgba(148, 163, 184, 0.26);
+  --border-2: rgba(203, 213, 225, 0.45);
+  --surface-input: rgba(3, 9, 18, 0.66);
+  --surface-card: linear-gradient(165deg, rgba(15, 31, 54, 0.78), rgba(5, 11, 21, 0.94));
+  --surface-panel: linear-gradient(180deg, rgba(12, 25, 44, 0.72), rgba(6, 14, 27, 0.72));
+
+  /* — отступы — */
+  --space-0: 0;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-8: 40px;
+  --space-9: 48px;
+  --space-10: 64px;
+  --space-11: 80px;
+  --space-12: 96px;
+  --space-13: 120px;
+
+  --page-pad: clamp(16px, 4vw, 32px);
+  --section-space: clamp(64px, 8vw, 104px);
+  --section-space-sm: clamp(48px, 6vw, 72px);
+  --grid-gap: 20px;
+  --grid-gap-lg: 24px;
+  --card-pad: clamp(16px, 2vw, 24px);
+  --card-pad-lg: clamp(24px, 3vw, 32px);
+  --card-gap: 12px;
+
+  /* — типографика — */
+  --text-2xs: 10px;
+  --text-xs: 11px;
+  --text-sm: 12px;
+  --text-base: 13.5px;
+  --text-md: 14.5px;
+  --text-lg: 16px;
+  --text-xl: 18px;
+  --text-2xl: clamp(22px, 3vw, 30px);
+  --text-section: clamp(25px, 3.4vw, 40px);
+  --text-3xl: clamp(28px, 4vw, 44px);
+  --text-hero: clamp(34px, 5vw, 60px);
+
+  --line-tight: 1.14;
+  --line-normal: 1.6;
+  --line-relaxed: 1.75;
+
+  --tracking-tight: 0.02em;
+  --tracking-normal: 0.06em;
+  --tracking-wide: 0.12em;
+  --tracking-caps: 0.18em;
+
+  /* — радиусы — */
+  --radius-1: 8px;
+  --radius-2: 10px;
+  --radius-3: 14px;
+  --radius-4: 18px;
+  --radius-5: 24px;
+  --radius-xs: var(--radius-1);
+  --radius-sm: var(--radius-2);
+  --radius: var(--radius-4);
+  --radius-lg: var(--radius-5);
+  --radius-pill: 999px;
+
+  /* — контролы — */
+  --control-radius: var(--radius-2);
+  --control-radius-sm: var(--radius-2);
+  --control-h-xs: 36px;
+  --control-h-sm: 40px;
+  --control-h: 44px;
+  --control-h-lg: 50px;
+  --control-font: 13px;
+  --control-font-sm: 12px;
+  --control-tracking: 0.07em;
+
+  /* — тени и фокус — */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.18), 0 6px 16px rgba(0, 0, 0, 0.2);
+  --shadow-card: 0 2px 6px rgba(0, 0, 0, 0.16), 0 14px 34px rgba(0, 0, 0, 0.24);
+  --shadow-deep: 0 6px 16px rgba(0, 0, 0, 0.28), 0 30px 70px rgba(0, 0, 0, 0.42);
+  --focus-ring: 0 0 0 3px rgba(var(--cyan-rgb), 0.22);
+  --glow-cyan: 0 0 26px rgba(var(--cyan-rgb), 0.45);
+  --glow-cyan-soft: 0 0 46px rgba(var(--cyan-rgb), 0.2);
+
+  /* — движение — */
+  --ease-out: cubic-bezier(0.2, 0.7, 0.3, 1);
+  --dur-fast: 150ms;
+  --dur-base: 220ms;
+  --dur-slow: 320ms;
+
+  --grad-cyan: linear-gradient(135deg, #38c3ff, #1a7fd4 60%, #0d4f92);
+  --grad-text: linear-gradient(100deg, #b6ecff, #47b6ff 45%, #d9f3ff);
+
+  /* — каркас — */
+  --wrap: 1220px;
+  --wrap-wide: 1400px;
+  --header-h: 74px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+
+  /* — админка — */
+  --admin-sidebar: 248px;
+  --admin-page-max: 1480px;
+  --admin-surface: rgba(8, 17, 31, 0.82);
+  --admin-surface-2: rgba(12, 25, 44, 0.9);
+  --admin-panel-radius: var(--radius-4);
+  --admin-gap: var(--space-4);
+  --admin-panel-pad: var(--space-5);
+
+  /* параметры появления блоков [data-reveal] */
+  --reveal-duration: 0.5s;
+  --reveal-shift: 16px;
+}

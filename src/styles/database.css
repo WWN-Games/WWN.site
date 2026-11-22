@@ -1,31 +1,19 @@
 /* WWN — стили страницы базы данных (database.html). */
 
 .database-page {
-  padding: calc(var(--header-h) + var(--safe-top) + 38px) 0 100px;
+  padding: calc(var(--header-h) + var(--safe-top) + var(--space-8)) 0 var(--space-12);
 }
 
 .unit-card__desc {
   color: var(--muted);
-  font-size: 13.5px;
-}
-.database-head {
-  max-width: 780px;
-  margin-bottom: 30px;
-  display: grid;
-  gap: 10px;
-}
-.database-head h1 {
-  margin-top: 4px;
-}
-.database-head p {
-  color: var(--muted);
+  font-size: var(--text-base);
 }
 
 .tabs {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 28px;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
 }
 .tab {
   display: inline-flex;
@@ -63,8 +51,8 @@
 .database-toolbar {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 14px;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
   align-items: center;
 }
 .database-search {
@@ -320,8 +308,8 @@
 }
 .database-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--grid-gap);
   min-height: 72vh;
 }
 .database-grid[data-grid="factions"] {
@@ -366,9 +354,9 @@
 }
 .unit-card {
   display: grid;
-  gap: 11px;
+  gap: var(--space-3);
   align-content: start;
-  padding: 18px 20px;
+  padding: var(--card-pad);
   border-radius: var(--radius);
   transition:
     transform 0.25s,
@@ -440,7 +428,7 @@
   text-transform: uppercase;
   color: var(--gold);
   border: 1px solid rgba(var(--gold-rgb), 0.45);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background:
     linear-gradient(180deg, rgba(var(--gold-rgb), 0.2), rgba(var(--gold-rgb), 0.08)),
     rgba(11, 22, 39, 0.9);
@@ -755,7 +743,7 @@ html[data-db-enhanced] .unit-card__desc.is-expanded {
 .statbar__track {
   position: relative;
   height: 6px;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: rgba(255, 255, 255, 0.06);
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
   overflow: hidden;
@@ -844,7 +832,7 @@ html[data-db-enhanced] .unit-card__desc.is-expanded {
   place-items: center;
   border: 1px solid color-mix(in srgb, var(--faction-color, var(--cyan)) 26%, transparent);
   background: color-mix(in srgb, var(--faction-color, var(--cyan)) 9%, rgba(6, 12, 22, 0.9));
-  border-radius: 14px;
+  border-radius: var(--radius-3);
   overflow: hidden;
 }
 .faction-card__emblem img {
@@ -871,7 +859,7 @@ html[data-db-enhanced] .unit-card__desc.is-expanded {
 .faction-card__blocks {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: var(--space-3);
 }
 .faction-block {
   padding: 14px 16px;
@@ -922,7 +910,7 @@ html[data-db-enhanced] .unit-card__desc.is-expanded {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--space-4);
   width: min(980px, calc(100vw - 32px));
   padding: 12px 14px;
   translate: -50% 0;
@@ -1072,7 +1060,7 @@ body.has-compare-tray .database-page {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 18px;
+  gap: var(--grid-gap);
   padding: 18px 20px 14px;
   border-bottom: 1px solid var(--line-soft);
 }
@@ -1334,6 +1322,15 @@ body.has-compare-tray .database-page {
 }
 
 @media (max-width: 720px) {
+  .tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2);
+  }
+  .tab {
+    justify-content: center;
+    padding-inline: var(--space-3);
+  }
   .database-toolbar .database-search,
   .database-toolbar .select-field,
   .database-toolbar .tag-filter {
@@ -1423,7 +1420,7 @@ body.has-compare-tray .database-page {
 .unit-card .unit-card__img {
   width: 106px;
   height: 106px;
-  border-radius: 16px;
+  border-radius: var(--radius-4);
   border: 1px solid color-mix(in srgb, var(--faction-color, var(--cyan)) 34%, var(--line));
   background:
     radial-gradient(90% 90% at 32% 22%, rgba(255, 255, 255, 0.12), transparent 62%),
@@ -1443,7 +1440,7 @@ body.has-compare-tray .database-page {
   filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.35));
 }
 .unit-card .unit-card__top {
-  gap: 16px;
+  gap: var(--space-4);
   padding-right: 46px;
 }
 .unit-card__name {
@@ -1454,7 +1451,7 @@ body.has-compare-tray .database-page {
 .unit-card {
   gap: 13px;
   padding: 20px 22px 18px;
-  border-radius: 18px;
+  border-radius: var(--radius-4);
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.045), transparent 26%),
     radial-gradient(
@@ -1492,7 +1489,7 @@ body.has-compare-tray .database-page {
     0 0 28px color-mix(in srgb, var(--faction-color, var(--cyan)) 20%, transparent);
 }
 .database-grid {
-  gap: 18px;
+  gap: var(--grid-gap);
 }
 .chip--cost {
   color: var(--cyan-hi);
@@ -1584,7 +1581,7 @@ body.has-compare-tray .database-page {
   display: grid;
   grid-template-columns: 132px minmax(0, 1fr) auto;
   align-items: center;
-  gap: 20px;
+  gap: var(--grid-gap);
   padding: 22px 24px;
   border-bottom: 1px solid var(--line-soft);
   background:
@@ -1655,7 +1652,7 @@ body.has-compare-tray .database-page {
   width: 36px;
   height: 36px;
   object-fit: contain;
-  border-radius: 9px;
+  border-radius: var(--radius-2);
   filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.45));
 }
 .detail-dialog__close {
@@ -1669,14 +1666,14 @@ body.has-compare-tray .database-page {
 }
 .detail-dialog__body {
   display: grid;
-  gap: 22px;
+  gap: var(--grid-gap-lg);
   padding: 22px 24px 26px;
   overflow-y: auto;
   overscroll-behavior: contain;
 }
 .detail-section {
   display: grid;
-  gap: 12px;
+  gap: var(--space-3);
 }
 .detail-section h3 {
   display: flex;
@@ -1927,7 +1924,7 @@ body.has-compare-tray .database-page {
   .detail-hero__img {
     width: 104px;
     height: 104px;
-    border-radius: 16px;
+    border-radius: var(--radius-4);
   }
   .detail-dialog__body {
     padding: 18px;
@@ -1980,7 +1977,7 @@ body.has-compare-tray .database-page {
   }
   .detail-dialog__body {
     padding: 14px;
-    gap: 18px;
+    gap: var(--grid-gap);
   }
   .detail-dialog__foot {
     padding: 12px 14px calc(14px + var(--safe-bottom));
@@ -2076,7 +2073,7 @@ body.has-compare-tray .database-page {
   align-content: start;
   gap: 13px;
   padding: 20px 22px 18px;
-  border-radius: 18px;
+  border-radius: var(--radius-4);
   contain-intrinsic-size: auto 560px;
 }
 .faction-card__title {
@@ -2139,7 +2136,7 @@ body.has-compare-tray .database-page {
   min-width: 220px;
   padding: 14px 34px 14px 14px;
   border-top-width: 4px;
-  border-radius: 14px;
+  border-radius: var(--radius-3);
   box-shadow:
     0 12px 28px rgba(0, 0, 0, 0.28),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
@@ -2149,7 +2146,7 @@ body.has-compare-tray .database-page {
   height: 84px;
   padding: 0;
   cursor: pointer;
-  border-radius: 16px;
+  border-radius: var(--radius-4);
   background:
     radial-gradient(90% 90% at 32% 22%, rgba(255, 255, 255, 0.12), transparent 62%),
     color-mix(in srgb, var(--faction-color, var(--cyan)) 14%, rgba(6, 12, 22, 0.94));
@@ -2233,7 +2230,7 @@ body.has-compare-tray .database-page {
   .compare-cardhead__img {
     width: 64px;
     height: 64px;
-    border-radius: 12px;
+    border-radius: var(--radius-3);
   }
   .compare-cardhead__name {
     max-width: 160px;

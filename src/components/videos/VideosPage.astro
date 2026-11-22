@@ -1,6 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 
+import PageIntro from "@/components/ui/PageIntro.astro";
 import VideosExplorer from "@/components/videos/VideosExplorer.svelte";
 import { t } from "@/i18n";
 import BaseLayout from "@/layouts/BaseLayout.astro";
@@ -48,25 +49,18 @@ const jsonLd = collectionJsonLd({
 >
   <section class="section section--bordered">
     <div class="wrap">
-      <div class="section__head">
-        <span class="kicker">{t(lang, "videos.kicker")}</span>
-        <h1 class="section__title">{t(lang, "videos.title")}</h1>
-        <p>{t(lang, "videos.subtitle")}</p>
-        <div class="videos-channels">
+      <PageIntro
+        kicker={t(lang, "videos.kicker")}
+        title={t(lang, "videos.title")}
+        subtitle={t(lang, "videos.subtitle")}
+      >
+        <div class="page-intro__actions">
           <a class="btn btn--ghost btn--sm" href={LINKS.youtubeRu} target="_blank" rel="noopener">YouTube RU</a>
           <a class="btn btn--ghost btn--sm" href={LINKS.youtubeEn} target="_blank" rel="noopener">YouTube EN</a>
         </div>
-      </div>
+      </PageIntro>
 
       <VideosExplorer client:idle {lang} {items} {labels} />
     </div>
   </section>
 </BaseLayout>
-
-<style>
-  .videos-channels {
-    display: flex;
-    gap: 8px;
-    margin-top: 12px;
-  }
-</style>

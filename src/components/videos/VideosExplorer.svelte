@@ -29,7 +29,7 @@
   }
 </script>
 
-<fieldset class="videos-filter">
+<fieldset class="segmented videos-filter">
   <legend class="visually-hidden">{labels.title}</legend>
   <button type="button" class:is-active={filter === "all"} aria-pressed={filter === "all"} onclick={() => (filter = "all")}>
     {labels.all}
@@ -43,13 +43,13 @@
 </fieldset>
 
 {#if visible.length === 0}
-  <p class="empty-block">{labels.empty}</p>
+  <div class="empty-state"><p>{labels.empty}</p></div>
 {:else}
-  <div class="videos-grid">
+  <div class="catalog-grid">
     {#each visible as item (item.id)}
-      <article class="video-card">
+      <article class="catalog-card video-card">
         {#if playing[item.id]}
-          <div class="video-card__frame">
+          <div class="catalog-card__media video-card__frame">
             <iframe
               src={`https://www.youtube-nocookie.com/embed/${item.youtubeId}?autoplay=1&rel=0`}
               title={item.title[lang]}
@@ -59,7 +59,7 @@
             ></iframe>
           </div>
         {:else}
-          <button class="video-card__thumb" type="button" onclick={() => play(item)} aria-label={labels.watch}>
+          <button class="catalog-card__media video-card__thumb" type="button" onclick={() => play(item)} aria-label={labels.watch}>
             <img
               src={`https://i.ytimg.com/vi/${item.youtubeId}/hqdefault.jpg`}
               alt=""
@@ -72,11 +72,13 @@
             <span class="video-card__lang">{item.lang.toUpperCase()}</span>
           </button>
         {/if}
-        <h2>{item.title[lang]}</h2>
-        {#if item.desc}<p>{item.desc[lang]}</p>{/if}
-        <a class="video-card__link" href={`https://www.youtube.com/watch?v=${item.youtubeId}`} target="_blank" rel="noopener">
-          {labels.watch}
-        </a>
+        <h2 class="catalog-card__title">{item.title[lang]}</h2>
+        {#if item.desc}<p class="catalog-card__desc">{item.desc[lang]}</p>{/if}
+        <div class="catalog-card__footer">
+          <a class="video-card__link" href={`https://www.youtube.com/watch?v=${item.youtubeId}`} target="_blank" rel="noopener">
+            {labels.watch}
+          </a>
+        </div>
       </article>
     {/each}
   </div>
@@ -84,54 +86,12 @@
 
 <style>
   .videos-filter {
-    display: flex;
-    gap: 8px;
-    margin: 0 0 22px;
-    padding: 0;
-    border: 0;
-  }
-  .videos-filter button {
-    padding: 8px 14px;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    background: var(--surface-1);
-    color: var(--muted);
-  }
-  .videos-filter button.is-active {
-    color: #fff;
-    border-color: var(--cyan);
-    background: var(--surface-2);
-  }
-  .videos-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 18px;
-  }
-  .video-card {
-    display: grid;
-    gap: 10px;
-    align-content: start;
-    padding: 14px;
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    background: var(--surface-1);
+    margin: 0 0 var(--space-5);
   }
   .video-card__thumb,
   .video-card__frame {
-    position: relative;
-    display: block;
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    overflow: hidden;
     padding: 0;
     border: 0;
-    border-radius: var(--radius-xs);
-    background: var(--surface-2);
-  }
-  .video-card__thumb img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
   }
   .video-card__frame iframe {
     width: 100%;
@@ -149,26 +109,17 @@
   }
   .video-card__lang {
     position: absolute;
-    top: 8px;
-    left: 8px;
-    padding: 2px 7px;
+    top: var(--space-2);
+    left: var(--space-2);
+    padding: 2px var(--space-2);
     font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: var(--text-2xs);
     color: #fff;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     background: rgba(4, 10, 20, 0.78);
-  }
-  .video-card h2 {
-    margin: 0;
-    font-size: 17px;
-  }
-  .video-card p {
-    margin: 0;
-    color: var(--muted);
-    font-size: 13.5px;
   }
   .video-card__link {
     color: var(--cyan);
-    font-size: 13px;
+    font-size: var(--text-base);
   }
 </style>

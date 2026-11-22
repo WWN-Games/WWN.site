@@ -1,6 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 
+import PageIntro from "@/components/ui/PageIntro.astro";
 import { t } from "@/i18n";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { collectionJsonLd } from "@/lib/seo";
@@ -40,16 +41,16 @@ const jsonLd = collectionJsonLd({
 >
   <section class="section section--bordered">
     <div class="wrap">
-      <div class="section__head">
-        <span class="kicker">{t(lang, "rating.kicker")}</span>
-        <h1 class="section__title">{t(lang, "rating.title")}</h1>
-        <p>{t(lang, "rating.subtitle")}</p>
-      </div>
+      <PageIntro
+        kicker={t(lang, "rating.kicker")}
+        title={t(lang, "rating.title")}
+        subtitle={t(lang, "rating.subtitle")}
+      />
 
       {
         entries.length > 0 ? (
-          <div class="rating-table-wrap">
-            <table class="rating-table">
+          <div class="data-table-wrap rating-table-wrap">
+            <table class="data-table rating-table">
               <thead>
                 <tr>
                   <th scope="col">{t(lang, "rating.rank")}</th>
@@ -60,9 +61,9 @@ const jsonLd = collectionJsonLd({
               <tbody>
                 {entries.map((entry, index) => (
                   <tr id={entry.id} class:rating-table__top={index < 3}>
-                    <td>{index + 1}</td>
+                    <td class="data-table__num">{index + 1}</td>
                     <td>{entry.nickname}</td>
-                    <td>{formatter.format(entry.rating)}</td>
+                    <td class="data-table__score">{formatter.format(entry.rating)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -77,54 +78,13 @@ const jsonLd = collectionJsonLd({
 </BaseLayout>
 
 <style>
-  .rating-table-wrap {
-    overflow-x: auto;
-  }
-  .rating-table {
-    width: 100%;
-    border-collapse: collapse;
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    overflow: hidden;
-    background: var(--surface-1);
-  }
-  .rating-table th,
-  .rating-table td {
-    padding: 13px 18px;
-    text-align: left;
-    border-bottom: 1px solid var(--line-soft);
-  }
-  .rating-table th {
-    font-family: var(--font-display);
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-  .rating-table tr:last-child td {
-    border-bottom: 0;
-  }
   .rating-table tr {
     scroll-margin-top: calc(var(--header-h) + 24px);
   }
-  .rating-table tr:target {
-    background: rgba(var(--cyan-rgb), 0.12);
+  .rating-table td:nth-child(2) {
+    width: 100%;
   }
-  .rating-table td:first-child {
-    width: 80px;
-    font-family: var(--font-mono);
-    color: var(--muted);
-  }
-  .rating-table td:last-child {
-    width: 160px;
-    text-align: right;
-    color: var(--cyan);
-    font-weight: 700;
-  }
-  .rating-table__top td:first-child {
-    color: var(--gold);
-  }
-  .rating-table__top td:last-child {
+  .rating-table__top td {
     color: var(--gold);
   }
 </style>

@@ -76,7 +76,7 @@
   text-align: left;
   background: rgba(9, 19, 34, 0.72);
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius-3);
   cursor: pointer;
   transition:
     border-color 0.2s,
@@ -129,7 +129,7 @@
   padding: 4px;
 }
 .wiki-nav__group {
-  border-radius: 12px;
+  border-radius: var(--radius-3);
 }
 .wiki-nav__summary {
   display: flex;
@@ -182,7 +182,7 @@
   letter-spacing: 0.05em;
   color: var(--muted);
   border: 1px solid var(--line);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
 }
 .wiki-nav__icon {
   display: inline-grid;
@@ -206,7 +206,7 @@
   padding: 8px 10px 8px 12px;
   font-size: 13.5px;
   color: var(--text-soft);
-  border-radius: 9px;
+  border-radius: var(--radius-2);
   border-left: 2px solid var(--line-soft);
   transition: 0.18s;
 }
@@ -223,7 +223,7 @@
 
 .wiki-sidebar__cta {
   display: grid;
-  gap: 12px;
+  gap: var(--space-3);
   padding: 20px;
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
@@ -271,7 +271,7 @@
 .wiki-hero__stats {
   display: flex;
   flex-wrap: wrap;
-  gap: 22px;
+  gap: var(--grid-gap-lg);
   margin-top: 20px;
   min-height: 20px;
   font-size: 12px;
@@ -288,15 +288,15 @@
 
 .wiki-cat-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 18px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--grid-gap);
   min-height: 72vh;
 }
 .wiki-cat {
   display: grid;
-  gap: 4px;
+  gap: var(--space-1);
   align-content: start;
-  padding: 22px;
+  padding: var(--card-pad);
   contain: content;
 }
 .wiki-cat__head {
@@ -314,7 +314,7 @@
   width: 42px;
   height: 42px;
   flex: none;
-  border-radius: 12px;
+  border-radius: var(--radius-3);
   color: var(--cyan-hi);
   border: 1px solid var(--line-strong);
   background: rgba(18, 40, 68, 0.7);
@@ -339,7 +339,7 @@
   letter-spacing: 0.06em;
   color: var(--muted);
   border: 1px solid var(--line);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   white-space: nowrap;
 }
 .wiki-cat ul {
@@ -383,7 +383,7 @@
 .article-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 224px;
-  gap: 40px;
+  gap: var(--space-8);
   align-items: start;
 }
 .article {
@@ -398,10 +398,10 @@
 }
 .article__head {
   display: grid;
-  gap: 16px;
-  padding-bottom: 28px;
+  gap: var(--space-4);
+  padding-bottom: var(--space-6);
   border-bottom: 1px solid var(--line);
-  margin-bottom: 32px;
+  margin-bottom: var(--space-7);
 }
 .article__crumbs {
   display: flex;
@@ -429,7 +429,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 16px;
+  gap: var(--space-4);
   font-size: 11.5px;
   color: var(--muted);
   letter-spacing: 0.1em;
@@ -466,7 +466,7 @@
   font-size: 9px;
   text-transform: uppercase;
   vertical-align: middle;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   color: var(--gold);
   border: 1px solid rgba(var(--gold-rgb), 0.45);
   background: rgba(var(--gold-rgb), 0.1);
@@ -477,7 +477,7 @@
   font-family: var(--font-display);
   font-size: 10px;
   text-transform: uppercase;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   color: var(--gold);
   background:
     linear-gradient(180deg, rgba(var(--gold-rgb), 0.2), rgba(var(--gold-rgb), 0.08)),
@@ -849,7 +849,7 @@
 }
 .audio-card {
   display: grid;
-  gap: 12px;
+  gap: var(--space-3);
   padding: 20px 22px;
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
@@ -931,7 +931,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--space-3);
   font-family: var(--font-display);
   font-size: 11px;
   letter-spacing: 0.16em;
@@ -987,9 +987,9 @@
 .article__pager {
   display: flex;
   justify-content: space-between;
-  gap: 16px;
-  margin-top: 58px;
-  padding-top: 28px;
+  gap: var(--space-4);
+  margin-top: var(--space-10);
+  padding-top: var(--space-6);
   border-top: 1px solid var(--line);
 }
 /* Карточки-переходы — тот же стиль, что у карточек сайта (:is(...) в style.css). */
@@ -1123,7 +1123,7 @@
   text-transform: uppercase;
   color: var(--cyan-hi);
   border: 1px solid rgba(var(--cyan-rgb), 0.35);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: rgba(var(--cyan-rgb), 0.08);
 }
 .search-result p {
@@ -1217,7 +1217,7 @@
   font-size: 12.5px;
   color: var(--text-soft);
   border: 1px solid var(--line);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: rgba(var(--cyan-rgb), 0.06);
   transition:
     color 0.18s,
@@ -1245,7 +1245,7 @@
 .wiki-recent__row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 12px;
+  gap: var(--space-3);
 }
 .wiki-recent__card {
   display: grid;
@@ -1287,7 +1287,7 @@
   font-size: 12.5px;
   color: var(--text-soft);
   border: 1px solid var(--line);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: rgba(9, 19, 34, 0.6);
   transition:
     color 0.18s,
@@ -1398,7 +1398,7 @@
   list-style: none;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 12px;
+  gap: var(--space-3);
   padding: 0;
 }
 .article__related-list a {

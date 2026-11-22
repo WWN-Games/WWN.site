@@ -99,6 +99,8 @@ let noticeTimer: ReturnType<typeof setTimeout> | undefined;
 let detailItem = $state<ExplorerItem | null>(null);
 let detailOpen = $state(false);
 let restored = false;
+/** Токен повторной синхронизации статического DOM после стриминга/переходов. */
+let domSync = $state(0);
 
 /** Сетка, которой уже проиграли анимацию полос. */
 let animatedTab: TabId | null = null;
@@ -391,6 +393,7 @@ $effect(() => {
 $effect(() => {
   const activeTab = tab;
   const ids = visibleIds;
+  void domSync;
 
   for (const current of TAB_IDS) {
     document
@@ -543,6 +546,15 @@ onMount(() => {
     return true;
   };
 
+  let domSyncFrame: number | undefined;
+  const kickDomSync = (): void => {
+    if (domSyncFrame !== undefined) cancelAnimationFrame(domSyncFrame);
+    domSyncFrame = requestAnimationFrame(() => {
+      domSyncFrame = undefined;
+      domSync += 1;
+    });
+  };
+
   const onPageLoad = () => {
     /* ClientRouter обновляет URL после подмены разметки: читаем query
        в следующем кадре, иначе после смены языка можно увидеть старый URL. */
@@ -553,6 +565,7 @@ onMount(() => {
         syncCompareDom();
         syncUrl();
       }
+      kickDomSync();
     });
   };
 
@@ -639,6 +652,7 @@ onMount(() => {
   restored = true;
   syncUrl();
   syncCompareDom();
+  kickDomSync();
 
   /* После клиентской навигации URL может обновиться уже после mount. */
   const urlTimer = parsed || parsedCard
@@ -652,6 +666,7 @@ onMount(() => {
 
   return () => {
     if (urlTimer) clearTimeout(urlTimer);
+    if (domSyncFrame !== undefined) cancelAnimationFrame(domSyncFrame);
     tablist?.removeEventListener("click", onClick);
     tablist?.removeEventListener("keydown", onKeydown);
     window.removeEventListener("hashchange", onHashChange);

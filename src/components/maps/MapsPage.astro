@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import { existsSync } from "node:fs";
 import path from "node:path";
 
+import PageIntro from "@/components/ui/PageIntro.astro";
 import { t } from "@/i18n";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { isBadgeNew } from "@/lib/cards";
@@ -38,15 +39,15 @@ const jsonLd = collectionJsonLd({
 >
   <section class="section section--bordered">
     <div class="wrap">
-      <div class="section__head">
-        <span class="kicker">{t(lang, "maps.kicker")}</span>
-        <h1 class="section__title">{t(lang, "maps.title")}</h1>
-        <p>{t(lang, "maps.subtitle")}</p>
-      </div>
+      <PageIntro
+        kicker={t(lang, "maps.kicker")}
+        title={t(lang, "maps.title")}
+        subtitle={t(lang, "maps.subtitle")}
+      />
 
       {
         entries.length > 0 ? (
-          <div class="maps-grid">
+          <div class="catalog-grid">
             {entries.map((entry) => {
               const data = entry.data;
               const showNew = isBadgeNew(data.new, data.newUntil);
@@ -56,21 +57,21 @@ const jsonLd = collectionJsonLd({
                   ? href(data.image ?? defaultImage)
                   : null;
               return (
-                <article class="map-card" style="--faction-color:#29b8ff">
+                <article class="catalog-card map-card" style="--faction-color:#29b8ff">
                   {showNew && (
                     <span class="badge-new" data-new-until={data.newUntil}>
                       {t(lang, "database.new")}
                     </span>
                   )}
                   {image ? (
-                    <a class="map-card__img" href={image} target="_blank" rel="noopener">
+                    <a class="catalog-card__media map-card__img" href={image} target="_blank" rel="noopener">
                       <img src={image} alt={data.name[lang]} width="640" height="360" loading="lazy" />
                     </a>
                   ) : (
-                    <div class="map-card__img map-card__img--empty">{data.name[lang].slice(0, 2)}</div>
+                    <div class="catalog-card__media map-card__img map-card__img--empty">{data.name[lang].slice(0, 2)}</div>
                   )}
-                  <h2>{data.name[lang]}</h2>
-                  <div class="map-card__chips">
+                  <h2 class="catalog-card__title">{data.name[lang]}</h2>
+                  <div class="catalog-card__meta map-card__chips">
                     {data.players !== undefined && (
                       <span class="chip">
                         {t(lang, "maps.players")}: {formatNumber(data.players, lang)}
@@ -88,11 +89,13 @@ const jsonLd = collectionJsonLd({
                       </span>
                     )}
                   </div>
-                  <p>{data.desc[lang]}</p>
+                  <p class="catalog-card__desc">{data.desc[lang]}</p>
                   {data.download && (
-                    <a class="btn btn--sm" href={data.download} target="_blank" rel="noopener">
-                      {t(lang, "maps.download")}
-                    </a>
+                    <div class="catalog-card__footer">
+                      <a class="btn btn--sm" href={data.download} target="_blank" rel="noopener">
+                        {t(lang, "maps.download")}
+                      </a>
+                    </div>
                   )}
                 </article>
               );
@@ -107,39 +110,14 @@ const jsonLd = collectionJsonLd({
 </BaseLayout>
 
 <style>
-  .maps-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-    gap: 18px;
+  .map-card {
+    border-top: 2px solid var(--cyan);
   }
   .map-card :global(.badge-new) {
     position: absolute;
-    top: 12px;
-    right: 12px;
+    top: var(--space-3);
+    right: var(--space-3);
     z-index: 1;
-  }
-  .map-card {
-    position: relative;
-    display: grid;
-    gap: 10px;
-    align-content: start;
-    padding: 14px;
-    border: 1px solid var(--line);
-    border-top: 2px solid var(--cyan);
-    border-radius: var(--radius);
-    background: var(--surface-1);
-  }
-  .map-card__img {
-    display: block;
-    overflow: hidden;
-    aspect-ratio: 16 / 9;
-    border-radius: var(--radius-xs);
-    background: var(--surface-2);
-  }
-  .map-card__img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
   }
   .map-card__img--empty {
     display: grid;
@@ -147,19 +125,5 @@ const jsonLd = collectionJsonLd({
     font-family: var(--font-display);
     font-size: 34px;
     color: var(--cyan);
-  }
-  .map-card h2 {
-    margin: 0;
-    font-size: 18px;
-  }
-  .map-card p {
-    margin: 0;
-    color: var(--muted);
-    font-size: 13.5px;
-  }
-  .map-card__chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
   }
 </style>

@@ -1,0 +1,22 @@
+---
+/* ============================================================================
+   WWN — единый заголовок внутренней страницы.
+   ============================================================================ */
+
+interface Props {
+  kicker?: string;
+  title: string;
+  subtitle?: string;
+  align?: "left" | "center";
+  class?: string;
+}
+
+const { kicker, title, subtitle, align = "left", class: className } = Astro.props;
+---
+
+<header class:list={["page-intro", align === "center" && "page-intro--center", className]}>
+  {kicker && <span class="kicker">{kicker}</span>}
+  <h1 class="page-intro__title">{title}</h1>
+  {subtitle && <p class="page-intro__sub">{subtitle}</p>}
+  <slot />
+</header>
