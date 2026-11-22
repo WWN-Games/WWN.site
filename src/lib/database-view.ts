@@ -70,7 +70,9 @@ export function sortItems(
 
   const key = sort;
   return items.toSorted((a, b) => {
-    const diff = (a[key] ?? 0) - (b[key] ?? 0);
+    const left = key === "dps" ? a.mainDps : a[key];
+    const right = key === "dps" ? b.mainDps : b[key];
+    const diff = (left ?? 0) - (right ?? 0);
     return diff ? sign * diff : compareName(a, b);
   });
 }

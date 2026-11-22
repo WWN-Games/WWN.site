@@ -3,7 +3,10 @@
     "Подвиги: отдельные карточки с названием и описанием.",
     "id — строковый идентификатор; name, desc — { ru, en }; order — порядок;",
     "image — путь относительно public/ (по умолчанию img/feats/<id>.avif); date — дата;",
-    "new/newUntil — плашка «Новинка!»."
+    "new/newUntil — плашка «Новинка!».",
+    "type — unit | battle; commanderId — id из ratings.json; unitIds — связанные юниты;",
+    "cost — ручная цена (иначе сумма полной стоимости unitIds); destroyedCost/destroyedCount — уничтоженное; combatNumber — боевой номер;",
+    "для battle: heroLossCost/enemyLossCost и heroLossCount/enemyLossCount."
   ],
   "feats": []
 }

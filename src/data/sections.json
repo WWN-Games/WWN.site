@@ -3,7 +3,7 @@
     "Разделы вики. id — папка в content/<язык>/ и якорь раздела на хабе (#wiki-cat-<id>).",
     "Статьи внутри раздела не перечисляются: они берутся из front matter самих статей",
     "(title, desc, order, updated, draft). Разделы читаются Content Collections (src/content.config.ts).",
-    "icon — id из набора в src/components/wiki/icons.ts: book | shield | cube | gear | compass | users | clock | rocket | chat."
+    "icon — id из набора в src/components/wiki/icons.ts: book | shield | cube | gear | compass | users | clock | rocket | chat | school."
   ],
   "sections": [
     {
@@ -77,9 +77,20 @@
       }
     },
     {
+      "id": "tutorials",
+      "icon": "school",
+      "order": 8,
+      "showEmpty": true,
+      "title": { "ru": "Туториалы", "en": "Tutorials" },
+      "desc": {
+        "ru": "Пошаговые обучающие материалы по моду.",
+        "en": "Step-by-step tutorials for the mod."
+      }
+    },
+    {
       "id": "releases",
       "icon": "clock",
-      "order": 8,
+      "order": 9,
       "title": { "ru": "Релизы", "en": "Releases" },
       "desc": {
         "ru": "История обновлений и изменения баланса.",
@@ -89,7 +100,7 @@
     {
       "id": "misc",
       "icon": "chat",
-      "order": 9,
+      "order": 10,
       "title": { "ru": "Мод и сообщество", "en": "Mod & community" },
       "desc": {
         "ru": "Как помочь моду и где нас найти.",

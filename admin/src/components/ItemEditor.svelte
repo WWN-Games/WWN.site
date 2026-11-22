@@ -127,6 +127,8 @@
         desc: { ru: "", en: "" },
         image: "",
         new: false,
+        type: "unit",
+        unitIds: [],
       };
     }
     if (name === "news") {

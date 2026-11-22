@@ -19,7 +19,7 @@ const ALLOWED_RASTER_MIME = new Set([
   "image/webp",
 ]);
 
-export type UploadKind = "article" | "card" | "faction" | "map" | "gallery" | "feat";
+export type UploadKind = "article" | "card" | "mini" | "faction" | "map" | "gallery" | "feat";
 
 interface UploadInput {
   kind: UploadKind;
@@ -137,6 +137,21 @@ export async function saveUpload(input: UploadInput): Promise<UploadResult> {
     return {
       path: `img/database/${id}.avif`,
       url: `/media/public/img/database/${id}.avif`,
+      ...meta,
+    };
+  }
+
+  if (input.kind === "mini") {
+    const id = (input.id ?? "").trim();
+    if (!isSlug(id)) throw new HttpError(400, "Сначала задайте корректный id карточки");
+    const target = path.join(PUBLIC_ROOT, "img/database/mini", `${id}.avif`);
+    if (!isInside(path.join(PUBLIC_ROOT, "img/database/mini"), target)) {
+      throw new HttpError(400, "Некорректный путь изображения");
+    }
+    const meta = await saveRaster(buffer, target, 128);
+    return {
+      path: `img/database/mini/${id}.avif`,
+      url: `/media/public/img/database/mini/${id}.avif`,
       ...meta,
     };
   }

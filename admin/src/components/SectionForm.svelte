@@ -18,6 +18,7 @@
     { value: "clock", label: "Часы" },
     { value: "rocket", label: "Ракета" },
     { value: "chat", label: "Чат" },
+    { value: "school", label: "Обучение" },
   ];
 </script>
 
@@ -60,4 +61,12 @@
   </div>
   <LocalizedInput label="Название" value={item.title} placeholder="Лор" />
   <LocalizedInput label="Описание" value={item.desc} multiline rows={3} placeholder="Короткое описание раздела" />
+  <label class="tag-option" style="padding: 6px 0">
+    <input
+      type="checkbox"
+      checked={item.showEmpty ?? false}
+      onchange={(event) => (item.showEmpty = event.currentTarget.checked || undefined)}
+    />
+    <span>Показывать раздел на хабе, даже если в нём ещё нет статей</span>
+  </label>
 </div>

@@ -12,6 +12,7 @@ export interface WeaponLike {
   damage: number;
   fireDelay: number;
   tags?: readonly string[] | undefined;
+  mainDps?: boolean | undefined;
 }
 
 export interface StatScaleEntryLike {
@@ -41,6 +42,16 @@ export function totalWeaponDps(weapons: readonly WeaponLike[] | undefined): numb
   let sum = 0;
   for (const weapon of weapons) sum += weaponDps(weapon);
   return sum;
+}
+
+/**
+ * Основной ДПС: сумма только отмеченных орудий.
+ * Если ни одно орудие не отмечено, основной ДПС равен полному.
+ */
+export function mainWeaponDps(weapons: readonly WeaponLike[] | undefined): number {
+  if (!weapons?.length) return 0;
+  const primary = weapons.filter((weapon) => weapon.mainDps);
+  return totalWeaponDps(primary.length > 0 ? primary : weapons);
 }
 
 /** Подходит ли оружие под выбранные теги с учётом режима И / ИЛИ. */
@@ -75,6 +86,16 @@ export function filteredWeaponDps(
   if (!weapons?.length) return 0;
   if (tags.length === 0) return totalWeaponDps(weapons);
   return totalWeaponDps(filterWeapons(weapons, tags, mode));
+}
+
+/** Основной ДПС только по оружию, подходящему под выбранные теги. */
+export function filteredMainWeaponDps(
+  weapons: readonly WeaponLike[] | undefined,
+  tags: readonly string[],
+  mode: TagMatchMode,
+): number {
+  if (!weapons?.length) return 0;
+  return mainWeaponDps(filterWeapons(weapons, tags, mode));
 }
 
 /** Есть ли у карточки хотя бы одно оружие под выбранные теги. */

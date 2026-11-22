@@ -107,7 +107,7 @@ export async function getNav(lang: Lang) {
       ...section.data,
       articles: entries.filter((entry) => entrySection(entry) === section.data.id),
     }))
-    .filter((section) => section.articles.length > 0);
+    .filter((section) => section.articles.length > 0 || section.showEmpty);
 }
 
 /** Цели внутренних .md-ссылок в теле статьи: «../lore/history.md» → «lore/history». */

@@ -34,6 +34,7 @@
     | "damage"
     | "fireDelay"
     | "armourIgnoreAmount"
+    | "mainDps"
     | "dps"
     | "tags"
     | "spread"
@@ -51,6 +52,25 @@
     underwater: detail.unloadUnderwater,
     space: detail.unloadSpace,
   }));
+
+  const ftlLabels = $derived.by((): Record<string, string> => ({
+    siv: detail.ftlSiv,
+    plasma: detail.ftlPlasma,
+    tele: detail.ftlTele,
+  }));
+
+  function ftlTags(type: string): string[] {
+    if (type === "plasma") {
+      return [
+        detail.ftlInstant,
+        detail.ftlTagAtmosphere,
+        detail.ftlTagAlwaysVisible,
+        detail.ftlTagGasRecharge,
+      ];
+    }
+    if (type === "tele") return [detail.ftlInstant, detail.ftlTagStealth];
+    return [detail.ftlTagMove, detail.ftlTagBigVisible];
+  }
   const locale = $derived(lang === "en" ? "en-US" : "ru-RU");
   const formatter = $derived(
     new Intl.NumberFormat(locale, { maximumFractionDigits: 2, minimumFractionDigits: 0 }),
@@ -98,6 +118,9 @@
           break;
         case "projectileDelay":
           diff = (a.projectileDelay ?? 0) - (b.projectileDelay ?? 0);
+          break;
+        case "mainDps":
+          diff = Number(a.mainDps) - Number(b.mainDps);
           break;
         default:
           diff = a[sortKey] - b[sortKey];
@@ -173,9 +196,14 @@
           </div>
           {#if item.desc}<p class="detail-hero__desc">{item.desc}</p>{/if}
         </div>
-        <button class="icon-btn detail-dialog__close" type="button" aria-label={detail.close} onclick={onclose}>
-          {@html iconSvg(Close)}
-        </button>
+        <div class="detail-hero__tools">
+          {#if item.miniIcon}
+            <img class="detail-hero__mini" src={item.miniIcon} alt="" width="36" height="36" decoding="async" />
+          {/if}
+          <button class="icon-btn detail-dialog__close" type="button" aria-label={detail.close} onclick={onclose}>
+            {@html iconSvg(Close)}
+          </button>
+        </div>
       </header>
 
       <div class="detail-dialog__body">
@@ -196,6 +224,7 @@
               <div><span>{detail.turnSpeed}</span><b>{number(item.turnSpeed)}</b></div>
             {/if}
             <div><span>{detail.range}</span><b>{number(item.range)}</b></div>
+            <div><span>{detail.dpsMain}</span><b>{number(item.mainDps)}</b></div>
             <div><span>{detail.dpsAll}</span><b>{number(item.dps)}</b></div>
             <div><span>{detail.dpsPerFullCost}</span><b>{item.fullCost > 0 ? formatter.format((item.dps / item.fullCost) * 100) : "—"}</b></div>
             <div><span>{detail.totalHpPerFullCost}</span><b>{item.fullCost > 0 ? formatter.format(((item.hp + item.shield) / item.fullCost) * 100) : "—"}</b></div>
@@ -225,7 +254,10 @@
                 </div>
               {/if}
               {#if item.laserDefense}
-                <div><span>{detail.abilityLaser}</span><b>{detail.yes}</b></div>
+                <div>
+                  <span>{detail.abilityLaser}</span>
+                  <b>{formatter.format(item.laserDefense.radius)} · {formatter.format(item.laserDefense.points)} · {formatter.format(item.laserDefense.regen)}/{detail.secondsShort}</b>
+                </div>
               {/if}
               {#if item.domeShield}
                 <div>
@@ -237,17 +269,25 @@
                 <div><span>{detail.abilityAtmosphere}</span><b>{formatter.format(item.atmosphere.time)}{detail.seconds}</b></div>
               {/if}
               {#if item.ftlJump}
-                <div>
+                <div class="detail-stats__wide">
                   <span>{detail.abilityFtl}</span>
                   <b>
-                    {item.ftlJump.type === "plasma" ? detail.ftlPlasma : detail.ftlSiv}
+                    {ftlLabels[item.ftlJump.type] ?? item.ftlJump.type}
                     · {formatter.format(item.ftlJump.chargeTime)}{detail.seconds}
                     · {formatter.format(item.ftlJump.cooldown)}{detail.seconds}
                     · {formatter.format(item.ftlJump.minDistance)}
+                    {#if item.ftlJump.type === "siv" && item.ftlJump.jumpSpeed !== undefined}
+                      · {detail.ftlSpeed}: {formatter.format(item.ftlJump.jumpSpeed)}
+                    {/if}
                     {#if item.ftlJump.type === "plasma" && item.ftlJump.energyCost !== undefined}
                       · {formatter.format(item.ftlJump.energyCost)} {detail.energy}
                     {/if}
                   </b>
+                  <div class="weapon-table__tags">
+                    {#each ftlTags(item.ftlJump.type) as tag (tag)}
+                      <span class="chip chip--ability">{tag}</span>
+                    {/each}
+                  </div>
                 </div>
               {/if}
             </div>
@@ -264,6 +304,7 @@
                 <thead>
                   <tr>
                     <th scope="col" aria-sort={ariaSort("name")}><button type="button" onclick={() => toggleSort("name")}>{detail.weaponName}</button></th>
+                    <th scope="col" aria-sort={ariaSort("mainDps")}><button type="button" onclick={() => toggleSort("mainDps")}>{detail.weaponMain}</button></th>
                     <th scope="col" aria-sort={ariaSort("count")}><button type="button" onclick={() => toggleSort("count")}>{detail.weaponCount}</button></th>
                     <th scope="col" aria-sort={ariaSort("projectileCount")}><button type="button" onclick={() => toggleSort("projectileCount")}>{detail.weaponProjectiles}</button></th>
                     <th scope="col" aria-sort={ariaSort("projectileDelay")}><button type="button" onclick={() => toggleSort("projectileDelay")}>{detail.weaponProjectileDelay}</button></th>
@@ -281,6 +322,7 @@
                   {#each weapons as weapon, index (index)}
                     <tr>
                       <td class="weapon-table__name">{weapon.name}</td>
+                      <td class="weapon-table__main">{weapon.mainDps ? "✓" : "—"}</td>
                       <td>{weapon.count}</td>
                       <td>{weapon.projectileCount ?? 1}</td>
                       <td>{formatter.format(weapon.projectileDelay ?? 0)}{detail.seconds}</td>

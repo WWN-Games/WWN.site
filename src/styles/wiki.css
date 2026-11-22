@@ -372,6 +372,13 @@
   color: #fff;
   background: rgba(var(--cyan-rgb), 0.1);
 }
+.wiki-cat__empty {
+  margin-top: 12px;
+  padding-top: 10px;
+  font-size: 13px;
+  color: var(--muted);
+  border-top: 1px solid var(--line-soft);
+}
 
 .article-layout {
   display: grid;
@@ -913,6 +920,70 @@
   font-size: 12.5px;
 }
 
+/* Верхнее выпадающее «Содержание» — как блок Contents на Fandom. */
+.article__contents {
+  padding: 14px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: rgba(9, 19, 34, 0.6);
+}
+.article__contents summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  list-style: none;
+  cursor: pointer;
+}
+.article__contents summary::-webkit-details-marker {
+  display: none;
+}
+.article__contents summary::marker {
+  content: "";
+}
+.article__contents summary::after {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid var(--cyan);
+  border-bottom: 2px solid var(--cyan);
+  transform: rotate(45deg);
+  transition: transform 0.2s;
+}
+.article__contents[open] summary::after {
+  transform: rotate(-135deg);
+}
+.article__contents ol {
+  display: grid;
+  gap: 2px;
+  margin-top: 12px;
+  list-style: none;
+}
+.article__contents a {
+  display: block;
+  padding: 6px 8px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--muted);
+  border-radius: var(--radius-xs);
+  transition:
+    color 0.15s,
+    background 0.15s;
+}
+.article__contents a:hover {
+  color: #fff;
+  background: rgba(var(--cyan-rgb), 0.08);
+}
+.article__contents .lvl-3 a {
+  padding-left: 22px;
+  font-size: 12.5px;
+}
+
 .article__pager {
   display: flex;
   justify-content: space-between;
@@ -1076,49 +1147,7 @@
     gap: 0;
   }
   .article__aside {
-    position: static;
-    order: -1;
-    max-height: none;
-    overflow: visible;
-    padding: 0;
-    margin-bottom: 22px;
-    min-height: 42px;
-  }
-  .article__toc {
-    padding: 18px 20px;
-    border: 1px solid var(--line);
-    border-radius: var(--radius-sm);
-    background: rgba(9, 19, 34, 0.6);
-  }
-  .article__toc summary {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    color: var(--cyan);
-  }
-  .article__toc summary::after {
-    content: "";
-    width: 7px;
-    height: 7px;
-    border-right: 2px solid var(--cyan);
-    border-bottom: 2px solid var(--cyan);
-    transform: rotate(45deg);
-    transition: transform 0.2s;
-  }
-  .article__toc[open] summary::after {
-    transform: rotate(-135deg);
-  }
-  .article__toc a {
-    border-left: 0;
-    border-radius: var(--radius-xs);
-    padding: 6px 8px;
-  }
-  .article__toc a.is-active {
-    background: rgba(var(--cyan-rgb), 0.14);
-  }
-  .article__toc .lvl-3 a {
-    padding-left: 20px;
+    display: none;
   }
 }
 @media (max-width: 1040px) {

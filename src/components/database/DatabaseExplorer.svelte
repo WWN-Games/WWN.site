@@ -15,6 +15,7 @@ import TagFilterPanel from "@/components/database/TagFilterPanel.svelte";
 import { iconSvg } from "@/components/ui/icon";
 import {
   barPercent,
+  filteredMainWeaponDps,
   filteredWeaponDps,
   formatStat,
   type StatScaleEntryLike,
@@ -369,14 +370,19 @@ $effect(() => {
     const item = id ? itemById.get(id) : undefined;
     if (!item) continue;
     const dps = active ? filteredWeaponDps(item.weapons, selected, mode) : item.dps;
+    const mainDps = active
+      ? filteredMainWeaponDps(item.weapons, selected, mode)
+      : item.mainDps;
     const bar = card.querySelector<HTMLElement>('[data-stat="dps"]');
     if (!bar) continue;
-    bar.dataset.value = String(dps);
-    bar.title = `${labels.dps}: ${formatStat(dps)}`;
+    const display =
+      mainDps === dps ? formatStat(mainDps) : `${formatStat(mainDps)} – ${formatStat(dps)}`;
+    bar.dataset.value = String(mainDps);
+    bar.title = `${labels.dps}: ${display}`;
     const value = bar.querySelector<HTMLElement>("[data-stat-value]");
-    if (value) value.textContent = formatStat(dps);
+    if (value) value.textContent = display;
     const fill = bar.querySelector<HTMLElement>("[data-stat-fill]");
-    if (fill) fill.style.setProperty("--w", `${barPercent(dps, scale)}%`);
+    if (fill) fill.style.setProperty("--w", `${barPercent(mainDps, scale)}%`);
   }
 });
 

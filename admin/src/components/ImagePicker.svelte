@@ -5,7 +5,7 @@
   import Icon from "./Icon.svelte";
 
   interface Props {
-    kind: "card" | "faction" | "map" | "gallery" | "feat";
+    kind: "card" | "mini" | "faction" | "map" | "gallery" | "feat";
     id: string;
     path: string | undefined;
     label: string;
@@ -96,7 +96,9 @@
           ? "Нет эмблемы — загрузите SVG"
           : kind === "card"
             ? "Без картинки — будут инициалы"
-            : "Нет изображения"}
+            : kind === "mini"
+              ? "Мини-иконка не добавлена"
+              : "Нет изображения"}
       </div>
     {/if}
   </div>
@@ -110,18 +112,25 @@
         Без картинки
       </button>
     {/if}
+    {#if kind === "mini" && path}
+      <button class="btn btn--ghost btn--small" type="button" onclick={() => onchange("")}>
+        Убрать иконку
+      </button>
+    {/if}
   </div>
   <div class="image-picker__path">
     {path ||
       (kind === "card" && id
         ? `img/database/${id}.avif (по умолчанию)`
-        : kind === "map" && id
-          ? `img/maps/${id}.avif (по умолчанию)`
-          : kind === "feat" && id
-            ? `img/feats/${id}.avif (по умолчанию)`
-            : kind === "gallery" && id
-              ? `assets/img/gallery/${id}.avif (по умолчанию)`
-              : "—")}
+        : kind === "mini" && id
+          ? `img/database/mini/${id}.avif (если загружена)`
+          : kind === "map" && id
+            ? `img/maps/${id}.avif (по умолчанию)`
+            : kind === "feat" && id
+              ? `img/feats/${id}.avif (по умолчанию)`
+              : kind === "gallery" && id
+                ? `assets/img/gallery/${id}.avif (по умолчанию)`
+                : "—")}
   </div>
   <input
     bind:this={input}

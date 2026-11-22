@@ -17,7 +17,11 @@ interface Props {
 }
 
 const { lang, sections, activeSlug } = Astro.props;
-const searchSections = sections.map((section) => ({ id: section.id, title: section.title[lang] }));
+const visibleSections = sections.filter((section) => section.articles.length > 0);
+const searchSections = visibleSections.map((section) => ({
+  id: section.id,
+  title: section.title[lang],
+}));
 const searchLabels = {
   title: t(lang, "wiki.search.title"),
   placeholder: t(lang, "wiki.search.placeholder"),
@@ -54,7 +58,7 @@ const searchLabels = {
 
   <nav class="wiki-nav" id="wikiNav" aria-label={t(lang, "wiki.title")}>
     {
-      sections.map((section) => (
+      visibleSections.map((section) => (
         <details class="wiki-nav__group" data-section={section.id} open>
           <summary class="wiki-nav__summary">
             <span class="wiki-nav__icon"><Icon name={sectionIconName(section.icon)} /></span>

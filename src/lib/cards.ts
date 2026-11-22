@@ -2,7 +2,7 @@
    WWN — чистые правила карточек, общие для сайта, API и админки.
    ============================================================================ */
 
-import { fullCost, totalWeaponDps, type WeaponLike } from "./card-stats.ts";
+import { fullCost, mainWeaponDps, totalWeaponDps, type WeaponLike } from "./card-stats.ts";
 
 type CardLike = {
   id?: string | undefined;
@@ -12,20 +12,22 @@ type CardLike = {
 };
 
 /** DPS карточки считается по оружию; без оружия — 0. */
-export function withDerivedDps<T extends CardLike>(item: T): T & { dps: number } {
+export function withDerivedDps<T extends CardLike>(item: T): T & { dps: number; mainDps: number } {
   return {
     ...item,
     dps: totalWeaponDps(item.weapons),
+    mainDps: mainWeaponDps(item.weapons),
   };
 }
 
-/** DPS и полная стоимость — для карточек базы и публичного API. */
+/** DPS, основной DPS и полная стоимость — для карточек базы и публичного API. */
 export function withDerivedCard<T extends CardLike>(
   item: T,
-): T & { dps: number; fullCost: number } {
+): T & { dps: number; mainDps: number; fullCost: number } {
   return {
     ...item,
     dps: totalWeaponDps(item.weapons),
+    mainDps: mainWeaponDps(item.weapons),
     fullCost: fullCost(item.cost ?? 0, item.energy ?? 0),
   };
 }

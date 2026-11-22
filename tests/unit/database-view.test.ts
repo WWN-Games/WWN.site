@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { filteredWeaponDps, fullCost, weaponDps } from "../../src/lib/card-stats";
+import {
+  filteredMainWeaponDps,
+  filteredWeaponDps,
+  fullCost,
+  mainWeaponDps,
+  weaponDps,
+} from "../../src/lib/card-stats";
 import { isBadgeNew } from "../../src/lib/cards";
 import {
   bestIndexes,
@@ -35,6 +41,7 @@ function item(overrides: Partial<SearchableExplorerItem> = {}): SearchableExplor
     selfRegen: 0,
     shieldRegen: 0,
     dps: 50,
+    mainDps: 50,
     weapons: [],
     builder: undefined,
     factories: [],
@@ -52,6 +59,7 @@ function item(overrides: Partial<SearchableExplorerItem> = {}): SearchableExplor
     factionName: "Фенземская Республика",
     factionColor: "#3b9bff",
     image: null,
+    miniIcon: null,
     initials: "ТТ",
     ...overrides,
   };
@@ -86,6 +94,7 @@ describe("database view", () => {
             count: 1,
             damage: 10,
             fireDelay: 1,
+            mainDps: false,
             dps: 10,
             tags: ["rocket", "anti-air"],
           },
@@ -188,6 +197,26 @@ describe("card stats", () => {
         "all",
       ),
     ).toBe(10);
+  });
+
+  it("считает основной ДПС и откатывается к полному", () => {
+    const weapons = [
+      { count: 1, damage: 10, fireDelay: 1, mainDps: true, tags: ["rocket"] },
+      { count: 1, damage: 20, fireDelay: 2, mainDps: false, tags: ["laser"] },
+    ];
+    expect(mainWeaponDps(weapons)).toBe(10);
+    expect(mainWeaponDps([{ count: 1, damage: 10, fireDelay: 1 }])).toBe(10);
+    expect(mainWeaponDps([])).toBe(0);
+    expect(filteredMainWeaponDps(weapons, ["laser"], "all")).toBe(10);
+    expect(filteredMainWeaponDps(weapons, [], "all")).toBe(10);
+  });
+
+  it("сортирует по основному ДПС", () => {
+    const items = [
+      item({ id: "a", mainDps: 100, dps: 100 }),
+      item({ id: "b", mainDps: 10, dps: 500 }),
+    ];
+    expect(sortItems(items, "dps", "desc", "ru").map((entry) => entry.id)).toEqual(["a", "b"]);
   });
 });
 

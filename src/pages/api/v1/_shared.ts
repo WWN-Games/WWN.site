@@ -3,7 +3,7 @@
    Все эндпоинты отдают: { schemaVersion, generatedAt, count, items }.
    ============================================================================ */
 
-const API_SCHEMA_VERSION = 2;
+const API_SCHEMA_VERSION = 3;
 
 const API_HEADERS = {
   "Content-Type": "application/json; charset=utf-8",

@@ -84,10 +84,11 @@
 | `shield`, `armor`, `selfRegen`, `shieldRegen`, `speed`, `turnSpeed`, `range` | нет | Числа, допустимы дробные; можно не писать, если 0 |
 | `weapons` | нет | Массив орудий (см. ниже) |
 | `missileDefense`, `torpedoDefense` | нет | `{ max, recharge }`: заряды и восстановление зарядов/с |
-| `laserDefense` | нет | `true` — лазерная защита |
+| `laserDefense` | нет | `{ radius, points, regen }` — как у купольного щита |
 | `domeShield` | нет | `{ radius, points, regen }` |
 | `atmosphere` | нет | `{ time }` — время входа в атмосферу, с |
-| `ftlJump` | нет | `{ type: "siv" \\| "plasma", chargeTime, cooldown, minDistance, energyCost? }` |
+| `ftlJump` | нет | `{ type: "siv" \\| "plasma" \\| "tele", chargeTime, cooldown, minDistance, jumpSpeed?, energyCost? }`; `jumpSpeed` — только СИВ, `energyCost` — только плазма |
+| `miniIcon` | нет | Дополнительная мини-иконка: `img/database/mini/<id>.avif`; без файла не показывается |
 | `builder` | нет | `{ buildRange, repairSpeed, buildSpeed, healTags }` |
 | `factories` | нет | Массив заводов `{ name, buildSpeed, producedUnits }` |
 | `transports` | нет | Массив отделений `{ name, seats, cargoTags, unload }` |
@@ -99,7 +100,8 @@
 | `newUntil` | нет | Дата `YYYY-MM-DD`; после неё плашка скрывается (в том числе на клиенте) |
 
 - Полная стоимость: `cost + energy / 4`. В списке карточек показывается только она.
-- DPS карточки: сумма `count * projectileCount * damage / fireDelay` по всем орудиям. Без оружия DPS = 0.
+- Полный DPS карточки: сумма `count * projectileCount * damage / fireDelay` по всем орудиям. Без оружия DPS = 0.
+- Основной DPS: сумма только орудий с `mainDps: true`. Если ни одно не отмечено, основной DPS равен полному. В списке карточка показывает `ДПС: основной – полный`, сортировка идёт по основному.
 - `buildTime` — секунды при скорости 1; в интерфейсе подписывается `с (×1)`.
 - Обычные теги карточки берутся из групп `tier | class | movement | mod`.
 - Картинка по умолчанию — `public/img/database/<id>.avif`. Поле `image` переопределяет путь, `"image": ""` отключает картинку.
@@ -118,6 +120,7 @@
 | `damage` | да | Урон одного снаряда |
 | `fireDelay` | да | Задержка между выстрелами в секундах, больше нуля |
 | `armourIgnoreAmount` | нет | Бронебойность снаряда |
+| `mainDps` | нет | `true` — орудие входит в основной ДПС карточки; по умолчанию `false` |
 | `tags` | нет | Теги из групп `weapon` и `sector` |
 | `spread` | нет | Разброс; показывается при теге `splash` |
 | `splashRadius` | нет | Радиус сплеша; показывается при теге `splash` |
@@ -163,14 +166,14 @@
 
 ## Разделы вики: sections.json
 
-`id` = папка в `src/content/wiki/<язык>/` и якорь `#wiki-cat-<id>` на хабе; `icon` — одна из `book | shield | cube | gear | compass | users | clock | rocket | chat`; `order` уникален; `title`, `desc` — `{ ru, en }`. Статьи внутри раздела не перечисляются: они берутся из front matter самих статей (см. `docs/content.md`).
+`id` = папка в `src/content/wiki/<язык>/` и якорь `#wiki-cat-<id>` на хабе; `icon` — одна из `book | shield | cube | gear | compass | users | clock | rocket | chat | school`; `order` уникален; `title`, `desc` — `{ ru, en }`; `showEmpty` — показывать раздел на хабе без статей (сейчас у `tutorials`). Статьи внутри раздела не перечисляются: они берутся из front matter самих статей (см. `docs/content.md`).
 
 ## Карты, галерея, видео, подвиги
 
 - `maps.json` — `id`, `name`, `desc`, `image` (по умолчанию `img/maps/<id>.avif`), `players`, `size`, `mode`, `author`, `download`, `order`, `new`, `newUntil`.
 - `gallery.json` — `id`, `order`, `image` (путь относительно `src/`, например `assets/img/gallery/screenshot-1.avif`), `caption`, `wide`.
 - `videos.json` — `id`, `order`, `youtubeId`, `lang` (`ru` / `en`), `title`, `desc`, `date`.
-- `feats.json` — `id`, `order`, `name`, `desc`, `image` (по умолчанию `img/feats/<id>.avif`), `date`, `new`, `newUntil`.
+- `feats.json` — `id`, `order`, `name`, `desc`, `image` (по умолчанию `img/feats/<id>.avif`), `date`, `new`, `newUntil`, `type` (`unit` / `battle`), `commanderId` (id из `ratings.json`), `unitIds` (юниты из `units.json`), `cost` (ручная цена), `destroyedCost`, `destroyedCount`, `combatNumber`, а для битв — `heroLossCost`, `enemyLossCost`, `heroLossCount`, `enemyLossCount`. Если `cost` не задана, цена считается как сумма полной стоимости `unitIds`; окупаемость — `destroyedCost / cost`.
 - `news.json` — `id`, `date`, `tag` (`update` / `news`), `link` (строка или `{ ru, en }`), `title`, `text`, `featured`, `draft`, `order`. На главной закреплённые идут первыми, затем последние по дате; на `/news/` — все опубликованные.
 - `ratings.json` — `id`, `nickname`, `rating`. Страница `/rating/` сортирует записи по `rating` по убыванию автоматически.
 
@@ -188,7 +191,7 @@
 
 Сборка публикует статические JSON-эндпоинты: `/api/v1/units.json`, `buildings.json`, `misc.json`, `maps.json`, `factions.json`, `tags.json`, `stats.json`, `index.json` (манифест).
 
-Общий конверт: `{ schemaVersion, generatedAt, count, items }`, `schemaVersion: 2`. Ответ формируется с заголовком `Cache-Control: public, max-age=3600`, но GitHub Pages отдаёт статические файлы без кастомных заголовков — фактический кэш зависит от хостинга/CDN. В `items` — данные коллекции, отсортированные по `id` (исключение — `factions.json`: по `order`, затем по `id`); в `stats.json` элементы `{ id, value }`, в `index.json` — `{ id, url, count }`.
+Общий конверт: `{ schemaVersion, generatedAt, count, items }`, `schemaVersion: 3`. Ответ формируется с заголовком `Cache-Control: public, max-age=3600`, но GitHub Pages отдаёт статические файлы без кастомных заголовков — фактический кэш зависит от хостинга/CDN. В `items` — данные коллекции, отсортированные по `id` (исключение — `factions.json`: по `order`, затем по `id`); в `stats.json` элементы `{ id, value }`, в `index.json` — `{ id, url, count }`.
 
 ## Сравнение карточек
 

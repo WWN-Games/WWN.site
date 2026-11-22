@@ -11,6 +11,7 @@ import { barPercent, formatStat, type StatScaleEntryLike, weaponDps } from "./ca
 import { isBadgeNew, withDerivedCard } from "./cards";
 import type { CompareGroup, CompareMetric } from "./compare";
 import type { CardTab, SortKey } from "./database-constants";
+import { FTL_JUMP_TAGS, FTL_TYPE_LABEL } from "./ftl";
 import type {
   Atmosphere,
   Builder,
@@ -94,10 +95,11 @@ export interface DatabaseCard {
   selfRegen: number;
   shieldRegen: number;
   dps: number;
+  mainDps: number;
   weapons: Weapon[];
   missileDefense?: ChargeDefense | undefined;
   torpedoDefense?: ChargeDefense | undefined;
-  laserDefense: boolean;
+  laserDefense?: DomeShield | undefined;
   domeShield?: DomeShield | undefined;
   atmosphere?: Atmosphere | undefined;
   ftlJump?: FtlJump | undefined;
@@ -114,6 +116,7 @@ export interface DatabaseCard {
   isNew: boolean;
   newUntil?: string | undefined;
   image?: string | undefined;
+  miniIcon?: string | undefined;
 }
 
 export interface DatabaseFaction {
@@ -142,6 +145,7 @@ interface ExplorerWeapon {
   damage: number;
   fireDelay: number;
   armourIgnoreAmount?: number | undefined;
+  mainDps: boolean;
   dps: number;
   tags: string[];
   spread?: number | undefined;
@@ -183,10 +187,11 @@ export interface ExplorerItem {
   selfRegen: number;
   shieldRegen: number;
   dps: number;
+  mainDps: number;
   weapons: ExplorerWeapon[];
   missileDefense?: ChargeDefense | undefined;
   torpedoDefense?: ChargeDefense | undefined;
-  laserDefense?: boolean | undefined;
+  laserDefense?: DomeShield | undefined;
   domeShield?: DomeShield | undefined;
   atmosphere?: Atmosphere | undefined;
   ftlJump?: FtlJump | undefined;
@@ -206,6 +211,7 @@ export interface ExplorerItem {
   factionName: string;
   factionColor: string;
   image: string | null;
+  miniIcon: string | null;
   initials: string;
 }
 
@@ -243,6 +249,7 @@ const DETAIL_LABEL_KEYS = {
   speed: "database.speed",
   turnSpeed: "database.turnSpeed",
   range: "database.range",
+  dpsMain: "database.dpsMain",
   dpsAll: "database.dpsAll",
   dpsPerFullCost: "database.compare.metric.dpsPerFullCost",
   totalHpPerFullCost: "database.compare.metric.totalHpPerFullCost",
@@ -257,6 +264,15 @@ const DETAIL_LABEL_KEYS = {
   abilityFtl: "database.ability.ftl",
   ftlSiv: "database.ability.ftl.siv",
   ftlPlasma: "database.ability.ftl.plasma",
+  ftlTele: "database.ability.ftl.tele",
+  ftlSpeed: "database.ability.ftl.speed",
+  ftlInstant: "database.ability.ftl.instant",
+  ftlTagMove: "database.ability.ftl.tag.move",
+  ftlTagBigVisible: "database.ability.ftl.tag.bigVisible",
+  ftlTagAtmosphere: "database.ability.ftl.tag.atmosphere",
+  ftlTagAlwaysVisible: "database.ability.ftl.tag.alwaysVisible",
+  ftlTagGasRecharge: "database.ability.ftl.tag.gasRecharge",
+  ftlTagStealth: "database.ability.ftl.tag.stealth",
   charges: "database.ability.charges",
   perSecond: "database.ability.perSecond",
   yes: "database.ability.yes",
@@ -270,6 +286,7 @@ const DETAIL_LABEL_KEYS = {
   weaponFireDelay: "database.weapon.fireDelay",
   weaponArmourIgnore: "database.weapon.armourIgnore",
   weaponDps: "database.weapon.dps",
+  weaponMain: "database.weapon.main",
   weaponTags: "database.weapon.tags",
   weaponSpread: "database.weapon.spread",
   weaponSplash: "database.weapon.splash",
@@ -429,6 +446,12 @@ export function resolveImage(image: string | undefined, id: string): string | nu
   return href(path);
 }
 
+/** Дополнительная мини-иконка: без fallback, пустое значение скрывает её. */
+export function resolveMiniIcon(image: string | undefined): string | null {
+  if (!image) return null;
+  return href(image.replace(/^assets\//, ""));
+}
+
 function safeColor(color: string | undefined): string {
   return color && /^#[0-9a-f]{6}$/i.test(color) ? color : FALLBACK_COLOR;
 }
@@ -455,7 +478,7 @@ function computeScale(cards: DatabaseCard[]): StatScale {
   const scale = {} as Record<StatKey, StatScaleEntry | null>;
   for (const key of STAT_KEYS) {
     const values = cards
-      .map((card) => card[key])
+      .map((card) => (key === "dps" ? card.mainDps : card[key]))
       .filter((value) => value > 0)
       .toSorted((a, b) => a - b);
     if (!values.length) {
@@ -475,12 +498,16 @@ export function buildBars(card: DatabaseCard, lang: Lang, scale: StatScale): Sta
   for (const key of STAT_KEYS) {
     const entry = scale[key];
     if (!entry) continue;
-    const value = card[key];
+    const value = key === "dps" ? card.mainDps : card[key];
+    const display =
+      key === "dps" && card.dps !== card.mainDps
+        ? `${formatStat(card.mainDps)} – ${formatStat(card.dps)}`
+        : formatStat(value);
     bars.push({
       key,
       value,
       label: t(lang, `database.${key}`),
-      display: formatStat(value),
+      display,
       percent: barPercent(value, entry),
       medianPercent: barPercent(entry.median, entry),
     });
@@ -511,10 +538,11 @@ function toCard(id: string, tab: CardTab, data: CardData): DatabaseCard {
     selfRegen: data.selfRegen ?? 0,
     shieldRegen: data.shieldRegen ?? 0,
     dps: derived.dps,
+    mainDps: derived.mainDps,
     weapons: derived.weapons ?? [],
     missileDefense: data.missileDefense,
     torpedoDefense: data.torpedoDefense,
-    laserDefense: data.laserDefense ?? false,
+    laserDefense: data.laserDefense,
     domeShield: data.domeShield,
     atmosphere: data.atmosphere,
     ftlJump: data.ftlJump,
@@ -531,6 +559,7 @@ function toCard(id: string, tab: CardTab, data: CardData): DatabaseCard {
     isNew: isBadgeNew(data.new, data.newUntil),
     newUntil: data.newUntil,
     image: data.image,
+    miniIcon: data.miniIcon,
   };
 }
 
@@ -549,13 +578,20 @@ export function cardSearchText(
       return `${weapon.name[lang]} ${weaponTags}`;
     })
     .join(" ");
+  const jumpText = card.ftlJump
+    ? [
+        t(lang, "database.ability.ftl"),
+        t(lang, FTL_TYPE_LABEL[card.ftlJump.type]),
+        ...FTL_JUMP_TAGS[card.ftlJump.type].map((key) => t(lang, key)),
+      ].join(" ")
+    : "";
   const abilityText = [
     card.missileDefense ? t(lang, "database.ability.missile") : "",
     card.torpedoDefense ? t(lang, "database.ability.torpedo") : "",
     card.laserDefense ? t(lang, "database.ability.laser") : "",
     card.domeShield ? t(lang, "database.ability.dome") : "",
     card.atmosphere ? t(lang, "database.ability.atmosphere") : "",
-    card.ftlJump ? t(lang, "database.ability.ftl") : "",
+    jumpText,
   ]
     .filter(Boolean)
     .join(" ");
@@ -752,6 +788,7 @@ export async function loadDatabase(lang: Lang): Promise<DatabaseData> {
       selfRegen: card.selfRegen,
       shieldRegen: card.shieldRegen,
       dps: card.dps,
+      mainDps: card.mainDps,
       weapons: card.weapons.map((weapon) => ({
         name: weapon.name[lang],
         count: weapon.count,
@@ -760,6 +797,7 @@ export async function loadDatabase(lang: Lang): Promise<DatabaseData> {
         damage: weapon.damage,
         fireDelay: weapon.fireDelay,
         armourIgnoreAmount: weapon.armourIgnoreAmount,
+        mainDps: weapon.mainDps,
         dps: weaponDps(weapon),
         tags: [...weapon.tags],
         spread: weapon.spread,
@@ -806,6 +844,7 @@ export async function loadDatabase(lang: Lang): Promise<DatabaseData> {
       factionName: factionName(factionMap, card.faction, lang),
       factionColor: factionColor(factionMap, card.faction),
       image: resolveImage(card.image, card.id),
+      miniIcon: resolveMiniIcon(card.miniIcon),
       initials: initialsOf(name),
     };
   });

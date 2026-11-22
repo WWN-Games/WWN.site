@@ -15,6 +15,7 @@ const SECTION_ICON_NAMES = {
   clock: "icon-park-outline:time",
   rocket: "icon-park-outline:rocket",
   chat: "icon-park-outline:message",
+  school: "icon-park-outline:school",
 } satisfies Record<(typeof SECTION_ICONS)[number], string>;
 
 export function sectionIconName(id: string): string {

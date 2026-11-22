@@ -112,18 +112,22 @@ const recent = articles
           </div>
           <span class="wiki-cat__count">{articleCount(section.articles.length)}</span>
         </header>
-        <ul>
-          {section.articles.map((article) => (
-            <li>
-              <a href={entryHref(article)}>{article.data.title}</a>
-              {isBadgeNew(article.data.new, article.data.newUntil) && (
-                <span class="badge-new" data-new-until={article.data.newUntil}>
-                  {t(lang, "database.new")}
-                </span>
-              )}
-            </li>
-          ))}
-        </ul>
+        {section.articles.length > 0 ? (
+          <ul>
+            {section.articles.map((article) => (
+              <li>
+                <a href={entryHref(article)}>{article.data.title}</a>
+                {isBadgeNew(article.data.new, article.data.newUntil) && (
+                  <span class="badge-new" data-new-until={article.data.newUntil}>
+                    {t(lang, "database.new")}
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="wiki-cat__empty">{t(lang, "wiki.emptyCategory")}</p>
+        )}
       </section>
     ))
   }

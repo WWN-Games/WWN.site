@@ -36,6 +36,8 @@ export const sectionSchema = z.object({
   order: z.number().int().positive(),
   title: text,
   desc: text,
+  /** Показывать раздел на хабе даже без опубликованных статей. */
+  showEmpty: z.boolean().optional(),
 });
 
 const stat = z.number().nonnegative().optional();
@@ -52,6 +54,8 @@ const weaponSchema = z.object({
   damage: z.number().nonnegative(),
   /** Задержка между выстрелами в секундах. */
   fireDelay: z.number().positive(),
+  /** Основное орудие: его ДПС идёт в основной ДПС карточки. */
+  mainDps: z.boolean().default(false),
   /** Бронебойность снаряда. */
   armourIgnoreAmount: z.number().nonnegative().optional(),
   /** Теги из групп weapon и sector. */
@@ -114,13 +118,16 @@ const atmosphereSchema = z.object({
 
 export type Atmosphere = z.infer<typeof atmosphereSchema>;
 
-const FTL_JUMP_TYPES = ["siv", "plasma"] as const;
+export const FTL_JUMP_TYPES = ["siv", "plasma", "tele"] as const;
+export type FtlJumpType = (typeof FTL_JUMP_TYPES)[number];
 
 const ftlJumpSchema = z.object({
   type: z.enum(FTL_JUMP_TYPES),
   chargeTime: z.number().nonnegative(),
   cooldown: z.number().nonnegative(),
   minDistance: z.number().nonnegative(),
+  /** Скорость в прыжке; актуальна для СИВ. */
+  jumpSpeed: z.number().nonnegative().optional(),
   /** Стоимость энергии; актуальна для плазменного прыжка. */
   energyCost: z.number().nonnegative().optional(),
 });
@@ -150,8 +157,8 @@ const cardBase = z.object({
   missileDefense: chargeDefenseSchema.optional(),
   /** Защита от торпед: максимум зарядов и восстановление (зарядов/с). */
   torpedoDefense: chargeDefenseSchema.optional(),
-  /** Лазерная защита. */
-  laserDefense: z.boolean().optional(),
+  /** Лазерная защита: те же параметры, что у купольного щита. */
+  laserDefense: domeShieldSchema.optional(),
   /** Купольный щит: радиус, очки защиты и восстановление (очков/с). */
   domeShield: domeShieldSchema.optional(),
   /** Способность входить в атмосферу: время в секундах. */
@@ -162,6 +169,8 @@ const cardBase = z.object({
   factories: z.array(factorySchema).optional(),
   transports: z.array(transportSchema).optional(),
   image: z.string().optional(),
+  /** Дополнительная маленькая иконка карточки (необязательная). */
+  miniIcon: z.string().optional(),
   role: text.optional(),
   strongVs: z.union([z.array(z.string()), text]).optional(),
   weakVs: z.union([z.array(z.string()), text]).optional(),
@@ -282,6 +291,9 @@ export const videoSchema = z.object({
 
 export type VideoItem = z.infer<typeof videoSchema>;
 
+export const FEAT_TYPES = ["unit", "battle"] as const;
+export type FeatType = (typeof FEAT_TYPES)[number];
+
 export const featSchema = z.object({
   id: z.string().min(1),
   order: z.number().int().nonnegative().default(0),
@@ -292,6 +304,21 @@ export const featSchema = z.object({
   date: dateString.optional(),
   new: z.boolean().optional(),
   newUntil: dateString.optional(),
+  /** Подвиг одного юнита или битвы. */
+  type: z.enum(FEAT_TYPES).default("unit"),
+  /** Командир — запись из ratings.json. */
+  commanderId: z.string().min(1).optional(),
+  /** Связанные юниты из units.json. */
+  unitIds: z.array(z.string().min(1)).default([]),
+  /** Ручное переопределение цены юнита; иначе сумма полной стоимости unitIds. */
+  cost: z.number().nonnegative().optional(),
+  destroyedCost: z.number().nonnegative().optional(),
+  destroyedCount: z.number().int().nonnegative().optional(),
+  combatNumber: z.string().optional(),
+  heroLossCost: z.number().nonnegative().optional(),
+  enemyLossCost: z.number().nonnegative().optional(),
+  heroLossCount: z.number().int().nonnegative().optional(),
+  enemyLossCount: z.number().int().nonnegative().optional(),
 });
 
 export type FeatItem = z.infer<typeof featSchema>;

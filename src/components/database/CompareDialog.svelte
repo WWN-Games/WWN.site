@@ -215,9 +215,10 @@
           weapon.armourIgnoreAmount !== undefined
             ? ` · ${detail.weaponArmourIgnore}: ${formatter.format(weapon.armourIgnoreAmount)}`
             : "";
+        const main = weapon.mainDps ? ` · ${detail.weaponMain}` : "";
         return {
           display: `${weapon.name}${count}${volley}`,
-          sub: `${formatter.format(weapon.damage)} / ${formatter.format(weapon.fireDelay)} = ${formatter.format(weapon.dps)} DPS${armour} · ${weapon.tags.map(tagName).join(", ") || "—"}`,
+          sub: `${formatter.format(weapon.damage)} / ${formatter.format(weapon.fireDelay)} = ${formatter.format(weapon.dps)} DPS${main}${armour} · ${weapon.tags.map(tagName).join(", ") || "—"}`,
           best: false,
         };
       });

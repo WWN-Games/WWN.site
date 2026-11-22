@@ -2,13 +2,20 @@
 import { getCollection } from "astro:content";
 import { existsSync } from "node:fs";
 import path from "node:path";
-
 import { t } from "@/i18n";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { fullCost } from "@/lib/card-stats";
 import { isBadgeNew } from "@/lib/cards";
+import {
+  featDestroyedCost,
+  featKilledCount,
+  featLossRatio,
+  featPayoff,
+  featPrice,
+} from "@/lib/feats";
 import { collectionJsonLd } from "@/lib/seo";
-import { href, type Lang } from "@/lib/site";
-import { formatDate } from "@/lib/utils";
+import { href, type Lang, localeHref } from "@/lib/site";
+import { formatDate, formatNumber } from "@/lib/utils";
 
 interface Props {
   lang: Lang;
@@ -16,17 +23,86 @@ interface Props {
 
 const { lang } = Astro.props;
 const publicRoot = path.join(process.cwd(), "public");
-const entries = (await getCollection("feats")).toSorted(
-  (a, b) => a.data.order - b.data.order || a.data.name[lang].localeCompare(b.data.name[lang], lang),
+const [featEntries, unitEntries, ratingEntries] = await Promise.all([
+  getCollection("feats"),
+  getCollection("units"),
+  getCollection("ratings"),
+]);
+
+const unitById = new Map(unitEntries.map((entry) => [entry.id, entry]));
+const ratingById = new Map(ratingEntries.map((entry) => [entry.id, entry.data]));
+const unitCosts = new Map(
+  unitEntries.map((entry) => [entry.id, fullCost(entry.data.cost, entry.data.energy)]),
 );
+const ratingHref = (id: string) => `${localeHref(lang, "rating/")}#${id}`;
+const cardHref = (id: string) => `${localeHref(lang, "database/")}?card=units:${id}#units`;
+const number = (value: number | null) => (value === null ? "—" : formatNumber(value, lang));
+const ratio = (value: number | null) =>
+  value === null
+    ? "—"
+    : new Intl.NumberFormat(lang === "en" ? "en-US" : "ru-RU", {
+        maximumFractionDigits: 2,
+      }).format(value);
+
+const cards = featEntries
+  .toSorted(
+    (a, b) => a.data.order - b.data.order || a.data.name[lang].localeCompare(b.data.name[lang], lang),
+  )
+  .map((entry) => {
+    const data = entry.data;
+    const showNew = isBadgeNew(data.new, data.newUntil);
+    const defaultImage = `img/feats/${entry.id}.avif`;
+    const image =
+      data.image || existsSync(path.join(publicRoot, defaultImage))
+        ? href(data.image ?? defaultImage)
+        : null;
+    const commander = data.commanderId ? ratingById.get(data.commanderId) : undefined;
+    const units = data.unitIds.flatMap((id) => {
+      const unit = unitById.get(id);
+      return unit
+        ? [{ id, name: unit.data.name[lang], href: cardHref(id), cost: unitCosts.get(id) ?? 0 }]
+        : [];
+    });
+    const price = featPrice(data, unitCosts);
+    const destroyedCost = featDestroyedCost(data);
+    const killedCount = featKilledCount(data);
+    const payoff = featPayoff(data, price);
+    const lossRatio = featLossRatio(data);
+    const sortCommander = commander?.nickname ?? "";
+    return {
+      id: entry.id,
+      data,
+      showNew,
+      image,
+      commander,
+      commanderHref: commander ? ratingHref(commander.id) : null,
+      units,
+      price,
+      destroyedCost,
+      killedCount,
+      payoff,
+      lossRatio,
+      sortCommander,
+    };
+  });
+
 const description = t(lang, "meta.desc.feats");
 const jsonLd = collectionJsonLd({
   lang,
   path: "feats/",
   title: t(lang, "meta.title.feats"),
   description,
-  count: entries.length,
+  count: cards.length,
 });
+const sortOptions = [
+  { value: "order", label: t(lang, "feats.sort.order") },
+  { value: "destroyed", label: t(lang, "feats.sort.destroyedCost") },
+  { value: "killed", label: t(lang, "feats.sort.killedCount") },
+  { value: "payoff", label: t(lang, "feats.sort.payoff") },
+  { value: "loss", label: t(lang, "feats.sort.lossRatio") },
+  { value: "type", label: t(lang, "feats.sort.type") },
+  { value: "commander", label: t(lang, "feats.sort.commander") },
+] as const;
 ---
 
 <BaseLayout
@@ -45,51 +121,184 @@ const jsonLd = collectionJsonLd({
       </div>
 
       {
-        entries.length > 0 ? (
-          <div class="feats-grid">
-            {entries.map((entry) => {
-              const data = entry.data;
-              const showNew = isBadgeNew(data.new, data.newUntil);
-              const defaultImage = `img/feats/${entry.id}.avif`;
-              const image =
-                data.image || existsSync(path.join(publicRoot, defaultImage))
-                  ? href(data.image ?? defaultImage)
-                  : null;
-              return (
-                <article class="feat-card">
-                  {showNew && (
-                    <span class="badge-new" data-new-until={data.newUntil}>
-                      {t(lang, "database.new")}
-                    </span>
-                  )}
-                  {image && (
-                    <a class="feat-card__img" href={image} target="_blank" rel="noopener">
-                      <img src={image} alt={data.name[lang]} width="480" height="270" loading="lazy" />
-                    </a>
-                  )}
-                  <h2>{data.name[lang]}</h2>
-                  {data.date && (
-                    <span class="chip">
-                      {t(lang, "feats.date")}: {formatDate(data.date, lang)}
-                    </span>
-                  )}
-                  <p>{data.desc[lang]}</p>
-                </article>
-              );
-            })}
-          </div>
+        cards.length > 0 ? (
+          <>
+            <div class="feats-toolbar">
+              <label class="select-field" for="featsSort">
+                <select id="featsSort" aria-label={t(lang, "feats.sort.label")}>
+                  {sortOptions.map((option) => (
+                    <option value={option.value}>{option.label}</option>
+                  ))}
+                </select>
+              </label>
+              <button
+                class="btn btn--ghost btn--sm"
+                id="featsSortDirection"
+                type="button"
+                data-asc={t(lang, "feats.asc")}
+                data-desc={t(lang, "feats.desc")}
+                aria-label={t(lang, "feats.desc")}
+              >
+                {t(lang, "feats.desc")}
+              </button>
+            </div>
+
+            <div class="feats-grid" id="featsGrid">
+              {cards.map((card) => {
+                const data = card.data;
+                return (
+                  <article
+                    class="feat-card"
+                    data-feat-id={card.id}
+                    data-name={data.name[lang]}
+                    data-sort-order={data.order}
+                    data-sort-destroyed={card.destroyedCost || ""}
+                    data-sort-killed={card.killedCount || ""}
+                    data-sort-payoff={card.payoff === null ? "" : card.payoff}
+                    data-sort-loss={card.lossRatio === null ? "" : card.lossRatio}
+                    data-sort-type={data.type === "unit" ? 0 : 1}
+                    data-sort-commander={card.sortCommander}
+                  >
+                    {card.showNew && (
+                      <span class="badge-new" data-new-until={data.newUntil}>
+                        {t(lang, "database.new")}
+                      </span>
+                    )}
+                    {card.image && (
+                      <a class="feat-card__img" href={card.image} target="_blank" rel="noopener">
+                        <img src={card.image} alt={data.name[lang]} width="480" height="270" loading="lazy" />
+                      </a>
+                    )}
+
+                    <div class="feat-card__head">
+                      <h2>{data.name[lang]}</h2>
+                      <span class:list={["chip", "chip--feat-type", data.type === "battle" ? "is-battle" : "is-unit"]}>
+                        {t(lang, `feats.type.${data.type}`)}
+                      </span>
+                    </div>
+
+                    <div class="feat-card__meta">
+                      {data.date && (
+                        <span class="chip">
+                          {t(lang, "feats.date")}: {formatDate(data.date, lang)}
+                        </span>
+                      )}
+                      {card.commander && (
+                        <span class="chip">
+                          {t(lang, "feats.commander")}:{" "}
+                          {card.commanderHref ? (
+                            <a href={card.commanderHref}>{card.commander.nickname}</a>
+                          ) : (
+                            card.commander.nickname
+                          )}
+                        </span>
+                      )}
+                      {data.combatNumber && (
+                        <span class="chip">
+                          {t(lang, "feats.combatNumber")}: {data.combatNumber}
+                        </span>
+                      )}
+                    </div>
+
+                    <p>{data.desc[lang]}</p>
+
+                    {data.type === "battle" ? (
+                      <div class="feat-stats">
+                        <div>
+                          <span>{t(lang, "feats.heroLossCost")}</span>
+                          <b>{number(data.heroLossCost ?? 0)}</b>
+                        </div>
+                        <div>
+                          <span>{t(lang, "feats.heroLossCount")}</span>
+                          <b>{number(data.heroLossCount ?? 0)}</b>
+                        </div>
+                        <div>
+                          <span>{t(lang, "feats.enemyLossCost")}</span>
+                          <b>{number(data.enemyLossCost ?? 0)}</b>
+                        </div>
+                        <div>
+                          <span>{t(lang, "feats.enemyLossCount")}</span>
+                          <b>{number(data.enemyLossCount ?? 0)}</b>
+                        </div>
+                        <div>
+                          <span>{t(lang, "feats.lossRatio")}</span>
+                          <b>
+                            {t(lang, "feats.lossRatioValue", {
+                              hero: data.heroLossCount ?? 0,
+                              enemy: data.enemyLossCount ?? 0,
+                            })}
+                            {card.lossRatio !== null ? ` (×${ratio(card.lossRatio)})` : ""}
+                          </b>
+                        </div>
+                        <div>
+                          <span>{t(lang, "feats.payoff")}</span>
+                          <b>{card.payoff !== null ? `×${ratio(card.payoff)}` : "—"}</b>
+                        </div>
+                      </div>
+                    ) : (
+                      <div class="feat-stats">
+                        <div>
+                          <span>{t(lang, "feats.price")}</span>
+                          <b>{number(card.price)}</b>
+                        </div>
+                        <div>
+                          <span>{t(lang, "feats.destroyedCost")}</span>
+                          <b>{number(card.destroyedCost)}</b>
+                        </div>
+                        <div>
+                          <span>{t(lang, "feats.destroyedCount")}</span>
+                          <b>{number(card.killedCount)}</b>
+                        </div>
+                        <div>
+                          <span>{t(lang, "feats.payoff")}</span>
+                          <b>
+                            {card.payoff !== null
+                              ? t(lang, "feats.payoffValue", { n: ratio(card.payoff) })
+                              : "—"}
+                          </b>
+                        </div>
+                      </div>
+                    )}
+
+                    {card.units.length > 0 && (
+                      <div class="feat-units">
+                        <span>{t(lang, "feats.units")}:</span>
+                        {card.units.map((unit) => (
+                          <a class="chip chip--tag" href={unit.href}>{unit.name}</a>
+                        ))}
+                      </div>
+                    )}
+                  </article>
+                );
+              })}
+            </div>
+          </>
         ) : (
           <p class="empty-block">{t(lang, "feats.empty")}</p>
         )
       }
     </div>
   </section>
+
+  <script>
+    import "@/scripts/feats";
+  </script>
 </BaseLayout>
 
 <style>
+  .feats-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .feats-toolbar select {
+    min-width: 220px;
+  }
   .feats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 18px;
   }
   .feat-card :global(.badge-new) {
@@ -120,6 +329,13 @@ const jsonLd = collectionJsonLd({
     height: 100%;
     object-fit: cover;
   }
+  .feat-card__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
   .feat-card h2 {
     margin: 0;
     font-size: 18px;
@@ -128,5 +344,62 @@ const jsonLd = collectionJsonLd({
     margin: 0;
     color: var(--muted);
     font-size: 13.5px;
+  }
+  .feat-card__meta,
+  .feat-units {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+  }
+  .feat-card__meta a {
+    color: var(--cyan-hi);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .chip--feat-type.is-unit {
+    color: var(--cyan-hi);
+    border-color: rgba(var(--cyan-rgb), 0.36);
+    background: rgba(var(--cyan-rgb), 0.1);
+  }
+  .chip--feat-type.is-battle {
+    color: var(--gold);
+    border-color: rgba(var(--gold-rgb), 0.36);
+    background: rgba(var(--gold-rgb), 0.1);
+  }
+  .feat-stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    padding-top: 10px;
+    border-top: 1px solid var(--line-soft);
+  }
+  .feat-stats div {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+  }
+  .feat-stats span {
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .feat-stats b {
+    font-size: 13.5px;
+    color: var(--text);
+  }
+  .feat-units {
+    padding-top: 8px;
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+  .feat-units a {
+    text-decoration: none;
+  }
+  @media (max-width: 640px) {
+    .feat-stats {
+      grid-template-columns: 1fr;
+    }
   }
 </style>

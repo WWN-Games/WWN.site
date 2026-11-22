@@ -7,17 +7,25 @@ import type { Lang } from "@/lib/site";
 interface Props {
   lang: Lang;
   headings: MarkdownHeading[];
+  /** top — выпадающее «Содержание» под заголовком статьи, side — боковая колонка. */
+  placement?: "top" | "side";
 }
 
-const { lang, headings } = Astro.props;
+const { lang, headings, placement = "side" } = Astro.props;
 /* В оглавление попадают только h2/h3 — как в legacy wiki.js. */
 const items = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+const show = placement === "top" ? items.length > 0 : items.length >= 3;
 ---
 
 {
-  items.length >= 3 && (
-    <details class="article__toc" id="articleToc">
-      <summary>{t(lang, "wiki.toc")}</summary>
+  show && (
+    <details
+      class={placement === "top" ? "article__contents" : "article__toc"}
+      id={placement === "top" ? "articleContents" : "articleToc"}
+    >
+      <summary>
+        {t(lang, placement === "top" ? "wiki.contents" : "wiki.toc")}
+      </summary>
       <ol>
         {items.map((heading) => (
           <li class={heading.depth === 3 ? "lvl-3" : undefined}>

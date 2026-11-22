@@ -59,7 +59,7 @@ const jsonLd = collectionJsonLd({
               </thead>
               <tbody>
                 {entries.map((entry, index) => (
-                  <tr class:rating-table__top={index < 3}>
+                  <tr id={entry.id} class:rating-table__top={index < 3}>
                     <td>{index + 1}</td>
                     <td>{entry.nickname}</td>
                     <td>{formatter.format(entry.rating)}</td>
@@ -103,6 +103,12 @@ const jsonLd = collectionJsonLd({
   }
   .rating-table tr:last-child td {
     border-bottom: 0;
+  }
+  .rating-table tr {
+    scroll-margin-top: calc(var(--header-h) + 24px);
+  }
+  .rating-table tr:target {
+    background: rgba(var(--cyan-rgb), 0.12);
   }
   .rating-table td:first-child {
     width: 80px;

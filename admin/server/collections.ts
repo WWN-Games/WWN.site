@@ -74,6 +74,7 @@ function cardPayload(item: Card): Record<string, unknown> {
     desc: cleanText(item.desc),
     tags: [...new Set(stringArray(item.tags))],
     image: item.image?.replace(/^\/+/, ""),
+    miniIcon: item.miniIcon?.replace(/^\/+/, "") || undefined,
     role: cleanText(item.role),
     strongVs: cleanTextOrList(item.strongVs),
     weakVs: cleanTextOrList(item.weakVs),
@@ -147,6 +148,7 @@ function sectionPayload(item: Section): Record<string, unknown> {
     order: item.order,
     title: cleanText(item.title),
     desc: cleanText(item.desc),
+    showEmpty: item.showEmpty || undefined,
   };
 }
 
@@ -303,6 +305,18 @@ async function validateCard(
   }
   item.image = image?.replace(/^\/+/, "");
 
+  const miniIcon = item.miniIcon?.replace(/^\/+/, "") || undefined;
+  if (miniIcon) {
+    const target = path.resolve(PUBLIC_ROOT, miniIcon);
+    if (!isInside(path.join(PUBLIC_ROOT, "img/database/mini"), target)) {
+      throw new HttpError(400, "miniIcon: путь должен вести в public/img/database/mini");
+    }
+    if (!(await fileExists(target))) {
+      throw new HttpError(400, `miniIcon: файл public/${miniIcon} не найден`);
+    }
+  }
+  item.miniIcon = miniIcon;
+
   const parsed = COLLECTION_SCHEMAS[name].safeParse(cardPayload(item));
   if (!parsed.success) {
     throw new HttpError(400, "Проверьте поля карточки", zodMessages(name, parsed.error));
@@ -315,6 +329,10 @@ async function validateCard(
     if (item.image !== parsed.data.image) {
       if (item.image === undefined) delete parsed.data.image;
       else parsed.data.image = item.image;
+    }
+    if (item.miniIcon !== parsed.data.miniIcon) {
+      if (item.miniIcon === undefined) delete parsed.data.miniIcon;
+      else parsed.data.miniIcon = item.miniIcon;
     }
   }
   return parsed.data;
@@ -558,10 +576,28 @@ async function validateFeat(item: FeatItem, originalId: string | undefined): Pro
       throw new HttpError(400, `image: файл public/${item.image} не найден`);
     }
   }
+  const unitIds = [...new Set(stringArray(item.unitIds))];
+  if (unitIds.length > 0) {
+    const units = await readItems<Card>("units");
+    const known = new Set(units.map((unit) => unit.id));
+    for (const unitId of unitIds) {
+      if (!known.has(unitId)) throw new HttpError(400, `unitIds: неизвестный юнит «${unitId}»`);
+    }
+  }
+  const commanderId = item.commanderId?.trim() || undefined;
+  if (commanderId) {
+    const ratings = await readItems<RatingEntry>("ratings");
+    if (!ratings.some((entry) => entry.id === commanderId)) {
+      throw new HttpError(400, `commanderId: неизвестная запись рейтинга «${commanderId}»`);
+    }
+  }
   const parsed = COLLECTION_SCHEMAS.feats.safeParse({
     ...item,
     name: cleanText(item.name),
     desc: cleanText(item.desc),
+    unitIds,
+    commanderId,
+    combatNumber: item.combatNumber?.trim() || undefined,
   });
   if (!parsed.success) {
     throw new HttpError(400, "Проверьте поля подвига", zodMessages("feat", parsed.error));
@@ -630,6 +666,16 @@ async function moveCardImage(oldId: string, newId: string, item: Card): Promise<
     if ((await fileExists(oldFile)) && !(await fileExists(newFile))) {
       await fs.rename(oldFile, newFile);
       item.image = next;
+    }
+  }
+
+  const oldMini = path.join(PUBLIC_ROOT, "img/database/mini", `${oldId}.avif`);
+  const newMini = path.join(PUBLIC_ROOT, "img/database/mini", `${newId}.avif`);
+  if ((await fileExists(oldMini)) && !(await fileExists(newMini))) {
+    await fs.mkdir(path.dirname(newMini), { recursive: true });
+    await fs.rename(oldMini, newMini);
+    if (item.miniIcon?.replace(/^\/+/, "") === `img/database/mini/${oldId}.avif`) {
+      item.miniIcon = `img/database/mini/${newId}.avif`;
     }
   }
 }
@@ -861,6 +907,14 @@ export async function deleteCollectionItem(
         : null;
     if (target && isInside(imageRoot, target)) {
       await fs.rm(target, { force: true });
+    }
+    const miniRoot = path.join(imageRoot, "mini");
+    const mini = card.miniIcon?.replace(/^\/+/, "");
+    const miniTarget = mini
+      ? path.resolve(PUBLIC_ROOT, mini)
+      : path.join(miniRoot, `${card.id}.avif`);
+    if (isInside(miniRoot, miniTarget)) {
+      await fs.rm(miniTarget, { force: true });
     }
   }
   if (name === "maps" || name === "feats") {

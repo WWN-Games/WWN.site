@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { weaponDps } from "../../../src/lib/card-stats";
+  import { mainWeaponDps, weaponDps } from "../../../src/lib/card-stats";
   import { UNLOAD_OPTIONS, type UnloadOption } from "../../../src/lib/content-constants";
   import { addMonthsIso, todayIso } from "../../shared/date";
   import type { Bootstrap, Card, ToastFn } from "../../shared/types";
@@ -26,6 +26,7 @@
   const computedDps = $derived(
     weapons.reduce((sum, weapon) => sum + weaponDps(weapon), 0),
   );
+  const computedMainDps = $derived(mainWeaponDps(weapons));
 
   let unitOptions = $state<Card[]>([]);
 
@@ -62,6 +63,7 @@
         projectileDelay: 0,
         damage: 0,
         fireDelay: 1,
+        mainDps: false,
         tags: [],
       },
     ];
@@ -107,6 +109,12 @@
     item.torpedoDefense = checked ? (item.torpedoDefense ?? { max: 0, recharge: 0 }) : undefined;
   }
 
+  function toggleLaserDefense(checked: boolean): void {
+    item.laserDefense = checked
+      ? (item.laserDefense ?? { radius: 0, points: 0, regen: 0 })
+      : undefined;
+  }
+
   function toggleDomeShield(checked: boolean): void {
     item.domeShield = checked
       ? (item.domeShield ?? { radius: 0, points: 0, regen: 0 })
@@ -124,6 +132,7 @@
           chargeTime: 0,
           cooldown: 0,
           minDistance: 0,
+          jumpSpeed: 0,
         })
       : undefined;
   }
@@ -142,6 +151,13 @@
     item.domeShield = { ...item.domeShield, ...patch };
   }
 
+  function updateLaserDefense(
+    patch: Partial<{ radius: number; points: number; regen: number }>,
+  ): void {
+    if (!item.laserDefense) return;
+    item.laserDefense = { ...item.laserDefense, ...patch };
+  }
+
   function updateAtmosphere(time: number): void {
     if (!item.atmosphere) return;
     item.atmosphere = { ...item.atmosphere, time };
@@ -149,10 +165,11 @@
 
   function updateFtlJump(
     patch: Partial<{
-      type: "siv" | "plasma";
+      type: "siv" | "plasma" | "tele";
       chargeTime: number;
       cooldown: number;
       minDistance: number;
+      jumpSpeed: number | undefined;
       energyCost: number | undefined;
     }>,
   ): void {
@@ -261,7 +278,7 @@
 <div class="form-section">
   <div class="form-section__title">
     Вооружение
-    <span>{weapons.length} шт. · DPS {computedDps.toFixed(2)}</span>
+    <span>{weapons.length} шт. · основной ДПС {computedMainDps.toFixed(2)} · полный {computedDps.toFixed(2)}</span>
   </div>
   {#if weapons.length === 0}
     <p class="field__hint">Орудий нет — DPS карточки будет 0.</p>
@@ -271,12 +288,20 @@
     {@const hasStun = weapon.tags.includes("stun")}
     <div class="weapon-card">
       <div class="weapon-card__head">
-        <b>Орудие {index + 1} · DPS {weaponDps(weapon).toFixed(2)}</b>
+        <b>Орудие {index + 1} · DPS {weaponDps(weapon).toFixed(2)}{weapon.mainDps ? " · основной" : ""}</b>
         <button class="btn btn--ghost btn--small" type="button" onclick={() => removeWeapon(index)}>
           Удалить
         </button>
       </div>
       <LocalizedInput label="Название орудия" value={weapon.name} placeholder="Например: Главный калибр" />
+      <label class="tag-option" style="padding: 6px 0">
+        <input
+          type="checkbox"
+          checked={weapon.mainDps ?? false}
+          onchange={(event) => updateWeapon(index, { mainDps: event.currentTarget.checked })}
+        />
+        <span>Основной ДПС — учитывается в основном ДПС карточки</span>
+      </label>
       <div class="form-grid form-grid--four">
         <div class="field">
           <label for={`weapon-${index}-count`}>Количество одинаковых</label>
@@ -507,9 +532,25 @@
   </div>
 
   <label class="tag-option" style="padding: 6px 0">
-    <input type="checkbox" checked={item.laserDefense ?? false} onchange={(event) => (item.laserDefense = event.currentTarget.checked)} />
+    <input type="checkbox" checked={!!item.laserDefense} onchange={(event) => toggleLaserDefense(event.currentTarget.checked)} />
     <span>Лазерная защита</span>
   </label>
+  {#if item.laserDefense}
+    <div class="form-grid form-grid--three">
+      <div class="field">
+        <label for="laser-radius">Радиус</label>
+        <input id="laser-radius" type="number" min="0" step="any" value={item.laserDefense.radius} oninput={(event) => updateLaserDefense({ radius: Number(event.currentTarget.value) || 0 })} />
+      </div>
+      <div class="field">
+        <label for="laser-points">Очков защиты</label>
+        <input id="laser-points" type="number" min="0" step="any" value={item.laserDefense.points} oninput={(event) => updateLaserDefense({ points: Number(event.currentTarget.value) || 0 })} />
+      </div>
+      <div class="field">
+        <label for="laser-regen">Восстановление, очков/с</label>
+        <input id="laser-regen" type="number" min="0" step="any" value={item.laserDefense.regen} oninput={(event) => updateLaserDefense({ regen: Number(event.currentTarget.value) || 0 })} />
+      </div>
+    </div>
+  {/if}
 
   <label class="tag-option" style="padding: 6px 0">
     <input type="checkbox" checked={!!item.domeShield} onchange={(event) => toggleDomeShield(event.currentTarget.checked)} />
@@ -551,9 +592,10 @@
     <div class="form-grid form-grid--three">
       <div class="field">
         <label for="ftl-type">Тип</label>
-        <select id="ftl-type" value={item.ftlJump.type} onchange={(event) => updateFtlJump({ type: event.currentTarget.value as "siv" | "plasma" })}>
+        <select id="ftl-type" value={item.ftlJump.type} onchange={(event) => updateFtlJump({ type: event.currentTarget.value as "siv" | "plasma" | "tele" })}>
           <option value="siv">СИВ</option>
           <option value="plasma">Плазма</option>
+          <option value="tele">Теле</option>
         </select>
       </div>
       <div class="field">
@@ -568,6 +610,17 @@
         <label for="ftl-min">Мин. дистанция</label>
         <input id="ftl-min" type="number" min="0" step="any" value={item.ftlJump.minDistance} oninput={(event) => updateFtlJump({ minDistance: Number(event.currentTarget.value) || 0 })} />
       </div>
+      {#if item.ftlJump.type === "siv"}
+        <div class="field">
+          <label for="ftl-speed">Скорость в прыжке</label>
+          <input id="ftl-speed" type="number" min="0" step="any" value={item.ftlJump.jumpSpeed ?? ""} placeholder="—" oninput={(event) => updateFtlJump({ jumpSpeed: event.currentTarget.value === "" ? undefined : Number(event.currentTarget.value) })} />
+        </div>
+      {:else}
+        <div class="field">
+          <span class="field__label">Скорость в прыжке</span>
+          <span class="badge">Мгновенный</span>
+        </div>
+      {/if}
       {#if item.ftlJump.type === "plasma"}
         <div class="field">
           <label for="ftl-energy">Стоимость энергии</label>
@@ -575,6 +628,9 @@
         </div>
       {/if}
     </div>
+    <p class="field__hint">
+      Теги прыжка («Мгновенный», «Корабль должен двигаться» и другие) сайт добавляет автоматически по типу.
+    </p>
   {/if}
 </div>
 
@@ -751,6 +807,14 @@
         label="Картинка карточки"
         {toast}
         onchange={(path) => (item.image = path)}
+      />
+      <ImagePicker
+        kind="mini"
+        id={item.id}
+        path={item.miniIcon}
+        label="Мини-иконка (дополнительная, необязательно)"
+        {toast}
+        onchange={(path) => (item.miniIcon = path || undefined)}
       />
     </div>
     <div class="field">

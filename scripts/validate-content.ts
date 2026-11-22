@@ -430,6 +430,17 @@ export function validateContent(): string[] {
           }
         }
       }
+      if (card.miniIcon) {
+        const miniRoot = path.join(PUBLIC_DIR, "img/database/mini");
+        const mini = path.resolve(PUBLIC_DIR, card.miniIcon);
+        if (!isPathSafe(mini, miniRoot)) {
+          errors.push(
+            `src/data/${file}: ${card.id}: мини-иконка «${card.miniIcon}» должна лежать в public/img/database/mini`,
+          );
+        } else if (!existsSync(mini)) {
+          errors.push(`src/data/${file}: ${card.id}: нет мини-иконки public/${card.miniIcon}`);
+        }
+      }
       if (card.image === "") continue;
       const image = card.image ?? `img/database/${card.id}.avif`;
       const target = path.resolve(PUBLIC_DIR, image);
@@ -438,6 +449,18 @@ export function validateContent(): string[] {
       } else if (!existsSync(target)) {
         errors.push(`src/data/${file}: ${card.id}: нет картинки public/${image}`);
       }
+    }
+  }
+
+  const ratingIds = new Set(ratings.map((entry) => entry.id));
+  for (const feat of feats) {
+    for (const unitId of feat.unitIds) {
+      if (!unitIds.has(unitId)) {
+        errors.push(`src/data/feats.json: ${feat.id}: неизвестный юнит «${unitId}»`);
+      }
+    }
+    if (feat.commanderId && !ratingIds.has(feat.commanderId)) {
+      errors.push(`src/data/feats.json: ${feat.id}: неизвестный командир «${feat.commanderId}»`);
     }
   }
 

@@ -13,6 +13,7 @@ export const SECTION_ICONS = [
   "clock",
   "rocket",
   "chat",
+  "school",
 ] as const;
 
 export const TAG_GROUPS = ["tier", "class", "movement", "mod", "weapon", "sector"] as const;

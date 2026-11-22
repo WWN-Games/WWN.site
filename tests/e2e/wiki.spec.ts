@@ -27,7 +27,8 @@ test.describe("Вики", () => {
     await page.goto("wiki/");
     await expect(page.locator("#wiki-cat-lore")).toBeVisible();
     await expect(page.locator("#wikiNav a").first()).toBeVisible();
-    await expect(page.locator(".wiki-cat")).toHaveCount(5);
+    await expect(page.locator("#wiki-cat-tutorials")).toBeVisible();
+    await expect(page.locator(".wiki-cat")).toHaveCount(6);
   });
 
   test("поиск открывается по Ctrl+K и находит статью", async ({ page }) => {
