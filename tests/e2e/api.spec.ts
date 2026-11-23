@@ -24,16 +24,18 @@ test.describe("Публичный API", () => {
   });
 
   test("stats.json согласован с данными", async ({ request }) => {
-    const [stats, units, buildings, misc, factions] = await Promise.all([
+    const [stats, units, buildings, misc, factions, maps] = await Promise.all([
       request.get("api/v1/stats.json").then((r) => r.json()),
       request.get("api/v1/units.json").then((r) => r.json()),
       request.get("api/v1/buildings.json").then((r) => r.json()),
       request.get("api/v1/misc.json").then((r) => r.json()),
       request.get("api/v1/factions.json").then((r) => r.json()),
+      request.get("api/v1/maps.json").then((r) => r.json()),
     ]);
     const value = (id: string) =>
       stats.items.find((item: { id: string; value: number }) => item.id === id)?.value;
     expect(value("cards")).toBe(units.count + buildings.count + misc.count);
     expect(value("factions")).toBe(factions.count);
+    expect(value("maps")).toBe(maps.count);
   });
 });

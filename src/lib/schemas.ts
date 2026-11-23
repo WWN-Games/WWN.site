@@ -322,7 +322,3 @@ export const featSchema = z.object({
 });
 
 export type FeatItem = z.infer<typeof featSchema>;
-
-export const statsSchema = z.object({
-  maps: z.number().int().nonnegative(),
-});

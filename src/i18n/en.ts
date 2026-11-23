@@ -166,7 +166,6 @@ export const en = {
   "wiki.stats.sections": "sections",
   "wiki.stats.factions": "factions",
   "wiki.toc": "On this page",
-  "wiki.contents": "Contents",
   "wiki.emptyCategory": "No articles yet.",
   "wiki.updated": "Updated",
   "wiki.draft": "Draft",

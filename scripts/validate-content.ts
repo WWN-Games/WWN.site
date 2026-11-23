@@ -11,7 +11,7 @@ import type { ZodType } from "astro/zod";
 import { COLLECTION_SCHEMAS } from "../src/lib/collections.ts";
 import { CARD_TAG_GROUPS, WEAPON_TAG_GROUPS } from "../src/lib/content-constants.ts";
 import { parseArticleFrontMatter } from "../src/lib/frontmatter.ts";
-import { statsSchema, type WikiFrontMatter, wikiSchema } from "../src/lib/schemas.ts";
+import { type WikiFrontMatter, wikiSchema } from "../src/lib/schemas.ts";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const WIKI_DIR = path.join(ROOT, "src", "content", "wiki");
@@ -490,13 +490,6 @@ export function validateContent(): string[] {
       );
     } else if (!existsSync(target)) {
       errors.push(`src/data/gallery.json: ${item.id}: нет файла src/${item.image}`);
-    }
-  }
-
-  const stats = statsSchema.safeParse(loadJson("stats.json", errors));
-  if (!stats.success) {
-    for (const issue of stats.error.issues) {
-      errors.push(`src/data/stats.json: ${issue.message}`);
     }
   }
 

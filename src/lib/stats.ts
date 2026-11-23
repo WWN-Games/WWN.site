@@ -5,9 +5,6 @@
 
 import { getCollection } from "astro:content";
 
-import statsJson from "../data/stats.json";
-import { statsSchema } from "./schemas";
-
 interface SiteStats {
   units: number;
   buildings: number;
@@ -34,8 +31,7 @@ async function loadStats(): Promise<SiteStats> {
     cards: units.length + buildings.length + misc.length,
     factions: factions.length,
     tags: tags.length,
-    // Пока каталог пуст, сохраняем прежнюю цифру из stats.json.
-    maps: maps.length || statsSchema.parse(statsJson).maps,
+    maps: maps.length,
   };
 }
 

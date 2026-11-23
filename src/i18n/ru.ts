@@ -165,7 +165,6 @@ export const ru = {
   "wiki.stats.sections": "разделов",
   "wiki.stats.factions": "фракции",
   "wiki.toc": "На этой странице",
-  "wiki.contents": "Содержание",
   "wiki.emptyCategory": "Статей пока нет.",
   "wiki.updated": "Обновлено",
   "wiki.draft": "Черновик",

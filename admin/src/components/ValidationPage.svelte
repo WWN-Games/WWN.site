@@ -27,7 +27,6 @@
         error,
       );
     if (data) return `/collections/${data[1]}`;
-    if (error.includes("src/data/stats.json")) return null;
     return null;
   }
 
