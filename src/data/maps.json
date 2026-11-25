@@ -5,5 +5,292 @@
     "size, mode, author — необязательные подписи { ru, en }; download — ссылка;",
     "new/newUntil — плашка «Новинка!»."
   ],
-  "maps": []
+  "maps": [
+    {
+      "id": "1v1-fionfe",
+      "order": 1,
+      "name": {
+        "ru": "Фионфе",
+        "en": "Fionfe"
+      },
+      "desc": {
+        "ru": "Карта для 1 на 1",
+        "en": "A 1 на 1 map"
+      },
+      "image": "img/maps/1v1-fionfe.avif",
+      "players": 2,
+      "size": {
+        "ru": "500×400",
+        "en": "500×400"
+      },
+      "mode": {
+        "ru": "1v1",
+        "en": "1v1"
+      }
+    },
+    {
+      "id": "1v1-klasta-aspera",
+      "order": 2,
+      "name": {
+        "ru": "Класта Аспера",
+        "en": "Klasta Aspera"
+      },
+      "desc": {
+        "ru": "Карта для 1 на 1",
+        "en": "A 1 на 1 map"
+      },
+      "image": "img/maps/1v1-klasta-aspera.avif",
+      "players": 2,
+      "size": {
+        "ru": "460×200",
+        "en": "460×200"
+      },
+      "mode": {
+        "ru": "1v1",
+        "en": "1v1"
+      }
+    },
+    {
+      "id": "1v1-oreza",
+      "order": 3,
+      "name": {
+        "ru": "Ореза",
+        "en": "Oreza"
+      },
+      "desc": {
+        "ru": "Карта для 1 на 1",
+        "en": "A 1 на 1 map"
+      },
+      "image": "img/maps/1v1-oreza.avif",
+      "players": 2,
+      "size": {
+        "ru": "200×240",
+        "en": "200×240"
+      },
+      "mode": {
+        "ru": "1v1",
+        "en": "1v1"
+      }
+    },
+    {
+      "id": "1v1-sartasta",
+      "order": 4,
+      "name": {
+        "ru": "Сартаста",
+        "en": "Sartasta"
+      },
+      "desc": {
+        "ru": "Карта для 1 на 1",
+        "en": "A 1 на 1 map"
+      },
+      "image": "img/maps/1v1-sartasta.avif",
+      "players": 2,
+      "size": {
+        "ru": "200×200",
+        "en": "200×200"
+      },
+      "mode": {
+        "ru": "1v1",
+        "en": "1v1"
+      }
+    },
+    {
+      "id": "1v1v1-tartum",
+      "order": 5,
+      "name": {
+        "ru": "Тартум",
+        "en": "Tartum"
+      },
+      "desc": {
+        "ru": "Карта для 1 на 1 на 1",
+        "en": "A 1 на 1 на 1 map"
+      },
+      "image": "img/maps/1v1v1-tartum.avif",
+      "players": 3,
+      "size": {
+        "ru": "500×400",
+        "en": "500×400"
+      },
+      "mode": {
+        "ru": "1v1v1",
+        "en": "1v1v1"
+      }
+    },
+    {
+      "id": "2v2-klasta-goliath",
+      "order": 6,
+      "name": {
+        "ru": "Класта Голиаф",
+        "en": "Klasta Goliath"
+      },
+      "desc": {
+        "ru": "Карта для 2 на 2",
+        "en": "A 2 на 2 map"
+      },
+      "image": "img/maps/2v2-klasta-goliath.avif",
+      "players": 4,
+      "size": {
+        "ru": "900×500",
+        "en": "900×500"
+      },
+      "mode": {
+        "ru": "2v2",
+        "en": "2v2"
+      }
+    },
+    {
+      "id": "2v2-balata",
+      "order": 7,
+      "name": {
+        "ru": "Балата",
+        "en": "Balata"
+      },
+      "desc": {
+        "ru": "Карта для 2 на 2",
+        "en": "A 2 на 2 map"
+      },
+      "image": "img/maps/2v2-balata.avif",
+      "players": 4,
+      "size": {
+        "ru": "300×250",
+        "en": "300×250"
+      },
+      "mode": {
+        "ru": "2v2",
+        "en": "2v2"
+      }
+    },
+    {
+      "id": "2v2-nutriousmstex",
+      "order": 8,
+      "name": {
+        "ru": "Нутриусмстекс",
+        "en": "Nutriousmstex"
+      },
+      "desc": {
+        "ru": "Карта для 2 на 2",
+        "en": "A 2 на 2 map"
+      },
+      "image": "img/maps/2v2-nutriousmstex.avif",
+      "players": 4,
+      "size": {
+        "ru": "500×450",
+        "en": "500×450"
+      },
+      "mode": {
+        "ru": "2v2",
+        "en": "2v2"
+      }
+    },
+    {
+      "id": "2v2-protalina",
+      "order": 9,
+      "name": {
+        "ru": "Проталина",
+        "en": "Protalina"
+      },
+      "desc": {
+        "ru": "Карта для 2 на 2",
+        "en": "A 2 на 2 map"
+      },
+      "image": "img/maps/2v2-protalina.avif",
+      "players": 4,
+      "size": {
+        "ru": "220×305",
+        "en": "220×305"
+      },
+      "mode": {
+        "ru": "2v2",
+        "en": "2v2"
+      }
+    },
+    {
+      "id": "3v3-kerast",
+      "order": 10,
+      "name": {
+        "ru": "Кераст",
+        "en": "Kerast"
+      },
+      "desc": {
+        "ru": "Карта для 3 на 3",
+        "en": "A 3 на 3 map"
+      },
+      "image": "img/maps/3v3-kerast.avif",
+      "players": 6,
+      "size": {
+        "ru": "300×400",
+        "en": "300×400"
+      },
+      "mode": {
+        "ru": "3v3",
+        "en": "3v3"
+      }
+    },
+    {
+      "id": "3v3-lotra",
+      "order": 11,
+      "name": {
+        "ru": "Лотра",
+        "en": "Lotra"
+      },
+      "desc": {
+        "ru": "Карта для 3 на 3",
+        "en": "A 3 на 3 map"
+      },
+      "image": "img/maps/3v3-lotra.avif",
+      "players": 6,
+      "size": {
+        "ru": "400×600",
+        "en": "400×600"
+      },
+      "mode": {
+        "ru": "3v3",
+        "en": "3v3"
+      }
+    },
+    {
+      "id": "4v4-korganer",
+      "order": 12,
+      "name": {
+        "ru": "Корганер",
+        "en": "Korganer"
+      },
+      "desc": {
+        "ru": "Карта для 4 на 4",
+        "en": "A 4 на 4 map"
+      },
+      "image": "img/maps/4v4-korganer.avif",
+      "players": 8,
+      "size": {
+        "ru": "1050×600",
+        "en": "1050×600"
+      },
+      "mode": {
+        "ru": "4v4",
+        "en": "4v4"
+      }
+    },
+    {
+      "id": "5v5-iatarius",
+      "order": 13,
+      "name": {
+        "ru": "Иатариус",
+        "en": "Iatarius"
+      },
+      "desc": {
+        "ru": "Карта для 5 на 5",
+        "en": "A 5 на 5 map"
+      },
+      "image": "img/maps/5v5-iatarius.avif",
+      "players": 10,
+      "size": {
+        "ru": "1300×700",
+        "en": "1300×700"
+      },
+      "mode": {
+        "ru": "5v5",
+        "en": "5v5"
+      }
+    }
+  ]
 }

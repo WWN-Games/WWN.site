@@ -1,4 +1,11 @@
+import { readFileSync } from "node:fs";
+import path from "node:path";
+
 import { expect, test } from "@playwright/test";
+
+const unitsData = JSON.parse(readFileSync(path.resolve("src/data/units.json"), "utf8")) as {
+  units: unknown[];
+};
 
 test.describe("Публичный API", () => {
   test("units.json отдаёт данные и схему", async ({ request }) => {
@@ -7,8 +14,8 @@ test.describe("Публичный API", () => {
     expect(response.headers()["content-type"]).toContain("application/json");
     const payload = await response.json();
     expect(payload.schemaVersion).toBe(3);
-    expect(payload.count).toBe(110);
-    expect(payload.items).toHaveLength(110);
+    expect(payload.count).toBe(unitsData.units.length);
+    expect(payload.items).toHaveLength(unitsData.units.length);
     expect(payload.items[0]).toHaveProperty("id");
     expect(payload.items[0]).toHaveProperty("name");
     expect(payload.items[0]).toHaveProperty("energy");

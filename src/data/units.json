@@ -30,14 +30,54 @@
       "tags": [
         "T1",
         "ship",
-        "HOVER"
+        "HOVER",
+        "transportable",
+        "waterDrop"
       ],
       "cost": 100,
-      "energy": 0,
+      "energy": 200,
       "hp": 320,
-      "speed": 0.9,
+      "speed": 1.15,
       "range": 245,
-      "buildTime": 6
+      "buildTime": 6,
+      "selfRegen": 0.1,
+      "turnSpeed": 2,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Ракеты",
+            "en": "Missiles"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 80,
+          "fireDelay": 0.8333,
+          "mainDps": false,
+          "tags": [
+            "rocket"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 100,
+          "fireDelay": 3,
+          "mainDps": true,
+          "armourIgnoreAmount": 10,
+          "tags": [
+            "splash",
+            "stun"
+          ],
+          "splashRadius": 80,
+          "stunDuration": 1
+        }
+      ]
     },
     {
       "id": "akula",
@@ -53,14 +93,167 @@
       "tags": [
         "T4",
         "super-ship",
-        "WATER"
+        "WATER",
+        "AORB",
+        "radar15",
+        "radar30",
+        "sonar30",
+        "shield"
       ],
       "cost": 6000,
       "energy": 0,
       "hp": 6500,
       "speed": 0.7,
       "range": 600,
-      "buildTime": 200
+      "buildTime": 200,
+      "armor": 10,
+      "selfRegen": 0.12,
+      "turnSpeed": 0.5,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 250,
+          "fireDelay": 4.1667,
+          "mainDps": false,
+          "tags": [
+            "anti-sub",
+            "anti-orbital",
+            "splash",
+            "long"
+          ],
+          "splashRadius": 50
+        },
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 700,
+          "fireDelay": 6.6667,
+          "mainDps": true,
+          "armourIgnoreAmount": 15,
+          "tags": [
+            "anti-orbital",
+            "splash",
+            "long"
+          ],
+          "spread": 25,
+          "splashRadius": 70
+        },
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 80,
+          "fireDelay": 0.8333,
+          "mainDps": false,
+          "tags": [
+            "anti-air",
+            "anti-orbital",
+            "splash",
+            "long"
+          ],
+          "spread": 150,
+          "splashRadius": 70
+        },
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 80,
+          "fireDelay": 0.4167,
+          "mainDps": false,
+          "tags": [
+            "anti-air",
+            "anti-orbital",
+            "splash",
+            "long"
+          ],
+          "spread": 150,
+          "splashRadius": 70
+        },
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 950,
+          "fireDelay": 8.3333,
+          "mainDps": false,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "laser",
+            "long"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Орудие 6",
+            "en": "Weapon 6"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 180,
+          "fireDelay": 1.3333,
+          "mainDps": false,
+          "tags": [
+            "anti-orbital",
+            "long"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Орудие 7",
+            "en": "Weapon 7"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 250,
+          "fireDelay": 3.3333,
+          "mainDps": false,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "long"
+          ]
+        }
+      ],
+      "missileDefense": {
+        "max": 1,
+        "recharge": 16
+      },
+      "torpedoDefense": {
+        "max": 1,
+        "recharge": 10
+      },
+      "laserDefense": {
+        "radius": 320,
+        "points": 600,
+        "regen": 0.2
+      }
     },
     {
       "id": "allter",
@@ -76,14 +269,35 @@
       "tags": [
         "T1",
         "bot",
-        "OVER_CLIFF_WATER"
+        "OVER_CLIFF_WATER",
+        "transportable",
+        "waterDrop"
       ],
       "cost": 150,
       "energy": 0,
       "hp": 150,
       "speed": 1.45,
       "range": 180,
-      "buildTime": 7
+      "buildTime": 7,
+      "armor": 2,
+      "selfRegen": 0.1,
+      "turnSpeed": 4.1,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 4,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 20,
+          "fireDelay": 0.5,
+          "mainDps": true,
+          "armourIgnoreAmount": 1,
+          "tags": []
+        }
+      ]
     },
     {
       "id": "armcld",
@@ -99,7 +313,13 @@
       "tags": [
         "T4",
         "super-space-ship",
-        "AIR"
+        "AIR",
+        "ORB",
+        "AORB",
+        "radar15",
+        "radar30",
+        "desant",
+        "builder"
       ],
       "cost": 8000,
       "energy": 0,
@@ -107,7 +327,153 @@
       "shield": 3000,
       "speed": 0.5,
       "range": 500,
-      "buildTime": 150
+      "buildTime": 150,
+      "armor": 10010,
+      "shieldRegen": 0.2,
+      "selfRegen": 0.1,
+      "turnSpeed": 0.4,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Ракеты",
+            "en": "Missiles"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 300,
+          "fireDelay": 5.8333,
+          "mainDps": false,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "rocket",
+            "long"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Ракеты",
+            "en": "Missiles"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 300,
+          "fireDelay": 5,
+          "mainDps": false,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "rocket",
+            "long"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Орудие 3",
+            "en": "Weapon 3"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 600,
+          "fireDelay": 7.5,
+          "mainDps": false,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "long"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 800,
+          "fireDelay": 7.5,
+          "mainDps": true,
+          "tags": [
+            "anti-orbital",
+            "splash",
+            "long"
+          ],
+          "spread": 10,
+          "splashRadius": 35
+        },
+        {
+          "name": {
+            "ru": "ПВО",
+            "en": "AA"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 45,
+          "fireDelay": 0.5,
+          "mainDps": false,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-air",
+            "anti-orbital",
+            "long"
+          ]
+        }
+      ],
+      "missileDefense": {
+        "max": 1,
+        "recharge": 16
+      },
+      "atmosphere": {
+        "time": 4
+      },
+      "ftlJump": {
+        "type": "siv",
+        "chargeTime": 7,
+        "cooldown": 25,
+        "minDistance": 2000
+      },
+      "builder": {
+        "buildRange": 200,
+        "repairSpeed": 1,
+        "buildSpeed": 1,
+        "healTags": [
+          "infantry",
+          "tank",
+          "bot",
+          "plane",
+          "ship",
+          "space-ship",
+          "building"
+        ]
+      },
+      "transports": [
+        {
+          "name": {
+            "ru": "Броненосец",
+            "en": "Ironclad"
+          },
+          "seats": 8,
+          "cargoTags": [
+            "infantry",
+            "tank",
+            "bot",
+            "plane",
+            "space-ship"
+          ],
+          "unload": [
+            "shore",
+            "water",
+            "air",
+            "underwater",
+            "space"
+          ]
+        }
+      ]
     },
     {
       "id": "armp",
@@ -123,14 +489,35 @@
       "tags": [
         "T2",
         "bot",
-        "OVER_CLIFF_WATER"
+        "OVER_CLIFF_WATER",
+        "transportable",
+        "waterDrop"
       ],
       "cost": 230,
       "energy": 0,
       "hp": 440,
       "speed": 1.3,
       "range": 230,
-      "buildTime": 17
+      "buildTime": 17,
+      "armor": 5,
+      "selfRegen": 0.07,
+      "turnSpeed": 4,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 60,
+          "fireDelay": 2,
+          "mainDps": true,
+          "armourIgnoreAmount": 40,
+          "tags": []
+        }
+      ]
     },
     {
       "id": "artfzr",
@@ -146,14 +533,39 @@
       "tags": [
         "T1",
         "infantry",
-        "LAND"
+        "LAND",
+        "transportableSOL",
+        "arty"
       ],
       "cost": 150,
       "energy": 0,
       "hp": 200,
       "speed": 0.5,
       "range": 320,
-      "buildTime": 7
+      "buildTime": 7,
+      "armor": 3,
+      "selfRegen": 0.01,
+      "turnSpeed": 1.7,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 100,
+          "fireDelay": 5,
+          "mainDps": true,
+          "armourIgnoreAmount": 7,
+          "tags": [
+            "splash"
+          ],
+          "spread": 10,
+          "splashRadius": 35
+        }
+      ]
     },
     {
       "id": "astohasp",
@@ -169,14 +581,61 @@
       "tags": [
         "T1",
         "plane",
-        "AIR"
+        "AIR",
+        "ORB",
+        "AORB",
+        "transportableORB"
       ],
       "cost": 800,
-      "energy": 0,
+      "energy": 900,
       "hp": 1200,
       "speed": 1.25,
       "range": 250,
-      "buildTime": 50
+      "buildTime": 50,
+      "armor": 10000,
+      "selfRegen": 0.2,
+      "turnSpeed": 0.8,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 20,
+          "fireDelay": 0.3333,
+          "mainDps": true,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital"
+          ]
+        }
+      ],
+      "atmosphere": {
+        "time": 3
+      },
+      "ftlJump": {
+        "type": "plasma",
+        "chargeTime": 3,
+        "cooldown": 35,
+        "minDistance": 1000,
+        "energyCost": 800
+      },
+      "transports": [
+        {
+          "name": {
+            "ru": "Экспериментальный Т1 эсминец",
+            "en": "Experimental T1 destroyer"
+          },
+          "seats": 1,
+          "cargoTags": [],
+          "unload": [
+            "space"
+          ]
+        }
+      ]
     },
     {
       "id": "atlas",
@@ -192,14 +651,42 @@
       "tags": [
         "T3",
         "super-space-ship",
-        "AIR"
+        "AIR",
+        "ORB",
+        "AORB",
+        "transportableORB",
+        "desant"
       ],
       "cost": 2000,
       "energy": 0,
       "hp": 3000,
       "shield": 2000,
       "speed": 1.6,
-      "buildTime": 27
+      "buildTime": 27,
+      "armor": 10000,
+      "shieldRegen": 0.25,
+      "selfRegen": 0.05,
+      "turnSpeed": 1,
+      "atmosphere": {
+        "time": 1
+      },
+      "transports": [
+        {
+          "name": {
+            "ru": "Дескор \"Атлас\"",
+            "en": "Landing ship \"Atlas\""
+          },
+          "seats": 8,
+          "cargoTags": [
+            "infantry",
+            "tank",
+            "bot"
+          ],
+          "unload": [
+            "space"
+          ]
+        }
+      ]
     },
     {
       "id": "bjilan",
@@ -215,7 +702,11 @@
       "tags": [
         "T1",
         "space-ship",
-        "AIR"
+        "AIR",
+        "ORB",
+        "AORB",
+        "transportableORB",
+        "desant"
       ],
       "cost": 500,
       "energy": 0,
@@ -223,7 +714,55 @@
       "shield": 200,
       "speed": 1.1,
       "range": 360,
-      "buildTime": 10
+      "buildTime": 10,
+      "armor": 10000,
+      "shieldRegen": 0.1,
+      "turnSpeed": 1,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 150,
+          "fireDelay": 5,
+          "mainDps": true,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "long"
+          ]
+        }
+      ],
+      "atmosphere": {
+        "time": 3
+      },
+      "ftlJump": {
+        "type": "siv",
+        "chargeTime": 4,
+        "cooldown": 15,
+        "minDistance": 2000
+      },
+      "transports": [
+        {
+          "name": {
+            "ru": "Базовый истребитель \"Бжилан\"",
+            "en": "Base fighter \"Bjilan\""
+          },
+          "seats": 1,
+          "cargoTags": [
+            "infantry",
+            "tank",
+            "bot"
+          ],
+          "unload": [
+            "space"
+          ]
+        }
+      ]
     },
     {
       "id": "bombpe",
@@ -239,14 +778,22 @@
       "tags": [
         "T1",
         "plane",
-        "AIR"
+        "AIR",
+        "shield"
       ],
       "cost": 250,
-      "energy": 0,
+      "energy": 400,
       "hp": 300,
       "speed": 2.35,
       "range": 60,
-      "buildTime": 25
+      "buildTime": 25,
+      "selfRegen": 0.1,
+      "turnSpeed": 2.5,
+      "laserDefense": {
+        "radius": 130,
+        "points": 5,
+        "regen": 0.005
+      }
     },
     {
       "id": "bomfzr",
@@ -269,7 +816,29 @@
       "hp": 600,
       "speed": 1.8,
       "range": 300,
-      "buildTime": 25
+      "buildTime": 25,
+      "selfRegen": 0.07,
+      "turnSpeed": 2,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 150,
+          "fireDelay": 0.1,
+          "mainDps": true,
+          "tags": [
+            "anti-air",
+            "splash"
+          ],
+          "spread": 35,
+          "splashRadius": 55
+        }
+      ]
     },
     {
       "id": "bomfzrt3",
@@ -292,7 +861,30 @@
       "hp": 1400,
       "speed": 1.8,
       "range": 300,
-      "buildTime": 45
+      "buildTime": 45,
+      "armor": 5,
+      "selfRegen": 0.01,
+      "turnSpeed": 2,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 280,
+          "fireDelay": 0.1,
+          "mainDps": true,
+          "tags": [
+            "anti-air",
+            "splash"
+          ],
+          "spread": 50,
+          "splashRadius": 65
+        }
+      ]
     },
     {
       "id": "btrfzr",
@@ -308,14 +900,53 @@
       "tags": [
         "T1",
         "tank",
-        "OVER_CLIFF_WATER"
+        "OVER_CLIFF_WATER",
+        "transportable",
+        "desant",
+        "waterDrop"
       ],
       "cost": 150,
       "energy": 0,
       "hp": 220,
       "speed": 1.35,
       "range": 190,
-      "buildTime": 6.5
+      "buildTime": 6.5,
+      "armor": 4,
+      "selfRegen": 0.05,
+      "turnSpeed": 4.3,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 9,
+          "fireDelay": 0.3,
+          "mainDps": true,
+          "armourIgnoreAmount": 5,
+          "tags": []
+        }
+      ],
+      "transports": [
+        {
+          "name": {
+            "ru": "Бронетранспортёр",
+            "en": "Armored personnel carrier"
+          },
+          "seats": 2,
+          "cargoTags": [
+            "infantry",
+            "tank",
+            "bot"
+          ],
+          "unload": [
+            "shore"
+          ]
+        }
+      ]
     },
     {
       "id": "bug",
@@ -331,7 +962,13 @@
       "tags": [
         "T4",
         "super-space-ship",
-        "AIR"
+        "AIR",
+        "ORB",
+        "AORB",
+        "transportableORB",
+        "radar15",
+        "radar30",
+        "desant"
       ],
       "cost": 1500,
       "energy": 0,
@@ -339,7 +976,36 @@
       "shield": 100,
       "speed": 1,
       "range": 360,
-      "buildTime": 18
+      "buildTime": 18,
+      "armor": 10000,
+      "shieldRegen": 0.2,
+      "turnSpeed": 1,
+      "atmosphere": {
+        "time": 2
+      },
+      "ftlJump": {
+        "type": "siv",
+        "chargeTime": 2,
+        "cooldown": 20,
+        "minDistance": 2000
+      },
+      "transports": [
+        {
+          "name": {
+            "ru": "Разведывательный корабль \"Жучок\"",
+            "en": "Reconnaissance ship \"Bug\""
+          },
+          "seats": 1,
+          "cargoTags": [
+            "infantry",
+            "tank",
+            "bot"
+          ],
+          "unload": [
+            "space"
+          ]
+        }
+      ]
     },
     {
       "id": "buiair",
@@ -355,14 +1021,31 @@
       "tags": [
         "T1",
         "plane",
-        "AIR"
+        "AIR",
+        "builder"
       ],
       "cost": 200,
       "energy": 0,
       "hp": 250,
       "speed": 1.7,
       "range": 130,
-      "buildTime": 11
+      "buildTime": 11,
+      "selfRegen": 0.04,
+      "turnSpeed": 6,
+      "builder": {
+        "buildRange": 100,
+        "repairSpeed": 0.25,
+        "buildSpeed": 1,
+        "healTags": [
+          "infantry",
+          "tank",
+          "bot",
+          "plane",
+          "ship",
+          "space-ship",
+          "building"
+        ]
+      }
     },
     {
       "id": "buibotfzr",
@@ -378,14 +1061,34 @@
       "tags": [
         "T1",
         "bot",
-        "OVER_CLIFF_WATER"
+        "OVER_CLIFF_WATER",
+        "transportable",
+        "waterDrop",
+        "builder"
       ],
       "cost": 120,
       "energy": 0,
       "hp": 250,
       "speed": 1.35,
       "range": 150,
-      "buildTime": 5
+      "buildTime": 5,
+      "armor": 4,
+      "selfRegen": 0.04,
+      "turnSpeed": 3,
+      "builder": {
+        "buildRange": 110,
+        "repairSpeed": 0.2,
+        "buildSpeed": 1,
+        "healTags": [
+          "infantry",
+          "tank",
+          "bot",
+          "plane",
+          "ship",
+          "space-ship",
+          "building"
+        ]
+      }
     },
     {
       "id": "builandfzr",
@@ -401,14 +1104,33 @@
       "tags": [
         "T1",
         "tank",
-        "LAND"
+        "LAND",
+        "transportable",
+        "builder"
       ],
       "cost": 100,
       "energy": 0,
       "hp": 450,
       "speed": 0.85,
       "range": 150,
-      "buildTime": 3
+      "buildTime": 3,
+      "armor": 6,
+      "selfRegen": 0.03,
+      "turnSpeed": 2,
+      "builder": {
+        "buildRange": 170,
+        "repairSpeed": 0.25,
+        "buildSpeed": 1,
+        "healTags": [
+          "infantry",
+          "tank",
+          "bot",
+          "plane",
+          "ship",
+          "space-ship",
+          "building"
+        ]
+      }
     },
     {
       "id": "builandpe",
@@ -424,14 +1146,69 @@
       "tags": [
         "T1",
         "tank",
-        "OVER_CLIFF"
+        "OVER_CLIFF",
+        "transportable",
+        "desant",
+        "builder"
       ],
       "cost": 80,
-      "energy": 0,
+      "energy": 50,
       "hp": 300,
-      "speed": 1,
+      "speed": 1.05,
       "range": 160,
-      "buildTime": 4
+      "buildTime": 4,
+      "armor": 5,
+      "selfRegen": 0.1,
+      "turnSpeed": 2.5,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 15,
+          "fireDelay": 0.3667,
+          "mainDps": true,
+          "armourIgnoreAmount": 3,
+          "tags": [
+            "laser"
+          ]
+        }
+      ],
+      "builder": {
+        "buildRange": 160,
+        "repairSpeed": 0.2,
+        "buildSpeed": 1,
+        "healTags": [
+          "infantry",
+          "tank",
+          "bot",
+          "plane",
+          "ship",
+          "space-ship",
+          "building"
+        ]
+      },
+      "transports": [
+        {
+          "name": {
+            "ru": "Строитель",
+            "en": "Builder"
+          },
+          "seats": 2,
+          "cargoTags": [
+            "infantry",
+            "tank",
+            "bot"
+          ],
+          "unload": [
+            "shore"
+          ]
+        }
+      ]
     },
     {
       "id": "buiseafzr",
@@ -447,14 +1224,36 @@
       "tags": [
         "T1",
         "ship",
-        "WATER"
+        "WATER",
+        "builder"
       ],
       "cost": 150,
       "energy": 0,
       "hp": 600,
       "speed": 0.85,
       "range": 270,
-      "buildTime": 10
+      "buildTime": 10,
+      "armor": 5,
+      "selfRegen": 0.04,
+      "turnSpeed": 1.8,
+      "torpedoDefense": {
+        "max": 1,
+        "recharge": 10
+      },
+      "builder": {
+        "buildRange": 240,
+        "repairSpeed": 0.35,
+        "buildSpeed": 1,
+        "healTags": [
+          "infantry",
+          "tank",
+          "bot",
+          "plane",
+          "ship",
+          "space-ship",
+          "building"
+        ]
+      }
     },
     {
       "id": "buiseafzr3",
@@ -470,14 +1269,51 @@
       "tags": [
         "T2",
         "ship",
-        "WATER"
+        "WATER",
+        "builder"
       ],
       "cost": 600,
       "energy": 0,
       "hp": 1500,
       "speed": 0.8,
       "range": 290,
-      "buildTime": 30
+      "buildTime": 30,
+      "armor": 10,
+      "selfRegen": 0.05,
+      "turnSpeed": 1.2,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 150,
+          "fireDelay": 0.5833,
+          "mainDps": true,
+          "tags": []
+        }
+      ],
+      "torpedoDefense": {
+        "max": 1,
+        "recharge": 10
+      },
+      "builder": {
+        "buildRange": 320,
+        "repairSpeed": 0.45,
+        "buildSpeed": 1,
+        "healTags": [
+          "infantry",
+          "tank",
+          "bot",
+          "plane",
+          "ship",
+          "space-ship",
+          "building"
+        ]
+      }
     },
     {
       "id": "buisp",
@@ -493,7 +1329,10 @@
       "tags": [
         "T1",
         "space-ship",
-        "AIR"
+        "AIR",
+        "ORB",
+        "transportableORB",
+        "builder"
       ],
       "cost": 400,
       "energy": 0,
@@ -501,7 +1340,25 @@
       "shield": 200,
       "speed": 0.6,
       "range": 130,
-      "buildTime": 12
+      "buildTime": 12,
+      "armor": 10000,
+      "shieldRegen": 0.1,
+      "selfRegen": 0.07,
+      "turnSpeed": 1,
+      "builder": {
+        "buildRange": 100,
+        "repairSpeed": 0.35,
+        "buildSpeed": 1,
+        "healTags": [
+          "infantry",
+          "tank",
+          "bot",
+          "plane",
+          "ship",
+          "space-ship",
+          "building"
+        ]
+      }
     },
     {
       "id": "bulyotsp",
@@ -517,7 +1374,10 @@
       "tags": [
         "T3",
         "super-space-ship",
-        "AIR"
+        "AIR",
+        "ORB",
+        "AORB",
+        "transportableORB"
       ],
       "cost": 4500,
       "energy": 0,
@@ -525,7 +1385,62 @@
       "shield": 1500,
       "speed": 1.2,
       "range": 650,
-      "buildTime": 90
+      "buildTime": 90,
+      "armor": 10000,
+      "shieldRegen": 0.1,
+      "selfRegen": 0.05,
+      "turnSpeed": 1,
+      "weapons": [
+        {
+          "name": {
+            "ru": "ПВО",
+            "en": "AA"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 90,
+          "fireDelay": 0.8333,
+          "mainDps": false,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-air",
+            "anti-sub",
+            "anti-orbital",
+            "long"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 5600,
+          "fireDelay": 10,
+          "mainDps": true,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-air",
+            "anti-sub",
+            "anti-orbital",
+            "splash",
+            "long"
+          ],
+          "splashRadius": 110
+        }
+      ],
+      "atmosphere": {
+        "time": 3
+      },
+      "ftlJump": {
+        "type": "siv",
+        "chargeTime": 4,
+        "cooldown": 20,
+        "minDistance": 2000
+      }
     },
     {
       "id": "carifzr",
@@ -541,14 +1456,90 @@
       "tags": [
         "T2",
         "ship",
-        "WATER"
+        "WATER",
+        "AORB",
+        "radar15",
+        "desant"
       ],
       "cost": 1600,
       "energy": 0,
       "hp": 3600,
       "speed": 0.7,
       "range": 320,
-      "buildTime": 50
+      "buildTime": 50,
+      "armor": 3,
+      "selfRegen": 0.1,
+      "turnSpeed": 0.7,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 60,
+          "fireDelay": 1,
+          "mainDps": false,
+          "tags": [
+            "anti-orbital"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 80,
+          "fireDelay": 0.6667,
+          "mainDps": true,
+          "tags": [
+            "anti-air",
+            "anti-orbital",
+            "splash"
+          ],
+          "spread": 150,
+          "splashRadius": 70
+        },
+        {
+          "name": {
+            "ru": "Орудие 3",
+            "en": "Weapon 3"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 150,
+          "fireDelay": 3.3333,
+          "mainDps": false,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital"
+          ]
+        }
+      ],
+      "transports": [
+        {
+          "name": {
+            "ru": "Авианосец",
+            "en": "Aircraft Carrier"
+          },
+          "seats": 8,
+          "cargoTags": [
+            "infantry",
+            "tank",
+            "bot",
+            "plane"
+          ],
+          "unload": [
+            "water"
+          ]
+        }
+      ]
     },
     {
       "id": "cerberus",
@@ -564,14 +1555,90 @@
       "tags": [
         "T4",
         "super-bot",
-        "OVER_CLIFF_WATER"
+        "OVER_CLIFF_WATER",
+        "transportable",
+        "radar15",
+        "radar30",
+        "AORB",
+        "waterDrop",
+        "HeavyDrop",
+        "builder"
       ],
       "cost": 3800,
       "energy": 0,
       "hp": 4500,
       "speed": 1,
       "range": 250,
-      "buildTime": 90
+      "buildTime": 90,
+      "armor": 10,
+      "selfRegen": 0.15,
+      "turnSpeed": 2,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 180,
+          "fireDelay": 1.5,
+          "mainDps": true,
+          "armourIgnoreAmount": 10,
+          "tags": [
+            "anti-orbital",
+            "laser"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 4,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 20,
+          "fireDelay": 0.5833,
+          "mainDps": false,
+          "armourIgnoreAmount": 30,
+          "tags": [
+            "anti-orbital",
+            "laser"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Орудие 3",
+            "en": "Weapon 3"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 300,
+          "fireDelay": 3.3333,
+          "mainDps": false,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital"
+          ]
+        }
+      ],
+      "builder": {
+        "buildRange": 220,
+        "repairSpeed": 0.9,
+        "buildSpeed": 1,
+        "healTags": [
+          "infantry",
+          "tank",
+          "bot",
+          "plane",
+          "ship",
+          "space-ship",
+          "building"
+        ]
+      }
     },
     {
       "id": "colibri",
@@ -587,7 +1654,10 @@
       "tags": [
         "T3",
         "super-plane",
-        "AIR"
+        "AIR",
+        "ORB",
+        "AORB",
+        "transportableORB"
       ],
       "cost": 1000,
       "energy": 0,
@@ -595,7 +1665,38 @@
       "shield": 400,
       "speed": 1.3,
       "range": 240,
-      "buildTime": 25
+      "buildTime": 25,
+      "armor": 10000,
+      "shieldRegen": 0.1,
+      "turnSpeed": 1,
+      "weapons": [
+        {
+          "name": {
+            "ru": "ПВО",
+            "en": "AA"
+          },
+          "count": 4,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 5,
+          "fireDelay": 0.3333,
+          "mainDps": true,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-air",
+            "anti-orbital"
+          ]
+        }
+      ],
+      "atmosphere": {
+        "time": 3
+      },
+      "ftlJump": {
+        "type": "siv",
+        "chargeTime": 5,
+        "cooldown": 20,
+        "minDistance": 2000
+      }
     },
     {
       "id": "crab",
@@ -611,14 +1712,115 @@
       "tags": [
         "T3",
         "super-ship",
-        "WATER"
+        "WATER",
+        "radar15",
+        "radar30",
+        "AORB",
+        "sonar50"
       ],
       "cost": 5500,
       "energy": 0,
       "hp": 3500,
       "speed": 0.8,
       "range": 30000,
-      "buildTime": 200
+      "buildTime": 200,
+      "armor": 9,
+      "selfRegen": 0.07,
+      "turnSpeed": 1,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 1900,
+          "fireDelay": 1.6667,
+          "mainDps": false,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "splash",
+            "long"
+          ],
+          "splashRadius": 60
+        },
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 4800,
+          "fireDelay": 1.6667,
+          "mainDps": true,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "splash",
+            "long"
+          ],
+          "splashRadius": 120
+        },
+        {
+          "name": {
+            "ru": "Орудие 3",
+            "en": "Weapon 3"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 350,
+          "fireDelay": 1.3333,
+          "mainDps": false,
+          "tags": [
+            "anti-orbital",
+            "long"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 60,
+          "fireDelay": 1.3333,
+          "mainDps": false,
+          "tags": [
+            "anti-orbital",
+            "laser",
+            "long"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Орудие 5",
+            "en": "Weapon 5"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 250,
+          "fireDelay": 3.3333,
+          "mainDps": false,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "long"
+          ]
+        }
+      ],
+      "torpedoDefense": {
+        "max": 1,
+        "recharge": 10
+      }
     },
     {
       "id": "crufzr",
@@ -634,14 +1836,114 @@
       "tags": [
         "T2",
         "ship",
-        "WATER"
+        "WATER",
+        "radar15",
+        "AORB",
+        "sonar30",
+        "desant"
       ],
       "cost": 1700,
       "energy": 0,
       "hp": 3500,
       "speed": 0.8,
       "range": 420,
-      "buildTime": 55
+      "buildTime": 55,
+      "armor": 6,
+      "selfRegen": 0.12,
+      "turnSpeed": 0.9,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 210,
+          "fireDelay": 5,
+          "mainDps": true,
+          "armourIgnoreAmount": 10,
+          "tags": [
+            "anti-orbital",
+            "splash",
+            "long"
+          ],
+          "spread": 10,
+          "splashRadius": 50
+        },
+        {
+          "name": {
+            "ru": "Орудие 2",
+            "en": "Weapon 2"
+          },
+          "count": 4,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 60,
+          "fireDelay": 1,
+          "mainDps": false,
+          "tags": [
+            "anti-orbital",
+            "long"
+          ]
+        },
+        {
+          "name": {
+            "ru": "ПВО",
+            "en": "AA"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 30,
+          "fireDelay": 0.5,
+          "mainDps": false,
+          "tags": [
+            "anti-air",
+            "anti-orbital",
+            "long"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Орудие 4",
+            "en": "Weapon 4"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 100,
+          "fireDelay": 3.3333,
+          "mainDps": false,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "long"
+          ]
+        }
+      ],
+      "torpedoDefense": {
+        "max": 1,
+        "recharge": 10
+      },
+      "transports": [
+        {
+          "name": {
+            "ru": "Крейсер \"Дельфин\"",
+            "en": "Cruiser \"Dolphin\""
+          },
+          "seats": 2,
+          "cargoTags": [
+            "infantry",
+            "tank",
+            "bot"
+          ],
+          "unload": [
+            "water"
+          ]
+        }
+      ]
     },
     {
       "id": "cutfzr",
@@ -663,8 +1965,41 @@
       "energy": 0,
       "hp": 600,
       "speed": 1.3,
-      "range": 250,
-      "buildTime": 8
+      "range": 240,
+      "buildTime": 8,
+      "armor": 3,
+      "selfRegen": 0.04,
+      "turnSpeed": 1.8,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 25,
+          "fireDelay": 0.5,
+          "mainDps": true,
+          "tags": []
+        },
+        {
+          "name": {
+            "ru": "ПВО",
+            "en": "AA"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 25,
+          "fireDelay": 0.9167,
+          "mainDps": false,
+          "tags": [
+            "anti-air"
+          ]
+        }
+      ]
     },
     {
       "id": "cutfzr3",
@@ -680,14 +2015,77 @@
       "tags": [
         "T3",
         "super-ship",
-        "WATER"
+        "WATER",
+        "sonar30"
       ],
       "cost": 1500,
       "energy": 0,
       "hp": 2000,
       "speed": 1,
       "range": 550,
-      "buildTime": 100
+      "buildTime": 100,
+      "armor": 7,
+      "selfRegen": 0.05,
+      "turnSpeed": 1,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 120,
+          "fireDelay": 2.5,
+          "mainDps": true,
+          "armourIgnoreAmount": 10,
+          "tags": [
+            "splash",
+            "long"
+          ],
+          "spread": 50,
+          "splashRadius": 45
+        },
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 120,
+          "fireDelay": 1.6667,
+          "mainDps": false,
+          "armourIgnoreAmount": 10,
+          "tags": [
+            "splash",
+            "long"
+          ],
+          "spread": 50,
+          "splashRadius": 45
+        },
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 120,
+          "fireDelay": 0.8333,
+          "mainDps": false,
+          "armourIgnoreAmount": 10,
+          "tags": [
+            "splash",
+            "long"
+          ],
+          "spread": 50,
+          "splashRadius": 45
+        }
+      ]
     },
     {
       "id": "cutpe",
@@ -706,11 +2104,50 @@
         "WATER"
       ],
       "cost": 190,
-      "energy": 0,
+      "energy": 100,
       "hp": 500,
       "speed": 1.2,
       "range": 280,
-      "buildTime": 10
+      "buildTime": 10,
+      "armor": 3,
+      "selfRegen": 0.1,
+      "turnSpeed": 1.5,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 60,
+          "fireDelay": 11,
+          "mainDps": true,
+          "tags": [
+            "anti-sub"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Ракеты",
+            "en": "Missiles"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 60,
+          "fireDelay": 0.6667,
+          "mainDps": false,
+          "tags": [
+            "rocket"
+          ]
+        }
+      ],
+      "torpedoDefense": {
+        "max": 1,
+        "recharge": 10
+      }
     },
     {
       "id": "dartrekon",
@@ -726,14 +2163,71 @@
       "tags": [
         "T3",
         "super-bot",
-        "OVER_CLIFF_WATER"
+        "OVER_CLIFF_WATER",
+        "transportable",
+        "AORB",
+        "waterDrop",
+        "HeavyDrop"
       ],
       "cost": 1250,
       "energy": 0,
       "hp": 850,
       "speed": 1.6,
       "range": 330,
-      "buildTime": 40
+      "buildTime": 40,
+      "armor": 5,
+      "selfRegen": 0.1,
+      "turnSpeed": 4,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 450,
+          "fireDelay": 7.5,
+          "mainDps": true,
+          "tags": [
+            "anti-orbital",
+            "laser"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Ракеты",
+            "en": "Missiles"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 80,
+          "fireDelay": 1,
+          "mainDps": false,
+          "tags": [
+            "anti-orbital",
+            "rocket"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Орудие 3",
+            "en": "Weapon 3"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 350,
+          "fireDelay": 3.3333,
+          "mainDps": false,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital"
+          ]
+        }
+      ]
     },
     {
       "id": "deg",
@@ -749,14 +2243,64 @@
       "tags": [
         "T1",
         "infantry",
-        "OVER_CLIFF"
+        "OVER_CLIFF",
+        "transportableSOL"
       ],
       "cost": 50,
-      "energy": 0,
+      "energy": 80,
       "hp": 300,
       "speed": 1.1,
       "range": 170,
-      "buildTime": 6
+      "buildTime": 6,
+      "armor": 5,
+      "selfRegen": 0.12,
+      "turnSpeed": 4,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 25,
+          "fireDelay": 1.6667,
+          "mainDps": false,
+          "tags": [],
+          "spread": 0
+        },
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 4,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 10,
+          "fireDelay": 0.8333,
+          "mainDps": false,
+          "tags": [
+            "laser"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Ракеты",
+            "en": "Missiles"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 65,
+          "fireDelay": 3.3333,
+          "mainDps": true,
+          "tags": [
+            "rocket"
+          ]
+        }
+      ]
     },
     {
       "id": "drefzr",
@@ -772,14 +2316,66 @@
       "tags": [
         "T1",
         "ship",
-        "HOVER"
+        "HOVER",
+        "desant",
+        "waterDrop"
       ],
       "cost": 500,
       "energy": 0,
       "hp": 900,
       "speed": 0.9,
       "range": 230,
-      "buildTime": 16
+      "buildTime": 16,
+      "armor": 1,
+      "selfRegen": 0.02,
+      "turnSpeed": 1,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 20,
+          "fireDelay": 0.4167,
+          "mainDps": false,
+          "tags": []
+        },
+        {
+          "name": {
+            "ru": "ПВО",
+            "en": "AA"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 25,
+          "fireDelay": 0.6667,
+          "mainDps": true,
+          "tags": [
+            "anti-air"
+          ]
+        }
+      ],
+      "transports": [
+        {
+          "name": {
+            "ru": "Десантный корабль",
+            "en": "Landing ship"
+          },
+          "seats": 6,
+          "cargoTags": [
+            "infantry",
+            "tank",
+            "bot"
+          ],
+          "unload": [
+            "water"
+          ]
+        }
+      ]
     },
     {
       "id": "dronpe",
@@ -795,14 +2391,40 @@
       "tags": [
         "T1",
         "tank",
-        "OVER_CLIFF"
+        "OVER_CLIFF",
+        "transportable",
+        "radar15"
       ],
       "cost": 70,
-      "energy": 0,
+      "energy": 200,
       "hp": 160,
-      "speed": 1.35,
+      "speed": 1.4,
       "range": 60,
-      "buildTime": 4
+      "buildTime": 4,
+      "armor": 2,
+      "selfRegen": 0.1,
+      "turnSpeed": 4,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 150,
+          "fireDelay": 1,
+          "mainDps": true,
+          "tags": [
+            "splash",
+            "stun",
+            "close"
+          ],
+          "splashRadius": 85,
+          "stunDuration": 5
+        }
+      ]
     },
     {
       "id": "drooppe",
@@ -818,14 +2440,60 @@
       "tags": [
         "T1",
         "ship",
-        "WATER"
+        "WATER",
+        "builder",
+        "shield"
       ],
       "cost": 450,
-      "energy": 0,
+      "energy": 300,
       "hp": 800,
-      "speed": 0.9,
+      "speed": 1,
       "range": 320,
-      "buildTime": 19
+      "buildTime": 19,
+      "armor": 3,
+      "selfRegen": 0.1,
+      "turnSpeed": 1.2,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 100,
+          "fireDelay": 5,
+          "mainDps": true,
+          "armourIgnoreAmount": 5,
+          "tags": [
+            "splash",
+            "stun"
+          ],
+          "spread": 15,
+          "splashRadius": 30,
+          "stunDuration": 1
+        }
+      ],
+      "laserDefense": {
+        "radius": 220,
+        "points": 90,
+        "regen": 0.07
+      },
+      "builder": {
+        "buildRange": 250,
+        "repairSpeed": 0.9,
+        "buildSpeed": 1,
+        "healTags": [
+          "infantry",
+          "tank",
+          "bot",
+          "plane",
+          "ship",
+          "space-ship",
+          "building"
+        ]
+      }
     },
     {
       "id": "drot",
@@ -841,14 +2509,40 @@
       "tags": [
         "T1",
         "tank",
-        "HOVER"
+        "HOVER",
+        "transportable",
+        "radar15",
+        "waterDrop"
       ],
       "cost": 300,
-      "energy": 0,
+      "energy": 400,
       "hp": 550,
       "speed": 1.2,
       "range": 20,
-      "buildTime": 40
+      "buildTime": 40,
+      "armor": 7,
+      "selfRegen": 0.15,
+      "turnSpeed": 4,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 18,
+          "fireDelay": 0.1667,
+          "mainDps": true,
+          "armourIgnoreAmount": 30,
+          "tags": [
+            "stun",
+            "close"
+          ],
+          "stunDuration": 0.1
+        }
+      ]
     },
     {
       "id": "drshfzr",
@@ -864,14 +2558,34 @@
       "tags": [
         "T2",
         "plane",
-        "AIR"
+        "AIR",
+        "desant"
       ],
       "cost": 400,
       "energy": 0,
       "hp": 1000,
       "speed": 1.8,
       "range": 300,
-      "buildTime": 12
+      "buildTime": 12,
+      "selfRegen": 0.01,
+      "turnSpeed": 0.9,
+      "transports": [
+        {
+          "name": {
+            "ru": "Транспортник \"Титан\"",
+            "en": "Transporter \"Titan\""
+          },
+          "seats": 6,
+          "cargoTags": [
+            "infantry",
+            "tank",
+            "bot"
+          ],
+          "unload": [
+            "air"
+          ]
+        }
+      ]
     },
     {
       "id": "engineerfzr",
@@ -887,14 +2601,33 @@
       "tags": [
         "T1",
         "infantry",
-        "LAND"
+        "LAND",
+        "transportableSOL",
+        "builder"
       ],
       "cost": 60,
       "energy": 0,
       "hp": 100,
       "speed": 0.7,
       "range": 150,
-      "buildTime": 3
+      "buildTime": 3,
+      "armor": 1,
+      "selfRegen": 0.04,
+      "turnSpeed": 3.5,
+      "builder": {
+        "buildRange": 90,
+        "repairSpeed": 0.3,
+        "buildSpeed": 1,
+        "healTags": [
+          "infantry",
+          "tank",
+          "bot",
+          "plane",
+          "ship",
+          "space-ship",
+          "building"
+        ]
+      }
     },
     {
       "id": "engineerprot",
@@ -910,14 +2643,34 @@
       "tags": [
         "T1",
         "infantry",
-        "HOVER"
+        "HOVER",
+        "transportableSOL",
+        "waterDrop",
+        "builder"
       ],
       "cost": 50,
       "energy": 0,
       "hp": 100,
       "speed": 1,
       "range": 150,
-      "buildTime": 2.5
+      "buildTime": 2.5,
+      "armor": 2,
+      "selfRegen": 0.1,
+      "turnSpeed": 4,
+      "builder": {
+        "buildRange": 100,
+        "repairSpeed": 0.25,
+        "buildSpeed": 1,
+        "healTags": [
+          "infantry",
+          "tank",
+          "bot",
+          "plane",
+          "ship",
+          "space-ship",
+          "building"
+        ]
+      }
     },
     {
       "id": "esmfzr",
@@ -933,14 +2686,65 @@
       "tags": [
         "T1",
         "ship",
-        "WATER"
+        "WATER",
+        "radar15"
       ],
       "cost": 500,
       "energy": 0,
       "hp": 900,
       "speed": 1.05,
       "range": 260,
-      "buildTime": 20
+      "buildTime": 20,
+      "armor": 4,
+      "selfRegen": 0.04,
+      "turnSpeed": 1.5,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 150,
+          "fireDelay": 1,
+          "mainDps": true,
+          "tags": []
+        },
+        {
+          "name": {
+            "ru": "Орудие 2",
+            "en": "Weapon 2"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 100,
+          "fireDelay": 2,
+          "mainDps": false,
+          "tags": []
+        },
+        {
+          "name": {
+            "ru": "ПВО",
+            "en": "AA"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 25,
+          "fireDelay": 1,
+          "mainDps": false,
+          "tags": [
+            "anti-air"
+          ]
+        }
+      ],
+      "torpedoDefense": {
+        "max": 1,
+        "recharge": 10
+      }
     },
     {
       "id": "eye",
@@ -956,7 +2760,13 @@
       "tags": [
         "T3",
         "super-space-ship",
-        "AIR"
+        "AIR",
+        "ORB",
+        "radar15",
+        "radar30",
+        "radar50",
+        "transportableORB",
+        "transportableORBz"
       ],
       "cost": 3500,
       "energy": 0,
@@ -964,7 +2774,29 @@
       "shield": 500,
       "speed": 0.6,
       "range": 250,
-      "buildTime": 12
+      "buildTime": 12,
+      "armor": 10000,
+      "shieldRegen": 0.1,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 150,
+          "fireDelay": 3.3333,
+          "mainDps": true,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "stun"
+          ],
+          "stunDuration": 4
+        }
+      ]
     },
     {
       "id": "figfzr",
@@ -987,7 +2819,26 @@
       "hp": 280,
       "speed": 2.65,
       "range": 230,
-      "buildTime": 8
+      "buildTime": 8,
+      "turnSpeed": 3,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Ракеты",
+            "en": "Missiles"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 35,
+          "fireDelay": 5,
+          "mainDps": true,
+          "armourIgnoreAmount": 10,
+          "tags": [
+            "rocket"
+          ]
+        }
+      ]
     },
     {
       "id": "figpe",
@@ -1003,14 +2854,22 @@
       "tags": [
         "T1",
         "plane",
-        "AIR"
+        "AIR",
+        "shield"
       ],
       "cost": 100,
-      "energy": 0,
+      "energy": 200,
       "hp": 230,
       "speed": 3,
       "range": 200,
-      "buildTime": 8
+      "buildTime": 8,
+      "selfRegen": 0.1,
+      "turnSpeed": 3,
+      "laserDefense": {
+        "radius": 130,
+        "points": 5,
+        "regen": 0.004
+      }
     },
     {
       "id": "flibot",
@@ -1029,11 +2888,14 @@
         "AIR"
       ],
       "cost": 300,
-      "energy": 0,
+      "energy": 800,
       "hp": 450,
       "speed": 2,
       "range": 150,
-      "buildTime": 40
+      "buildTime": 40,
+      "armor": 5,
+      "selfRegen": 0.2,
+      "turnSpeed": 2
     },
     {
       "id": "grap",
@@ -1049,14 +2911,67 @@
       "tags": [
         "T1",
         "plane",
-        "AIR"
+        "AIR",
+        "ORB",
+        "AORB",
+        "transportableORB",
+        "desant"
       ],
       "cost": 550,
-      "energy": 0,
+      "energy": 500,
       "hp": 750,
       "speed": 1.25,
       "range": 270,
-      "buildTime": 30
+      "buildTime": 30,
+      "armor": 10000,
+      "selfRegen": 0.15,
+      "turnSpeed": 0.8,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 25,
+          "fireDelay": 0.5,
+          "mainDps": true,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital"
+          ]
+        }
+      ],
+      "atmosphere": {
+        "time": 3
+      },
+      "ftlJump": {
+        "type": "plasma",
+        "chargeTime": 2,
+        "cooldown": 30,
+        "minDistance": 1000,
+        "energyCost": 600
+      },
+      "transports": [
+        {
+          "name": {
+            "ru": "Атакующий корвет \"Гарп\"",
+            "en": "Attack corvette \"Harp\""
+          },
+          "seats": 1,
+          "cargoTags": [
+            "infantry",
+            "tank",
+            "bot",
+            "plane"
+          ],
+          "unload": [
+            "space"
+          ]
+        }
+      ]
     },
     {
       "id": "guardian",
@@ -1072,14 +2987,55 @@
       "tags": [
         "T2",
         "bot",
-        "OVER_CLIFF_WATER"
+        "OVER_CLIFF_WATER",
+        "transportable",
+        "AORB",
+        "waterDrop"
       ],
       "cost": 300,
       "energy": 0,
       "hp": 500,
       "speed": 0.7,
       "range": 280,
-      "buildTime": 19
+      "buildTime": 19,
+      "armor": 8,
+      "selfRegen": 0.1,
+      "turnSpeed": 1.25,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 40,
+          "fireDelay": 0.5,
+          "mainDps": false,
+          "armourIgnoreAmount": 4,
+          "tags": [
+            "anti-orbital",
+            "laser"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Орудие 2",
+            "en": "Weapon 2"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 150,
+          "fireDelay": 3.3333,
+          "mainDps": true,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital"
+          ]
+        }
+      ]
     },
     {
       "id": "helifzr",
@@ -1095,14 +3051,52 @@
       "tags": [
         "T1",
         "plane",
-        "AIR"
+        "AIR",
+        "desant"
       ],
       "cost": 200,
       "energy": 0,
-      "hp": 220,
+      "hp": 250,
       "speed": 1.25,
       "range": 140,
-      "buildTime": 15
+      "buildTime": 15,
+      "armor": 3,
+      "turnSpeed": 6,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Ракеты",
+            "en": "Missiles"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 40,
+          "fireDelay": 0.6667,
+          "mainDps": true,
+          "armourIgnoreAmount": 3,
+          "tags": [
+            "rocket"
+          ]
+        }
+      ],
+      "transports": [
+        {
+          "name": {
+            "ru": "Боевой вертолет",
+            "en": "Combat helicopter"
+          },
+          "seats": 2,
+          "cargoTags": [
+            "infantry",
+            "tank",
+            "bot"
+          ],
+          "unload": [
+            "air"
+          ]
+        }
+      ]
     },
     {
       "id": "hillfzr",
@@ -1118,14 +3112,33 @@
       "tags": [
         "T2",
         "bot",
-        "OVER_CLIFF_WATER"
+        "OVER_CLIFF_WATER",
+        "transportable",
+        "waterDrop",
+        "builder"
       ],
       "cost": 200,
       "energy": 0,
       "hp": 250,
       "speed": 1.3,
       "range": 120,
-      "buildTime": 12
+      "buildTime": 12,
+      "armor": 2,
+      "turnSpeed": 4,
+      "builder": {
+        "buildRange": 150,
+        "repairSpeed": 0,
+        "buildSpeed": 1,
+        "healTags": [
+          "infantry",
+          "tank",
+          "bot",
+          "plane",
+          "ship",
+          "space-ship",
+          "building"
+        ]
+      }
     },
     {
       "id": "hilpe",
@@ -1140,14 +3153,34 @@
       },
       "tags": [
         "T1",
-        "LAND"
+        "LAND",
+        "tank",
+        "transportableSOL",
+        "builder"
       ],
       "cost": 80,
-      "energy": 0,
+      "energy": 80,
       "hp": 180,
       "speed": 0.8,
       "range": 200,
-      "buildTime": 5.5
+      "buildTime": 5.5,
+      "armor": 1,
+      "selfRegen": 0.1,
+      "turnSpeed": 2,
+      "builder": {
+        "buildRange": 200,
+        "repairSpeed": 0.4,
+        "buildSpeed": 1,
+        "healTags": [
+          "infantry",
+          "tank",
+          "bot",
+          "plane",
+          "ship",
+          "space-ship",
+          "building"
+        ]
+      }
     },
     {
       "id": "indestructible",
@@ -1163,14 +3196,58 @@
       "tags": [
         "T4",
         "super-tank",
-        "LAND"
+        "LAND",
+        "transportable",
+        "HeavyDrop"
       ],
       "cost": 5000,
       "energy": 0,
       "hp": 13000,
       "speed": 0.5,
       "range": 380,
-      "buildTime": 180
+      "buildTime": 180,
+      "armor": 20,
+      "selfRegen": 0.5,
+      "turnSpeed": 0.7,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 123,
+          "fireDelay": 16.6667,
+          "mainDps": false,
+          "tags": [
+            "splash",
+            "long"
+          ],
+          "spread": 40,
+          "splashRadius": 150
+        },
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 350,
+          "fireDelay": 2,
+          "mainDps": true,
+          "armourIgnoreAmount": 10,
+          "tags": [
+            "splash",
+            "long"
+          ],
+          "spread": 35,
+          "splashRadius": 60
+        }
+      ]
     },
     {
       "id": "kraken",
@@ -1186,14 +3263,107 @@
       "tags": [
         "titan",
         "super-ship",
-        "WATER"
+        "WATER",
+        "radar15",
+        "radar30",
+        "AORB",
+        "sonar30",
+        "BIG"
       ],
       "cost": 19500,
       "energy": 0,
       "hp": 18000,
       "speed": 0.5,
       "range": 700,
-      "buildTime": 2000
+      "buildTime": 1600,
+      "armor": 13,
+      "selfRegen": 0.3,
+      "turnSpeed": 0.4,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 4000,
+          "fireDelay": 15,
+          "mainDps": false,
+          "tags": [
+            "anti-air",
+            "anti-orbital",
+            "laser",
+            "splash",
+            "stun",
+            "long"
+          ],
+          "splashRadius": 60,
+          "stunDuration": 8
+        },
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 5000,
+          "fireDelay": 15,
+          "mainDps": true,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-air",
+            "anti-orbital",
+            "laser",
+            "stun",
+            "long"
+          ],
+          "stunDuration": 8
+        },
+        {
+          "name": {
+            "ru": "ПВО",
+            "en": "AA"
+          },
+          "count": 8,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 150,
+          "fireDelay": 2,
+          "mainDps": false,
+          "tags": [
+            "anti-air",
+            "anti-orbital",
+            "long"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 3500,
+          "fireDelay": 11.6667,
+          "mainDps": false,
+          "tags": [
+            "anti-orbital",
+            "splash",
+            "long"
+          ],
+          "spread": 40,
+          "splashRadius": 110
+        }
+      ],
+      "missileDefense": {
+        "max": 1,
+        "recharge": 16
+      }
     },
     {
       "id": "lasdef",
@@ -1208,14 +3378,25 @@
       },
       "tags": [
         "T1",
-        "LAND"
+        "LAND",
+        "tank",
+        "transportableSOL",
+        "shield"
       ],
       "cost": 70,
-      "energy": 0,
+      "energy": 100,
       "hp": 180,
       "speed": 0.8,
       "range": 200,
-      "buildTime": 6
+      "buildTime": 6,
+      "armor": 1,
+      "selfRegen": 0.1,
+      "turnSpeed": 2,
+      "laserDefense": {
+        "radius": 130,
+        "points": 70,
+        "regen": 0.07
+      }
     },
     {
       "id": "lcfzr",
@@ -1231,14 +3412,133 @@
       "tags": [
         "T2",
         "ship",
-        "WATER"
+        "WATER",
+        "AORB",
+        "radar15"
       ],
       "cost": 1600,
       "energy": 0,
       "hp": 2000,
       "speed": 0.9,
       "range": 1200,
-      "buildTime": 45
+      "buildTime": 45,
+      "armor": 4,
+      "selfRegen": 0.11,
+      "turnSpeed": 1,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 1900,
+          "fireDelay": 1.6667,
+          "mainDps": true,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "splash",
+            "long"
+          ],
+          "splashRadius": 60
+        },
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 180,
+          "fireDelay": 1.6667,
+          "mainDps": false,
+          "tags": [
+            "anti-sub",
+            "anti-orbital",
+            "splash",
+            "long"
+          ],
+          "splashRadius": 35
+        },
+        {
+          "name": {
+            "ru": "Орудие 3",
+            "en": "Weapon 3"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 110,
+          "fireDelay": 1,
+          "mainDps": false,
+          "tags": [
+            "anti-orbital",
+            "long"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Орудие 4",
+            "en": "Weapon 4"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 110,
+          "fireDelay": 2,
+          "mainDps": false,
+          "tags": [
+            "anti-orbital",
+            "long"
+          ]
+        },
+        {
+          "name": {
+            "ru": "ПВО",
+            "en": "AA"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 30,
+          "fireDelay": 0.4167,
+          "mainDps": false,
+          "tags": [
+            "anti-air",
+            "anti-orbital",
+            "long"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Ракеты",
+            "en": "Missiles"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 100,
+          "fireDelay": 3.3333,
+          "mainDps": false,
+          "armourIgnoreAmount": 9980,
+          "tags": [
+            "anti-air",
+            "anti-orbital",
+            "rocket",
+            "splash",
+            "long"
+          ],
+          "splashRadius": 40
+        }
+      ],
+      "torpedoDefense": {
+        "max": 1,
+        "recharge": 10
+      }
     },
     {
       "id": "levetor",
@@ -1254,7 +3554,12 @@
       "tags": [
         "titan",
         "super-tank",
-        "OVER_CLIFF_WATER"
+        "OVER_CLIFF_WATER",
+        "transportable",
+        "AORB",
+        "BIG",
+        "waterDrop",
+        "lavaDrop"
       ],
       "cost": 18000,
       "energy": 0,
@@ -1262,7 +3567,96 @@
       "shield": 5000,
       "speed": 0.4,
       "range": 700,
-      "buildTime": 800
+      "buildTime": 700,
+      "armor": 13,
+      "shieldRegen": 0.4,
+      "selfRegen": 0.55,
+      "turnSpeed": 0.4,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 4000,
+          "fireDelay": 15,
+          "mainDps": false,
+          "tags": [
+            "anti-air",
+            "anti-orbital",
+            "laser",
+            "splash",
+            "stun",
+            "long"
+          ],
+          "splashRadius": 60,
+          "stunDuration": 8
+        },
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 5000,
+          "fireDelay": 15,
+          "mainDps": true,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-air",
+            "anti-orbital",
+            "laser",
+            "stun",
+            "long"
+          ],
+          "stunDuration": 8
+        },
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 4,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 200,
+          "fireDelay": 3,
+          "mainDps": false,
+          "armourIgnoreAmount": 10,
+          "tags": [
+            "anti-orbital",
+            "laser",
+            "long"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 100,
+          "fireDelay": 3,
+          "mainDps": false,
+          "armourIgnoreAmount": 7,
+          "tags": [
+            "anti-orbital",
+            "laser",
+            "long"
+          ]
+        }
+      ],
+      "missileDefense": {
+        "max": 1,
+        "recharge": 80
+      }
     },
     {
       "id": "lorryfzr",
@@ -1278,13 +3672,34 @@
       "tags": [
         "T1",
         "tank",
-        "LAND"
+        "LAND",
+        "transportable",
+        "desant"
       ],
       "cost": 100,
       "energy": 0,
       "hp": 300,
       "speed": 1.6,
-      "buildTime": 4
+      "buildTime": 4,
+      "armor": 2,
+      "turnSpeed": 2,
+      "transports": [
+        {
+          "name": {
+            "ru": "Военный грузовик",
+            "en": "Military truck"
+          },
+          "seats": 2,
+          "cargoTags": [
+            "infantry",
+            "tank",
+            "bot"
+          ],
+          "unload": [
+            "shore"
+          ]
+        }
+      ]
     },
     {
       "id": "lorrymiss",
@@ -1300,14 +3715,17 @@
       "tags": [
         "T2",
         "tank",
-        "LAND"
+        "LAND",
+        "transportable"
       ],
       "cost": 230,
       "energy": 0,
       "hp": 550,
       "speed": 0.9,
       "range": 270,
-      "buildTime": 15
+      "buildTime": 15,
+      "armor": 4,
+      "turnSpeed": 1.5
     },
     {
       "id": "lr",
@@ -1323,14 +3741,39 @@
       "tags": [
         "T1",
         "bot",
-        "OVER_CLIFF_WATER"
+        "OVER_CLIFF_WATER",
+        "transportable",
+        "waterDrop"
       ],
       "cost": 200,
       "energy": 0,
       "hp": 200,
       "speed": 1.35,
       "range": 260,
-      "buildTime": 10
+      "buildTime": 10,
+      "armor": 3,
+      "selfRegen": 0.05,
+      "turnSpeed": 3,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 60,
+          "fireDelay": 0.1667,
+          "mainDps": true,
+          "armourIgnoreAmount": 5,
+          "tags": [
+            "splash"
+          ],
+          "spread": 55,
+          "splashRadius": 40
+        }
+      ]
     },
     {
       "id": "marschpe",
@@ -1346,14 +3789,71 @@
       "tags": [
         "T2",
         "infantry",
-        "HOVER"
+        "HOVER",
+        "transportableSOL",
+        "hq",
+        "waterDrop"
       ],
-      "cost": 200,
-      "energy": 0,
+      "cost": 500,
+      "energy": 2000,
       "hp": 250,
       "speed": 1.2,
       "range": 190,
-      "buildTime": 25
+      "buildTime": 25,
+      "armor": 2,
+      "selfRegen": 0.15,
+      "turnSpeed": 4,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 25,
+          "fireDelay": 1.6667,
+          "mainDps": false,
+          "tags": [],
+          "spread": 0
+        },
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 27,
+          "fireDelay": 0.5833,
+          "mainDps": false,
+          "tags": [
+            "laser"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 70,
+          "fireDelay": 4.1667,
+          "mainDps": true,
+          "armourIgnoreAmount": 5,
+          "tags": [
+            "splash",
+            "stun"
+          ],
+          "spread": 10,
+          "splashRadius": 25,
+          "stunDuration": 6
+        }
+      ]
     },
     {
       "id": "megalodon",
@@ -1369,14 +3869,159 @@
       "tags": [
         "T4",
         "super-ship",
-        "WATER"
+        "WATER",
+        "radar15",
+        "radar30",
+        "radar50",
+        "AORB",
+        "sonar30",
+        "desant"
       ],
       "cost": 8500,
       "energy": 0,
       "hp": 8000,
       "speed": 0.7,
       "range": 700,
-      "buildTime": 280
+      "buildTime": 280,
+      "armor": 10,
+      "selfRegen": 0.15,
+      "turnSpeed": 0.6,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 700,
+          "fireDelay": 6.6667,
+          "mainDps": false,
+          "armourIgnoreAmount": 15,
+          "tags": [
+            "anti-orbital",
+            "splash",
+            "long"
+          ],
+          "spread": 25,
+          "splashRadius": 70
+        },
+        {
+          "name": {
+            "ru": "Ракеты",
+            "en": "Missiles"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 700,
+          "fireDelay": 15,
+          "mainDps": false,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "rocket",
+            "long"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 900,
+          "fireDelay": 10.8333,
+          "mainDps": true,
+          "armourIgnoreAmount": 15,
+          "tags": [
+            "anti-orbital",
+            "splash",
+            "long"
+          ],
+          "spread": 20,
+          "splashRadius": 80
+        },
+        {
+          "name": {
+            "ru": "Орудие 4",
+            "en": "Weapon 4"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 150,
+          "fireDelay": 1.3333,
+          "mainDps": false,
+          "tags": [
+            "anti-orbital",
+            "long"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Ракеты",
+            "en": "Missiles"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 140,
+          "fireDelay": 3.3333,
+          "mainDps": false,
+          "armourIgnoreAmount": 9980,
+          "tags": [
+            "anti-air",
+            "anti-orbital",
+            "rocket",
+            "splash",
+            "long"
+          ],
+          "splashRadius": 40
+        },
+        {
+          "name": {
+            "ru": "Орудие 6",
+            "en": "Weapon 6"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 70,
+          "fireDelay": 3.3333,
+          "mainDps": false,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "long"
+          ]
+        }
+      ],
+      "torpedoDefense": {
+        "max": 1,
+        "recharge": 10
+      },
+      "transports": [
+        {
+          "name": {
+            "ru": "Флагман \"Мегалодон\"",
+            "en": "Flagship \"Megalodon\""
+          },
+          "seats": 10,
+          "cargoTags": [
+            "infantry",
+            "tank",
+            "bot",
+            "plane"
+          ],
+          "unload": [
+            "water"
+          ]
+        }
+      ]
     },
     {
       "id": "miner",
@@ -1392,14 +4037,47 @@
       "tags": [
         "T1",
         "ship",
-        "OVER_CLIFF_WATER"
+        "OVER_CLIFF_WATER",
+        "transportable",
+        "waterDrop",
+        "builder"
       ],
       "cost": 120,
-      "energy": 0,
+      "energy": 60,
       "hp": 150,
       "speed": 1.4,
       "range": 220,
-      "buildTime": 5
+      "buildTime": 5,
+      "armor": 2,
+      "selfRegen": 0.1,
+      "turnSpeed": 4,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Ракеты",
+            "en": "Missiles"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 100,
+          "fireDelay": 0.5,
+          "mainDps": true,
+          "tags": [
+            "rocket",
+            "splash",
+            "stun"
+          ],
+          "splashRadius": 20,
+          "stunDuration": 3
+        }
+      ],
+      "builder": {
+        "buildRange": 150,
+        "repairSpeed": 0.2,
+        "buildSpeed": 1,
+        "healTags": []
+      }
     },
     {
       "id": "minomprot",
@@ -1415,14 +4093,39 @@
       "tags": [
         "T1",
         "infantry",
-        "HOVER"
+        "HOVER",
+        "transportableSOL",
+        "waterDrop"
       ],
       "cost": 80,
-      "energy": 0,
+      "energy": 140,
       "hp": 200,
       "speed": 1,
       "range": 160,
-      "buildTime": 8
+      "buildTime": 8,
+      "armor": 3,
+      "selfRegen": 0.1,
+      "turnSpeed": 4,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 100,
+          "fireDelay": 5.8333,
+          "mainDps": true,
+          "armourIgnoreAmount": 5,
+          "tags": [
+            "splash"
+          ],
+          "spread": 10,
+          "splashRadius": 20
+        }
+      ]
     },
     {
       "id": "mir",
@@ -1438,14 +4141,96 @@
       "tags": [
         "titan",
         "super-plane",
-        "AIR"
+        "AIR",
+        "desant",
+        "BIG",
+        "AORB"
       ],
       "cost": 17500,
       "energy": 0,
       "hp": 14000,
       "speed": 1.4,
       "range": 600,
-      "buildTime": 750
+      "buildTime": 650,
+      "armor": 8,
+      "selfRegen": 0.4,
+      "turnSpeed": 0.6,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 3000,
+          "fireDelay": 0.1667,
+          "mainDps": true,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-air",
+            "anti-orbital",
+            "laser",
+            "long"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 1200,
+          "fireDelay": 5,
+          "mainDps": false,
+          "armourIgnoreAmount": 15,
+          "tags": [
+            "anti-air",
+            "anti-orbital",
+            "splash",
+            "long"
+          ],
+          "spread": 25,
+          "splashRadius": 80
+        },
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 45,
+          "fireDelay": 0.0833,
+          "mainDps": false,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-air",
+            "anti-orbital",
+            "laser",
+            "long"
+          ]
+        }
+      ],
+      "transports": [
+        {
+          "name": {
+            "ru": "МИР",
+            "en": "MIR"
+          },
+          "seats": 12,
+          "cargoTags": [
+            "infantry",
+            "tank",
+            "bot"
+          ],
+          "unload": []
+        }
+      ]
     },
     {
       "id": "mobileshield",
@@ -1461,7 +4246,11 @@
       "tags": [
         "T3",
         "super-bot",
-        "OVER_CLIFF_WATER"
+        "OVER_CLIFF_WATER",
+        "transportable",
+        "waterDrop",
+        "HeavyDrop",
+        "shield"
       ],
       "cost": 1500,
       "energy": 0,
@@ -1469,7 +4258,36 @@
       "shield": 500,
       "speed": 1.2,
       "range": 300,
-      "buildTime": 50
+      "buildTime": 50,
+      "armor": 5,
+      "shieldRegen": 0.15,
+      "selfRegen": 0.1,
+      "turnSpeed": 3,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 80,
+          "fireDelay": 0.6667,
+          "mainDps": true,
+          "tags": [
+            "anti-air",
+            "splash"
+          ],
+          "spread": 150,
+          "splashRadius": 70
+        }
+      ],
+      "domeShield": {
+        "radius": 150,
+        "points": 500,
+        "regen": 0.15
+      }
     },
     {
       "id": "nahesansp",
@@ -1485,14 +4303,66 @@
       "tags": [
         "T1",
         "plane",
-        "AIR"
+        "AIR",
+        "ORB",
+        "AORB",
+        "transportableOBR",
+        "desant"
       ],
       "cost": 450,
-      "energy": 0,
+      "energy": 300,
       "hp": 650,
-      "speed": 1.1,
+      "speed": 1.2,
       "range": 200,
-      "buildTime": 25
+      "buildTime": 25,
+      "armor": 10000,
+      "selfRegen": 0.1,
+      "turnSpeed": 1,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 35,
+          "fireDelay": 0.8333,
+          "mainDps": true,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital"
+          ]
+        }
+      ],
+      "atmosphere": {
+        "time": 1
+      },
+      "ftlJump": {
+        "type": "plasma",
+        "chargeTime": 2,
+        "cooldown": 25,
+        "minDistance": 1000,
+        "energyCost": 600
+      },
+      "transports": [
+        {
+          "name": {
+            "ru": "Транспортник \"Ремесленник\"",
+            "en": "Transporter \"Craftsman\""
+          },
+          "seats": 8,
+          "cargoTags": [
+            "infantry",
+            "tank",
+            "bot"
+          ],
+          "unload": [
+            "space"
+          ]
+        }
+      ]
     },
     {
       "id": "pbuisp",
@@ -1508,14 +4378,42 @@
       "tags": [
         "T1",
         "plane",
-        "AIR"
+        "AIR",
+        "ORB",
+        "transportableORB",
+        "radar15",
+        "builder"
       ],
-      "cost": 400,
-      "energy": 0,
-      "hp": 500,
-      "speed": 0.6,
+      "cost": 500,
+      "energy": 400,
+      "hp": 450,
+      "speed": 0.8,
       "range": 150,
-      "buildTime": 20
+      "buildTime": 20,
+      "armor": 10000,
+      "selfRegen": 0.1,
+      "turnSpeed": 1,
+      "ftlJump": {
+        "type": "plasma",
+        "chargeTime": 2,
+        "cooldown": 25,
+        "minDistance": 1000,
+        "energyCost": 500
+      },
+      "builder": {
+        "buildRange": 150,
+        "repairSpeed": 0.3,
+        "buildSpeed": 1,
+        "healTags": [
+          "infantry",
+          "tank",
+          "bot",
+          "plane",
+          "ship",
+          "space-ship",
+          "building"
+        ]
+      }
     },
     {
       "id": "plarm",
@@ -1531,14 +4429,41 @@
       "tags": [
         "T1",
         "ship",
-        "HOVER"
+        "HOVER",
+        "transportable",
+        "waterDrop"
       ],
       "cost": 200,
-      "energy": 0,
+      "energy": 320,
       "hp": 250,
-      "speed": 1,
+      "speed": 1.1,
       "range": 440,
-      "buildTime": 10
+      "buildTime": 10,
+      "armor": 2,
+      "selfRegen": 0.1,
+      "turnSpeed": 1.5,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 200,
+          "fireDelay": 0.1667,
+          "mainDps": true,
+          "armourIgnoreAmount": 2,
+          "tags": [
+            "laser",
+            "splash",
+            "long"
+          ],
+          "spread": 80,
+          "splashRadius": 55
+        }
+      ]
     },
     {
       "id": "quarterer",
@@ -1554,14 +4479,51 @@
       "tags": [
         "T3",
         "super-bot",
-        "OVER_CLIFF_WATER"
+        "OVER_CLIFF_WATER",
+        "transportable",
+        "radar15",
+        "radar30",
+        "waterDrop",
+        "HeavyDrop"
       ],
       "cost": 1500,
       "energy": 0,
       "hp": 2000,
       "speed": 1.2,
       "range": 210,
-      "buildTime": 55
+      "buildTime": 55,
+      "armor": 6,
+      "selfRegen": 0.12,
+      "turnSpeed": 3,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 4,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 80,
+          "fireDelay": 0.75,
+          "mainDps": true,
+          "armourIgnoreAmount": 11,
+          "tags": []
+        },
+        {
+          "name": {
+            "ru": "Орудие 2",
+            "en": "Weapon 2"
+          },
+          "count": 4,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 20,
+          "fireDelay": 0.3333,
+          "mainDps": false,
+          "tags": []
+        }
+      ]
     },
     {
       "id": "rafzr",
@@ -1577,7 +4539,11 @@
       "tags": [
         "T1",
         "tank",
-        "AIR"
+        "AIR",
+        "ORB",
+        "radar15",
+        "radar30",
+        "transportableORB"
       ],
       "cost": 400,
       "energy": 0,
@@ -1585,7 +4551,10 @@
       "shield": 300,
       "speed": 0.7,
       "range": 130,
-      "buildTime": 12
+      "buildTime": 12,
+      "armor": 10000,
+      "shieldRegen": 0.1,
+      "turnSpeed": 1
     },
     {
       "id": "raidocycle",
@@ -1601,14 +4570,35 @@
       "tags": [
         "T1",
         "tank",
-        "OVER_CLIFF"
+        "OVER_CLIFF",
+        "transportable"
       ],
       "cost": 110,
-      "energy": 0,
+      "energy": 50,
       "hp": 150,
       "speed": 1.8,
       "range": 150,
-      "buildTime": 5
+      "buildTime": 5,
+      "armor": 2,
+      "selfRegen": 0.08,
+      "turnSpeed": 4,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 40,
+          "fireDelay": 1,
+          "mainDps": true,
+          "tags": [
+            "laser"
+          ]
+        }
+      ]
     },
     {
       "id": "recmob",
@@ -1624,14 +4614,44 @@
       "tags": [
         "T1",
         "ship",
-        "OVER_CLIFF_WATER"
+        "OVER_CLIFF_WATER",
+        "transportable",
+        "waterDrop",
+        "builder"
       ],
       "cost": 100,
-      "energy": 0,
+      "energy": 80,
       "hp": 180,
       "speed": 1.4,
       "range": 180,
-      "buildTime": 4
+      "buildTime": 4,
+      "armor": 1,
+      "selfRegen": 0.1,
+      "turnSpeed": 4,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 8,
+          "fireDelay": 0.25,
+          "mainDps": true,
+          "armourIgnoreAmount": 3,
+          "tags": [
+            "laser"
+          ]
+        }
+      ],
+      "builder": {
+        "buildRange": 170,
+        "repairSpeed": 0,
+        "buildSpeed": 1,
+        "healTags": []
+      }
     },
     {
       "id": "resstfzr",
@@ -1647,14 +4667,26 @@
       "tags": [
         "T1",
         "space-ship",
-        "AIR"
+        "AIR",
+        "ORB",
+        "BIG",
+        "transportableORBz",
+        "builder"
       ],
       "cost": 5000,
       "energy": 0,
       "hp": 1000,
       "shield": 700,
       "speed": 0.25,
-      "buildTime": 140
+      "buildTime": 140,
+      "armor": 10000,
+      "shieldRegen": 0.15,
+      "builder": {
+        "buildRange": 150,
+        "repairSpeed": 0,
+        "buildSpeed": 1,
+        "healTags": []
+      }
     },
     {
       "id": "rotank",
@@ -1670,14 +4702,74 @@
       "tags": [
         "T3",
         "super-tank",
-        "LAND"
+        "LAND",
+        "transportable",
+        "HeavyDrop"
       ],
       "cost": 900,
       "energy": 0,
-      "hp": 1400,
+      "hp": 1500,
       "speed": 0.75,
       "range": 390,
-      "buildTime": 28
+      "buildTime": 28,
+      "armor": 10,
+      "selfRegen": 0.06,
+      "turnSpeed": 1.4,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 220,
+          "fireDelay": 1.6667,
+          "mainDps": true,
+          "armourIgnoreAmount": 10,
+          "tags": [
+            "long"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Ракеты",
+            "en": "Missiles"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 120,
+          "fireDelay": 0.25,
+          "mainDps": false,
+          "armourIgnoreAmount": 10,
+          "tags": [
+            "rocket",
+            "splash",
+            "long"
+          ],
+          "spread": 60,
+          "splashRadius": 50
+        },
+        {
+          "name": {
+            "ru": "Ракеты",
+            "en": "Missiles"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 120,
+          "fireDelay": 0.25,
+          "mainDps": false,
+          "tags": [
+            "anti-air",
+            "rocket",
+            "long"
+          ]
+        }
+      ]
     },
     {
       "id": "rszope",
@@ -1692,14 +4784,39 @@
       },
       "tags": [
         "T1",
-        "LAND"
+        "LAND",
+        "tank",
+        "transportableSOL"
       ],
       "cost": 110,
-      "energy": 0,
+      "energy": 100,
       "hp": 150,
       "speed": 0.8,
       "range": 340,
-      "buildTime": 10
+      "buildTime": 10,
+      "armor": 1,
+      "selfRegen": 0.1,
+      "turnSpeed": 2,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 50,
+          "fireDelay": 0.25,
+          "mainDps": true,
+          "armourIgnoreAmount": 5,
+          "tags": [
+            "splash"
+          ],
+          "spread": 35,
+          "splashRadius": 20
+        }
+      ]
     },
     {
       "id": "sanatariada",
@@ -1715,14 +4832,78 @@
       "tags": [
         "T4",
         "super-bot",
-        "OVER_CLIFF_WATER"
+        "OVER_CLIFF_WATER",
+        "transportable",
+        "waterDrop",
+        "HeavyDrop",
+        "AORB"
       ],
       "cost": 5000,
       "energy": 0,
       "hp": 8000,
       "speed": 0.9,
       "range": 380,
-      "buildTime": 150
+      "buildTime": 150,
+      "armor": 11,
+      "selfRegen": 0.2,
+      "turnSpeed": 1,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 350,
+          "fireDelay": 0.3333,
+          "mainDps": true,
+          "armourIgnoreAmount": 10,
+          "tags": [
+            "anti-orbital",
+            "splash",
+            "long"
+          ],
+          "spread": 60,
+          "splashRadius": 60
+        },
+        {
+          "name": {
+            "ru": "Ракеты",
+            "en": "Missiles"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 100,
+          "fireDelay": 1.5,
+          "mainDps": false,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "rocket",
+            "long"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Орудие 3",
+            "en": "Weapon 3"
+          },
+          "count": 4,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 35,
+          "fireDelay": 0.8333,
+          "mainDps": false,
+          "armourIgnoreAmount": 4,
+          "tags": [
+            "anti-orbital",
+            "long"
+          ]
+        }
+      ]
     },
     {
       "id": "scfzr",
@@ -1738,13 +4919,15 @@
       "tags": [
         "T1",
         "plane",
-        "AIR"
+        "AIR",
+        "radar15"
       ],
       "cost": 100,
       "energy": 0,
       "hp": 250,
       "speed": 3,
-      "buildTime": 7
+      "buildTime": 7,
+      "turnSpeed": 3
     },
     {
       "id": "scoutsfzr",
@@ -1760,14 +4943,37 @@
       "tags": [
         "T1",
         "infantry",
-        "LAND"
+        "LAND",
+        "transportableSOL",
+        "radar15"
       ],
       "cost": 110,
       "energy": 0,
       "hp": 130,
       "speed": 0.7,
       "range": 260,
-      "buildTime": 6
+      "buildTime": 6,
+      "armor": 2,
+      "selfRegen": 0.01,
+      "turnSpeed": 3.5,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 15,
+          "fireDelay": 1,
+          "mainDps": true,
+          "armourIgnoreAmount": 15,
+          "tags": [
+            "laser"
+          ]
+        }
+      ]
     },
     {
       "id": "scoutspe",
@@ -1783,14 +4989,35 @@
       "tags": [
         "T1",
         "infantry",
-        "HOVER"
+        "HOVER",
+        "transportableSOL",
+        "waterDrop"
       ],
       "cost": 70,
-      "energy": 0,
+      "energy": 150,
       "hp": 180,
       "speed": 1,
       "range": 150,
-      "buildTime": 20
+      "buildTime": 20,
+      "armor": 2,
+      "selfRegen": 0.1,
+      "turnSpeed": 4,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 35,
+          "fireDelay": 1,
+          "mainDps": true,
+          "armourIgnoreAmount": 15,
+          "tags": []
+        }
+      ]
     },
     {
       "id": "scpe",
@@ -1806,13 +5033,22 @@
       "tags": [
         "T1",
         "plane",
-        "AIR"
+        "AIR",
+        "radar15",
+        "shield"
       ],
       "cost": 60,
-      "energy": 0,
+      "energy": 80,
       "hp": 180,
       "speed": 4,
-      "buildTime": 6
+      "buildTime": 6,
+      "selfRegen": 0.1,
+      "turnSpeed": 2,
+      "laserDefense": {
+        "radius": 130,
+        "points": 10,
+        "regen": 0.006
+      }
     },
     {
       "id": "servant",
@@ -1828,7 +5064,9 @@
       "tags": [
         "T4",
         "super-space-ship",
-        "AIR"
+        "AIR",
+        "ORB",
+        "AORB"
       ],
       "cost": 9500,
       "energy": 0,
@@ -1836,7 +5074,37 @@
       "shield": 2500,
       "speed": 0.4,
       "range": 1500,
-      "buildTime": 180
+      "buildTime": 180,
+      "armor": 10000,
+      "shieldRegen": 0.2,
+      "selfRegen": 0.1,
+      "turnSpeed": 0.4,
+      "weapons": [
+        {
+          "name": {
+            "ru": "ПВО",
+            "en": "AA"
+          },
+          "count": 4,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 150,
+          "fireDelay": 1.6667,
+          "mainDps": true,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-air",
+            "anti-orbital",
+            "long"
+          ]
+        }
+      ],
+      "ftlJump": {
+        "type": "siv",
+        "chargeTime": 7,
+        "cooldown": 25,
+        "minDistance": 2000
+      }
     },
     {
       "id": "shipampf",
@@ -1852,14 +5120,58 @@
       "tags": [
         "T1",
         "tank",
-        "HOVER"
+        "HOVER",
+        "radar15",
+        "AORB",
+        "transportable",
+        "waterDrop"
       ],
       "cost": 400,
-      "energy": 0,
+      "energy": 400,
       "hp": 700,
       "speed": 1,
       "range": 300,
-      "buildTime": 55
+      "buildTime": 55,
+      "armor": 5,
+      "selfRegen": 0.15,
+      "turnSpeed": 2,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 80,
+          "fireDelay": 0.75,
+          "mainDps": true,
+          "armourIgnoreAmount": 5,
+          "tags": [
+            "anti-orbital",
+            "splash"
+          ],
+          "spread": 15,
+          "splashRadius": 30
+        },
+        {
+          "name": {
+            "ru": "Орудие 2",
+            "en": "Weapon 2"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 50,
+          "fireDelay": 0.75,
+          "mainDps": false,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital"
+          ]
+        }
+      ]
     },
     {
       "id": "skms",
@@ -1875,7 +5187,13 @@
       "tags": [
         "T4",
         "super-space-ship",
-        "AIR"
+        "AIR",
+        "ORB",
+        "AORB",
+        "radar15",
+        "radar30",
+        "radar50",
+        "hq"
       ],
       "cost": 12000,
       "energy": 0,
@@ -1883,7 +5201,137 @@
       "shield": 6500,
       "speed": 0.35,
       "range": 30000,
-      "buildTime": 250
+      "buildTime": 250,
+      "armor": 10000,
+      "shieldRegen": 0.5,
+      "selfRegen": 0.2,
+      "turnSpeed": 0.15,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 1900,
+          "fireDelay": 1.6667,
+          "mainDps": false,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "splash",
+            "long"
+          ],
+          "splashRadius": 60
+        },
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 4800,
+          "fireDelay": 1.6667,
+          "mainDps": false,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "splash",
+            "long"
+          ],
+          "splashRadius": 120
+        },
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 10000,
+          "fireDelay": 1.6667,
+          "mainDps": true,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "splash",
+            "long"
+          ],
+          "splashRadius": 400
+        },
+        {
+          "name": {
+            "ru": "Орудие 4",
+            "en": "Weapon 4"
+          },
+          "count": 6,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 400,
+          "fireDelay": 5,
+          "mainDps": false,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "long"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Орудие 5",
+            "en": "Weapon 5"
+          },
+          "count": 7,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 200,
+          "fireDelay": 1.6667,
+          "mainDps": false,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "long"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 6,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 360,
+          "fireDelay": 1.6667,
+          "mainDps": false,
+          "tags": [
+            "anti-orbital",
+            "laser",
+            "splash",
+            "long"
+          ],
+          "spread": 50,
+          "splashRadius": 60
+        }
+      ],
+      "missileDefense": {
+        "max": 1,
+        "recharge": 16
+      },
+      "atmosphere": {
+        "time": 5
+      },
+      "ftlJump": {
+        "type": "siv",
+        "chargeTime": 7,
+        "cooldown": 25,
+        "minDistance": 2000
+      }
     },
     {
       "id": "solfzr",
@@ -1899,14 +5347,65 @@
       "tags": [
         "T1",
         "infantry",
-        "LAND"
+        "LAND",
+        "transportableSOL"
       ],
       "cost": 100,
       "energy": 0,
       "hp": 250,
       "speed": 0.75,
       "range": 180,
-      "buildTime": 5
+      "buildTime": 5,
+      "armor": 1,
+      "selfRegen": 0.05,
+      "turnSpeed": 3.5,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 25,
+          "fireDelay": 1.6667,
+          "mainDps": false,
+          "tags": [],
+          "spread": 0
+        },
+        {
+          "name": {
+            "ru": "Орудие 2",
+            "en": "Weapon 2"
+          },
+          "count": 6,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 5,
+          "fireDelay": 0.5,
+          "mainDps": false,
+          "tags": []
+        },
+        {
+          "name": {
+            "ru": "Ракеты",
+            "en": "Missiles"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 60,
+          "fireDelay": 5,
+          "mainDps": true,
+          "armourIgnoreAmount": 10,
+          "tags": [
+            "rocket",
+            "splash"
+          ],
+          "splashRadius": 20
+        }
+      ]
     },
     {
       "id": "solpe",
@@ -1922,14 +5421,68 @@
       "tags": [
         "T1",
         "infantry",
-        "HOVER"
+        "HOVER",
+        "transportableSOL",
+        "waterDrop"
       ],
       "cost": 60,
-      "energy": 0,
+      "energy": 100,
       "hp": 220,
       "speed": 1,
       "range": 170,
-      "buildTime": 6
+      "buildTime": 6,
+      "armor": 2,
+      "selfRegen": 0.1,
+      "turnSpeed": 4,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 25,
+          "fireDelay": 1.6667,
+          "mainDps": false,
+          "tags": [],
+          "spread": 0
+        },
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 4,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 16,
+          "fireDelay": 0.6667,
+          "mainDps": false,
+          "tags": [
+            "laser"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 65,
+          "fireDelay": 4.1667,
+          "mainDps": true,
+          "armourIgnoreAmount": 5,
+          "tags": [
+            "splash"
+          ],
+          "spread": 10,
+          "splashRadius": 20
+        }
+      ]
     },
     {
       "id": "spplpe",
@@ -1945,14 +5498,62 @@
       "tags": [
         "T1",
         "plane",
-        "AIR"
+        "AIR",
+        "AORB",
+        "desant",
+        "shield"
       ],
       "cost": 500,
-      "energy": 0,
+      "energy": 800,
       "hp": 750,
-      "speed": 1.4,
+      "speed": 1.55,
       "range": 700,
-      "buildTime": 30
+      "buildTime": 30,
+      "selfRegen": 0.15,
+      "turnSpeed": 0.65,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 2820,
+          "fireDelay": 0.1667,
+          "mainDps": true,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "splash",
+            "long"
+          ],
+          "splashRadius": 50
+        }
+      ],
+      "laserDefense": {
+        "radius": 180,
+        "points": 10,
+        "regen": 0.005
+      },
+      "transports": [
+        {
+          "name": {
+            "ru": "Самолет \"Небосвод\"",
+            "en": "Aircraft \"Skyline\""
+          },
+          "seats": 5,
+          "cargoTags": [
+            "infantry",
+            "tank",
+            "bot"
+          ],
+          "unload": [
+            "air"
+          ]
+        }
+      ]
     },
     {
       "id": "starlet",
@@ -1968,15 +5569,83 @@
       "tags": [
         "titan",
         "super-plane",
-        "AIR"
+        "AIR",
+        "ORB",
+        "AORB",
+        "radar15",
+        "radar30",
+        "radar50",
+        "builder"
       ],
       "cost": 30000,
       "energy": 0,
       "hp": 14000,
       "shield": 9000,
-      "speed": 0.12,
+      "speed": 0.25,
       "range": 600,
-      "buildTime": 50
+      "buildTime": 50,
+      "armor": 10000,
+      "shieldRegen": 0.5,
+      "selfRegen": 0.2,
+      "weapons": [
+        {
+          "name": {
+            "ru": "ПВО",
+            "en": "AA"
+          },
+          "count": 8,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 300,
+          "fireDelay": 5,
+          "mainDps": false,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-air",
+            "anti-orbital",
+            "long"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 9000,
+          "fireDelay": 1,
+          "mainDps": true,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-air",
+            "anti-orbital",
+            "laser",
+            "long"
+          ]
+        }
+      ],
+      "builder": {
+        "buildRange": 500,
+        "repairSpeed": 2,
+        "buildSpeed": 1,
+        "healTags": [
+          "space-ship",
+          "ship"
+        ]
+      },
+      "transports": [
+        {
+          "name": {
+            "ru": "ЗВЁЗДОЧКА",
+            "en": "STARLET"
+          },
+          "seats": 16,
+          "cargoTags": [],
+          "unload": []
+        }
+      ]
     },
     {
       "id": "starwarrior",
@@ -1992,7 +5661,11 @@
       "tags": [
         "T2",
         "space-ship",
-        "AIR"
+        "AIR",
+        "ORB",
+        "AORB",
+        "radar15",
+        "radar30"
       ],
       "cost": 7000,
       "energy": 0,
@@ -2000,7 +5673,137 @@
       "shield": 4500,
       "speed": 0.5,
       "range": 30000,
-      "buildTime": 170
+      "buildTime": 170,
+      "armor": 10000,
+      "shieldRegen": 0.4,
+      "selfRegen": 0.1,
+      "turnSpeed": 0.3,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 1900,
+          "fireDelay": 1.6667,
+          "mainDps": false,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "splash",
+            "long"
+          ],
+          "splashRadius": 60
+        },
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 4800,
+          "fireDelay": 1.6667,
+          "mainDps": true,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "splash",
+            "long"
+          ],
+          "splashRadius": 120
+        },
+        {
+          "name": {
+            "ru": "Орудие 3",
+            "en": "Weapon 3"
+          },
+          "count": 11,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 130,
+          "fireDelay": 1.6667,
+          "mainDps": false,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "long"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 6,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 210,
+          "fireDelay": 1.6667,
+          "mainDps": false,
+          "tags": [
+            "anti-orbital",
+            "laser",
+            "splash",
+            "long"
+          ],
+          "spread": 50,
+          "splashRadius": 50
+        },
+        {
+          "name": {
+            "ru": "Ракеты",
+            "en": "Missiles"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 200,
+          "fireDelay": 4.1667,
+          "mainDps": false,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "rocket",
+            "long"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Ракеты",
+            "en": "Missiles"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 200,
+          "fireDelay": 4.1667,
+          "mainDps": false,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "rocket",
+            "long"
+          ]
+        }
+      ],
+      "missileDefense": {
+        "max": 1,
+        "recharge": 16
+      },
+      "atmosphere": {
+        "time": 4
+      },
+      "ftlJump": {
+        "type": "siv",
+        "chargeTime": 6,
+        "cooldown": 20,
+        "minDistance": 2000
+      }
     },
     {
       "id": "stealthfzr",
@@ -2016,14 +5819,38 @@
       "tags": [
         "T4",
         "super-plane",
-        "AIR"
+        "AIR",
+        "radar15",
+        "radar30"
       ],
       "cost": 5000,
       "energy": 0,
-      "hp": 1800,
+      "hp": 2000,
       "speed": 1.8,
       "range": 330,
-      "buildTime": 200
+      "buildTime": 200,
+      "armor": 10,
+      "selfRegen": 0.1,
+      "turnSpeed": 2,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 123,
+          "fireDelay": 0.0167,
+          "mainDps": true,
+          "tags": [
+            "anti-air",
+            "splash"
+          ],
+          "splashRadius": 350
+        }
+      ]
     },
     {
       "id": "subfzr",
@@ -2039,14 +5866,39 @@
       "tags": [
         "T2",
         "ship",
-        "WATER"
+        "WATER",
+        "radar15",
+        "AORB",
+        "sonar30"
       ],
       "cost": 1300,
       "energy": 0,
       "hp": 1500,
       "speed": 0.8,
       "range": 300,
-      "buildTime": 40
+      "buildTime": 40,
+      "armor": 5,
+      "selfRegen": 0.04,
+      "turnSpeed": 1,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Ракеты",
+            "en": "Missiles"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 100,
+          "fireDelay": 1,
+          "mainDps": true,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "rocket"
+          ]
+        }
+      ]
     },
     {
       "id": "subuiair",
@@ -2062,14 +5914,49 @@
       "tags": [
         "T2",
         "plane",
-        "AIR"
+        "AIR",
+        "desant",
+        "builder"
       ],
       "cost": 600,
       "energy": 0,
       "hp": 1100,
       "speed": 2,
       "range": 130,
-      "buildTime": 20
+      "buildTime": 20,
+      "selfRegen": 0.05,
+      "turnSpeed": 1,
+      "builder": {
+        "buildRange": 160,
+        "repairSpeed": 0.4,
+        "buildSpeed": 1,
+        "healTags": [
+          "infantry",
+          "tank",
+          "bot",
+          "plane",
+          "ship",
+          "space-ship",
+          "building"
+        ]
+      },
+      "transports": [
+        {
+          "name": {
+            "ru": "Суперсамолет строитель",
+            "en": "Superplane builder"
+          },
+          "seats": 6,
+          "cargoTags": [
+            "infantry",
+            "tank",
+            "bot"
+          ],
+          "unload": [
+            "air"
+          ]
+        }
+      ]
     },
     {
       "id": "subuibotfzr",
@@ -2085,14 +5972,35 @@
       "tags": [
         "T2",
         "bot",
-        "OVER_CLIFF_WATER"
+        "OVER_CLIFF_WATER",
+        "transportable",
+        "waterDrop",
+        "HeavyDrop",
+        "builder"
       ],
       "cost": 500,
       "energy": 0,
       "hp": 750,
       "speed": 1.1,
       "range": 150,
-      "buildTime": 17
+      "buildTime": 17,
+      "armor": 6,
+      "selfRegen": 0.07,
+      "turnSpeed": 2,
+      "builder": {
+        "buildRange": 160,
+        "repairSpeed": 0.4,
+        "buildSpeed": 1,
+        "healTags": [
+          "infantry",
+          "tank",
+          "bot",
+          "plane",
+          "ship",
+          "space-ship",
+          "building"
+        ]
+      }
     },
     {
       "id": "subuilandfzr",
@@ -2108,14 +6016,49 @@
       "tags": [
         "T2",
         "tank",
-        "LAND"
+        "LAND",
+        "transportable",
+        "HeavyDrop",
+        "builder"
       ],
       "cost": 500,
       "energy": 0,
-      "hp": 950,
+      "hp": 1000,
       "speed": 0.7,
       "range": 200,
-      "buildTime": 15
+      "buildTime": 15,
+      "armor": 9,
+      "selfRegen": 0.05,
+      "turnSpeed": 1,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 30,
+          "fireDelay": 0.75,
+          "mainDps": true,
+          "tags": []
+        }
+      ],
+      "builder": {
+        "buildRange": 220,
+        "repairSpeed": 0.5,
+        "buildSpeed": 1,
+        "healTags": [
+          "infantry",
+          "tank",
+          "bot",
+          "plane",
+          "ship",
+          "space-ship",
+          "building"
+        ]
+      }
     },
     {
       "id": "taktring",
@@ -2130,14 +6073,44 @@
       },
       "tags": [
         "T1",
-        "AIR"
+        "AIR",
+        "space-ship",
+        "ORB",
+        "AORB",
+        "transportableORB"
       ],
       "cost": 400,
-      "energy": 0,
+      "energy": 2000,
       "hp": 700,
-      "speed": 1.8,
-      "range": 40,
-      "buildTime": 30
+      "speed": 1.5,
+      "range": 50,
+      "buildTime": 30,
+      "armor": 10000,
+      "selfRegen": 0.2,
+      "turnSpeed": 1.5,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 2100,
+          "fireDelay": 5,
+          "mainDps": true,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "laser",
+            "close"
+          ]
+        }
+      ],
+      "atmosphere": {
+        "time": 3
+      }
     },
     {
       "id": "tankt1fzr",
@@ -2153,14 +6126,33 @@
       "tags": [
         "T1",
         "tank",
-        "LAND"
+        "LAND",
+        "transportable"
       ],
       "cost": 150,
       "energy": 0,
       "hp": 300,
       "speed": 1.15,
       "range": 180,
-      "buildTime": 6
+      "buildTime": 6,
+      "armor": 3,
+      "turnSpeed": 4.2,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 35,
+          "fireDelay": 0.9167,
+          "mainDps": true,
+          "armourIgnoreAmount": 4,
+          "tags": []
+        }
+      ]
     },
     {
       "id": "tankt1pe",
@@ -2176,14 +6168,36 @@
       "tags": [
         "T1",
         "tank",
-        "LAND"
+        "LAND",
+        "transportable"
       ],
       "cost": 120,
-      "energy": 0,
-      "hp": 250,
-      "speed": 1.4,
+      "energy": 60,
+      "hp": 220,
+      "speed": 1.35,
       "range": 200,
-      "buildTime": 6
+      "buildTime": 6,
+      "armor": 2,
+      "selfRegen": 0.08,
+      "turnSpeed": 5,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 11,
+          "fireDelay": 0.5,
+          "mainDps": true,
+          "armourIgnoreAmount": 20,
+          "tags": [
+            "laser"
+          ]
+        }
+      ]
     },
     {
       "id": "tankt2fzr",
@@ -2199,14 +6213,33 @@
       "tags": [
         "T2",
         "tank",
-        "LAND"
+        "LAND",
+        "transportable"
       ],
       "cost": 250,
       "energy": 0,
       "hp": 700,
       "speed": 0.75,
       "range": 190,
-      "buildTime": 16
+      "buildTime": 16,
+      "armor": 6,
+      "turnSpeed": 2,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 95,
+          "fireDelay": 1.3333,
+          "mainDps": true,
+          "armourIgnoreAmount": 10,
+          "tags": []
+        }
+      ]
     },
     {
       "id": "tankus",
@@ -2222,14 +6255,36 @@
       "tags": [
         "T2",
         "tank",
-        "LAND"
+        "LAND",
+        "transportable"
       ],
       "cost": 240,
       "energy": 0,
-      "hp": 550,
+      "hp": 600,
       "speed": 0.85,
       "range": 190,
-      "buildTime": 15
+      "buildTime": 15,
+      "armor": 5,
+      "turnSpeed": 3.5,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 65,
+          "fireDelay": 1.8333,
+          "mainDps": true,
+          "armourIgnoreAmount": 3,
+          "tags": [
+            "splash"
+          ],
+          "splashRadius": 25
+        }
+      ]
     },
     {
       "id": "tigron",
@@ -2245,14 +6300,37 @@
       "tags": [
         "T3",
         "super-tank",
-        "LAND"
+        "LAND",
+        "transportable",
+        "radar15",
+        "HeavyDrop"
       ],
       "cost": 900,
       "energy": 0,
       "hp": 1100,
       "speed": 0.7,
       "range": 280,
-      "buildTime": 35
+      "buildTime": 35,
+      "armor": 8,
+      "selfRegen": 0.25,
+      "turnSpeed": 1.8,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 750,
+          "fireDelay": 5.8333,
+          "mainDps": true,
+          "tags": [
+            "laser"
+          ]
+        }
+      ]
     },
     {
       "id": "topchun",
@@ -2268,14 +6346,100 @@
       "tags": [
         "titan",
         "super-bot",
-        "OVER_CLIFF_WATER"
+        "OVER_CLIFF_WATER",
+        "transportable",
+        "BIG",
+        "waterDrop"
       ],
       "cost": 15000,
       "energy": 0,
       "hp": 13000,
       "speed": 0.6,
       "range": 750,
-      "buildTime": 600
+      "buildTime": 600,
+      "armor": 11,
+      "selfRegen": 0.65,
+      "turnSpeed": 1,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 250,
+          "fireDelay": 1.6667,
+          "mainDps": false,
+          "tags": [
+            "anti-sub",
+            "splash",
+            "long"
+          ],
+          "splashRadius": 55
+        },
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 3500,
+          "fireDelay": 20,
+          "mainDps": true,
+          "armourIgnoreAmount": 40,
+          "tags": [
+            "anti-air",
+            "anti-sub",
+            "splash",
+            "long"
+          ],
+          "splashRadius": 70
+        },
+        {
+          "name": {
+            "ru": "Орудие 3",
+            "en": "Weapon 3"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 100,
+          "fireDelay": 0.25,
+          "mainDps": false,
+          "armourIgnoreAmount": 10,
+          "tags": [
+            "long"
+          ]
+        },
+        {
+          "name": {
+            "ru": "ПВО",
+            "en": "AA"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 200,
+          "fireDelay": 3,
+          "mainDps": false,
+          "tags": [
+            "anti-air",
+            "long"
+          ]
+        }
+      ],
+      "missileDefense": {
+        "max": 1,
+        "recharge": 16
+      },
+      "torpedoDefense": {
+        "max": 1,
+        "recharge": 10
+      }
     },
     {
       "id": "torfzr",
@@ -2298,7 +6462,30 @@
       "hp": 650,
       "speed": 1.8,
       "range": 300,
-      "buildTime": 20
+      "buildTime": 20,
+      "selfRegen": 0.07,
+      "turnSpeed": 2,
+      "weapons": [
+        {
+          "name": {
+            "ru": "ПВО",
+            "en": "AA"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 145,
+          "fireDelay": 0.25,
+          "mainDps": true,
+          "tags": [
+            "anti-air"
+          ]
+        }
+      ],
+      "torpedoDefense": {
+        "max": 1,
+        "recharge": 10
+      }
     },
     {
       "id": "tri",
@@ -2314,7 +6501,10 @@
       "tags": [
         "T2",
         "space-ship",
-        "AIR"
+        "AIR",
+        "ORB",
+        "AORB",
+        "transportableORB"
       ],
       "cost": 900,
       "energy": 0,
@@ -2322,7 +6512,76 @@
       "shield": 400,
       "speed": 1.3,
       "range": 310,
-      "buildTime": 15
+      "buildTime": 15,
+      "armor": 10000,
+      "shieldRegen": 0.1,
+      "turnSpeed": 1.3,
+      "weapons": [
+        {
+          "name": {
+            "ru": "ПВО",
+            "en": "AA"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 25,
+          "fireDelay": 0.8333,
+          "mainDps": false,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-air",
+            "anti-orbital"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Ракеты",
+            "en": "Missiles"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 100,
+          "fireDelay": 10,
+          "mainDps": true,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "rocket",
+            "splash",
+            "stun"
+          ],
+          "splashRadius": 30,
+          "stunDuration": 0.5
+        },
+        {
+          "name": {
+            "ru": "ПВО",
+            "en": "AA"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 35,
+          "fireDelay": 0.8333,
+          "mainDps": false,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-air",
+            "anti-orbital"
+          ]
+        }
+      ],
+      "atmosphere": {
+        "time": 3
+      },
+      "ftlJump": {
+        "type": "siv",
+        "chargeTime": 4,
+        "cooldown": 15,
+        "minDistance": 2000
+      }
     },
     {
       "id": "tridelot",
@@ -2338,14 +6597,112 @@
       "tags": [
         "T4",
         "super-tank",
-        "OVER_CLIFF_WATER"
+        "OVER_CLIFF_WATER",
+        "transportable",
+        "AORB",
+        "waterDrop",
+        "HeavyDrop"
       ],
       "cost": 3800,
       "energy": 0,
       "hp": 6000,
       "speed": 0.75,
       "range": 1200,
-      "buildTime": 95
+      "buildTime": 95,
+      "armor": 12,
+      "selfRegen": 0.3,
+      "turnSpeed": 1.2,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 1900,
+          "fireDelay": 1.6667,
+          "mainDps": true,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "splash",
+            "long"
+          ],
+          "splashRadius": 60
+        },
+        {
+          "name": {
+            "ru": "Орудие 2",
+            "en": "Weapon 2"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 250,
+          "fireDelay": 1.6667,
+          "mainDps": false,
+          "armourIgnoreAmount": 15,
+          "tags": [
+            "anti-orbital",
+            "long"
+          ]
+        },
+        {
+          "name": {
+            "ru": "ПВО",
+            "en": "AA"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 15,
+          "fireDelay": 0.0833,
+          "mainDps": false,
+          "tags": [
+            "anti-air",
+            "anti-orbital",
+            "long"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 150,
+          "fireDelay": 0.4167,
+          "mainDps": false,
+          "armourIgnoreAmount": 10,
+          "tags": [
+            "anti-orbital",
+            "splash",
+            "long"
+          ],
+          "spread": 20,
+          "splashRadius": 50
+        },
+        {
+          "name": {
+            "ru": "Орудие 5",
+            "en": "Weapon 5"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 60,
+          "fireDelay": 0.75,
+          "mainDps": false,
+          "tags": [
+            "anti-orbital",
+            "long"
+          ]
+        }
+      ]
     },
     {
       "id": "trident",
@@ -2361,7 +6718,11 @@
       "tags": [
         "T2",
         "space-ship",
-        "AIR"
+        "AIR",
+        "ORB",
+        "AORB",
+        "radar15",
+        "desant"
       ],
       "cost": 3000,
       "energy": 0,
@@ -2369,7 +6730,94 @@
       "shield": 2000,
       "speed": 0.7,
       "range": 500,
-      "buildTime": 70
+      "buildTime": 70,
+      "armor": 10000,
+      "shieldRegen": 0.2,
+      "selfRegen": 0.1,
+      "turnSpeed": 0.4,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 550,
+          "fireDelay": 12,
+          "mainDps": false,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "laser",
+            "long"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 600,
+          "fireDelay": 12,
+          "mainDps": true,
+          "tags": [
+            "anti-orbital",
+            "laser",
+            "splash",
+            "long"
+          ],
+          "spread": 5,
+          "splashRadius": 70
+        },
+        {
+          "name": {
+            "ru": "ПВО",
+            "en": "AA"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 90,
+          "fireDelay": 1.3333,
+          "mainDps": false,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-air",
+            "anti-orbital",
+            "long"
+          ]
+        }
+      ],
+      "atmosphere": {
+        "time": 4
+      },
+      "ftlJump": {
+        "type": "siv",
+        "chargeTime": 6,
+        "cooldown": 20,
+        "minDistance": 2000
+      },
+      "transports": [
+        {
+          "name": {
+            "ru": "Трезубец",
+            "en": "Trident"
+          },
+          "seats": 4,
+          "cargoTags": [
+            "infantry",
+            "tank",
+            "bot",
+            "plane"
+          ],
+          "unload": []
+        }
+      ]
     },
     {
       "id": "tring",
@@ -2384,13 +6832,35 @@
       },
       "tags": [
         "T1",
-        "AIR"
+        "AIR",
+        "plane",
+        "desant"
       ],
       "cost": 80,
-      "energy": 0,
+      "energy": 400,
       "hp": 300,
-      "speed": 2.5,
-      "buildTime": 10
+      "speed": 2.4,
+      "buildTime": 10,
+      "selfRegen": 0.1,
+      "turnSpeed": 3.2,
+      "transports": [
+        {
+          "name": {
+            "ru": "Транспортное кольцо",
+            "en": "Transport ring"
+          },
+          "seats": 2,
+          "cargoTags": [
+            "infantry",
+            "tank",
+            "bot"
+          ],
+          "unload": [
+            "air",
+            "shore"
+          ]
+        }
+      ]
     },
     {
       "id": "tur",
@@ -2426,14 +6896,83 @@
       "tags": [
         "T4",
         "super-tank",
-        "HOVER"
+        "HOVER",
+        "radar15",
+        "radar30",
+        "transportable",
+        "AORB",
+        "waterDrop",
+        "HeavyDrop"
       ],
       "cost": 2500,
       "energy": 0,
       "hp": 4000,
       "speed": 0.6,
       "range": 410,
-      "buildTime": 50
+      "buildTime": 50,
+      "armor": 11,
+      "selfRegen": 0.1,
+      "turnSpeed": 1,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 200,
+          "fireDelay": 1.6667,
+          "mainDps": false,
+          "tags": [
+            "anti-sub",
+            "anti-orbital",
+            "splash",
+            "long"
+          ],
+          "splashRadius": 50
+        },
+        {
+          "name": {
+            "ru": "Ракеты",
+            "en": "Missiles"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 400,
+          "fireDelay": 0.1667,
+          "mainDps": true,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "rocket",
+            "long"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Орудие 3",
+            "en": "Weapon 3"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 35,
+          "fireDelay": 0.1667,
+          "mainDps": false,
+          "armourIgnoreAmount": 15,
+          "tags": [
+            "anti-orbital",
+            "long"
+          ]
+        }
+      ],
+      "torpedoDefense": {
+        "max": 1,
+        "recharge": 10
+      }
     },
     {
       "id": "universal",
@@ -2453,11 +6992,51 @@
       ],
       "cost": 3500,
       "energy": 0,
-      "hp": 1500,
-      "shield": 1000,
+      "hp": 2000,
+      "shield": 1500,
       "speed": 1.8,
       "range": 250,
-      "buildTime": 80
+      "buildTime": 80,
+      "armor": 2,
+      "shieldRegen": 0.5,
+      "selfRegen": 0.01,
+      "turnSpeed": 2,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 33,
+          "fireDelay": 0.25,
+          "mainDps": false,
+          "armourIgnoreAmount": 7,
+          "tags": []
+        },
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 90,
+          "fireDelay": 5,
+          "mainDps": true,
+          "armourIgnoreAmount": 5,
+          "tags": [
+            "laser",
+            "splash",
+            "stun"
+          ],
+          "splashRadius": 35,
+          "stunDuration": 3
+        }
+      ]
     },
     {
       "id": "wbdpe",
@@ -2476,11 +7055,33 @@
         "WATER"
       ],
       "cost": 100,
-      "energy": 0,
+      "energy": 800,
       "hp": 150,
       "speed": 1.1,
       "range": 25,
-      "buildTime": 12
+      "buildTime": 12,
+      "armor": 3,
+      "selfRegen": 0.1,
+      "turnSpeed": 1.1,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 650,
+          "fireDelay": 1,
+          "mainDps": true,
+          "tags": [
+            "splash",
+            "close"
+          ],
+          "splashRadius": 85
+        }
+      ]
     },
     {
       "id": "wedge",
@@ -2496,14 +7097,70 @@
       "tags": [
         "T1",
         "plane",
-        "AIR"
+        "AIR",
+        "ORB",
+        "AORB",
+        "radar15"
       ],
       "cost": 2500,
-      "energy": 0,
+      "energy": 2000,
       "hp": 4500,
-      "speed": 0.6,
-      "range": 450,
-      "buildTime": 70
+      "speed": 0.7,
+      "range": 430,
+      "buildTime": 70,
+      "armor": 10000,
+      "selfRegen": 0.3,
+      "turnSpeed": 0.5,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 3,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 400,
+          "fireDelay": 3.8333,
+          "mainDps": true,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "laser",
+            "long"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 550,
+          "fireDelay": 1,
+          "mainDps": false,
+          "tags": [
+            "anti-air",
+            "anti-orbital",
+            "splash",
+            "long"
+          ],
+          "spread": 75,
+          "splashRadius": 65
+        }
+      ],
+      "atmosphere": {
+        "time": 3
+      },
+      "ftlJump": {
+        "type": "plasma",
+        "chargeTime": 4,
+        "cooldown": 35,
+        "minDistance": 1000,
+        "energyCost": 1200
+      }
     },
     {
       "id": "zenith",
@@ -2519,14 +7176,60 @@
       "tags": [
         "T3",
         "super-tank",
-        "LAND"
+        "LAND",
+        "transportable",
+        "waterDrop",
+        "HeavyDrop"
       ],
       "cost": 1000,
       "energy": 0,
       "hp": 1200,
       "speed": 0.6,
       "range": 480,
-      "buildTime": 30
+      "buildTime": 30,
+      "armor": 10,
+      "selfRegen": 0.06,
+      "turnSpeed": 1.2,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 3,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 170,
+          "fireDelay": 6,
+          "mainDps": true,
+          "armourIgnoreAmount": 5,
+          "tags": [
+            "splash",
+            "long"
+          ],
+          "spread": 50,
+          "splashRadius": 65
+        },
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 100,
+          "fireDelay": 1.1667,
+          "mainDps": false,
+          "tags": [
+            "anti-air",
+            "splash",
+            "long"
+          ],
+          "spread": 150,
+          "splashRadius": 70
+        }
+      ]
     },
     {
       "id": "zhwing",
@@ -2542,7 +7245,10 @@
       "tags": [
         "T2",
         "space-ship",
-        "AIR"
+        "AIR",
+        "ORB",
+        "AORB",
+        "desant"
       ],
       "cost": 2000,
       "energy": 0,
@@ -2550,7 +7256,1637 @@
       "shield": 700,
       "speed": 1,
       "range": 470,
-      "buildTime": 50
+      "buildTime": 45,
+      "armor": 10000,
+      "shieldRegen": 0.2,
+      "turnSpeed": 0.75,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 100,
+          "fireDelay": 8.3333,
+          "mainDps": false,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "splash",
+            "long"
+          ],
+          "spread": 150,
+          "splashRadius": 80
+        },
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 300,
+          "fireDelay": 8.3333,
+          "mainDps": true,
+          "tags": [
+            "anti-orbital",
+            "splash",
+            "long"
+          ],
+          "spread": 15,
+          "splashRadius": 45
+        },
+        {
+          "name": {
+            "ru": "ПВО",
+            "en": "AA"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 10,
+          "fireDelay": 0.1667,
+          "mainDps": false,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-air",
+            "anti-orbital",
+            "long"
+          ]
+        }
+      ],
+      "atmosphere": {
+        "time": 3
+      },
+      "ftlJump": {
+        "type": "siv",
+        "chargeTime": 5,
+        "cooldown": 15,
+        "minDistance": 2000
+      },
+      "transports": [
+        {
+          "name": {
+            "ru": "Ж-Крыл",
+            "en": "Zh-Wing"
+          },
+          "seats": 5,
+          "cargoTags": [
+            "infantry",
+            "tank",
+            "bot"
+          ],
+          "unload": []
+        }
+      ]
+    },
+    {
+      "id": "ballist",
+      "name": {
+        "ru": "Баллиста",
+        "en": "Ballista"
+      },
+      "faction": "aborigines",
+      "desc": {
+        "ru": "Большой радиус стрельбы • Медленная, медленно стреляет • Стреляет станящими копьями из энергокристаллов",
+        "en": "Long firing range • Slow, fires slowly • Fires stunning spears made of energy crystals"
+      },
+      "tags": [
+        "T1",
+        "infantry",
+        "OVER_CLIFF",
+        "transportable",
+        "arty",
+        "aborigines"
+      ],
+      "cost": 150,
+      "energy": 0,
+      "hp": 150,
+      "armor": 2,
+      "selfRegen": 0.01,
+      "speed": 0.4,
+      "turnSpeed": 0.8,
+      "range": 350,
+      "buildTime": 20,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 200,
+          "fireDelay": 4.5,
+          "mainDps": true,
+          "armourIgnoreAmount": 7,
+          "tags": [
+            "splash",
+            "stun",
+            "long"
+          ],
+          "spread": 10,
+          "splashRadius": 35,
+          "stunDuration": 4
+        }
+      ],
+      "image": ""
+    },
+    {
+      "id": "constrmech",
+      "name": {
+        "ru": "Строительный механизм",
+        "en": "Construction rig"
+      },
+      "faction": "aborigines",
+      "desc": {
+        "ru": "Позволяет возводить сооружения аборигенов • Для работы требуется разложить на месте",
+        "en": "Allows you to construct native structures • Must be deployed on site to work"
+      },
+      "tags": [
+        "T1",
+        "tank",
+        "OVER_CLIFF",
+        "transportable",
+        "aborigines"
+      ],
+      "cost": 100,
+      "energy": 0,
+      "hp": 200,
+      "armor": 2,
+      "selfRegen": 0.01,
+      "speed": 0.4,
+      "turnSpeed": 0.8,
+      "buildTime": 15,
+      "image": ""
+    },
+    {
+      "id": "dreabo",
+      "name": {
+        "ru": "Каноэ",
+        "en": "Canoe"
+      },
+      "faction": "aborigines",
+      "desc": {
+        "ru": "Перевозит юниты • Можно перетаскивать по суше",
+        "en": "Transports units • Can be towed over land"
+      },
+      "tags": [
+        "T1",
+        "ship",
+        "HOVER",
+        "desant",
+        "waterDrop"
+      ],
+      "cost": 150,
+      "energy": 0,
+      "hp": 400,
+      "armor": 1,
+      "speed": 0.4,
+      "turnSpeed": 1,
+      "buildTime": 20,
+      "transports": [
+        {
+          "name": {
+            "ru": "Каноэ",
+            "en": "Canoe"
+          },
+          "seats": 2,
+          "cargoTags": [
+            "infantry",
+            "tank",
+            "bot"
+          ],
+          "unload": [
+            "water"
+          ]
+        }
+      ],
+      "image": ""
+    },
+    {
+      "id": "shamans",
+      "name": {
+        "ru": "Шаманы",
+        "en": "Shamans"
+      },
+      "faction": "aborigines",
+      "desc": {
+        "ru": "Отряд поддержки • Лечат ближайшие отряды и здания • Оберегают от снарядов и злых духов",
+        "en": "Support squad • Heals nearby squads and buildings • Protects from shells and evil spirits"
+      },
+      "tags": [
+        "T1",
+        "infantry",
+        "OVER_CLIFF",
+        "transportableSOL",
+        "builder",
+        "shield",
+        "aborigines"
+      ],
+      "cost": 200,
+      "energy": 0,
+      "hp": 250,
+      "selfRegen": 0.08,
+      "shieldRegen": 0.01,
+      "speed": 0.9,
+      "turnSpeed": 2.2,
+      "range": 120,
+      "buildTime": 10,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 25,
+          "fireDelay": 1.6667,
+          "mainDps": true,
+          "tags": [
+            "anti-sub"
+          ],
+          "spread": 0
+        }
+      ],
+      "builder": {
+        "buildRange": 170,
+        "repairSpeed": 0.3,
+        "buildSpeed": 1,
+        "healTags": [
+          "infantry"
+        ]
+      },
+      "image": ""
+    },
+    {
+      "id": "sling",
+      "name": {
+        "ru": "Пращники",
+        "en": "Slingers"
+      },
+      "faction": "aborigines",
+      "desc": {
+        "ru": "Дальнобойная пехота • Стреляют станящими кусочками энергокристаллов • Могут так же атаковать воздушные юниты",
+        "en": "Long-range infantry • Fire stunning energy crystal shards • Can also attack air units"
+      },
+      "tags": [
+        "T1",
+        "infantry",
+        "OVER_CLIFF",
+        "transportableSOL",
+        "aborigines"
+      ],
+      "cost": 180,
+      "energy": 0,
+      "hp": 200,
+      "selfRegen": 0.08,
+      "speed": 0.85,
+      "turnSpeed": 2,
+      "range": 200,
+      "buildTime": 12,
+      "weapons": [
+        {
+          "name": {
+            "ru": "ПВО",
+            "en": "AA"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 25,
+          "fireDelay": 1.6667,
+          "mainDps": false,
+          "tags": [
+            "anti-air"
+          ],
+          "spread": 0
+        },
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 6,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 50,
+          "fireDelay": 3.3333,
+          "mainDps": true,
+          "armourIgnoreAmount": 7,
+          "tags": [
+            "anti-air",
+            "splash",
+            "stun"
+          ],
+          "spread": 20,
+          "splashRadius": 25,
+          "stunDuration": 1
+        }
+      ],
+      "image": ""
+    },
+    {
+      "id": "spear",
+      "name": {
+        "ru": "Копейщики",
+        "en": "Spearmen"
+      },
+      "faction": "aborigines",
+      "desc": {
+        "ru": "Отряд ближнего боя • Оснащены станящими копьями из энергокристаллов • Могут так же атаковать копьями юниты под водой",
+        "en": "Melee squad • Equipped with stunning spears made of energy crystals • Can also attack underwater units with their spears"
+      },
+      "tags": [
+        "T1",
+        "infantry",
+        "OVER_CLIFF",
+        "transportableSOL",
+        "aborigines"
+      ],
+      "cost": 150,
+      "energy": 0,
+      "hp": 300,
+      "selfRegen": 0.08,
+      "speed": 0.85,
+      "turnSpeed": 2,
+      "range": 5,
+      "buildTime": 10,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 25,
+          "fireDelay": 1.6667,
+          "mainDps": false,
+          "tags": [
+            "anti-sub",
+            "close"
+          ],
+          "spread": 0
+        },
+        {
+          "name": {
+            "ru": "Орудие 2",
+            "en": "Weapon 2"
+          },
+          "count": 4,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 30,
+          "fireDelay": 0.25,
+          "mainDps": true,
+          "tags": [
+            "anti-sub",
+            "stun",
+            "close"
+          ],
+          "spread": 0,
+          "stunDuration": 1
+        }
+      ],
+      "image": ""
+    },
+    {
+      "id": "bus",
+      "name": {
+        "ru": "Автобус",
+        "en": "Bus"
+      },
+      "faction": "neutrals",
+      "desc": {
+        "ru": "Гражданский транспорт • Может перевозить пехотные отряды",
+        "en": "Civilian transport • Can carry infantry squads"
+      },
+      "tags": [
+        "T1",
+        "tank",
+        "LAND",
+        "transportable",
+        "desant"
+      ],
+      "cost": 80,
+      "energy": 0,
+      "hp": 250,
+      "armor": 2,
+      "speed": 1.4,
+      "turnSpeed": 2,
+      "buildTime": 4,
+      "transports": [
+        {
+          "name": {
+            "ru": "Автобус",
+            "en": "Bus"
+          },
+          "seats": 2,
+          "cargoTags": [
+            "infantry",
+            "tank",
+            "bot"
+          ],
+          "unload": [
+            "shore"
+          ]
+        }
+      ],
+      "image": ""
+    },
+    {
+      "id": "car",
+      "name": {
+        "ru": "Машина",
+        "en": "Vehicle"
+      },
+      "faction": "neutrals",
+      "desc": {
+        "ru": "Гражданский автомобиль • Может перевозить 1 пехотный отряд",
+        "en": "Civilian car • Can transport 1 infantry squad"
+      },
+      "tags": [
+        "T1",
+        "tank",
+        "LAND",
+        "transportable",
+        "desant",
+        "building+"
+      ],
+      "cost": 50,
+      "energy": 0,
+      "hp": 150,
+      "armor": 1,
+      "speed": 1.8,
+      "turnSpeed": 3,
+      "buildTime": 3,
+      "transports": [
+        {
+          "name": {
+            "ru": "Машина",
+            "en": "Vehicle"
+          },
+          "seats": 1,
+          "cargoTags": [
+            "infantry",
+            "tank",
+            "bot"
+          ],
+          "unload": [
+            "shore"
+          ]
+        }
+      ],
+      "image": ""
+    },
+    {
+      "id": "gua",
+      "name": {
+        "ru": "Гарпа",
+        "en": "Guarpa"
+      },
+      "faction": "bioforms",
+      "desc": {
+        "ru": "Агрессивное летающее животное • Может напасть на армию и авиацию • Может совершить бросок к цели",
+        "en": "Aggressive flying animal • Can attack armies and aircraft • Can lunge at its target"
+      },
+      "tags": [
+        "T1",
+        "beast",
+        "AIR",
+        "transportable"
+      ],
+      "cost": 150,
+      "energy": 0,
+      "hp": 250,
+      "armor": 1,
+      "selfRegen": 0.35,
+      "speed": 2,
+      "turnSpeed": 3,
+      "range": 5,
+      "buildTime": 20,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 10,
+          "fireDelay": 0.25,
+          "mainDps": true,
+          "armourIgnoreAmount": 5,
+          "tags": [
+            "close"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Орудие 2",
+            "en": "Weapon 2"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 10,
+          "fireDelay": 5,
+          "mainDps": false,
+          "armourIgnoreAmount": 5,
+          "tags": [
+            "close"
+          ]
+        }
+      ],
+      "image": ""
+    },
+    {
+      "id": "mea",
+      "name": {
+        "ru": "Меа-Друк",
+        "en": "Mea-Druck"
+      },
+      "faction": "bioforms",
+      "desc": {
+        "ru": "Агрессивное морское живтоное • Может напасть на надводные и подводные юниты • Живучий, быстрый • Может совершить бросок к цели",
+        "en": "Aggressive sea creature • Can attack surface and underwater units • Tough and fast • Can lunge at its target"
+      },
+      "tags": [
+        "T1",
+        "beast",
+        "WATER"
+      ],
+      "cost": 400,
+      "energy": 0,
+      "hp": 900,
+      "armor": 6,
+      "selfRegen": 0.4,
+      "speed": 1.3,
+      "turnSpeed": 2,
+      "range": 5,
+      "buildTime": 50,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 50,
+          "fireDelay": 0.25,
+          "mainDps": true,
+          "armourIgnoreAmount": 10,
+          "tags": [
+            "close"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Орудие 2",
+            "en": "Weapon 2"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 50,
+          "fireDelay": 5,
+          "mainDps": false,
+          "armourIgnoreAmount": 10,
+          "tags": [
+            "close"
+          ]
+        }
+      ],
+      "image": ""
+    },
+    {
+      "id": "osm",
+      "name": {
+        "ru": "Осмад",
+        "en": "Osmad"
+      },
+      "faction": "bioforms",
+      "desc": {
+        "ru": "Агрессивное морское живтоное • Может напасть на надводные и подводные юниты • Живучий, медленный, может притягивать юниты щупальцами",
+        "en": "Aggressive sea creature • Can attack surface and underwater units • Tough, slow, can pull units in with its tentacles"
+      },
+      "tags": [
+        "T1",
+        "beast",
+        "WATER"
+      ],
+      "cost": 800,
+      "energy": 0,
+      "hp": 2500,
+      "armor": 7,
+      "selfRegen": 0.4,
+      "speed": 0.6,
+      "turnSpeed": 1,
+      "range": 200,
+      "buildTime": 80,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 70,
+          "fireDelay": 0.0833,
+          "mainDps": true,
+          "armourIgnoreAmount": 10,
+          "tags": []
+        },
+        {
+          "name": {
+            "ru": "Орудие 2",
+            "en": "Weapon 2"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 70,
+          "fireDelay": 5,
+          "mainDps": false,
+          "armourIgnoreAmount": 10,
+          "tags": []
+        },
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 5,
+          "fireDelay": 0.05,
+          "mainDps": false,
+          "tags": [
+            "laser"
+          ]
+        }
+      ],
+      "image": ""
+    },
+    {
+      "id": "pig",
+      "name": {
+        "ru": "Пигуй",
+        "en": "Pigui"
+      },
+      "faction": "bioforms",
+      "desc": {
+        "ru": "Агрессивный прыгучий земноводный зверь • Может напасть на армию и флот • Быстрый, может ходить по воде и прыгать на воздушные юниты",
+        "en": "An aggressive leaping amphibious beast • Can attack armies and fleets • Fast, can walk on water and jump onto air units"
+      },
+      "tags": [
+        "T1",
+        "beast",
+        "OVER_CLIFF_WATER",
+        "transportable"
+      ],
+      "cost": 150,
+      "energy": 0,
+      "hp": 300,
+      "armor": 3,
+      "selfRegen": 0.4,
+      "speed": 1.3,
+      "turnSpeed": 2,
+      "range": 5,
+      "buildTime": 20,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 10,
+          "fireDelay": 0.25,
+          "mainDps": true,
+          "armourIgnoreAmount": 5,
+          "tags": [
+            "close"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Орудие 2",
+            "en": "Weapon 2"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 10,
+          "fireDelay": 5,
+          "mainDps": false,
+          "armourIgnoreAmount": 5,
+          "tags": [
+            "close"
+          ]
+        }
+      ],
+      "image": ""
+    },
+    {
+      "id": "voy",
+      "name": {
+        "ru": "Войек",
+        "en": "Voyeck"
+      },
+      "faction": "bioforms",
+      "desc": {
+        "ru": "Агрессивный наземный зверь • Может напасть на армию • Живучий, имеет мощный укус, может ходить через горы",
+        "en": "Aggressive ground beast • Can attack armies • Tough, has a powerful bite, can travel through mountains"
+      },
+      "tags": [
+        "T1",
+        "beast",
+        "OVER_CLIFF",
+        "transportable"
+      ],
+      "cost": 150,
+      "energy": 0,
+      "hp": 400,
+      "armor": 5,
+      "selfRegen": 0.2,
+      "speed": 1.6,
+      "turnSpeed": 2,
+      "range": 5,
+      "buildTime": 20,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 15,
+          "fireDelay": 0.25,
+          "mainDps": true,
+          "armourIgnoreAmount": 10,
+          "tags": [
+            "close"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Орудие 2",
+            "en": "Weapon 2"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 15,
+          "fireDelay": 5,
+          "mainDps": false,
+          "armourIgnoreAmount": 10,
+          "tags": [
+            "close"
+          ]
+        }
+      ],
+      "image": ""
+    },
+    {
+      "id": "hanbula",
+      "name": {
+        "ru": "Ханхонхан Булгамский",
+        "en": "Hanhonhan Bulgamian"
+      },
+      "faction": "bioforms",
+      "desc": {
+        "ru": "Опасный монстр • Чрезмерно агрессивен, нападает даже на технику • Может ходить по лаве, поджигает землю",
+        "en": "Dangerous monster • Excessively aggressive, attacks even vehicles • Can walk on lava, sets the ground on fire"
+      },
+      "tags": [
+        "T2",
+        "beast",
+        "OVER_CLIFF",
+        "han",
+        "transportable",
+        "waterDrop",
+        "lavaDrop"
+      ],
+      "cost": 500,
+      "energy": 0,
+      "hp": 3200,
+      "selfRegen": 0.5,
+      "speed": 1.25,
+      "turnSpeed": 2,
+      "range": 5,
+      "buildTime": 17,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 45,
+          "fireDelay": 0.25,
+          "mainDps": true,
+          "armourIgnoreAmount": 10,
+          "tags": [
+            "close"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Орудие 2",
+            "en": "Weapon 2"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 45,
+          "fireDelay": 5,
+          "mainDps": false,
+          "armourIgnoreAmount": 10,
+          "tags": [
+            "close"
+          ]
+        }
+      ],
+      "image": ""
+    },
+    {
+      "id": "hanskal",
+      "name": {
+        "ru": "Ханхонхан Скаллерский",
+        "en": "Hanhonhan Skallerian"
+      },
+      "faction": "bioforms",
+      "desc": {
+        "ru": "Опасный водоплавающий монстр • Чрезмерно агрессивен, нападает даже на технику • Очень хорошо плавает, может бить хвостом",
+        "en": "Dangerous aquatic monster • Excessively aggressive, attacks even vehicles • Swims very well, can strike with its tail"
+      },
+      "tags": [
+        "T2",
+        "beast",
+        "OVER_CLIFF_WATER",
+        "han",
+        "transportable",
+        "waterDrop"
+      ],
+      "cost": 500,
+      "energy": 0,
+      "hp": 3900,
+      "armor": 13,
+      "selfRegen": 0.3,
+      "speed": 1.3,
+      "turnSpeed": 2,
+      "range": 5,
+      "buildTime": 30,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 50,
+          "fireDelay": 0.25,
+          "mainDps": true,
+          "armourIgnoreAmount": 10,
+          "tags": [
+            "close"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Орудие 2",
+            "en": "Weapon 2"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 50,
+          "fireDelay": 5,
+          "mainDps": false,
+          "armourIgnoreAmount": 10,
+          "tags": [
+            "close"
+          ]
+        }
+      ],
+      "image": ""
+    },
+    {
+      "id": "hanslet",
+      "name": {
+        "ru": "Ханхонхан Слетаризийский",
+        "en": "Hanhonhan Sletarezian"
+      },
+      "faction": "bioforms",
+      "desc": {
+        "ru": "Опасный водоплавающий монстр • Чрезмерно агрессивен, нападает даже на технику • Электрезует местность вокруг себя • Пускает разряды и бьет молниями",
+        "en": "Dangerous aquatic monster • Excessively aggressive, attacks even vehicles • Electrifies the terrain around it • Fires discharges and strikes with lightning"
+      },
+      "tags": [
+        "T2",
+        "beast",
+        "OVER_CLIFF_WATER",
+        "han",
+        "transportable",
+        "waterDrop"
+      ],
+      "cost": 500,
+      "energy": 0,
+      "hp": 3600,
+      "armor": 17,
+      "selfRegen": 0.4,
+      "speed": 1,
+      "turnSpeed": 1,
+      "range": 55,
+      "buildTime": 17,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 20,
+          "fireDelay": 0.1,
+          "mainDps": true,
+          "armourIgnoreAmount": 10,
+          "tags": [
+            "close"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Орудие 2",
+            "en": "Weapon 2"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 20,
+          "fireDelay": 5,
+          "mainDps": false,
+          "armourIgnoreAmount": 10,
+          "tags": [
+            "close"
+          ]
+        }
+      ],
+      "image": ""
+    },
+    {
+      "id": "hantam",
+      "name": {
+        "ru": "Ханхонхан Тантантамский",
+        "en": "Hanhonhan Tantantamian"
+      },
+      "faction": "bioforms",
+      "desc": {
+        "ru": "Опасный водоплавающий монстр • Чрезмерно агрессивен, нападает даже на технику • Живучий и сильный",
+        "en": "Dangerous aquatic monster • Excessively aggressive, attacks even vehicles • Tough and strong"
+      },
+      "tags": [
+        "T2",
+        "beast",
+        "OVER_CLIFF_WATER",
+        "han",
+        "transportable",
+        "waterDrop"
+      ],
+      "cost": 500,
+      "energy": 0,
+      "hp": 3600,
+      "armor": 11,
+      "selfRegen": 0.5,
+      "speed": 1.6,
+      "turnSpeed": 2,
+      "range": 5,
+      "buildTime": 30,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 35,
+          "fireDelay": 0.25,
+          "mainDps": true,
+          "armourIgnoreAmount": 10,
+          "tags": [
+            "close"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Орудие 2",
+            "en": "Weapon 2"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 35,
+          "fireDelay": 5,
+          "mainDps": false,
+          "armourIgnoreAmount": 10,
+          "tags": [
+            "close"
+          ]
+        }
+      ],
+      "image": ""
+    },
+    {
+      "id": "hanuno",
+      "name": {
+        "ru": "Ханхонхан Уноронский",
+        "en": "Hanhonhan Unoronian"
+      },
+      "faction": "bioforms",
+      "desc": {
+        "ru": "Опасный водоплавающий монстр • Чрезмерно агрессивен, нападает даже на технику • Радиоактивен, может кусать или плеваться токсинами на расстоянии",
+        "en": "Dangerous aquatic monster • Excessively aggressive, attacks even vehicles • Radioactive, can bite or spit toxins at range"
+      },
+      "tags": [
+        "T2",
+        "beast",
+        "OVER_CLIFF_WATER",
+        "han",
+        "transportable",
+        "waterDrop"
+      ],
+      "cost": 500,
+      "energy": 0,
+      "hp": 3500,
+      "armor": 11,
+      "selfRegen": 0.45,
+      "speed": 1.6,
+      "turnSpeed": 2,
+      "range": 5,
+      "buildTime": 30,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 20,
+          "fireDelay": 0.25,
+          "mainDps": true,
+          "armourIgnoreAmount": 10,
+          "tags": [
+            "close"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Орудие 2",
+            "en": "Weapon 2"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 20,
+          "fireDelay": 5,
+          "mainDps": false,
+          "armourIgnoreAmount": 10,
+          "tags": [
+            "close"
+          ]
+        }
+      ],
+      "image": ""
+    },
+    {
+      "id": "bumba",
+      "name": {
+        "ru": "Подрывной заряд",
+        "en": "Demolition charge"
+      },
+      "faction": "darkmarket",
+      "desc": {
+        "ru": "Уровень стелса: 4 • Используется для уничтожения мостов, каналов, тоннелей и зданий • Можно использовать для пробивания прохода как снаружи, так и из под земли • Можно подрывать вражеские здания, сделав к ним подкоп • Есть режим автоматического самоподрыва для ловушек",
+        "en": "Stealth level: 4 • Used to destroy bridges, canals, tunnels and buildings • Can be used to breach a passage both from outside and from underground • Can blow up enemy buildings by tunneling to them • Has an automatic self-destruct mode for traps"
+      },
+      "tags": [
+        "T1",
+        "OVER_CLIFF",
+        "building+",
+        "trap"
+      ],
+      "cost": 200,
+      "energy": 0,
+      "hp": 500,
+      "range": 25,
+      "buildTime": 6,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 800,
+          "fireDelay": 1,
+          "mainDps": true,
+          "armourIgnoreAmount": 15,
+          "tags": [
+            "splash",
+            "close"
+          ],
+          "splashRadius": 55
+        }
+      ],
+      "image": ""
+    },
+    {
+      "id": "detraider",
+      "name": {
+        "ru": "Детраидер",
+        "en": "Detraider"
+      },
+      "faction": "darkmarket",
+      "desc": {
+        "ru": "Быстрый, манёвренный штурмовик-транспортник • Имеет хорошие пушки",
+        "en": "Fast, agile assault transport • Has good cannons"
+      },
+      "tags": [
+        "T1",
+        "space-ship",
+        "AIR",
+        "ORB",
+        "AORB",
+        "transportableOBR",
+        "bmarket",
+        "desant"
+      ],
+      "cost": 1200,
+      "energy": 0,
+      "hp": 1200,
+      "shield": 500,
+      "armor": 10000,
+      "selfRegen": 0.05,
+      "shieldRegen": 0.1,
+      "speed": 1.2,
+      "turnSpeed": 1,
+      "range": 280,
+      "buildTime": 50,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 20,
+          "fireDelay": 0.5,
+          "mainDps": true,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital"
+          ]
+        }
+      ],
+      "atmosphere": {
+        "time": 3
+      },
+      "ftlJump": {
+        "type": "tele",
+        "chargeTime": 7,
+        "cooldown": 10,
+        "minDistance": 2500
+      },
+      "transports": [
+        {
+          "name": {
+            "ru": "Детраидер",
+            "en": "Detraider"
+          },
+          "seats": 4,
+          "cargoTags": [
+            "infantry",
+            "tank",
+            "bot"
+          ],
+          "unload": [
+            "space"
+          ]
+        }
+      ],
+      "image": ""
+    },
+    {
+      "id": "engineerim",
+      "name": {
+        "ru": "Закладчики",
+        "en": "Bookmakers"
+      },
+      "faction": "darkmarket",
+      "desc": {
+        "ru": "Уровень стелса: 1 • Стелс инженеры, есть радар • Могут строить здания и закладывать ловушки",
+        "en": "Stealth level: 1 • Stealth engineers, have radar • Can build buildings and place traps"
+      },
+      "tags": [
+        "T1",
+        "infantry",
+        "LAND",
+        "transportableSOL",
+        "radar15",
+        "builder"
+      ],
+      "cost": 100,
+      "energy": 0,
+      "hp": 120,
+      "armor": 2,
+      "selfRegen": 0.02,
+      "speed": 0.7,
+      "turnSpeed": 4,
+      "buildTime": 6,
+      "builder": {
+        "buildRange": 110,
+        "repairSpeed": 0.4,
+        "buildSpeed": 1,
+        "healTags": [
+          "infantry",
+          "tank",
+          "bot",
+          "plane",
+          "ship",
+          "space-ship",
+          "building"
+        ]
+      },
+      "image": ""
+    },
+    {
+      "id": "htankim",
+      "name": {
+        "ru": "Ховертанк",
+        "en": "Hover tank"
+      },
+      "faction": "darkmarket",
+      "desc": {
+        "ru": "Быстрая, манёвренная артиллерийская установка",
+        "en": "Fast, maneuverable artillery unit"
+      },
+      "tags": [
+        "T1",
+        "tank",
+        "HOVER",
+        "transportable",
+        "bmarket"
+      ],
+      "cost": 200,
+      "energy": 0,
+      "hp": 300,
+      "armor": 5,
+      "selfRegen": 0.05,
+      "speed": 1,
+      "turnSpeed": 3,
+      "range": 330,
+      "buildTime": 12,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 100,
+          "fireDelay": 2.6667,
+          "mainDps": true,
+          "armourIgnoreAmount": 7,
+          "tags": [
+            "splash"
+          ],
+          "spread": 15,
+          "splashRadius": 35
+        }
+      ],
+      "image": ""
+    },
+    {
+      "id": "killers",
+      "name": {
+        "ru": "Киллеры",
+        "en": "Killers"
+      },
+      "faction": "darkmarket",
+      "desc": {
+        "ru": "Лёгкая пехота • Вооружены мощной дальнобойной винтовкой • Могут атаковать наземные и космические цели",
+        "en": "Light infantry • Armed with a powerful long-range rifle • Can attack ground and space targets"
+      },
+      "tags": [
+        "T1",
+        "infantry",
+        "LAND",
+        "transportableSOL",
+        "bmarket",
+        "AORB"
+      ],
+      "cost": 300,
+      "energy": 0,
+      "hp": 150,
+      "armor": 1,
+      "selfRegen": 0.05,
+      "speed": 0.5,
+      "turnSpeed": 2,
+      "range": 450,
+      "buildTime": 24,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 20,
+          "fireDelay": 0.25,
+          "mainDps": false,
+          "tags": [
+            "anti-orbital",
+            "laser",
+            "long"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 300,
+          "fireDelay": 10,
+          "mainDps": true,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "laser",
+            "long"
+          ]
+        }
+      ],
+      "image": ""
+    },
+    {
+      "id": "lorryim",
+      "name": {
+        "ru": "Туннелька",
+        "en": "Tunneler"
+      },
+      "faction": "darkmarket",
+      "desc": {
+        "ru": "Туннелепроходческая машина • Прокладывает тоннели с большой скоростью • Может минировать тоннели и устанавливать бронедвери • Может так же перевозить солдат, буксировать артиллерию",
+        "en": "Tunnel boring machine • Digs tunnels at high speed • Can mine tunnels and install armored doors • Can also transport soldiers and tow artillery"
+      },
+      "tags": [
+        "T1",
+        "tank",
+        "LAND",
+        "transportable",
+        "desant",
+        "bmarket",
+        "builder"
+      ],
+      "cost": 300,
+      "energy": 0,
+      "hp": 300,
+      "armor": 3,
+      "speed": 1.3,
+      "turnSpeed": 1.5,
+      "buildTime": 20,
+      "builder": {
+        "buildRange": 90,
+        "repairSpeed": 1.5,
+        "buildSpeed": 1,
+        "healTags": []
+      },
+      "transports": [
+        {
+          "name": {
+            "ru": "Туннелька",
+            "en": "Tunneler"
+          },
+          "seats": 1,
+          "cargoTags": [
+            "infantry",
+            "tank",
+            "bot"
+          ],
+          "unload": [
+            "shore"
+          ]
+        }
+      ],
+      "image": ""
+    },
+    {
+      "id": "marim",
+      "name": {
+        "ru": "Наемники",
+        "en": "Mercenaries"
+      },
+      "faction": "darkmarket",
+      "desc": {
+        "ru": "Лёгкая рядовая пехота • Вооружены лазерными автоматами • Могут атаковать наземные и воздушные цели, могут захватывать здания",
+        "en": "Light regular infantry • Armed with laser rifles • Can attack ground and air targets and capture buildings"
+      },
+      "tags": [
+        "T1",
+        "infantry",
+        "LAND",
+        "transportableSOL",
+        "bmarket"
+      ],
+      "cost": 100,
+      "energy": 0,
+      "hp": 200,
+      "armor": 1,
+      "selfRegen": 0.05,
+      "speed": 0.75,
+      "turnSpeed": 4,
+      "range": 240,
+      "buildTime": 10,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 25,
+          "fireDelay": 1.6667,
+          "mainDps": false,
+          "tags": [],
+          "spread": 0
+        },
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 6,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 20,
+          "fireDelay": 0.25,
+          "mainDps": true,
+          "tags": [
+            "laser"
+          ]
+        }
+      ],
+      "image": ""
+    },
+    {
+      "id": "sorpariz",
+      "name": {
+        "ru": "Истребитель \"Сорпасиз\"",
+        "en": "Fighter \"Sorpariz\""
+      },
+      "faction": "darkmarket",
+      "desc": {
+        "ru": "Легкий пиратский звездолёт • Имеет хорошую пушку",
+        "en": "Light pirate starship • Has a good cannon"
+      },
+      "tags": [
+        "T1",
+        "space-ship",
+        "AIR",
+        "ORB",
+        "AORB",
+        "transportableOBR",
+        "bmarket"
+      ],
+      "cost": 600,
+      "energy": 0,
+      "hp": 550,
+      "shield": 100,
+      "armor": 10000,
+      "selfRegen": 0.05,
+      "shieldRegen": 0.1,
+      "speed": 1.2,
+      "turnSpeed": 1,
+      "range": 280,
+      "buildTime": 24,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 30,
+          "fireDelay": 0.8333,
+          "mainDps": true,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital"
+          ]
+        }
+      ],
+      "atmosphere": {
+        "time": 3
+      },
+      "ftlJump": {
+        "type": "tele",
+        "chargeTime": 7,
+        "cooldown": 10,
+        "minDistance": 2500
+      },
+      "image": ""
+    },
+    {
+      "id": "tankim",
+      "name": {
+        "ru": "Лёгкий танк",
+        "en": "Light tank"
+      },
+      "faction": "darkmarket",
+      "desc": {
+        "ru": "Быстрый, манёвренный, хорошая прочность и урон • Атакует наземные и воздушные цели • Хорошо подходит для штурмов на равнинной местности",
+        "en": "Fast and manoeuvrable, good durability and damage • Attacks ground and air targets • Well suited for assaults on flat terrain"
+      },
+      "tags": [
+        "T1",
+        "tank",
+        "LAND",
+        "transportable",
+        "bmarket"
+      ],
+      "cost": 200,
+      "energy": 0,
+      "hp": 350,
+      "armor": 5,
+      "selfRegen": 0.05,
+      "speed": 1,
+      "turnSpeed": 3,
+      "range": 230,
+      "buildTime": 10,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 100,
+          "fireDelay": 1.5,
+          "mainDps": true,
+          "armourIgnoreAmount": 5,
+          "tags": [
+            "laser"
+          ],
+          "spread": 0
+        }
+      ],
+      "image": ""
     }
   ]
 }

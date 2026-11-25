@@ -113,8 +113,16 @@
       "emblem": "assets/img/factions/faction-darkmarket.svg",
       "lore": "factions/darkmarket",
       "desc": {
-        "ru": "ТЕСТ",
-        "en": "ТЕСТ"
+        "ru": "Теневой синдикат, живущий контрабандой, наёмниками и трофейными технологиями. Войска — сборная солянка из дешёвых клонов, переделанной техники и туннельных укрытий.",
+        "en": "A shadow syndicate living on smuggling, mercenaries and salvaged technology. Its forces are a patchwork of cheap clones, converted hardware and tunnel hideouts."
+      },
+      "playstyle": {
+        "ru": "Дешёвая пехота, туннели и неожиданные удары.",
+        "en": "Cheap infantry, tunnels and surprise strikes."
+      },
+      "specialty": {
+        "ru": "Наёмники и трофейная техника",
+        "en": "Mercenaries and salvaged hardware"
       }
     },
     {
@@ -129,8 +137,16 @@
       "emblem": "assets/img/factions/faction-bioforms.svg",
       "lore": "factions/bioforms",
       "desc": {
-        "ru": "ТЕСТ",
-        "en": "ТЕСТ"
+        "ru": "Дикая биосфера планеты: стаи хищников, растения-ловушки и ханхонханы. Не строят заводов — растут, охотятся и размножаются.",
+        "en": "The planet's wild biosphere: packs of predators, trap plants and the Hanhonhans. They do not build factories — they grow, hunt and multiply."
+      },
+      "playstyle": {
+        "ru": "Живая масса, регенерация и давление числом.",
+        "en": "Living mass, regeneration and pressure in numbers."
+      },
+      "specialty": {
+        "ru": "Хищники и биологические ловушки",
+        "en": "Predators and biological traps"
       }
     },
     {
@@ -145,8 +161,16 @@
       "emblem": "assets/img/factions/faction-aborigines.svg",
       "lore": "factions/aborigines",
       "desc": {
-        "ru": "ТЕСТ",
-        "en": "ТЕСТ"
+        "ru": "Коренные племена Фензема. Примитивное, но опасное оружие: копья с энергокристаллами, пращи, баллисты и святилища.",
+        "en": "The native tribes of Fenearth. Primitive but dangerous weapons: energy-crystal spears, slings, ballistae and sanctuaries."
+      },
+      "playstyle": {
+        "ru": "Раннее давление, дешёвые отряды и стан.",
+        "en": "Early pressure, cheap squads and stun."
+      },
+      "specialty": {
+        "ru": "Копейщики и стан-оружие",
+        "en": "Spearmen and stun weapons"
       }
     },
     {
@@ -161,8 +185,16 @@
       "emblem": "assets/img/factions/faction-neutrals.svg",
       "lore": "factions/neutrals",
       "desc": {
-        "ru": "ТЕСТ",
-        "en": "ТЕСТ"
+        "ru": "Гражданские и нейтральные объекты: машины, автобусы, мастерские, щиты и температурные вышки. Не воюют, но могут стать укрытием или добычей.",
+        "en": "Civilian and neutral objects: cars, buses, workshops, shields and temperature towers. They do not fight, but can become cover or loot."
+      },
+      "playstyle": {
+        "ru": "Мирные объекты и укрытия.",
+        "en": "Civilian objects and cover."
+      },
+      "specialty": {
+        "ru": "Гражданская инфраструктура",
+        "en": "Civilian infrastructure"
       }
     }
   ]

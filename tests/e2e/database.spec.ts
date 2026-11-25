@@ -1,4 +1,11 @@
+import { readFileSync } from "node:fs";
+import path from "node:path";
+
 import { expect, test } from "@playwright/test";
+
+const unitsCount = (
+  JSON.parse(readFileSync(path.resolve("src/data/units.json"), "utf8")) as { units: unknown[] }
+).units.length;
 
 test.describe("База данных", () => {
   test("вкладки, фильтры и поиск", async ({ page }) => {
@@ -9,7 +16,7 @@ test.describe("База данных", () => {
     const cards = page.locator("#databaseGrid-units [data-card-id]");
     await expect(cards.first()).toBeVisible();
     const total = await cards.count();
-    expect(total).toBe(110);
+    expect(total).toBe(unitsCount);
 
     await page.getByRole("searchbox").fill("Акула");
     await expect
@@ -104,7 +111,9 @@ test.describe("База данных", () => {
     await search.fill("акула");
     await page.getByRole("button", { name: "Очистить поиск" }).click();
     await page.waitForTimeout(250);
-    await expect(page.locator("#databaseGrid-units [data-card-id]:not([hidden])")).toHaveCount(110);
+    await expect(page.locator("#databaseGrid-units [data-card-id]:not([hidden])")).toHaveCount(
+      unitsCount,
+    );
   });
 
   test("теги: режимы И и ИЛИ, предпросмотр и переключение", async ({ page }) => {
@@ -201,7 +210,7 @@ test.describe("База данных", () => {
     const dialog = page.locator(".detail-dialog");
     await expect(dialog).toBeVisible();
     await expect(dialog.locator("h2")).toContainText("Лодка ПВО");
-    await expect(dialog.locator(".weapon-table")).toHaveCount(0);
+    await expect(dialog.locator(".weapon-table")).toBeVisible();
     const url = new URL(page.url());
     expect(url.searchParams.get("card")).toBe("units:ahaosa");
     await dialog.getByRole("button", { name: "Закрыть карточку" }).first().click();

@@ -36,7 +36,30 @@
       "energy": 0,
       "hp": 900,
       "range": 400,
-      "buildTime": 8
+      "buildTime": 8,
+      "armor": 4,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Ракеты",
+            "en": "Missiles"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 40,
+          "fireDelay": 0.6667,
+          "mainDps": true,
+          "tags": [
+            "rocket",
+            "long"
+          ]
+        }
+      ],
+      "missileDefense": {
+        "max": 1,
+        "recharge": 16
+      }
     },
     {
       "id": "aape",
@@ -55,10 +78,29 @@
         "BUILDING"
       ],
       "cost": 500,
-      "energy": 0,
+      "energy": 600,
       "hp": 800,
       "range": 280,
-      "buildTime": 16
+      "buildTime": 16,
+      "armor": 6,
+      "selfRegen": 0.1,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Ракеты",
+            "en": "Missiles"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 140,
+          "fireDelay": 0.5,
+          "mainDps": true,
+          "tags": [
+            "rocket"
+          ]
+        }
+      ]
     },
     {
       "id": "airfzr",
@@ -74,13 +116,39 @@
       "tags": [
         "T1",
         "building",
-        "BUILDING"
+        "BUILDING",
+        "builder",
+        "factory"
       ],
       "cost": 700,
       "energy": 0,
       "hp": 1300,
       "range": 250,
-      "buildTime": 18
+      "buildTime": 18,
+      "builder": {
+        "buildRange": 250,
+        "repairSpeed": 0.25,
+        "buildSpeed": 1,
+        "healTags": [
+          "plane",
+          "space-ship"
+        ]
+      },
+      "factories": [
+        {
+          "name": {
+            "ru": "Аэродром",
+            "en": "Airfield"
+          },
+          "buildSpeed": 1.2,
+          "producedUnits": [
+            "buiair",
+            "helifzr",
+            "scfzr",
+            "figfzr"
+          ]
+        }
+      ]
     },
     {
       "id": "airfzrt2",
@@ -96,13 +164,43 @@
       "tags": [
         "T2",
         "building",
-        "BUILDING"
+        "BUILDING",
+        "builder",
+        "factory"
       ],
       "cost": 2400,
       "energy": 0,
       "hp": 2000,
       "range": 300,
-      "buildTime": 35
+      "buildTime": 35,
+      "selfRegen": 0.1,
+      "builder": {
+        "buildRange": 300,
+        "repairSpeed": 0.35,
+        "buildSpeed": 1,
+        "healTags": [
+          "plane",
+          "space-ship"
+        ]
+      },
+      "factories": [
+        {
+          "name": {
+            "ru": "Аэродром Т2",
+            "en": "Aerodrome T2"
+          },
+          "buildSpeed": 1.5,
+          "producedUnits": [
+            "buiair",
+            "helifzr",
+            "scfzr",
+            "figfzr",
+            "bomfzr",
+            "torfzr",
+            "drshfzr"
+          ]
+        }
+      ]
     },
     {
       "id": "airfzrt3",
@@ -118,13 +216,47 @@
       "tags": [
         "T3",
         "super-building",
-        "BUILDING"
+        "BUILDING",
+        "building+",
+        "builder",
+        "factory"
       ],
       "cost": 3000,
       "energy": 0,
       "hp": 3800,
       "range": 400,
-      "buildTime": 180
+      "buildTime": 180,
+      "armor": 5,
+      "selfRegen": 0.1,
+      "builder": {
+        "buildRange": 400,
+        "repairSpeed": 0.6,
+        "buildSpeed": 1,
+        "healTags": [
+          "plane",
+          "space-ship"
+        ]
+      },
+      "factories": [
+        {
+          "name": {
+            "ru": "Супераэродром Т3",
+            "en": "Superaerodrome T3"
+          },
+          "buildSpeed": 2,
+          "producedUnits": [
+            "buiair",
+            "helifzr",
+            "scfzr",
+            "figfzr",
+            "bomfzr",
+            "torfzr",
+            "drshfzr",
+            "subuiair",
+            "bomfzrt3"
+          ]
+        }
+      ]
     },
     {
       "id": "airfzrt4",
@@ -140,13 +272,48 @@
       "tags": [
         "T4",
         "super-building",
-        "BUILDING"
+        "BUILDING",
+        "building+",
+        "builder",
+        "factory"
       ],
       "cost": 6200,
       "energy": 0,
       "hp": 5600,
       "range": 500,
-      "buildTime": 200
+      "buildTime": 200,
+      "armor": 11,
+      "selfRegen": 0.15,
+      "builder": {
+        "buildRange": 500,
+        "repairSpeed": 0.9,
+        "buildSpeed": 1,
+        "healTags": [
+          "plane",
+          "space-ship"
+        ]
+      },
+      "factories": [
+        {
+          "name": {
+            "ru": "Супераэродром Т4",
+            "en": "Super airfield T4"
+          },
+          "buildSpeed": 2.5,
+          "producedUnits": [
+            "buiair",
+            "helifzr",
+            "scfzr",
+            "figfzr",
+            "bomfzr",
+            "torfzr",
+            "drshfzr",
+            "subuiair",
+            "bomfzrt3",
+            "universal"
+          ]
+        }
+      ]
     },
     {
       "id": "airpe",
@@ -162,12 +329,31 @@
       "tags": [
         "T1",
         "building",
-        "BUILDING"
+        "BUILDING",
+        "factory"
       ],
       "cost": 400,
-      "energy": 0,
+      "energy": 800,
       "hp": 1000,
-      "buildTime": 24
+      "buildTime": 24,
+      "selfRegen": 0.1,
+      "factories": [
+        {
+          "name": {
+            "ru": "Аэродром",
+            "en": "Airfield"
+          },
+          "buildSpeed": 1,
+          "producedUnits": [
+            "builandpe",
+            "scpe",
+            "figpe",
+            "bombpe",
+            "spplpe",
+            "tring"
+          ]
+        }
+      ]
     },
     {
       "id": "amphpe",
@@ -183,13 +369,39 @@
       "tags": [
         "T1",
         "building",
-        "BUILDING"
+        "BUILDING",
+        "builder",
+        "factory"
       ],
       "cost": 500,
-      "energy": 0,
+      "energy": 300,
       "hp": 800,
       "range": 150,
-      "buildTime": 35
+      "buildTime": 35,
+      "selfRegen": 0.1,
+      "builder": {
+        "buildRange": 150,
+        "repairSpeed": 0.1,
+        "buildSpeed": 1,
+        "healTags": []
+      },
+      "factories": [
+        {
+          "name": {
+            "ru": "Завод амфибий",
+            "en": "Amphibian factory"
+          },
+          "buildSpeed": 1,
+          "producedUnits": [
+            "engineerprot",
+            "miner",
+            "plarm",
+            "ahaosa",
+            "recmob",
+            "drot"
+          ]
+        }
+      ]
     },
     {
       "id": "ancorp",
@@ -205,13 +417,59 @@
       "tags": [
         "T1",
         "building",
-        "AIR"
+        "AIR",
+        "ORB",
+        "AORB",
+        "transportableORBz"
       ],
       "cost": 900,
-      "energy": 0,
+      "energy": 900,
       "hp": 1500,
       "range": 400,
-      "buildTime": 50
+      "buildTime": 50,
+      "armor": 10000,
+      "selfRegen": 0.15,
+      "speed": 0.1,
+      "weapons": [
+        {
+          "name": {
+            "ru": "ПВО",
+            "en": "AA"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 250,
+          "fireDelay": 1.6667,
+          "mainDps": true,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-air",
+            "anti-orbital",
+            "long"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 250,
+          "fireDelay": 1.6667,
+          "mainDps": false,
+          "tags": [
+            "anti-air",
+            "anti-orbital",
+            "splash",
+            "long"
+          ],
+          "spread": 10,
+          "splashRadius": 40
+        }
+      ]
     },
     {
       "id": "antigiperfzr",
@@ -227,13 +485,19 @@
       "tags": [
         "T3",
         "super-building",
-        "BUILDING"
+        "BUILDING",
+        "AntiGi"
       ],
       "cost": 9000,
       "energy": 0,
       "hp": 2500,
       "range": 1000,
-      "buildTime": 95
+      "buildTime": 95,
+      "armor": 5,
+      "missileDefense": {
+        "max": 1,
+        "recharge": 200
+      }
     },
     {
       "id": "antilauncherfzr",
@@ -249,13 +513,19 @@
       "tags": [
         "T1",
         "building",
-        "BUILDING"
+        "BUILDING",
+        "AntiNU"
       ],
       "cost": 4000,
       "energy": 0,
       "hp": 2500,
       "range": 1000,
-      "buildTime": 50
+      "buildTime": 50,
+      "armor": 5,
+      "missileDefense": {
+        "max": 1,
+        "recharge": 80
+      }
     },
     {
       "id": "antilauncherpe",
@@ -274,10 +544,16 @@
         "BUILDING"
       ],
       "cost": 2000,
-      "energy": 0,
+      "energy": 8000,
       "hp": 1500,
       "range": 800,
-      "buildTime": 65
+      "buildTime": 65,
+      "armor": 3,
+      "selfRegen": 0.15,
+      "missileDefense": {
+        "max": 1,
+        "recharge": 80
+      }
     },
     {
       "id": "aorbfzr",
@@ -293,13 +569,34 @@
       "tags": [
         "T3",
         "super-building",
-        "BUILDING"
+        "BUILDING",
+        "AORB"
       ],
       "cost": 900,
       "energy": 0,
       "hp": 1500,
-      "range": 500,
-      "buildTime": 12
+      "range": 550,
+      "buildTime": 12,
+      "armor": 6,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 360,
+          "fireDelay": 3,
+          "mainDps": true,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "long"
+          ]
+        }
+      ]
     },
     {
       "id": "barracks",
@@ -315,12 +612,29 @@
       "tags": [
         "T1",
         "building",
-        "BUILDING"
+        "BUILDING",
+        "factory"
       ],
       "cost": 300,
       "energy": 0,
       "hp": 800,
-      "buildTime": 8
+      "buildTime": 8,
+      "factories": [
+        {
+          "name": {
+            "ru": "Казармы",
+            "en": "Barracks"
+          },
+          "buildSpeed": 1,
+          "producedUnits": [
+            "engineerfzr",
+            "scoutsfzr",
+            "solfzr",
+            "artfzr",
+            "lorryfzr"
+          ]
+        }
+      ]
     },
     {
       "id": "barrackspe",
@@ -336,13 +650,40 @@
       "tags": [
         "T1",
         "building",
-        "BUILDING"
+        "BUILDING",
+        "builder",
+        "factory"
       ],
       "cost": 300,
-      "energy": 0,
+      "energy": 600,
       "hp": 800,
       "range": 150,
-      "buildTime": 15
+      "buildTime": 15,
+      "selfRegen": 0.1,
+      "builder": {
+        "buildRange": 150,
+        "repairSpeed": 0.1,
+        "buildSpeed": 1,
+        "healTags": [
+          "infantry"
+        ]
+      },
+      "factories": [
+        {
+          "name": {
+            "ru": "Бараки",
+            "en": "Barracks"
+          },
+          "buildSpeed": 1,
+          "producedUnits": [
+            "engineerprot",
+            "solpe",
+            "minomprot",
+            "scoutspe",
+            "marschpe"
+          ]
+        }
+      ]
     },
     {
       "id": "barrackst2",
@@ -358,13 +699,61 @@
       "tags": [
         "T2",
         "building",
-        "BUILDING"
+        "BUILDING",
+        "radar15",
+        "building+",
+        "builder",
+        "factory"
       ],
       "cost": 1100,
       "energy": 0,
       "hp": 1800,
-      "range": 300,
-      "buildTime": 30
+      "range": 250,
+      "buildTime": 30,
+      "armor": 8,
+      "selfRegen": 0.04,
+      "weapons": [
+        {
+          "name": {
+            "ru": "ПВО",
+            "en": "AA"
+          },
+          "count": 4,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 15,
+          "fireDelay": 0.5,
+          "mainDps": true,
+          "armourIgnoreAmount": 3,
+          "tags": [
+            "anti-air"
+          ]
+        }
+      ],
+      "builder": {
+        "buildRange": 90,
+        "repairSpeed": 0,
+        "buildSpeed": 1,
+        "healTags": [
+          "infantry"
+        ]
+      },
+      "factories": [
+        {
+          "name": {
+            "ru": "Полевой штаб",
+            "en": "Field HQ"
+          },
+          "buildSpeed": 2,
+          "producedUnits": [
+            "engineerfzr",
+            "scoutsfzr",
+            "solfzr",
+            "artfzr",
+            "lorryfzr"
+          ]
+        }
+      ]
     },
     {
       "id": "barrackst2pe",
@@ -380,13 +769,24 @@
       "tags": [
         "T2",
         "building",
-        "BUILDING"
+        "BUILDING",
+        "builder"
       ],
       "cost": 700,
-      "energy": 0,
+      "energy": 1500,
       "hp": 1600,
       "range": 180,
-      "buildTime": 40
+      "buildTime": 40,
+      "armor": 8,
+      "selfRegen": 0.15,
+      "builder": {
+        "buildRange": 180,
+        "repairSpeed": 0.3,
+        "buildSpeed": 1,
+        "healTags": [
+          "infantry"
+        ]
+      }
     },
     {
       "id": "botfzr",
@@ -402,12 +802,28 @@
       "tags": [
         "T1",
         "building",
-        "BUILDING"
+        "BUILDING",
+        "factory"
       ],
       "cost": 500,
       "energy": 0,
       "hp": 900,
-      "buildTime": 23
+      "buildTime": 23,
+      "selfRegen": 0.02,
+      "factories": [
+        {
+          "name": {
+            "ru": "Завод ботов",
+            "en": "Bot factory"
+          },
+          "buildSpeed": 1,
+          "producedUnits": [
+            "buibotfzr",
+            "allter",
+            "lr"
+          ]
+        }
+      ]
     },
     {
       "id": "botst3",
@@ -423,12 +839,37 @@
       "tags": [
         "T3",
         "super-building",
-        "BUILDING"
+        "BUILDING",
+        "building+",
+        "factory"
       ],
       "cost": 2900,
       "energy": 0,
       "hp": 3200,
-      "buildTime": 190
+      "buildTime": 190,
+      "armor": 8,
+      "selfRegen": 0.2,
+      "factories": [
+        {
+          "name": {
+            "ru": "Завод суперботов T3",
+            "en": "Superbot factory T3"
+          },
+          "buildSpeed": 2,
+          "producedUnits": [
+            "buibotfzr",
+            "allter",
+            "lr",
+            "hillfzr",
+            "armp",
+            "guardian",
+            "subuibotfzr",
+            "mobileshield",
+            "dartrekon",
+            "quarterer"
+          ]
+        }
+      ]
     },
     {
       "id": "botst4",
@@ -444,12 +885,39 @@
       "tags": [
         "T4",
         "super-building",
-        "BUILDING"
+        "BUILDING",
+        "building+",
+        "factory"
       ],
       "cost": 5900,
       "energy": 0,
       "hp": 4600,
-      "buildTime": 250
+      "buildTime": 250,
+      "armor": 11,
+      "selfRegen": 0.25,
+      "factories": [
+        {
+          "name": {
+            "ru": "Завод суперботов T4",
+            "en": "T4 Superbot Factory"
+          },
+          "buildSpeed": 2.5,
+          "producedUnits": [
+            "buibotfzr",
+            "allter",
+            "lr",
+            "hillfzr",
+            "armp",
+            "guardian",
+            "subuibotfzr",
+            "mobileshield",
+            "dartrekon",
+            "quarterer",
+            "cerberus",
+            "sanatariada"
+          ]
+        }
+      ]
     },
     {
       "id": "bott2",
@@ -465,12 +933,32 @@
       "tags": [
         "T2",
         "building",
-        "BUILDING"
+        "BUILDING",
+        "factory"
       ],
       "cost": 2000,
       "energy": 0,
       "hp": 1300,
-      "buildTime": 80
+      "buildTime": 80,
+      "armor": 5,
+      "selfRegen": 0.07,
+      "factories": [
+        {
+          "name": {
+            "ru": "Завод ботов T2",
+            "en": "Bot factory T2"
+          },
+          "buildSpeed": 1.5,
+          "producedUnits": [
+            "buibotfzr",
+            "allter",
+            "lr",
+            "hillfzr",
+            "armp",
+            "guardian"
+          ]
+        }
+      ]
     },
     {
       "id": "fabfzr",
@@ -491,7 +979,27 @@
       "cost": 5500,
       "energy": 0,
       "hp": 1500,
-      "buildTime": 250
+      "buildTime": 250,
+      "selfRegen": 0.05,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 3000,
+          "fireDelay": 1,
+          "mainDps": true,
+          "armourIgnoreAmount": 20,
+          "tags": [
+            "splash"
+          ],
+          "splashRadius": 210
+        }
+      ]
     },
     {
       "id": "gaubfzr",
@@ -513,7 +1021,30 @@
       "energy": 0,
       "hp": 1400,
       "range": 385,
-      "buildTime": 25
+      "buildTime": 25,
+      "armor": 8,
+      "selfRegen": 0.03,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 300,
+          "fireDelay": 6,
+          "mainDps": true,
+          "armourIgnoreAmount": 15,
+          "tags": [
+            "splash",
+            "long"
+          ],
+          "spread": 35,
+          "splashRadius": 50
+        }
+      ]
     },
     {
       "id": "gilauncherfzr",
@@ -529,13 +1060,39 @@
       "tags": [
         "T3",
         "super-building",
-        "BUILDING"
+        "BUILDING",
+        "building+",
+        "AORB",
+        "siloG"
       ],
       "cost": 12000,
       "energy": 0,
       "hp": 4500,
-      "range": 99999,
-      "buildTime": 240
+      "range": 99999999,
+      "buildTime": 240,
+      "armor": 8,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 10000,
+          "fireDelay": 1.6667,
+          "mainDps": true,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-air",
+            "anti-orbital",
+            "splash",
+            "long"
+          ],
+          "splashRadius": 400
+        }
+      ]
     },
     {
       "id": "goldmine1",
@@ -577,7 +1134,8 @@
       "cost": 2200,
       "energy": 0,
       "hp": 2000,
-      "buildTime": 25
+      "buildTime": 25,
+      "selfRegen": 0.05
     },
     {
       "id": "goldmine3",
@@ -598,7 +1156,8 @@
       "cost": 5400,
       "energy": 0,
       "hp": 5500,
-      "buildTime": 100
+      "buildTime": 100,
+      "selfRegen": 0.1
     },
     {
       "id": "horizon",
@@ -614,13 +1173,75 @@
       "tags": [
         "T3",
         "super-building",
-        "BUILDING"
+        "BUILDING",
+        "building+",
+        "radar15",
+        "AORB"
       ],
       "cost": 3500,
       "energy": 0,
       "hp": 3000,
       "range": 800,
-      "buildTime": 40
+      "buildTime": 40,
+      "armor": 10,
+      "selfRegen": 0.1,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 1000,
+          "fireDelay": 10,
+          "mainDps": true,
+          "armourIgnoreAmount": 15,
+          "tags": [
+            "anti-orbital",
+            "splash",
+            "long"
+          ],
+          "spread": 35,
+          "splashRadius": 110
+        },
+        {
+          "name": {
+            "ru": "Ракеты",
+            "en": "Missiles"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 40,
+          "fireDelay": 2.5,
+          "mainDps": false,
+          "tags": [
+            "anti-air",
+            "anti-orbital",
+            "rocket",
+            "long"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Орудие 3",
+            "en": "Weapon 3"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 300,
+          "fireDelay": 4.1667,
+          "mainDps": false,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "long"
+          ]
+        }
+      ]
     },
     {
       "id": "kosmfzr",
@@ -636,7 +1257,8 @@
       "tags": [
         "T1",
         "building",
-        "BUILDING"
+        "BUILDING",
+        "factory"
       ],
       "cost": 1800,
       "energy": 0,
@@ -657,13 +1279,15 @@
       "tags": [
         "titan",
         "super-structure",
-        "BUILDING"
+        "BUILDING",
+        "building+"
       ],
       "cost": 25000,
       "energy": 0,
       "hp": 10000,
       "range": 100000,
-      "buildTime": 1000
+      "buildTime": 1000,
+      "armor": 8
     },
     {
       "id": "launcherfzr",
@@ -679,13 +1303,38 @@
       "tags": [
         "T1",
         "building",
-        "BUILDING"
+        "BUILDING",
+        "AORB",
+        "siloT"
       ],
       "cost": 1600,
       "energy": 0,
       "hp": 1500,
       "range": 1700,
-      "buildTime": 40
+      "buildTime": 40,
+      "armor": 5,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 1900,
+          "fireDelay": 1.6667,
+          "mainDps": true,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-air",
+            "anti-orbital",
+            "splash",
+            "long"
+          ],
+          "splashRadius": 60
+        }
+      ]
     },
     {
       "id": "mingun",
@@ -704,10 +1353,12 @@
         "BUILDING"
       ],
       "cost": 800,
-      "energy": 0,
+      "energy": 800,
       "hp": 1200,
       "range": 1000,
-      "buildTime": 30
+      "buildTime": 30,
+      "armor": 5,
+      "selfRegen": 0.2
     },
     {
       "id": "mudb",
@@ -726,9 +1377,10 @@
         "BUILDING"
       ],
       "cost": 10,
-      "energy": 0,
+      "energy": 50,
       "hp": 50,
-      "buildTime": 15
+      "buildTime": 15,
+      "selfRegen": 0.1
     },
     {
       "id": "nulauncherfzr",
@@ -744,13 +1396,59 @@
       "tags": [
         "T2",
         "building",
-        "BUILDING"
+        "BUILDING",
+        "AORB",
+        "siloT",
+        "siloN"
       ],
       "cost": 5000,
       "energy": 0,
       "hp": 3000,
-      "range": 99999,
-      "buildTime": 80
+      "range": 99999999,
+      "buildTime": 80,
+      "armor": 7,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 1900,
+          "fireDelay": 1.6667,
+          "mainDps": false,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-air",
+            "anti-orbital",
+            "splash",
+            "long"
+          ],
+          "splashRadius": 60
+        },
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 4800,
+          "fireDelay": 1.6667,
+          "mainDps": true,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-air",
+            "anti-orbital",
+            "splash",
+            "long"
+          ],
+          "splashRadius": 120
+        }
+      ]
     },
     {
       "id": "pbat",
@@ -766,12 +1464,16 @@
       "tags": [
         "T1",
         "building",
-        "BUILDING"
+        "BUILDING",
+        "building+",
+        "battery"
       ],
       "cost": 250,
-      "energy": 0,
+      "energy": 150,
       "hp": 450,
-      "buildTime": 15
+      "buildTime": 15,
+      "armor": 1,
+      "selfRegen": 0.05
     },
     {
       "id": "pgen1",
@@ -792,7 +1494,9 @@
       "cost": 450,
       "energy": 0,
       "hp": 600,
-      "buildTime": 25
+      "buildTime": 25,
+      "armor": 2,
+      "selfRegen": 0.05
     },
     {
       "id": "pmine1",
@@ -808,12 +1512,29 @@
       "tags": [
         "T1",
         "building",
-        "BUILDING"
+        "BUILDING",
+        "mine",
+        "builder"
       ],
       "cost": 400,
-      "energy": 0,
+      "energy": 600,
       "hp": 850,
-      "buildTime": 35
+      "buildTime": 35,
+      "selfRegen": 0.1,
+      "builder": {
+        "buildRange": 200,
+        "repairSpeed": 0.1,
+        "buildSpeed": 1,
+        "healTags": [
+          "infantry",
+          "tank",
+          "bot",
+          "plane",
+          "ship",
+          "space-ship",
+          "building"
+        ]
+      }
     },
     {
       "id": "radarfzr",
@@ -829,7 +1550,9 @@
       "tags": [
         "T1",
         "building",
-        "BUILDING"
+        "BUILDING",
+        "radar15",
+        "radar30"
       ],
       "cost": 1000,
       "energy": 0,
@@ -851,7 +1574,10 @@
       "tags": [
         "T3",
         "super-building",
-        "BUILDING"
+        "BUILDING",
+        "radar15",
+        "radar30",
+        "radar50"
       ],
       "cost": 3200,
       "energy": 0,
@@ -873,13 +1599,15 @@
       "tags": [
         "T1",
         "building",
-        "BUILDING"
+        "BUILDING",
+        "radar15"
       ],
       "cost": 700,
-      "energy": 0,
+      "energy": 1500,
       "hp": 400,
       "range": 1100,
-      "buildTime": 20
+      "buildTime": 20,
+      "selfRegen": 0.1
     },
     {
       "id": "sam",
@@ -895,13 +1623,37 @@
       "tags": [
         "T2",
         "building",
-        "BUILDING"
+        "BUILDING",
+        "building+",
+        "radar15"
       ],
       "cost": 1250,
       "energy": 0,
       "hp": 2200,
       "range": 400,
-      "buildTime": 21
+      "buildTime": 21,
+      "armor": 9,
+      "selfRegen": 0.1,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Ракеты",
+            "en": "Missiles"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 200,
+          "fireDelay": 0.25,
+          "mainDps": true,
+          "tags": [
+            "rocket",
+            "splash",
+            "long"
+          ],
+          "splashRadius": 50
+        }
+      ]
     },
     {
       "id": "seafzr",
@@ -917,13 +1669,38 @@
       "tags": [
         "T1",
         "building",
-        "BUILDING"
+        "BUILDING",
+        "builder",
+        "factory"
       ],
       "cost": 750,
       "energy": 0,
       "hp": 2000,
       "range": 250,
-      "buildTime": 25
+      "buildTime": 25,
+      "builder": {
+        "buildRange": 250,
+        "repairSpeed": 0.5,
+        "buildSpeed": 1,
+        "healTags": [
+          "ship"
+        ]
+      },
+      "factories": [
+        {
+          "name": {
+            "ru": "Верфь",
+            "en": "Shipyard"
+          },
+          "buildSpeed": 1.35,
+          "producedUnits": [
+            "buiseafzr",
+            "drefzr",
+            "cutfzr",
+            "esmfzr"
+          ]
+        }
+      ]
     },
     {
       "id": "seafzrt2",
@@ -939,13 +1716,42 @@
       "tags": [
         "T2",
         "building",
-        "BUILDING"
+        "BUILDING",
+        "builder",
+        "factory"
       ],
       "cost": 2750,
       "energy": 0,
       "hp": 4000,
       "range": 250,
-      "buildTime": 100
+      "buildTime": 100,
+      "selfRegen": 0.1,
+      "builder": {
+        "buildRange": 250,
+        "repairSpeed": 0.8,
+        "buildSpeed": 1,
+        "healTags": [
+          "ship"
+        ]
+      },
+      "factories": [
+        {
+          "name": {
+            "ru": "Верфь T2",
+            "en": "Shipyard T2"
+          },
+          "buildSpeed": 1.8,
+          "producedUnits": [
+            "buiseafzr",
+            "drefzr",
+            "cutfzr",
+            "esmfzr",
+            "lcfzr",
+            "crufzr",
+            "carifzr"
+          ]
+        }
+      ]
     },
     {
       "id": "seafzrt3",
@@ -961,13 +1767,42 @@
       "tags": [
         "T3",
         "super-building",
-        "BUILDING"
+        "BUILDING",
+        "building+",
+        "builder",
+        "factory"
       ],
       "cost": 3500,
       "energy": 0,
       "hp": 5000,
       "range": 300,
-      "buildTime": 100
+      "buildTime": 100,
+      "selfRegen": 0.1,
+      "builder": {
+        "buildRange": 300,
+        "repairSpeed": 1,
+        "buildSpeed": 1,
+        "healTags": [
+          "ship"
+        ]
+      },
+      "factories": [
+        {
+          "name": {
+            "ru": "Суперверфь T3",
+            "en": "Supershipyard T3"
+          },
+          "buildSpeed": 2,
+          "producedUnits": [
+            "buiseafzr",
+            "drefzr",
+            "cutfzr",
+            "esmfzr",
+            "buiseafzr3",
+            "cutfzr3"
+          ]
+        }
+      ]
     },
     {
       "id": "seafzrt4",
@@ -983,13 +1818,44 @@
       "tags": [
         "T4",
         "super-building",
-        "BUILDING"
+        "BUILDING",
+        "building+",
+        "builder",
+        "factory"
       ],
       "cost": 7000,
       "energy": 0,
       "hp": 6000,
       "range": 350,
-      "buildTime": 100
+      "buildTime": 100,
+      "selfRegen": 0.1,
+      "builder": {
+        "buildRange": 350,
+        "repairSpeed": 1,
+        "buildSpeed": 1,
+        "healTags": [
+          "ship"
+        ]
+      },
+      "factories": [
+        {
+          "name": {
+            "ru": "Суперверфь T4",
+            "en": "Supershipyard T4"
+          },
+          "buildSpeed": 2.5,
+          "producedUnits": [
+            "buiseafzr",
+            "drefzr",
+            "cutfzr",
+            "esmfzr",
+            "buiseafzr3",
+            "cutfzr3",
+            "akula",
+            "megalodon"
+          ]
+        }
+      ]
     },
     {
       "id": "seape",
@@ -1005,12 +1871,42 @@
       "tags": [
         "T1",
         "building",
-        "BUILDING"
+        "BUILDING",
+        "factory"
       ],
       "cost": 650,
-      "energy": 0,
+      "energy": 200,
       "hp": 1600,
-      "buildTime": 35
+      "buildTime": 35,
+      "selfRegen": 0.1,
+      "factories": [
+        {
+          "name": {
+            "ru": "Верфь",
+            "en": "Shipyard"
+          },
+          "buildSpeed": 1,
+          "producedUnits": [
+            "engineerprot",
+            "wbdpe",
+            "cutpe",
+            "drooppe",
+            "plarm",
+            "ahaosa"
+          ]
+        }
+      ],
+      "transports": [
+        {
+          "name": {
+            "ru": "Верфь",
+            "en": "Shipyard"
+          },
+          "seats": 2,
+          "cargoTags": [],
+          "unload": []
+        }
+      ]
     },
     {
       "id": "sfacfzr",
@@ -1026,13 +1922,18 @@
       "tags": [
         "T1",
         "building",
-        "AIR"
+        "AIR",
+        "ORB",
+        "transportableORBz",
+        "superORB"
       ],
       "cost": 3500,
       "energy": 0,
       "hp": 3500,
       "shield": 2000,
-      "buildTime": 90
+      "buildTime": 120,
+      "armor": 10000,
+      "speed": 0.2
     },
     {
       "id": "sfacfzr2",
@@ -1048,13 +1949,30 @@
       "tags": [
         "T2",
         "building",
-        "AIR"
+        "AIR",
+        "ORB",
+        "superORB",
+        "transportableORBz",
+        "builder"
       ],
       "cost": 7500,
       "energy": 0,
       "hp": 6000,
       "shield": 3500,
-      "buildTime": 50
+      "buildTime": 50,
+      "armor": 10000,
+      "shieldRegen": 0.5,
+      "selfRegen": 0.15,
+      "speed": 0.25,
+      "builder": {
+        "buildRange": 300,
+        "repairSpeed": 0.5,
+        "buildSpeed": 1,
+        "healTags": [
+          "space-ship",
+          "ship"
+        ]
+      }
     },
     {
       "id": "sfacpe",
@@ -1070,12 +1988,27 @@
       "tags": [
         "T1",
         "building",
-        "AIR"
+        "AIR",
+        "ORB"
       ],
       "cost": 2000,
-      "energy": 0,
+      "energy": 2500,
       "hp": 4000,
-      "buildTime": 90
+      "buildTime": 90,
+      "armor": 10000,
+      "selfRegen": 0.2,
+      "speed": 0.05,
+      "transports": [
+        {
+          "name": {
+            "ru": "Орбитальная верфь",
+            "en": "Orbital shipyard"
+          },
+          "seats": 2,
+          "cargoTags": [],
+          "unload": []
+        }
+      ]
     },
     {
       "id": "shieldfzr",
@@ -1091,13 +2024,21 @@
       "tags": [
         "T1",
         "building",
-        "BUILDING"
+        "BUILDING",
+        "shield"
       ],
       "cost": 1000,
       "energy": 0,
       "hp": 1000,
       "shield": 400,
-      "buildTime": 20
+      "buildTime": 20,
+      "shieldRegen": 0.1,
+      "selfRegen": 0.1,
+      "domeShield": {
+        "radius": 150,
+        "points": 400,
+        "regen": 0.1
+      }
     },
     {
       "id": "sip",
@@ -1113,13 +2054,61 @@
       "tags": [
         "T1",
         "building",
-        "BUILDING"
+        "BUILDING",
+        "building+",
+        "AORB",
+        "SIP"
       ],
       "cost": 10000,
       "energy": 0,
       "hp": 7000,
       "range": 800,
-      "buildTime": 600
+      "buildTime": 600,
+      "armor": 15,
+      "selfRegen": 0.1,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 4000,
+          "fireDelay": 12,
+          "mainDps": false,
+          "tags": [
+            "anti-orbital",
+            "laser",
+            "splash",
+            "stun",
+            "long"
+          ],
+          "splashRadius": 60,
+          "stunDuration": 8
+        },
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 5000,
+          "fireDelay": 12,
+          "mainDps": true,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "laser",
+            "stun",
+            "long"
+          ],
+          "stunDuration": 8
+        }
+      ]
     },
     {
       "id": "sonarpe",
@@ -1135,12 +2124,16 @@
       "tags": [
         "T2",
         "building",
-        "WATER"
+        "WATER",
+        "sonar30"
       ],
       "cost": 200,
-      "energy": 0,
+      "energy": 500,
       "hp": 600,
-      "buildTime": 30
+      "buildTime": 30,
+      "armor": 5,
+      "selfRegen": 0.1,
+      "speed": 0.25
     },
     {
       "id": "stabfzr",
@@ -1156,13 +2149,15 @@
       "tags": [
         "T2",
         "building",
-        "BUILDING"
+        "BUILDING",
+        "building+"
       ],
       "cost": 5000,
       "energy": 0,
       "hp": 7000,
       "range": 200,
-      "buildTime": 500
+      "buildTime": 500,
+      "armor": 8
     },
     {
       "id": "subhq",
@@ -1178,13 +2173,24 @@
       "tags": [
         "T1",
         "building",
-        "BUILDING"
+        "BUILDING",
+        "hq",
+        "subhq",
+        "builder",
+        "factory"
       ],
       "cost": 2000,
       "energy": 0,
       "hp": 2800,
       "range": 150,
-      "buildTime": 45
+      "buildTime": 45,
+      "armor": 2,
+      "builder": {
+        "buildRange": 150,
+        "repairSpeed": 0.6,
+        "buildSpeed": 1,
+        "healTags": []
+      }
     },
     {
       "id": "supershieldfzr",
@@ -1200,13 +2206,21 @@
       "tags": [
         "T3",
         "super-building",
-        "BUILDING"
+        "BUILDING",
+        "shield"
       ],
       "cost": 2700,
       "energy": 0,
       "hp": 3500,
       "shield": 1300,
-      "buildTime": 65
+      "buildTime": 65,
+      "shieldRegen": 0.2,
+      "selfRegen": 0.15,
+      "domeShield": {
+        "radius": 270,
+        "points": 1300,
+        "regen": 0.2
+      }
     },
     {
       "id": "suppe",
@@ -1222,13 +2236,39 @@
       "tags": [
         "T1",
         "building",
-        "BUILDING"
+        "BUILDING",
+        "radar15",
+        "supply",
+        "builder",
+        "factory"
       ],
       "cost": 400,
-      "energy": 0,
+      "energy": 600,
       "hp": 950,
       "range": 150,
-      "buildTime": 24
+      "buildTime": 24,
+      "selfRegen": 0.07,
+      "builder": {
+        "buildRange": 150,
+        "repairSpeed": 0.1,
+        "buildSpeed": 1,
+        "healTags": []
+      },
+      "factories": [
+        {
+          "name": {
+            "ru": "Штаб снабжения",
+            "en": "Supply HQ"
+          },
+          "buildSpeed": 1,
+          "producedUnits": [
+            "builandpe",
+            "rszope",
+            "hilpe",
+            "lasdef"
+          ]
+        }
+      ]
     },
     {
       "id": "suppe2",
@@ -1244,13 +2284,25 @@
       "tags": [
         "T1",
         "building",
-        "BUILDING"
+        "BUILDING",
+        "radar15",
+        "building+",
+        "supply",
+        "builder"
       ],
       "cost": 800,
-      "energy": 0,
+      "energy": 1600,
       "hp": 1800,
       "range": 180,
-      "buildTime": 55
+      "buildTime": 55,
+      "armor": 8,
+      "selfRegen": 0.12,
+      "builder": {
+        "buildRange": 180,
+        "repairSpeed": 0.3,
+        "buildSpeed": 1,
+        "healTags": []
+      }
     },
     {
       "id": "tanks",
@@ -1266,12 +2318,29 @@
       "tags": [
         "T1",
         "building",
-        "BUILDING"
+        "BUILDING",
+        "factory"
       ],
       "cost": 500,
       "energy": 0,
       "hp": 950,
-      "buildTime": 11
+      "buildTime": 12,
+      "factories": [
+        {
+          "name": {
+            "ru": "Танковый завод",
+            "en": "Tank factory"
+          },
+          "buildSpeed": 1,
+          "producedUnits": [
+            "builandfzr",
+            "lorryfzr",
+            "artfzr",
+            "tankt1fzr",
+            "btrfzr"
+          ]
+        }
+      ]
     },
     {
       "id": "tankspe",
@@ -1287,13 +2356,39 @@
       "tags": [
         "T1",
         "building",
-        "BUILDING"
+        "BUILDING",
+        "builder",
+        "factory"
       ],
       "cost": 500,
-      "energy": 0,
+      "energy": 250,
       "hp": 800,
       "range": 150,
-      "buildTime": 30
+      "buildTime": 30,
+      "selfRegen": 0.1,
+      "builder": {
+        "buildRange": 150,
+        "repairSpeed": 0.1,
+        "buildSpeed": 1,
+        "healTags": [
+          "tank"
+        ]
+      },
+      "factories": [
+        {
+          "name": {
+            "ru": "Завод наземной бронетехники",
+            "en": "Ground armor factory"
+          },
+          "buildSpeed": 1,
+          "producedUnits": [
+            "builandpe",
+            "dronpe",
+            "raidocycle",
+            "tankt1pe"
+          ]
+        }
+      ]
     },
     {
       "id": "tankst2",
@@ -1309,12 +2404,34 @@
       "tags": [
         "T2",
         "building",
-        "BUILDING"
+        "BUILDING",
+        "factory"
       ],
       "cost": 2000,
       "energy": 0,
       "hp": 1500,
-      "buildTime": 70
+      "buildTime": 70,
+      "armor": 5,
+      "selfRegen": 0.03,
+      "factories": [
+        {
+          "name": {
+            "ru": "Танковый завод T2",
+            "en": "Tank factory T2"
+          },
+          "buildSpeed": 1.5,
+          "producedUnits": [
+            "builandfzr",
+            "lorryfzr",
+            "artfzr",
+            "tankt1fzr",
+            "btrfzr",
+            "tankt2fzr",
+            "tankus",
+            "lorrymiss"
+          ]
+        }
+      ]
     },
     {
       "id": "tankst3",
@@ -1330,12 +2447,39 @@
       "tags": [
         "T3",
         "super-building",
-        "BUILDING"
+        "BUILDING",
+        "building+",
+        "factory"
       ],
       "cost": 2900,
       "energy": 0,
       "hp": 3500,
-      "buildTime": 160
+      "buildTime": 160,
+      "armor": 8,
+      "selfRegen": 0.1,
+      "factories": [
+        {
+          "name": {
+            "ru": "Завод супертанков T3",
+            "en": "Supertank factory T3"
+          },
+          "buildSpeed": 2,
+          "producedUnits": [
+            "builandfzr",
+            "lorryfzr",
+            "artfzr",
+            "tankt1fzr",
+            "btrfzr",
+            "tankt2fzr",
+            "tankus",
+            "lorrymiss",
+            "subuilandfzr",
+            "tigron",
+            "rotank",
+            "zenith"
+          ]
+        }
+      ]
     },
     {
       "id": "tankst4",
@@ -1351,12 +2495,42 @@
       "tags": [
         "T4",
         "super-building",
-        "BUILDING"
+        "BUILDING",
+        "building+",
+        "factory"
       ],
       "cost": 5900,
       "energy": 0,
       "hp": 5000,
-      "buildTime": 200
+      "buildTime": 200,
+      "armor": 11,
+      "selfRegen": 0.1,
+      "factories": [
+        {
+          "name": {
+            "ru": "Завод супертанков T4",
+            "en": "Supertank factory T4"
+          },
+          "buildSpeed": 2.5,
+          "producedUnits": [
+            "builandfzr",
+            "lorryfzr",
+            "artfzr",
+            "tankt1fzr",
+            "btrfzr",
+            "tankt2fzr",
+            "tankus",
+            "lorrymiss",
+            "subuilandfzr",
+            "tigron",
+            "rotank",
+            "zenith",
+            "turmeran",
+            "tridelot",
+            "indestructible"
+          ]
+        }
+      ]
     },
     {
       "id": "tmd-p",
@@ -1371,13 +2545,16 @@
       },
       "tags": [
         "T3",
-        "super-building"
+        "super-building",
+        "BUILDING"
       ],
       "cost": 600,
-      "energy": 0,
+      "energy": 800,
       "hp": 700,
       "range": 350,
-      "buildTime": 11
+      "buildTime": 11,
+      "armor": 3,
+      "selfRegen": 0.1
     },
     {
       "id": "torpfzr",
@@ -1393,13 +2570,69 @@
       "tags": [
         "T3",
         "super-building",
-        "WATER"
+        "WATER",
+        "building+",
+        "radar15",
+        "radar30",
+        "sonar30",
+        "builder"
       ],
       "cost": 3000,
       "energy": 0,
       "hp": 5500,
       "range": 500,
-      "buildTime": 55
+      "buildTime": 55,
+      "armor": 15,
+      "selfRegen": 0.25,
+      "speed": 0.18,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 4,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 500,
+          "fireDelay": 5,
+          "mainDps": true,
+          "tags": [
+            "long"
+          ]
+        },
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 140,
+          "fireDelay": 0.6667,
+          "mainDps": false,
+          "tags": [
+            "anti-air",
+            "splash",
+            "long"
+          ],
+          "spread": 150,
+          "splashRadius": 75
+        }
+      ],
+      "torpedoDefense": {
+        "max": 1,
+        "recharge": 10
+      },
+      "builder": {
+        "buildRange": 250,
+        "repairSpeed": 2,
+        "buildSpeed": 1,
+        "healTags": [
+          "ship"
+        ]
+      }
     },
     {
       "id": "turret-t1",
@@ -1421,7 +2654,25 @@
       "energy": 0,
       "hp": 1100,
       "range": 210,
-      "buildTime": 7
+      "buildTime": 7,
+      "armor": 5,
+      "selfRegen": 0.05,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Орудие 1",
+            "en": "Weapon 1"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 82,
+          "fireDelay": 0.4167,
+          "mainDps": true,
+          "armourIgnoreAmount": 5,
+          "tags": []
+        }
+      ]
     },
     {
       "id": "turret-t1p",
@@ -1437,13 +2688,39 @@
       "tags": [
         "T1",
         "building",
-        "BUILDING"
+        "BUILDING",
+        "shield"
       ],
       "cost": 600,
-      "energy": 0,
+      "energy": 300,
       "hp": 750,
       "range": 235,
-      "buildTime": 12
+      "buildTime": 12,
+      "armor": 4,
+      "selfRegen": 0.1,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 95,
+          "fireDelay": 0.75,
+          "mainDps": true,
+          "armourIgnoreAmount": 4,
+          "tags": [
+            "laser"
+          ]
+        }
+      ],
+      "laserDefense": {
+        "radius": 235,
+        "points": 50,
+        "regen": 0.05
+      }
     },
     {
       "id": "turret-t3",
@@ -1459,13 +2736,35 @@
       "tags": [
         "T1",
         "building",
-        "BUILDING"
+        "BUILDING",
+        "building+"
       ],
       "cost": 1200,
       "energy": 0,
       "hp": 2500,
       "range": 270,
-      "buildTime": 20
+      "buildTime": 20,
+      "armor": 10,
+      "selfRegen": 0.1,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Артиллерия",
+            "en": "Artillery"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 170,
+          "fireDelay": 0.6667,
+          "mainDps": true,
+          "armourIgnoreAmount": 15,
+          "tags": [
+            "splash"
+          ],
+          "splashRadius": 50
+        }
+      ]
     },
     {
       "id": "wecofzr",
@@ -1481,13 +2780,15 @@
       "tags": [
         "titan",
         "super-structure",
-        "BUILDING"
+        "BUILDING",
+        "building+"
       ],
       "cost": 18000,
       "energy": 0,
       "hp": 10000,
       "range": 999999,
-      "buildTime": 900
+      "buildTime": 900,
+      "armor": 5
     },
     {
       "id": "protonhq",
@@ -1503,13 +2804,35 @@
       "tags": [
         "titan",
         "super-structure",
-        "BUILDING"
+        "BUILDING",
+        "hq",
+        "building+"
       ],
-      "cost": 8000,
+      "cost": 5000,
       "energy": 0,
       "hp": 7000,
       "range": 220,
-      "buildTime": 0
+      "buildTime": 100,
+      "armor": 5,
+      "selfRegen": 0.15,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 75,
+          "fireDelay": 1.3333,
+          "mainDps": true,
+          "armourIgnoreAmount": 4,
+          "tags": [
+            "laser"
+          ]
+        }
+      ]
     },
     {
       "id": "fenearthq",
@@ -1525,13 +2848,720 @@
       "tags": [
         "titan",
         "super-structure",
-        "BUILDING"
+        "BUILDING",
+        "hq",
+        "building+",
+        "builder",
+        "factory"
       ],
       "cost": 5000,
       "energy": 0,
       "hp": 5500,
       "range": 220,
-      "buildTime": 0
+      "buildTime": 100,
+      "armor": 3,
+      "selfRegen": 0.05,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Ракеты",
+            "en": "Missiles"
+          },
+          "count": 2,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 100,
+          "fireDelay": 2.5,
+          "mainDps": true,
+          "armourIgnoreAmount": 10,
+          "tags": [
+            "rocket",
+            "splash"
+          ],
+          "splashRadius": 30
+        }
+      ],
+      "builder": {
+        "buildRange": 200,
+        "repairSpeed": 0.5,
+        "buildSpeed": 1,
+        "healTags": []
+      },
+      "factories": [
+        {
+          "name": {
+            "ru": "Штаб",
+            "en": "HQ"
+          },
+          "buildSpeed": 1.7,
+          "producedUnits": [
+            "engineerfzr",
+            "scoutsfzr"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "aorbpe",
+      "name": {
+        "ru": "Установка \"Натхойной\"",
+        "en": "Installation \"Nathoinoy\""
+      },
+      "faction": "proton",
+      "desc": {
+        "ru": "Атакует юниты на орбите • Может так же атаковать большие корабли и титаны в атмосфере • Может выстрелить лазером по земле • Осторожно! Выстрел лазера наносит серьёзный урон установке и всему вокруг",
+        "en": "Attacks units in orbit • Can also attack large ships and titans in the atmosphere • Can fire a laser at the ground • Caution! The laser shot deals serious damage to the installation and everything around it"
+      },
+      "tags": [
+        "T1",
+        "building",
+        "BUILDING",
+        "AORB"
+      ],
+      "cost": 600,
+      "energy": 1500,
+      "hp": 1200,
+      "armor": 5,
+      "selfRegen": 0.1,
+      "range": 500,
+      "buildTime": 35,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 500,
+          "fireDelay": 8.3333,
+          "mainDps": true,
+          "armourIgnoreAmount": 10000,
+          "tags": [
+            "anti-orbital",
+            "laser",
+            "long"
+          ]
+        }
+      ],
+      "image": ""
+    },
+    {
+      "id": "hut",
+      "name": {
+        "ru": "Хижина",
+        "en": "Hut"
+      },
+      "faction": "aborigines",
+      "desc": {
+        "ru": "Является домом примитивных аборигенов • Формирует отряды аборигенов • Аборигены оснащаются оружием с мощными станяшими энергокристаллами • Аборигены живучие, сильные, дешевые",
+        "en": "Home of primitive natives • Forms native squads • Natives are equipped with weapons using powerful stunning energy crystals • Natives are tough, strong and cheap"
+      },
+      "tags": [
+        "T1",
+        "building",
+        "BUILDING",
+        "factory",
+        "aborigines"
+      ],
+      "cost": 200,
+      "energy": 0,
+      "hp": 700,
+      "armor": 2,
+      "buildTime": 20,
+      "factories": [
+        {
+          "name": {
+            "ru": "Хижина",
+            "en": "Hut"
+          },
+          "buildSpeed": 1,
+          "producedUnits": [
+            "constrmech",
+            "spear",
+            "sling",
+            "ballist",
+            "dreabo"
+          ]
+        }
+      ],
+      "image": ""
+    },
+    {
+      "id": "agoldmine1",
+      "name": {
+        "ru": "Карьер",
+        "en": "Quarry"
+      },
+      "faction": "aborigines",
+      "desc": {
+        "ru": "Генерирует деньги",
+        "en": "Generates money"
+      },
+      "tags": [
+        "T1",
+        "building",
+        "BUILDING",
+        "aborigines"
+      ],
+      "cost": 400,
+      "energy": 0,
+      "hp": 600,
+      "buildTime": 15,
+      "image": ""
+    },
+    {
+      "id": "temp",
+      "name": {
+        "ru": "Святилище",
+        "en": "Sanctuary"
+      },
+      "faction": "aborigines",
+      "desc": {
+        "ru": "Религиозное и социальное место аборигенов • Позволяет строить здания • Лечит пехотные отряды • Штабной юнит",
+        "en": "Religious and social site of the Natives • Allows constructing buildings • Heals infantry squads • HQ unit"
+      },
+      "tags": [
+        "T1",
+        "building",
+        "BUILDING",
+        "hq",
+        "builder",
+        "factory",
+        "aborigines"
+      ],
+      "cost": 500,
+      "energy": 0,
+      "hp": 700,
+      "armor": 2,
+      "buildTime": 30,
+      "builder": {
+        "buildRange": 150,
+        "repairSpeed": 0.3,
+        "buildSpeed": 1,
+        "healTags": [
+          "infantry",
+          "tank",
+          "bot",
+          "plane",
+          "ship",
+          "space-ship",
+          "building"
+        ]
+      },
+      "factories": [
+        {
+          "name": {
+            "ru": "Святилище",
+            "en": "Sanctuary"
+          },
+          "buildSpeed": 1,
+          "producedUnits": [
+            "shamans"
+          ]
+        }
+      ],
+      "image": ""
+    },
+    {
+      "id": "building",
+      "name": {
+        "ru": "Здание",
+        "en": "Building"
+      },
+      "faction": "neutrals",
+      "desc": {
+        "ru": "Гражданское здание • Можно посадить внутрь войска и использовать здание как укрытие",
+        "en": "Civilian building • Can garrison troops inside and use the building as cover"
+      },
+      "tags": [
+        "T1",
+        "building",
+        "BUILDING",
+        "building+"
+      ],
+      "cost": 1200,
+      "energy": 0,
+      "hp": 3000,
+      "armor": 20,
+      "buildTime": 30,
+      "transports": [
+        {
+          "name": {
+            "ru": "Здание",
+            "en": "Building"
+          },
+          "seats": 4,
+          "cargoTags": [
+            "infantry",
+            "tank",
+            "bot"
+          ],
+          "unload": []
+        }
+      ],
+      "image": ""
+    },
+    {
+      "id": "building2",
+      "name": {
+        "ru": "Здание",
+        "en": "Building"
+      },
+      "faction": "neutrals",
+      "desc": {
+        "ru": "Гражданское здание • Можно посадить внутрь войска и использовать здание как укрытие",
+        "en": "Civilian building • Can garrison troops inside and use the building as cover"
+      },
+      "tags": [
+        "T1",
+        "building",
+        "BUILDING",
+        "building+"
+      ],
+      "cost": 800,
+      "energy": 0,
+      "hp": 1800,
+      "armor": 20,
+      "buildTime": 30,
+      "transports": [
+        {
+          "name": {
+            "ru": "Здание",
+            "en": "Building"
+          },
+          "seats": 3,
+          "cargoTags": [
+            "infantry",
+            "tank",
+            "bot"
+          ],
+          "unload": []
+        }
+      ],
+      "image": ""
+    },
+    {
+      "id": "shieldse",
+      "name": {
+        "ru": "Сеузский щит",
+        "en": "Seuz Shield"
+      },
+      "faction": "neutrals",
+      "desc": {
+        "ru": "Подводный щит • Защищает от подводных снарядов врага • Позволяет наземным юнитам перемещаться под водой • Позволяет строить здания под водой",
+        "en": "Underwater shield • Protects against enemy underwater projectiles • Allows ground units to move underwater • Allows buildings to be built underwater"
+      },
+      "tags": [
+        "T1",
+        "building",
+        "WATER",
+        "shield"
+      ],
+      "cost": 750,
+      "energy": 0,
+      "hp": 1200,
+      "shield": 500,
+      "selfRegen": 0.1,
+      "shieldRegen": 0.15,
+      "buildTime": 20,
+      "domeShield": {
+        "radius": 150,
+        "points": 500,
+        "regen": 0.15
+      },
+      "image": ""
+    },
+    {
+      "id": "temptow",
+      "name": {
+        "ru": "Температурная вышка",
+        "en": "Temperature tower"
+      },
+      "faction": "neutrals",
+      "desc": {
+        "ru": "Вышка регионального контроля погоды • Может заморозить или разморозить небольшую территорию • (Народное прозвище: Арфа)",
+        "en": "Regional weather control tower • Can freeze or thaw a small area • (Popular nickname: Harp)"
+      },
+      "tags": [
+        "T1",
+        "building",
+        "BUILDING"
+      ],
+      "cost": 5000,
+      "energy": 0,
+      "hp": 2400,
+      "armor": 5,
+      "selfRegen": 0.1,
+      "buildTime": 100,
+      "image": ""
+    },
+    {
+      "id": "workshop",
+      "name": {
+        "ru": "Мастерская",
+        "en": "Workshop"
+      },
+      "faction": "neutrals",
+      "desc": {
+        "ru": "Основное здание для получения особых технологий • Позволяет исследовать и производить эксперементальное оружие • Технологии не пропадают при уничтожении этого здания",
+        "en": "Main building for obtaining special technologies • Allows researching and producing experimental weapons • Technologies are not lost when this building is destroyed"
+      },
+      "tags": [
+        "T1",
+        "building",
+        "BUILDING",
+        "factory"
+      ],
+      "cost": 700,
+      "energy": 0,
+      "hp": 1000,
+      "selfRegen": 0.04,
+      "buildTime": 30,
+      "factories": [
+        {
+          "name": {
+            "ru": "Мастерская",
+            "en": "Workshop"
+          },
+          "buildSpeed": 1,
+          "producedUnits": [
+            "engineerim",
+            "marim",
+            "killers",
+            "lorryim",
+            "tankim",
+            "htankim",
+            "sorpariz",
+            "detraider",
+            "builandfzr",
+            "builandpe",
+            "spear",
+            "sling",
+            "shamans",
+            "ballist"
+          ]
+        }
+      ],
+      "image": ""
+    },
+    {
+      "id": "nestt",
+      "name": {
+        "ru": "Гнездо животных",
+        "en": "Animal nest"
+      },
+      "faction": "bioforms",
+      "desc": {
+        "ru": "Является местом обитания животных",
+        "en": "Is a habitat for animals"
+      },
+      "tags": [
+        "T1",
+        "building",
+        "HOVER",
+        "builder",
+        "factory"
+      ],
+      "cost": 150,
+      "energy": 0,
+      "hp": 500,
+      "armor": 2,
+      "buildTime": 15,
+      "builder": {
+        "buildRange": 250,
+        "repairSpeed": 0.3,
+        "buildSpeed": 1,
+        "healTags": []
+      },
+      "factories": [
+        {
+          "name": {
+            "ru": "Гнездо животных",
+            "en": "Animal nest"
+          },
+          "buildSpeed": 4,
+          "producedUnits": [
+            "voy",
+            "pig",
+            "gua"
+          ]
+        }
+      ],
+      "image": ""
+    },
+    {
+      "id": "door",
+      "name": {
+        "ru": "Бронедверь",
+        "en": "Armored door"
+      },
+      "faction": "darkmarket",
+      "desc": {
+        "ru": "Позволяет закрывать тоннели и входы в тоннели • Вражеским отрядам для начала нужно взломать дверь, чтобы её открыть • Для строительства разместите дверь рядом с тоннелями • Закрытые входы в тоннеле становятся невидимыми для врага",
+        "en": "Allows you to close tunnels and tunnel entrances • Enemy units must first breach the door to open it • To build, place the door next to tunnels • Closed tunnel entrances become invisible to the enemy"
+      },
+      "tags": [
+        "T1",
+        "building",
+        "BUILDING",
+        "building+"
+      ],
+      "cost": 10,
+      "energy": 0,
+      "hp": 5000,
+      "buildTime": 10,
+      "image": ""
+    },
+    {
+      "id": "hanim",
+      "name": {
+        "ru": "Ангар",
+        "en": "Hangar"
+      },
+      "faction": "darkmarket",
+      "desc": {
+        "ru": "Производит танки и самоходные установки",
+        "en": "Produces tanks and self-propelled guns"
+      },
+      "tags": [
+        "T1",
+        "building",
+        "BUILDING",
+        "bmarket",
+        "factory"
+      ],
+      "cost": 650,
+      "energy": 0,
+      "hp": 1000,
+      "selfRegen": 0.03,
+      "buildTime": 7,
+      "factories": [
+        {
+          "name": {
+            "ru": "Ангар",
+            "en": "Hangar"
+          },
+          "buildSpeed": 2,
+          "producedUnits": [
+            "lorryim",
+            "tankim",
+            "htankim"
+          ]
+        }
+      ],
+      "image": ""
+    },
+    {
+      "id": "imhq",
+      "name": {
+        "ru": "Штаб Черного Рынка",
+        "en": "Black Market HQ"
+      },
+      "faction": "darkmarket",
+      "desc": {
+        "ru": "Штабной юнит • Может строить здания вокруг себя и чинить",
+        "en": "HQ unit • Can build buildings around itself and repair"
+      },
+      "tags": [
+        "T1",
+        "building",
+        "BUILDING",
+        "hq",
+        "bmarket",
+        "builder",
+        "factory"
+      ],
+      "cost": 2000,
+      "energy": 0,
+      "hp": 2700,
+      "armor": 2,
+      "buildTime": 45,
+      "builder": {
+        "buildRange": 150,
+        "repairSpeed": 0.6,
+        "buildSpeed": 1,
+        "healTags": [
+          "infantry",
+          "tank",
+          "bot",
+          "plane",
+          "ship",
+          "space-ship",
+          "building"
+        ]
+      },
+      "image": ""
+    },
+    {
+      "id": "lmim",
+      "name": {
+        "ru": "Жилой модуль",
+        "en": "Habitation module"
+      },
+      "faction": "darkmarket",
+      "desc": {
+        "ru": "Позволяет жить на любых планетах • Можно нанимать пехотные отряды",
+        "en": "Allows living on any planet • Allows recruiting infantry squads"
+      },
+      "tags": [
+        "T1",
+        "building",
+        "BUILDING",
+        "bmarket",
+        "factory"
+      ],
+      "cost": 350,
+      "energy": 0,
+      "hp": 750,
+      "selfRegen": 0.03,
+      "buildTime": 7,
+      "factories": [
+        {
+          "name": {
+            "ru": "Жилой модуль",
+            "en": "Habitation module"
+          },
+          "buildSpeed": 2,
+          "producedUnits": [
+            "engineerim",
+            "marim",
+            "killers"
+          ]
+        }
+      ],
+      "image": ""
+    },
+    {
+      "id": "imgoldmine",
+      "name": {
+        "ru": "Шахта Т1",
+        "en": "Mine T1"
+      },
+      "faction": "darkmarket",
+      "desc": {
+        "ru": "Генерирует деньги",
+        "en": "Generates money"
+      },
+      "tags": [
+        "T1",
+        "building",
+        "BUILDING"
+      ],
+      "cost": 600,
+      "energy": 0,
+      "hp": 1000,
+      "armor": 20000,
+      "buildTime": 0,
+      "image": ""
+    },
+    {
+      "id": "padim",
+      "name": {
+        "ru": "Посадочная площадка",
+        "en": "Landing pad"
+      },
+      "faction": "darkmarket",
+      "desc": {
+        "ru": "Производит летательные аппараты",
+        "en": "Produces aircraft"
+      },
+      "tags": [
+        "T1",
+        "building",
+        "BUILDING",
+        "bmarket",
+        "factory"
+      ],
+      "cost": 650,
+      "energy": 0,
+      "hp": 1000,
+      "selfRegen": 0.03,
+      "buildTime": 7,
+      "image": "",
+      "factories": [
+        {
+          "name": {
+            "ru": "Посадочная площадка",
+            "en": "Landing pad"
+          },
+          "buildSpeed": 2,
+          "producedUnits": [
+            "sorpariz",
+            "detraider"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "stim",
+      "name": {
+        "ru": "Склад",
+        "en": "Storage"
+      },
+      "faction": "darkmarket",
+      "desc": {
+        "ru": "Содержит в себе случайные ресурсы, оружие или технику",
+        "en": "Contains random resources, weapons or vehicles"
+      },
+      "tags": [
+        "T1",
+        "building",
+        "BUILDING",
+        "building+",
+        "bmarket"
+      ],
+      "cost": 500,
+      "energy": 0,
+      "hp": 700,
+      "buildTime": 7,
+      "image": ""
+    },
+    {
+      "id": "tuim",
+      "name": {
+        "ru": "Оборонительная турель",
+        "en": "Defensive turret"
+      },
+      "faction": "darkmarket",
+      "desc": {
+        "ru": "Высокий урон по не большому радиусу • Атакует наземные и воздушные цели",
+        "en": "High damage over a small radius • Attacks ground and air targets"
+      },
+      "tags": [
+        "T1",
+        "building",
+        "BUILDING",
+        "bmarket"
+      ],
+      "cost": 900,
+      "energy": 0,
+      "hp": 1000,
+      "armor": 3,
+      "selfRegen": 0.03,
+      "range": 250,
+      "buildTime": 7,
+      "weapons": [
+        {
+          "name": {
+            "ru": "Лазер",
+            "en": "Laser"
+          },
+          "count": 1,
+          "projectileCount": 1,
+          "projectileDelay": 0,
+          "damage": 170,
+          "fireDelay": 1.3333,
+          "mainDps": true,
+          "armourIgnoreAmount": 30,
+          "tags": [
+            "laser"
+          ],
+          "spread": 0
+        }
+      ],
+      "image": ""
     }
   ]
 }

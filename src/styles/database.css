@@ -354,6 +354,7 @@
 }
 .unit-card {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-3);
   align-content: start;
   padding: var(--card-pad);
@@ -387,6 +388,7 @@
   align-items: center;
   gap: 13px;
   padding-right: 42px;
+  min-width: 0;
 }
 .unit-card__img {
   width: 78px;
@@ -410,6 +412,9 @@
   color: var(--faction-color, var(--cyan));
 }
 .unit-card__name {
+  min-width: 0;
+  overflow-wrap: break-word;
+  hyphens: auto;
   font-family: var(--font-display);
   font-size: 15.5px;
   color: #fff;
@@ -1757,7 +1762,7 @@ body.has-compare-tray .database-page {
 }
 .weapon-table th,
 .weapon-table td {
-  padding: 8px 10px;
+  padding: 8px;
   text-align: left;
   vertical-align: top;
   border-bottom: 1px solid var(--line-soft);
@@ -1800,7 +1805,7 @@ body.has-compare-tray .database-page {
 }
 .weapon-table__name {
   color: var(--text);
-  white-space: nowrap;
+  white-space: normal;
 }
 .weapon-table__dps {
   color: var(--cyan-hi);
@@ -1989,22 +1994,25 @@ body.has-compare-tray .database-page {
 
 /* Таблица оружия: не даём колонкам слипаться на широком составе. */
 .weapon-table {
-  min-width: 1080px;
+  min-width: 0;
 }
 .weapon-table thead th {
-  white-space: nowrap;
+  white-space: normal;
+}
+.weapon-table thead th button {
+  white-space: normal;
 }
 .weapon-table th:nth-child(1),
 .weapon-table td:nth-child(1) {
-  min-width: 160px;
+  min-width: 90px;
 }
 .weapon-table th:nth-child(5),
 .weapon-table td:nth-child(5) {
-  min-width: 70px;
+  min-width: 60px;
 }
 .weapon-table th:nth-child(6),
 .weapon-table td:nth-child(6) {
-  min-width: 210px;
+  min-width: 90px;
 }
 .weapon-table th:nth-child(7),
 .weapon-table td:nth-child(7),
@@ -2012,7 +2020,7 @@ body.has-compare-tray .database-page {
 .weapon-table td:nth-child(8),
 .weapon-table th:nth-child(9),
 .weapon-table td:nth-child(9) {
-  min-width: 72px;
+  min-width: 60px;
   white-space: nowrap;
 }
 

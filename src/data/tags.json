@@ -686,6 +686,94 @@
         "en": "Rear"
       },
       "group": "sector"
+    },
+    {
+      "id": "beast",
+      "name": {
+        "ru": "Зверь",
+        "en": "Beast"
+      },
+      "group": "class"
+    },
+    {
+      "id": "plant",
+      "name": {
+        "ru": "Растение",
+        "en": "Plant"
+      },
+      "group": "class"
+    },
+    {
+      "id": "civilian",
+      "name": {
+        "ru": "Гражданский",
+        "en": "Civilian"
+      },
+      "group": "class"
+    },
+    {
+      "id": "aborigines",
+      "name": {
+        "ru": "Аборигены",
+        "en": "Aborigines"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "bmarket",
+      "name": {
+        "ru": "Чёрный рынок",
+        "en": "Dark Market"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "han",
+      "name": {
+        "ru": "Ханхонханы",
+        "en": "Hanhonhans"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "tunnel",
+      "name": {
+        "ru": "Туннель",
+        "en": "Tunnel"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "trap",
+      "name": {
+        "ru": "Ловушка",
+        "en": "Trap"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "wall",
+      "name": {
+        "ru": "Стена",
+        "en": "Wall"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "bridge",
+      "name": {
+        "ru": "Мост",
+        "en": "Bridge"
+      },
+      "group": "mod"
+    },
+    {
+      "id": "weather",
+      "name": {
+        "ru": "Погода",
+        "en": "Weather"
+      },
+      "group": "mod"
     }
   ]
 }
