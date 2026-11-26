@@ -15,11 +15,39 @@ export interface WeaponLike {
   mainDps?: boolean | undefined;
 }
 
-export interface StatScaleEntryLike {
-  lo: number;
-  hi: number;
+export const STAT_KEYS = [
+  "hp",
+  "shield",
+  "armor",
+  "selfRegen",
+  "shieldRegen",
+  "dps",
+  "speed",
+  "range",
+] as const;
+export type StatKey = (typeof STAT_KEYS)[number];
+
+/** Минимум полей карточки, нужный для расчёта полос. */
+export interface StatValueSource {
+  hp: number;
+  shield: number;
+  armor: number;
+  selfRegen: number;
+  shieldRegen: number;
+  mainDps: number;
+  speed: number;
+  range: number;
+}
+
+export interface StatScaleEntry {
+  max: number;
   median: number;
 }
+
+export type StatScale = Record<StatKey, StatScaleEntry | null>;
+
+/** Эти полосы показываются даже при нулевых значениях у всей выборки. */
+const ALWAYS_VISIBLE_STATS = new Set<StatKey>(["dps", "armor"]);
 
 /** Полная стоимость = цена + энергия / 4. */
 export function fullCost(cost: number, energy: number): number {
@@ -109,16 +137,46 @@ export function hasMatchingWeapon(
   return weapons.some((weapon) => weaponMatchesTags(weapon, tags, mode));
 }
 
-const MIN_BAR = 10;
+function medianOf(values: readonly number[]): number {
+  const mid = Math.floor(values.length / 2);
+  if (values.length % 2) return values[mid] ?? 0;
+  return ((values[mid - 1] ?? 0) + (values[mid] ?? 0)) / 2;
+}
 
-export function barPercent(value: number, entry: StatScaleEntryLike | null): number {
-  if (!(value > 0) || !entry) return 0;
-  const lo = Math.max(entry.lo, 0.01);
-  const hi = Math.max(entry.hi, lo * 1.01);
-  const span = Math.log(hi / lo);
-  if (!(span > 0)) return 100;
-  const position = Math.log(Math.max(value, lo) / lo) / span;
-  return Math.max(MIN_BAR, Math.min(100, Math.round(MIN_BAR + (100 - MIN_BAR) * position)));
+/**
+ * Линейная шкала по текущей выборке: максимум каждого стата становится 100%.
+ * HP и щит делят один максимум — больший из двух, чтобы полосы были сравнимы.
+ * Нулевые значения не участвуют в расчёте шкалы и медианы.
+ */
+export function computeStatScale(items: readonly StatValueSource[]): StatScale {
+  const scale = {} as StatScale;
+  for (const key of STAT_KEYS) {
+    const values = items
+      .map((item) => (key === "dps" ? item.mainDps : item[key]))
+      .filter((value) => value > 0)
+      .toSorted((a, b) => a - b);
+    if (!values.length) {
+      scale[key] = ALWAYS_VISIBLE_STATS.has(key) ? { max: 0, median: 0 } : null;
+      continue;
+    }
+    scale[key] = {
+      max: values[values.length - 1] ?? 0,
+      median: medianOf(values),
+    };
+  }
+
+  const hpShieldMax = Math.max(scale.hp?.max ?? 0, scale.shield?.max ?? 0);
+  if (scale.hp) scale.hp.max = hpShieldMax;
+  if (scale.shield) scale.shield.max = hpShieldMax;
+
+  return scale;
+}
+
+/** Линейный процент: 0 — пусто, max — 100%, значения выше max обрезаются. */
+export function barPercent(value: number, max: number | null | undefined): number {
+  if (!(value > 0) || !(max && max > 0)) return 0;
+  const percent = (value / max) * 100;
+  return Math.min(100, Math.round(percent * 100) / 100);
 }
 
 /** Компактный формат значения полосы: 2 знака < 10, 1 знак < 1000, дальше целое. */

@@ -118,7 +118,6 @@ const jsonLd = {
           items={database.explorer.items}
           factions={database.explorer.factions}
           tags={database.explorer.tags}
-          dpsScale={database.explorer.dpsScale}
           labels={database.explorer.labels}
         />
       </div>
@@ -135,7 +134,7 @@ const jsonLd = {
               lang={lang}
               factions={database.factionMap}
               tags={database.tagMap}
-              scale={database.scale}
+              scale={database.scales.units}
             />
           ))
         }
@@ -149,7 +148,7 @@ const jsonLd = {
               lang={lang}
               factions={database.factionMap}
               tags={database.tagMap}
-              scale={database.scale}
+              scale={database.scales.buildings}
             />
           ))
         }
@@ -163,7 +162,7 @@ const jsonLd = {
               lang={lang}
               factions={database.factionMap}
               tags={database.tagMap}
-              scale={database.scale}
+              scale={database.scales.misc}
             />
           ))
         }

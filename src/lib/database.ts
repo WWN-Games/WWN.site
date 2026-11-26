@@ -1,13 +1,21 @@
 /* ============================================================================
    WWN — данные страницы базы (database/): всё считается на сборке.
    Карточки отдаются статически; острову — только сериализуемый индекс,
-   подписи интерфейса и готовая шкала статов.
+   подписи интерфейса и стартовые шкалы статов по вкладкам.
    ============================================================================ */
 
 import { getCollection } from "astro:content";
 
 import { type DictKey, t } from "../i18n";
-import { barPercent, formatStat, type StatScaleEntryLike, weaponDps } from "./card-stats";
+import {
+  barPercent,
+  computeStatScale,
+  formatStat,
+  STAT_KEYS,
+  type StatKey,
+  type StatScale,
+  weaponDps,
+} from "./card-stats";
 import { isBadgeNew, withDerivedCard } from "./cards";
 import type { CompareGroup, CompareMetric } from "./compare";
 import type { CardTab, SortKey } from "./database-constants";
@@ -37,36 +45,13 @@ export type { CardTab, SortDirection, SortKey, TabId } from "./database-constant
 
 /* — константы и базовые типы — */
 
-const STAT_KEYS = [
-  "hp",
-  "shield",
-  "armor",
-  "selfRegen",
-  "shieldRegen",
-  "dps",
-  "speed",
-  "range",
-] as const;
-type StatKey = (typeof STAT_KEYS)[number];
-
-/** Эти полосы показываются даже при нулевых значениях у всей базы. */
-const ALWAYS_VISIBLE_STATS = new Set<StatKey>(["dps", "armor"]);
+export type { StatKey, StatScale } from "./card-stats";
 
 type TagGroup = Tag["group"];
 
 const FALLBACK_COLOR = "#29b8ff";
 
-/* — шкала статов — */
-
-interface StatScaleEntry {
-  lo: number;
-  hi: number;
-  median: number;
-}
-
-export type StatScale = Record<StatKey, StatScaleEntry | null>;
-
-/** Готовая полоса: значения и проценты посчитаны на сборке. */
+/** Готовая полоса: проценты посчитаны на сборке и обновляются на клиенте. */
 export interface StatBarData {
   key: StatKey;
   value: number;
@@ -395,14 +380,13 @@ interface ExplorerData {
   factions: ExplorerFaction[];
   tags: ExplorerTag[];
   labels: ExplorerLabels;
-  /** Шкала DPS — острову нужна для пересчёта полосы при фильтре оружия. */
-  dpsScale: StatScaleEntryLike | null;
 }
 
 interface DatabaseData {
   cards: DatabaseCard[];
   factions: DatabaseFaction[];
-  scale: StatScale;
+  /** Стартовая линейная шкала каждой вкладки; клиент пересчитывает её по фильтрам. */
+  scales: Record<CardTab, StatScale>;
   factionMap: Map<string, Faction>;
   tagMap: Map<string, Tag>;
   explorer: ExplorerData;
@@ -461,37 +445,7 @@ function emblemFileName(emblem: string): string | null {
   return file && /\.svg$/i.test(file) ? file : null;
 }
 
-/* — шкала: логарифм с устойчивыми опорами p5/p95 и медианой — */
-
-function valueAt(values: number[], quantile: number): number {
-  return values[Math.min(values.length - 1, Math.round(quantile * (values.length - 1)))] ?? 0;
-}
-
-function medianOf(values: number[]): number {
-  const mid = Math.floor(values.length / 2);
-  if (values.length % 2) return values[mid] ?? 0;
-  return ((values[mid - 1] ?? 0) + (values[mid] ?? 0)) / 2;
-}
-
-/** Шкала считается один раз по всей базе, чтобы раскладка не зависела от фильтров. */
-function computeScale(cards: DatabaseCard[]): StatScale {
-  const scale = {} as Record<StatKey, StatScaleEntry | null>;
-  for (const key of STAT_KEYS) {
-    const values = cards
-      .map((card) => (key === "dps" ? card.mainDps : card[key]))
-      .filter((value) => value > 0)
-      .toSorted((a, b) => a - b);
-    if (!values.length) {
-      scale[key] = ALWAYS_VISIBLE_STATS.has(key) ? { lo: 1, hi: 1, median: 0 } : null;
-      continue;
-    }
-    const lo = valueAt(values, 0.05);
-    const p95 = valueAt(values, 0.95);
-    const max = values[values.length - 1] ?? 0;
-    scale[key] = { lo, hi: max > p95 * 3 ? p95 : max, median: medianOf(values) };
-  }
-  return scale;
-}
+/* — полосы: линейная шкала по максимуму выборки — */
 
 export function buildBars(card: DatabaseCard, lang: Lang, scale: StatScale): StatBarData[] {
   const bars: StatBarData[] = [];
@@ -508,8 +462,8 @@ export function buildBars(card: DatabaseCard, lang: Lang, scale: StatScale): Sta
       value,
       label: t(lang, `database.${key}`),
       display,
-      percent: barPercent(value, entry),
-      medianPercent: barPercent(entry.median, entry),
+      percent: barPercent(value, entry.max),
+      medianPercent: barPercent(entry.median, entry.max),
     });
   }
   return bars;
@@ -742,7 +696,13 @@ export async function loadDatabase(lang: Lang): Promise<DatabaseData> {
     if (counter) counter[card.tab] += 1;
   }
 
-  const scale = computeScale(cards);
+  const cardsByTab: Record<CardTab, DatabaseCard[]> = { units: [], buildings: [], misc: [] };
+  for (const card of cards) cardsByTab[card.tab].push(card);
+  const scales: Record<CardTab, StatScale> = {
+    units: computeStatScale(cardsByTab.units),
+    buildings: computeStatScale(cardsByTab.buildings),
+    misc: computeStatScale(cardsByTab.misc),
+  };
 
   const publishedSlugs = new Set(published.map((entry) => entrySlug(entry)));
   const factions: DatabaseFaction[] = sortedFactions.map((entry) => {
@@ -860,7 +820,7 @@ export async function loadDatabase(lang: Lang): Promise<DatabaseData> {
   return {
     cards,
     factions,
-    scale,
+    scales,
     factionMap,
     tagMap,
     explorer: {
@@ -872,7 +832,6 @@ export async function loadDatabase(lang: Lang): Promise<DatabaseData> {
         name: entry.data.name,
       })),
       labels: explorerLabels(lang),
-      dpsScale: scale.dps,
     },
   };
 }

@@ -19,7 +19,7 @@ import {
   type StatScale,
   tagLabel,
 } from "@/lib/database";
-import { FTL_JUMP_TAGS, FTL_TYPE_LABEL } from "@/lib/ftl";
+import { FTL_TYPE_LABEL, ftlListTagKeys } from "@/lib/ftl";
 import type { Faction, Tag } from "@/lib/schemas";
 import type { Lang } from "@/lib/site";
 import { formatNumber } from "@/lib/utils";
@@ -50,7 +50,7 @@ const detailLabel = t(lang, "database.detail");
 const jumpAbilities = card.ftlJump
   ? [
       t(lang, FTL_TYPE_LABEL[card.ftlJump.type]),
-      ...FTL_JUMP_TAGS[card.ftlJump.type].map((key) => t(lang, key)),
+      ...ftlListTagKeys(card.ftlJump.type).map((key) => t(lang, key)),
     ]
   : [];
 const abilities = [
@@ -59,7 +59,6 @@ const abilities = [
   card.laserDefense && t(lang, "database.ability.laser"),
   card.domeShield && t(lang, "database.ability.dome"),
   card.atmosphere && t(lang, "database.ability.atmosphere"),
-  card.ftlJump && t(lang, "database.ability.ftl"),
   ...jumpAbilities,
 ].filter((value): value is string => Boolean(value));
 ---

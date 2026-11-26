@@ -15,10 +15,12 @@ import TagFilterPanel from "@/components/database/TagFilterPanel.svelte";
 import { iconSvg } from "@/components/ui/icon";
 import {
   barPercent,
+  computeStatScale,
   filteredMainWeaponDps,
   filteredWeaponDps,
   formatStat,
-  type StatScaleEntryLike,
+  STAT_KEYS,
+  type StatKey,
 } from "@/lib/card-stats";
 import {
   MAX_COMPARE,
@@ -51,11 +53,10 @@ interface Props {
   items: ExplorerItem[];
   factions: ExplorerFaction[];
   tags: ExplorerTag[];
-  dpsScale: StatScaleEntryLike | null;
   labels: ExplorerLabels;
 }
 
-const { lang, items, factions, tags, dpsScale, labels }: Props = $props();
+const { lang, items, factions, tags, labels }: Props = $props();
 
 const TAB_IDS: TabId[] = [...TABS];
 const TAG_GROUP_ORDER: Record<ExplorerTag["group"], number> = {
@@ -128,6 +129,9 @@ const searchableItems = $derived(
     dps: weaponFilterActive
       ? filteredWeaponDps(item.weapons, weaponTags, weaponTagMode)
       : item.dps,
+    mainDps: weaponFilterActive
+      ? filteredMainWeaponDps(item.weapons, weaponTags, weaponTagMode)
+      : item.mainDps,
     searchText: searchIndex[item.id] ?? "",
   })),
 );
@@ -232,13 +236,15 @@ const weaponTagGroups = $derived.by(() => {
   return groups;
 });
 
-const visibleIds = $derived.by(() => {
+const visibleFactionIds = $derived.by(() => {
   const tokens = searchTokens(searchQuery);
-  if (tab === "factions") {
-    return factions
-      .filter((item) => tokens.every((token) => item.searchText.includes(token)))
-      .map((item) => item.id);
-  }
+  return factions
+    .filter((item) => tokens.every((token) => item.searchText.includes(token)))
+    .map((item) => item.id);
+});
+
+const visibleItems = $derived.by(() => {
+  if (tab === "factions") return [];
   const filtered = filterItems(tabItems, {
     query: searchQuery,
     faction,
@@ -247,8 +253,15 @@ const visibleIds = $derived.by(() => {
     weaponTags,
     weaponTagMode,
   });
-  return sortItems(filtered, sort, direction, lang).map((item) => item.id);
+  return sortItems(filtered, sort, direction, lang);
 });
+
+const visibleIds = $derived(
+  tab === "factions" ? visibleFactionIds : visibleItems.map((item) => item.id),
+);
+
+/** Максимумы полос считаются по текущей выборке: отфильтрованной и без скрытых. */
+const visibleScale = $derived(computeStatScale(visibleItems));
 
 const total = $derived(tab === "factions" ? factions.length : tabItems.length);
 const countText = $derived(
@@ -361,30 +374,53 @@ const tagModeLabels = $derived({
   apply: labels.tagApply,
 });
 
-/* Пересчёт DPS на статических карточках при фильтре по тегам оружия. */
+const statLabels: Record<StatKey, string> = {
+  hp: labels.detail.hp,
+  shield: labels.detail.shield,
+  armor: labels.detail.armor,
+  selfRegen: labels.detail.selfRegen,
+  shieldRegen: labels.detail.shieldRegen,
+  dps: labels.dps,
+  speed: labels.detail.speed,
+  range: labels.detail.range,
+};
+
+/* Пересчёт всех полос на статических карточках по видимой выборке. */
 $effect(() => {
-  const active = weaponFilterActive;
-  const selected = weaponTags;
-  const mode = weaponTagMode;
-  const scale = dpsScale;
-  for (const card of document.querySelectorAll<HTMLElement>("[data-card-id]")) {
+  const activeTab = tab;
+  const scale = visibleScale;
+  void domSync;
+  if (activeTab === "factions") return;
+
+  const grid = document.querySelector<HTMLElement>(`[data-grid="${activeTab}"]`);
+  if (!grid) return;
+
+  const byId = new Map(tabItems.map((item) => [item.id, item]));
+  for (const card of grid.querySelectorAll<HTMLElement>("[data-card-id]")) {
     const id = card.dataset.cardId;
-    const item = id ? itemById.get(id) : undefined;
+    const item = id ? byId.get(id) : undefined;
     if (!item) continue;
-    const dps = active ? filteredWeaponDps(item.weapons, selected, mode) : item.dps;
-    const mainDps = active
-      ? filteredMainWeaponDps(item.weapons, selected, mode)
-      : item.mainDps;
-    const bar = card.querySelector<HTMLElement>('[data-stat="dps"]');
-    if (!bar) continue;
-    const display =
-      mainDps === dps ? formatStat(mainDps) : `${formatStat(mainDps)} – ${formatStat(dps)}`;
-    bar.dataset.value = String(mainDps);
-    bar.title = `${labels.dps}: ${display}`;
-    const value = bar.querySelector<HTMLElement>("[data-stat-value]");
-    if (value) value.textContent = display;
-    const fill = bar.querySelector<HTMLElement>("[data-stat-fill]");
-    if (fill) fill.style.setProperty("--w", `${barPercent(mainDps, scale)}%`);
+
+    for (const key of STAT_KEYS) {
+      const bar = card.querySelector<HTMLElement>(`[data-stat="${key}"]`);
+      if (!bar) continue;
+
+      const value = key === "dps" ? item.mainDps : item[key];
+      const display =
+        key === "dps" && item.dps !== item.mainDps
+          ? `${formatStat(item.mainDps)} – ${formatStat(item.dps)}`
+          : formatStat(value);
+      const entry = scale[key];
+
+      bar.dataset.value = String(value);
+      bar.title = `${statLabels[key]}: ${display}`;
+      bar.style.setProperty("--median", `${entry ? barPercent(entry.median, entry.max) : 0}%`);
+
+      const valueNode = bar.querySelector<HTMLElement>("[data-stat-value]");
+      if (valueNode) valueNode.textContent = display;
+      const fill = bar.querySelector<HTMLElement>("[data-stat-fill]");
+      if (fill) fill.style.setProperty("--w", `${barPercent(value, entry?.max)}%`);
+    }
   }
 });
 
