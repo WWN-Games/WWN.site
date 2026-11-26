@@ -244,13 +244,13 @@
               {#if item.missileDefense}
                 <div>
                   <span>{detail.abilityMissile}</span>
-                  <b>{item.missileDefense.max} {detail.charges} · {formatter.format(item.missileDefense.recharge)} {detail.perSecond}</b>
+                  <b>{item.missileDefense.max} {detail.charges} · {formatter.format(item.missileDefense.recharge)}{detail.seconds}</b>
                 </div>
               {/if}
               {#if item.torpedoDefense}
                 <div>
                   <span>{detail.abilityTorpedo}</span>
-                  <b>{item.torpedoDefense.max} {detail.charges} · {formatter.format(item.torpedoDefense.recharge)} {detail.perSecond}</b>
+                  <b>{item.torpedoDefense.max} {detail.charges} · {formatter.format(item.torpedoDefense.recharge)}{detail.seconds}</b>
                 </div>
               {/if}
               {#if item.laserDefense}
@@ -273,14 +273,14 @@
                   <span>{detail.abilityFtl}</span>
                   <b>
                     {ftlLabels[item.ftlJump.type] ?? item.ftlJump.type}
-                    · {formatter.format(item.ftlJump.chargeTime)}{detail.seconds}
-                    · {formatter.format(item.ftlJump.cooldown)}{detail.seconds}
-                    · {formatter.format(item.ftlJump.minDistance)}
+                    · {detail.ftlCharge}: {formatter.format(item.ftlJump.chargeTime)}{detail.seconds}
+                    · {detail.ftlCooldown}: {formatter.format(item.ftlJump.cooldown)}{detail.seconds}
+                    · {detail.ftlMinDistance}: {formatter.format(item.ftlJump.minDistance)}
                     {#if item.ftlJump.type === "siv" && item.ftlJump.jumpSpeed !== undefined}
                       · {detail.ftlSpeed}: {formatter.format(item.ftlJump.jumpSpeed)}
                     {/if}
                     {#if item.ftlJump.type === "plasma" && item.ftlJump.energyCost !== undefined}
-                      · {formatter.format(item.ftlJump.energyCost)} {detail.energy}
+                      · {detail.ftlEnergyCost}: {formatter.format(item.ftlJump.energyCost)}
                     {/if}
                   </b>
                   <div class="weapon-table__tags">

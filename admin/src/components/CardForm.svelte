@@ -28,6 +28,16 @@
   );
   const computedMainDps = $derived(mainWeaponDps(weapons));
 
+  const simpleAbilities = [
+    { key: "tacticalInstallation", label: "Тактическая установка" },
+    { key: "nuclearInstallation", label: "Ядерная установка" },
+    { key: "hyperInstallation", label: "Гипер установка" },
+    { key: "tacticalMissileDefense", label: "Тактическое ПРО" },
+    { key: "nuclearMissileDefense", label: "Ядерное ПРО" },
+    { key: "hyperMissileDefense", label: "Гипер ПРО" },
+  ] as const;
+  type SimpleAbilityKey = (typeof simpleAbilities)[number]["key"];
+
   let unitOptions = $state<Card[]>([]);
 
   onMount(async () => {
@@ -123,6 +133,10 @@
 
   function toggleAtmosphere(checked: boolean): void {
     item.atmosphere = checked ? (item.atmosphere ?? { time: 0 }) : undefined;
+  }
+
+  function toggleSimpleAbility(key: SimpleAbilityKey, checked: boolean): void {
+    item[key] = checked || undefined;
   }
 
   function toggleFtlJump(checked: boolean): void {
@@ -505,7 +519,7 @@
             <input id="missile-max" type="number" min="0" step="1" value={item.missileDefense.max} oninput={(event) => updateChargeDefense("missileDefense", { max: Math.max(0, Math.round(Number(event.currentTarget.value) || 0)) })} />
           </div>
           <div class="field">
-            <label for="missile-recharge">Восстановление, зарядов/с</label>
+            <label for="missile-recharge">Восстановление 1 заряда (с)</label>
             <input id="missile-recharge" type="number" min="0" step="any" value={item.missileDefense.recharge} oninput={(event) => updateChargeDefense("missileDefense", { recharge: Number(event.currentTarget.value) || 0 })} />
           </div>
         </div>
@@ -523,12 +537,25 @@
             <input id="torpedo-max" type="number" min="0" step="1" value={item.torpedoDefense.max} oninput={(event) => updateChargeDefense("torpedoDefense", { max: Math.max(0, Math.round(Number(event.currentTarget.value) || 0)) })} />
           </div>
           <div class="field">
-            <label for="torpedo-recharge">Восстановление, зарядов/с</label>
+            <label for="torpedo-recharge">Восстановление 1 заряда (с)</label>
             <input id="torpedo-recharge" type="number" min="0" step="any" value={item.torpedoDefense.recharge} oninput={(event) => updateChargeDefense("torpedoDefense", { recharge: Number(event.currentTarget.value) || 0 })} />
           </div>
         </div>
       {/if}
     </div>
+  </div>
+
+  <div class="form-grid form-grid--three">
+    {#each simpleAbilities as ability (ability.key)}
+      <label class="tag-option" style="padding: 6px 0">
+        <input
+          type="checkbox"
+          checked={!!item[ability.key]}
+          onchange={(event) => toggleSimpleAbility(ability.key, event.currentTarget.checked)}
+        />
+        <span>{ability.label}</span>
+      </label>
+    {/each}
   </div>
 
   <label class="tag-option" style="padding: 6px 0">

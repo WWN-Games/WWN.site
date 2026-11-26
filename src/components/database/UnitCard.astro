@@ -59,6 +59,12 @@ const abilities = [
   card.laserDefense && t(lang, "database.ability.laser"),
   card.domeShield && t(lang, "database.ability.dome"),
   card.atmosphere && t(lang, "database.ability.atmosphere"),
+  card.tacticalInstallation && t(lang, "database.ability.tacticalInstallation"),
+  card.nuclearInstallation && t(lang, "database.ability.nuclearInstallation"),
+  card.hyperInstallation && t(lang, "database.ability.hyperInstallation"),
+  card.tacticalMissileDefense && t(lang, "database.ability.tacticalMissileDefense"),
+  card.nuclearMissileDefense && t(lang, "database.ability.nuclearMissileDefense"),
+  card.hyperMissileDefense && t(lang, "database.ability.hyperMissileDefense"),
   ...jumpAbilities,
 ].filter((value): value is string => Boolean(value));
 ---

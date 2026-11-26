@@ -82,10 +82,11 @@
 | `cost`, `energy`, `hp`, `buildTime` | да | Числа; `energy` обязательна даже при 0 |
 | `shield`, `armor`, `selfRegen`, `shieldRegen`, `speed`, `turnSpeed`, `range` | нет | Числа, допустимы дробные; можно не писать, если 0 |
 | `weapons` | нет | Массив орудий (см. ниже) |
-| `missileDefense`, `torpedoDefense` | нет | `{ max, recharge }`: заряды и восстановление зарядов/с |
+| `missileDefense`, `torpedoDefense` | нет | `{ max, recharge }`: максимум зарядов и время восстановления 1 заряда, с |
 | `laserDefense` | нет | `{ radius, points, regen }` — как у купольного щита |
 | `domeShield` | нет | `{ radius, points, regen }` |
 | `atmosphere` | нет | `{ time }` — время входа в атмосферу, с |
+| `tacticalInstallation`, `nuclearInstallation`, `hyperInstallation`, `tacticalMissileDefense`, `nuclearMissileDefense`, `hyperMissileDefense` | нет | `true` — простая способность-метка без параметров; выводится чипом в общем списке |
 | `ftlJump` | нет | `{ type: "siv" \\| "plasma" \\| "tele", chargeTime, cooldown, minDistance, jumpSpeed?, energyCost? }`; `jumpSpeed` — только СИВ, `energyCost` — только плазма |
 | `miniIcon` | нет | Дополнительная мини-иконка: `img/database/mini/<id>.avif`; без файла не показывается |
 | `builder` | нет | `{ buildRange, repairSpeed, buildSpeed, healTags }` |

@@ -96,7 +96,7 @@ const transportSchema = z.object({
 
 export type Transport = z.infer<typeof transportSchema>;
 
-/** Активная защита: максимум зарядов и восстановление зарядов в секунду. */
+/** Активная защита: максимум зарядов и время восстановления одного заряда, с. */
 const chargeDefenseSchema = z.object({
   max: z.number().int().nonnegative(),
   recharge: z.number().nonnegative(),
@@ -153,9 +153,9 @@ const cardBase = z.object({
   turnSpeed: stat,
   range: stat,
   weapons: z.array(weaponSchema).optional(),
-  /** Защита от ракет: максимум зарядов и восстановление (зарядов/с). */
+  /** Защита от ракет: максимум зарядов и время восстановления 1 заряда (с). */
   missileDefense: chargeDefenseSchema.optional(),
-  /** Защита от торпед: максимум зарядов и восстановление (зарядов/с). */
+  /** Защита от торпед: максимум зарядов и время восстановления 1 заряда (с). */
   torpedoDefense: chargeDefenseSchema.optional(),
   /** Лазерная защита: те же параметры, что у купольного щита. */
   laserDefense: domeShieldSchema.optional(),
@@ -163,6 +163,13 @@ const cardBase = z.object({
   domeShield: domeShieldSchema.optional(),
   /** Способность входить в атмосферу: время в секундах. */
   atmosphere: atmosphereSchema.optional(),
+  /** Простые способности-метки без параметров. */
+  tacticalInstallation: z.boolean().optional(),
+  nuclearInstallation: z.boolean().optional(),
+  hyperInstallation: z.boolean().optional(),
+  tacticalMissileDefense: z.boolean().optional(),
+  nuclearMissileDefense: z.boolean().optional(),
+  hyperMissileDefense: z.boolean().optional(),
   /** Сверхсветовой прыжок. */
   ftlJump: ftlJumpSchema.optional(),
   builder: builderSchema.optional(),

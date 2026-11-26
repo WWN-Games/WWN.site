@@ -87,6 +87,12 @@ export interface DatabaseCard {
   laserDefense?: DomeShield | undefined;
   domeShield?: DomeShield | undefined;
   atmosphere?: Atmosphere | undefined;
+  tacticalInstallation: boolean;
+  nuclearInstallation: boolean;
+  hyperInstallation: boolean;
+  tacticalMissileDefense: boolean;
+  nuclearMissileDefense: boolean;
+  hyperMissileDefense: boolean;
   ftlJump?: FtlJump | undefined;
   builder?: Builder | undefined;
   factories: Factory[];
@@ -251,6 +257,10 @@ const DETAIL_LABEL_KEYS = {
   ftlPlasma: "database.ability.ftl.plasma",
   ftlTele: "database.ability.ftl.tele",
   ftlSpeed: "database.ability.ftl.speed",
+  ftlCharge: "database.ability.ftl.charge",
+  ftlCooldown: "database.ability.ftl.cooldown",
+  ftlMinDistance: "database.ability.ftl.minDistance",
+  ftlEnergyCost: "database.ability.ftl.energyCost",
   ftlInstant: "database.ability.ftl.instant",
   ftlTagMove: "database.ability.ftl.tag.move",
   ftlTagBigVisible: "database.ability.ftl.tag.bigVisible",
@@ -499,6 +509,12 @@ function toCard(id: string, tab: CardTab, data: CardData): DatabaseCard {
     laserDefense: data.laserDefense,
     domeShield: data.domeShield,
     atmosphere: data.atmosphere,
+    tacticalInstallation: data.tacticalInstallation ?? false,
+    nuclearInstallation: data.nuclearInstallation ?? false,
+    hyperInstallation: data.hyperInstallation ?? false,
+    tacticalMissileDefense: data.tacticalMissileDefense ?? false,
+    nuclearMissileDefense: data.nuclearMissileDefense ?? false,
+    hyperMissileDefense: data.hyperMissileDefense ?? false,
     ftlJump: data.ftlJump,
     builder: data.builder,
     factories: data.factories ?? [],
