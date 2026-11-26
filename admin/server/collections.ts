@@ -74,7 +74,10 @@ function cardPayload(item: Card): Record<string, unknown> {
     desc: cleanText(item.desc),
     tags: [...new Set(stringArray(item.tags))],
     image: item.image?.replace(/^\/+/, ""),
-    miniIcon: item.miniIcon?.replace(/^\/+/, "") || undefined,
+    miniIcon:
+      item.miniIcon === ""
+        ? ""
+        : (item.miniIcon?.replace(/^\/+/, "") || undefined),
     role: cleanText(item.role),
     strongVs: cleanTextOrList(item.strongVs),
     weakVs: cleanTextOrList(item.weakVs),
@@ -305,7 +308,10 @@ async function validateCard(
   }
   item.image = image?.replace(/^\/+/, "");
 
-  const miniIcon = item.miniIcon?.replace(/^\/+/, "") || undefined;
+  const miniIcon =
+    item.miniIcon === ""
+      ? ""
+      : (item.miniIcon?.replace(/^\/+/, "") || undefined);
   if (miniIcon) {
     const target = path.resolve(PUBLIC_ROOT, miniIcon);
     if (!isInside(path.join(PUBLIC_ROOT, "img/database/mini"), target)) {

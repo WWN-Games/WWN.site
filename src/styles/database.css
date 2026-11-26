@@ -1584,10 +1584,10 @@ body.has-compare-tray .database-page {
 .detail-hero {
   position: relative;
   display: grid;
-  grid-template-columns: 132px minmax(0, 1fr) auto;
+  grid-template-columns: 176px minmax(0, 1fr) auto;
   align-items: center;
   gap: var(--grid-gap);
-  padding: 22px 24px;
+  padding: 24px 28px;
   border-bottom: 1px solid var(--line-soft);
   background:
     radial-gradient(
@@ -1604,14 +1604,14 @@ body.has-compare-tray .database-page {
 .detail-hero__img {
   display: grid;
   place-items: center;
-  width: 132px;
-  height: 132px;
+  width: 176px;
+  height: 176px;
   overflow: hidden;
   font-family: var(--font-display);
-  font-size: 30px;
+  font-size: 42px;
   color: var(--faction-color, var(--cyan));
   border: 1px solid color-mix(in srgb, var(--faction-color, var(--cyan)) 40%, var(--line));
-  border-radius: 20px;
+  border-radius: 24px;
   background:
     radial-gradient(90% 90% at 32% 22%, rgba(255, 255, 255, 0.14), transparent 62%),
     color-mix(in srgb, var(--faction-color, var(--cyan)) 12%, rgba(6, 12, 22, 0.94));
@@ -1648,17 +1648,22 @@ body.has-compare-tray .database-page {
   line-height: 1.55;
 }
 .detail-hero__tools {
-  display: flex;
-  align-items: center;
-  align-self: start;
-  gap: 10px;
+  display: grid;
+  justify-items: end;
+  align-content: space-between;
+  align-self: stretch;
+  gap: 12px;
 }
 .detail-hero__mini {
-  width: 36px;
-  height: 36px;
+  align-self: end;
+  width: 88px;
+  height: 88px;
+  padding: 4px;
   object-fit: contain;
-  border-radius: var(--radius-2);
-  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.45));
+  border: 1px solid color-mix(in srgb, var(--faction-color, var(--cyan)) 30%, var(--line));
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--faction-color, var(--cyan)) 8%, rgba(6, 12, 22, 0.72));
+  filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.45));
 }
 .detail-dialog__close {
   align-self: start;
@@ -1922,14 +1927,20 @@ body.has-compare-tray .database-page {
 }
 @media (max-width: 900px) {
   .detail-hero {
-    grid-template-columns: 104px minmax(0, 1fr) auto;
-    gap: 14px;
-    padding: 18px;
+    grid-template-columns: 136px minmax(0, 1fr) auto;
+    gap: 16px;
+    padding: 20px;
   }
   .detail-hero__img {
-    width: 104px;
-    height: 104px;
+    width: 136px;
+    height: 136px;
+    font-size: 34px;
     border-radius: var(--radius-4);
+  }
+  .detail-hero__mini {
+    width: 72px;
+    height: 72px;
+    border-radius: 14px;
   }
   .detail-dialog__body {
     padding: 18px;
@@ -1966,13 +1977,19 @@ body.has-compare-tray .database-page {
     max-height: 100dvh;
   }
   .detail-hero {
-    grid-template-columns: 82px minmax(0, 1fr) auto;
+    grid-template-columns: 100px minmax(0, 1fr) auto;
+    gap: 12px;
     padding: 14px;
   }
   .detail-hero__img {
-    width: 82px;
-    height: 82px;
-    font-size: 22px;
+    width: 100px;
+    height: 100px;
+    font-size: 26px;
+  }
+  .detail-hero__mini {
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
   }
   .detail-hero__body h2 {
     font-size: 23px;
@@ -2141,7 +2158,7 @@ body.has-compare-tray .database-page {
     linear-gradient(180deg, rgba(12, 26, 46, 0.995), rgba(4, 9, 17, 0.998));
 }
 .compare-cardhead {
-  min-width: 220px;
+  min-width: 270px;
   padding: 14px 34px 14px 14px;
   border-top-width: 4px;
   border-radius: var(--radius-3);
@@ -2150,8 +2167,8 @@ body.has-compare-tray .database-page {
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 .compare-cardhead__img {
-  width: 84px;
-  height: 84px;
+  width: 104px;
+  height: 104px;
   padding: 0;
   cursor: pointer;
   border-radius: var(--radius-4);
@@ -2180,6 +2197,23 @@ body.has-compare-tray .database-page {
 .compare-cardhead__img img {
   padding: 5px;
   filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.35));
+}
+.compare-cardhead__meta {
+  padding-bottom: 38px;
+}
+.compare-cardhead__mini {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 1;
+  width: 44px;
+  height: 44px;
+  padding: 3px;
+  object-fit: contain;
+  border: 1px solid color-mix(in srgb, var(--faction-color, var(--cyan)) 28%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--faction-color, var(--cyan)) 10%, rgba(6, 12, 22, 0.74));
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.4));
 }
 .compare-cardhead__name {
   max-width: 200px;
@@ -2232,13 +2266,23 @@ body.has-compare-tray .database-page {
 }
 @media (max-width: 720px) {
   .compare-cardhead {
-    min-width: 190px;
+    min-width: 230px;
     padding: 10px 30px 10px 10px;
   }
   .compare-cardhead__img {
-    width: 64px;
-    height: 64px;
+    width: 84px;
+    height: 84px;
     border-radius: var(--radius-3);
+  }
+  .compare-cardhead__meta {
+    padding-bottom: 32px;
+  }
+  .compare-cardhead__mini {
+    right: 8px;
+    bottom: 8px;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
   }
   .compare-cardhead__name {
     max-width: 160px;

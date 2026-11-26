@@ -839,9 +839,9 @@
         kind="mini"
         id={item.id}
         path={item.miniIcon}
-        label="Мини-иконка (дополнительная, необязательно)"
+        label="Мини-иконка"
         {toast}
-        onchange={(path) => (item.miniIcon = path || undefined)}
+        onchange={(path) => (item.miniIcon = path)}
       />
     </div>
     <div class="field">

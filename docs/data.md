@@ -88,7 +88,7 @@
 | `atmosphere` | нет | `{ time }` — время входа в атмосферу, с |
 | `tacticalInstallation`, `nuclearInstallation`, `hyperInstallation`, `tacticalMissileDefense`, `nuclearMissileDefense`, `hyperMissileDefense` | нет | `true` — простая способность-метка без параметров; выводится чипом в общем списке |
 | `ftlJump` | нет | `{ type: "siv" \\| "plasma" \\| "tele", chargeTime, cooldown, minDistance, jumpSpeed?, energyCost? }`; `jumpSpeed` — только СИВ, `energyCost` — только плазма |
-| `miniIcon` | нет | Дополнительная мини-иконка: `img/database/mini/<id>.avif`; без файла не показывается |
+| `miniIcon` | нет | Мини-иконка: явный путь или `public/img/database/mini/<id>.avif` по умолчанию; `""` скрывает иконку, без файла она не показывается |
 | `builder` | нет | `{ buildRange, repairSpeed, buildSpeed, healTags }` |
 | `factories` | нет | Массив заводов `{ name, buildSpeed, producedUnits }` |
 | `transports` | нет | Массив отделений `{ name, seats, cargoTags, unload }` |

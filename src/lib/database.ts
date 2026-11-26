@@ -4,6 +4,9 @@
    подписи интерфейса и стартовые шкалы статов по вкладкам.
    ============================================================================ */
 
+import { existsSync } from "node:fs";
+import path from "node:path";
+
 import { getCollection } from "astro:content";
 
 import { type DictKey, t } from "../i18n";
@@ -440,10 +443,15 @@ export function resolveImage(image: string | undefined, id: string): string | nu
   return href(path);
 }
 
-/** Дополнительная мини-иконка: без fallback, пустое значение скрывает её. */
-export function resolveMiniIcon(image: string | undefined): string | null {
-  if (!image) return null;
-  return href(image.replace(/^assets\//, ""));
+/**
+ * Мини-иконка: явный путь, иначе стандартный img/database/mini/<id>.avif,
+ * если файл уже лежит в public. Пустая строка скрывает иконку.
+ */
+export function resolveMiniIcon(image: string | undefined, id: string): string | null {
+  if (image === "") return null;
+  if (image) return href(image.replace(/^assets\//, ""));
+  const fallback = `img/database/mini/${id}.avif`;
+  return existsSync(path.join("public", fallback)) ? href(fallback) : null;
 }
 
 function safeColor(color: string | undefined): string {
@@ -820,7 +828,7 @@ export async function loadDatabase(lang: Lang): Promise<DatabaseData> {
       factionName: factionName(factionMap, card.faction, lang),
       factionColor: factionColor(factionMap, card.faction),
       image: resolveImage(card.image, card.id),
-      miniIcon: resolveMiniIcon(card.miniIcon),
+      miniIcon: resolveMiniIcon(card.miniIcon, card.id),
       initials: initialsOf(name),
     };
   });

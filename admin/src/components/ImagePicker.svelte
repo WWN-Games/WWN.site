@@ -24,6 +24,7 @@
     if (path) return assetUrl(path);
     if (!id) return "";
     if (kind === "card") return `/media/public/img/database/${id}.avif`;
+    if (kind === "mini") return `/media/public/img/database/mini/${id}.avif`;
     if (kind === "map") return `/media/public/img/maps/${id}.avif`;
     if (kind === "feat") return `/media/public/img/feats/${id}.avif`;
     if (kind === "gallery") return `/media/assets/img/gallery/${id}.avif`;
@@ -112,25 +113,29 @@
         Без картинки
       </button>
     {/if}
-    {#if kind === "mini" && path}
+    {#if kind === "mini" && path !== ""}
       <button class="btn btn--ghost btn--small" type="button" onclick={() => onchange("")}>
         Убрать иконку
       </button>
     {/if}
   </div>
   <div class="image-picker__path">
-    {path ||
-      (kind === "card" && id
-        ? `img/database/${id}.avif (по умолчанию)`
-        : kind === "mini" && id
-          ? `img/database/mini/${id}.avif (если загружена)`
-          : kind === "map" && id
-            ? `img/maps/${id}.avif (по умолчанию)`
-            : kind === "feat" && id
-              ? `img/feats/${id}.avif (по умолчанию)`
-              : kind === "gallery" && id
-                ? `assets/img/gallery/${id}.avif (по умолчанию)`
-                : "—")}
+    {#if path === ""}
+      Без изображения
+    {:else}
+      {path ||
+        (kind === "card" && id
+          ? `img/database/${id}.avif (по умолчанию)`
+          : kind === "mini" && id
+            ? `img/database/mini/${id}.avif (по умолчанию)`
+            : kind === "map" && id
+              ? `img/maps/${id}.avif (по умолчанию)`
+              : kind === "feat" && id
+                ? `img/feats/${id}.avif (по умолчанию)`
+                : kind === "gallery" && id
+                  ? `assets/img/gallery/${id}.avif (по умолчанию)`
+                  : "—")}
+    {/if}
   </div>
   <input
     bind:this={input}

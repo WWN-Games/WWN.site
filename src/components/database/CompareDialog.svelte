@@ -432,6 +432,17 @@
                         <span class="compare-cardhead__faction">{item.factionName}</span>
                       </span>
                     </span>
+                    {#if item.miniIcon}
+                      <img
+                        class="compare-cardhead__mini"
+                        src={item.miniIcon}
+                        alt=""
+                        width="44"
+                        height="44"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    {/if}
                   </div>
                 </th>
               {/each}

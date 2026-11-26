@@ -197,12 +197,12 @@
           {#if item.desc}<p class="detail-hero__desc">{item.desc}</p>{/if}
         </div>
         <div class="detail-hero__tools">
-          {#if item.miniIcon}
-            <img class="detail-hero__mini" src={item.miniIcon} alt="" width="36" height="36" decoding="async" />
-          {/if}
           <button class="icon-btn detail-dialog__close" type="button" aria-label={detail.close} onclick={onclose}>
             {@html iconSvg(Close)}
           </button>
+          {#if item.miniIcon}
+            <img class="detail-hero__mini" src={item.miniIcon} alt="" width="96" height="96" decoding="async" />
+          {/if}
         </div>
       </header>
 

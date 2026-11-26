@@ -12,7 +12,7 @@
     "builder — { buildRange, repairSpeed, buildSpeed, healTags }; factories — список заводов; transports — список отделений.",
     "shield, armor, selfRegen, shieldRegen, speed, turnSpeed, range можно не писать, если значение 0; допустимы дробные значения.",
     "Способности: missileDefense/torpedoDefense { max, recharge } (recharge — секунды на восстановление 1 заряда), laserDefense { radius, points, regen }, domeShield { radius, points, regen }, atmosphere { time }, простые флаги tacticalInstallation, nuclearInstallation, hyperInstallation, tacticalMissileDefense, nuclearMissileDefense, hyperMissileDefense, ftlJump { type: siv | plasma | tele, chargeTime, cooldown, minDistance, jumpSpeed? (только СИВ), energyCost? (только плазма) }.",
-    "Необязательное поле image переопределяет картинку, image: \"\" — показать инициалы. miniIcon — дополнительная мини-иконка из public/img/database/mini/.",
+    "Необязательное поле image переопределяет картинку, image: \"\" — показать инициалы. miniIcon — мини-иконка из public/img/database/mini/; по умолчанию <id>.avif, \"\" скрывает.",
     "Необязательные поля карточки: role, strongVs, weakVs, draft, new, newUntil (плашка «Новинка!» до даты)."
   ],
   "buildings": [

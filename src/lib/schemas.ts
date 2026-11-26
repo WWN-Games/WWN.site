@@ -176,7 +176,7 @@ const cardBase = z.object({
   factories: z.array(factorySchema).optional(),
   transports: z.array(transportSchema).optional(),
   image: z.string().optional(),
-  /** Дополнительная маленькая иконка карточки (необязательная). */
+  /** Мини-иконка: явный путь или public/img/database/mini/<id>.avif; "" скрывает. */
   miniIcon: z.string().optional(),
   role: text.optional(),
   strongVs: z.union([z.array(z.string()), text]).optional(),
