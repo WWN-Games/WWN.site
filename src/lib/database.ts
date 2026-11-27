@@ -4,10 +4,9 @@
    подписи интерфейса и стартовые шкалы статов по вкладкам.
    ============================================================================ */
 
+import { getCollection } from "astro:content";
 import { existsSync } from "node:fs";
 import path from "node:path";
-
-import { getCollection } from "astro:content";
 
 import { type DictKey, t } from "../i18n";
 import {

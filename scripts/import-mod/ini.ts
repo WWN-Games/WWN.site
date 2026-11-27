@@ -40,7 +40,7 @@ export function parseIni(file: string): ParsedIni {
 
     const sectionMatch = sectionRe.exec(line);
     if (sectionMatch) {
-      const name = sectionMatch[1]!.trim();
+      const name = (sectionMatch[1] ?? "").trim();
       const key = name.toLowerCase();
       let section = sections.get(key);
       if (!section) {
@@ -53,8 +53,8 @@ export function parseIni(file: string): ParsedIni {
 
     const keyMatch = keyRe.exec(line);
     if (!keyMatch) continue;
-    const key = keyMatch[1]!.trim();
-    const value = keyMatch[2]!.trim();
+    const key = (keyMatch[1] ?? "").trim();
+    const value = (keyMatch[2] ?? "").trim();
 
     if (key.toLowerCase().startsWith("@global ")) {
       globals.set(key.slice(8).trim().toLowerCase(), value);
@@ -196,7 +196,8 @@ export function resolveValue(merged: MergedIni, raw: string): string {
       if (parts.length === 1) replacement = globalValue(merged, key);
       else {
         const sec = parts.slice(0, -1).join(".");
-        const field = parts[parts.length - 1]!;
+        const field = parts[parts.length - 1];
+        if (field === undefined) return match;
         replacement = last(merged, sec, field);
       }
       if (replacement === undefined) return match;

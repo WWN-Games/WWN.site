@@ -185,9 +185,8 @@ function globalNumber(merged: MergedIni, key: string): number | undefined {
 }
 
 function coreNumber(merged: MergedIni, key: string): number | undefined {
-  return parseNumber(
-    last(merged, "core", key) ? resolveValue(merged, last(merged, "core", key)!) : undefined,
-  );
+  const value = last(merged, "core", key);
+  return value === undefined ? undefined : parseNumber(resolveValue(merged, value));
 }
 
 function coreText(merged: MergedIni, key: string): string | undefined {
@@ -517,7 +516,8 @@ function extractWeapons(
       best = index;
     }
   }
-  weapons[best]!.mainDps = true;
+  const bestWeapon = weapons[best];
+  if (bestWeapon) bestWeapon.mainDps = true;
   return weapons;
 }
 
